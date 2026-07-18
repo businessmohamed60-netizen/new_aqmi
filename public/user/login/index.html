@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Connexion - Espace Client NOVAQYS</title>
+  <meta name="description" content="Connectez-vous à votre espace client NOVAQYS" />
+  <meta name="theme-color" content="#0a0e17" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/novaqys.css" />
+  <link rel="stylesheet" href="/assets/css/auth.css" />
+  <link rel="stylesheet" href="/assets/css/effects.css" />
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--nova-bg); margin: 0; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div class="aqmi-auth-wrap">
+    <div class="aqmi-orb aqmi-orb-1"></div>
+    <div class="aqmi-orb aqmi-orb-2"></div>
+    <div class="aqmi-auth-card aqmi-fade-in">
+      <div class="aqmi-auth-header">
+        <img src="/assets/img/logo-novaqys-header.png" alt="NOVAQYS" style="height:42px;width:auto;margin-bottom:0.5rem;">
+        <h2 class="aqmi-auth-title">Espace Client</h2>
+        <p class="aqmi-auth-sub">Connectez-vous pour accéder à vos évaluations</p>
+      </div>
+      <div class="aqmi-alert aqmi-alert-info" style="margin-bottom:1.5rem">
+        <i class="fas fa-info-circle"></i>
+        La connexion nécessite le serveur PHP. <a href="/" style="color:var(--nova-blue)">Retour à l'accueil</a>
+      </div>
+      <form method="GET" action="/" class="aqmi-form">
+        <div class="aqmi-field">
+          <label class="aqmi-label">Email</label>
+          <div class="aqmi-input-wrap">
+            <i class="fas fa-envelope aqmi-input-icon"></i>
+            <input type="email" class="aqmi-input" placeholder="votre@email.com" disabled />
+          </div>
+        </div>
+        <div class="aqmi-field">
+          <label class="aqmi-label">Mot de passe</label>
+          <div class="aqmi-input-wrap">
+            <i class="fas fa-lock aqmi-input-icon"></i>
+            <input type="password" class="aqmi-input" placeholder="••••••••" disabled />
+          </div>
+        </div>
+        <a href="/" class="aqmi-btn aqmi-btn-primary aqmi-btn-full" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none">
+          <span>Retour à l'accueil</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </form>
+      <div class="aqmi-auth-footer">
+        <a href="/" class="aqmi-link"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+        <span class="aqmi-sep">·</span>
+        <a href="/login" class="aqmi-link">Administration</a>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="/assets/js/effects.js"></script>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="fr" class="lms-page">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVAQYS LMS — Automotive Learning Platform</title>
+  <meta name="description" content="NOVAQYS LMS — La plateforme de formation intelligente dédiée à l'industrie automobile. Normes, Core Tools, Méthodes industrielles, Certification." />
+  <meta name="theme-color" content="#0a0e17" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/lms.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/lms.js" defer></script>
+</head>
+<body>
+
+  <!-- ============================================
+       NAVIGATION
+       ============================================ -->
+  <nav class="lms-nav" id="lmsNav">
+    <div class="lms-container">
+      <a href="/" class="lms-nav-logo">
+        <img src="assets/img/novaqys-logo.png" alt="NOVAQYS" onerror="this.style.display='none'" />
+        <span>NOVAQYS <span style="color:#4fc3f7;font-weight:800">LMS</span></span>
+      </a>
+      <div class="lms-nav-links">
+        <a href="#journey" class="lms-nav-link">Parcours</a>
+        <a href="#normes" class="lms-nav-link">Normes</a>
+        <a href="#core-tools" class="lms-nav-link">Core Tools</a>
+        <a href="#methodes" class="lms-nav-link">Méthodes</a>
+        <a href="#catalogue" class="lms-nav-link">Catalogue</a>
+        <a href="#dashboard" class="lms-nav-link">Dashboard</a>
+        <a href="#ia" class="lms-nav-link">IA Coach</a>
+        <a href="/user/login" class="lms-nav-cta"><i class="fas fa-graduation-cap"></i> Accéder</a>
+      </div>
+      <button class="lms-nav-toggle" id="lmsNavToggle" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="lms-hero" id="hero">
+    <canvas class="lms-hero-canvas"></canvas>
+    <div class="lms-hero-overlay"></div>
+    <div class="lms-hero-grid"></div>
+    <div class="lms-hero-content">
+      <div class="lms-hero-badge">
+        <i class="fas fa-graduation-cap"></i> NOVAQYS Automotive Learning Platform
+      </div>
+      <h1 class="lms-hero-title">
+        L'académie numérique<br>
+        <span class="lms-glow-text">de l'industrie automobile</span>
+      </h1>
+      <p class="lms-hero-subtitle">
+        Formez vos équipes aux exigences des constructeurs mondiaux. Maîtrisez les normes,
+        les Core Tools et les méthodes industrielles. Transformez votre entreprise en fournisseur automobile de premier plan.
+      </p>
+      <div class="lms-hero-actions">
+        <a href="#catalogue" class="lms-hero-btn lms-hero-btn-primary">
+          <i class="fas fa-play"></i> Explorer les formations
+        </a>
+        <a href="#journey" class="lms-hero-btn lms-hero-btn-secondary">
+          <i class="fas fa-info-circle"></i> Voir le parcours
+        </a>
+      </div>
+      <div class="lms-hero-metrics">
+        <div class="lms-hero-metric">
+          <div class="lms-hero-metric-value">50+</div>
+          <div class="lms-hero-metric-label">Formations</div>
+        </div>
+        <div class="lms-hero-metric">
+          <div class="lms-hero-metric-value">12</div>
+          <div class="lms-hero-metric-label">Normes Auto</div>
+        </div>
+        <div class="lms-hero-metric">
+          <div class="lms-hero-metric-value">8</div>
+          <div class="lms-hero-metric-label">Core Tools</div>
+        </div>
+        <div class="lms-hero-metric">
+          <div class="lms-hero-metric-value">100%</div>
+          <div class="lms-hero-metric-label">Certification</div>
+        </div>
+      </div>
+    </div>
+    <div class="lms-hero-scroll">
+      <span>Défiler</span>
+      <div class="lms-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       JOURNEY — Parcours du collaborateur
+       ============================================ -->
+  <section class="lms-section lms-journey" id="journey">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-road"></i> Votre parcours</span>
+        <h2 class="lms-section-title">Du débutant à <span class="lms-gradient">l'expert automobile</span></h2>
+        <p class="lms-section-desc">Chaque étape est conçue pour vous faire progresser, du premier pas jusqu'à la maîtrise complète des exigences des constructeurs mondiaux.</p>
+      </div>
+      <div class="lms-journey-track">
+        <div class="lms-journey-line">
+          <div class="lms-journey-line-fill"></div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>1. Débutant</h3>
+            <p>Découvrez les fondamentaux de l'industrie automobile. Comprenez les enjeux qualité, les exigences clients et le vocabulaire technique.</p>
+          </div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>2. Formation</h3>
+            <p>Accédez à des modules de formation interactifs couvrant les normes IATF 16949, les Core Tools APQP/PPAP/FMEA et les méthodes Lean.</p>
+          </div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>3. Exercices pratiques</h3>
+            <p>Mettez en pratique vos connaissances avec des exercices interactifs, des études de cas réelles et des simulations d'audit.</p>
+          </div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>4. Quiz de validation</h3>
+            <p>Testez vos connaissances avec des quiz adaptatifs. Chaque module valide votre compréhension avant de passer au niveau supérieur.</p>
+          </div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>5. Certification</h3>
+            <p>Obtenez votre certification officielle NOVAQYS avec badge numérique, QR code et certificat PDF téléchargeable.</p>
+          </div>
+        </div>
+
+        <div class="lms-journey-step">
+          <div class="lms-journey-marker">
+            <div class="lms-journey-dot"><i class="fas fa-check"></i></div>
+          </div>
+          <div class="lms-journey-card">
+            <h3>6. Expert Automobile</h3>
+            <p>Devenez un expert reconnu. Maîtrisez l'intégralité des référentiels et propulsez votre entreprise vers la conformité constructeur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       NORMES AUTOMOBILES
+       ============================================ -->
+  <section class="lms-section lms-normes" id="normes">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-book"></i> Normes Automobiles</span>
+        <h2 class="lms-section-title">Mur interactif <span class="lms-gradient">des normes</span></h2>
+        <p class="lms-section-desc">Explorez l'ensemble des normes et référentiels de l'industrie automobile. Chaque norme propose un parcours complet avec vidéo, quiz et certification.</p>
+      </div>
+      <div class="lms-normes-wall">
+        <div class="lms-norme-card">
+          <h4>IATF 16949</h4>
+          <span class="lms-norme-level advanced">Avancé</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 40h</span>
+            <span><i class="fas fa-video"></i> 24</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>ISO 9001</h4>
+          <span class="lms-norme-level intermediate">Intermédiaire</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 24h</span>
+            <span><i class="fas fa-video"></i> 18</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>VDA 6.3</h4>
+          <span class="lms-norme-level advanced">Avancé</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 32h</span>
+            <span><i class="fas fa-video"></i> 20</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>ISO 14001</h4>
+          <span class="lms-norme-level intermediate">Intermédiaire</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 20h</span>
+            <span><i class="fas fa-video"></i> 14</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>ISO 45001</h4>
+          <span class="lms-norme-level intermediate">Intermédiaire</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 20h</span>
+            <span><i class="fas fa-video"></i> 14</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>CSR</h4>
+          <span class="lms-norme-level beginner">Débutant</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 12h</span>
+            <span><i class="fas fa-video"></i> 10</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>CQI</h4>
+          <span class="lms-norme-level advanced">Avancé</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 28h</span>
+            <span><i class="fas fa-video"></i> 16</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+        <div class="lms-norme-card">
+          <h4>MMOG/LE</h4>
+          <span class="lms-norme-level advanced">Avancé</span>
+          <div class="lms-norme-meta">
+            <span><i class="far fa-clock"></i> 24h</span>
+            <span><i class="fas fa-video"></i> 15</span>
+            <span><i class="fas fa-certificate"></i> Oui</span>
+          </div>
+          <button class="lms-norme-action"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CORE TOOLS — Laboratoire numérique
+       ============================================ -->
+  <section class="lms-section lms-coretools" id="core-tools">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-flask"></i> Laboratoire Core Tools</span>
+        <h2 class="lms-section-title">Les outils <span class="lms-gradient">incontournables</span> de l'automobile</h2>
+        <p class="lms-section-desc">Maîtrisez les Core Tools exigés par les constructeurs. Chaque outil est présenté avec des schémas, des cas pratiques et des templates prêts à l'emploi.</p>
+      </div>
+      <div class="lms-tools-grid">
+        <div class="lms-tool-card" style="border-top:3px solid #7367f0">
+          <div class="lms-tool-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-project-diagram"></i></div>
+          <h3>APQP</h3>
+          <p>Advanced Product Quality Planning — Planification avancée de la qualité produit. Gérez vos projets de développement automobile de A à Z.</p>
+        </div>
+        <div class="lms-tool-card" style="border-top:3px solid #28c76f">
+          <div class="lms-tool-icon" style="background:rgba(40,199,111,0.1);color:#28c76f"><i class="fas fa-file-signature"></i></div>
+          <h3>PPAP</h3>
+          <p>Production Part Approval Process — Processus d'approbation des pièces de production. Validez vos processus auprès des constructeurs.</p>
+        </div>
+        <div class="lms-tool-card" style="border-top:3px solid #ff9f43">
+          <div class="lms-tool-icon" style="background:rgba(255,159,67,0.1);color:#ff9f43"><i class="fas fa-exclamation-triangle"></i></div>
+          <h3>FMEA</h3>
+          <p>Failure Mode and Effects Analysis — Analyse des modes de défaillance. Anticipez et prévenez les risques qualité.</p>
+        </div>
+        <div class="lms-tool-card" style="border-top:3px solid #00cfe8">
+          <div class="lms-tool-icon" style="background:rgba(0,207,232,0.1);color:#00cfe8"><i class="fas fa-chart-line"></i></div>
+          <h3>SPC</h3>
+          <p>Statistical Process Control — Maîtrise statistique des processus. Pilotez vos processus avec des cartes de contrôle et des indicateurs.</p>
+        </div>
+        <div class="lms-tool-card" style="border-top:3px solid #ea5455">
+          <div class="lms-tool-icon" style="background:rgba(234,84,85,0.1);color:#ea5455"><i class="fas fa-ruler"></i></div>
+          <h3>MSA</h3>
+          <p>Measurement System Analysis — Analyse des systèmes de mesure. Garantissez la fiabilité de vos mesures et instruments.</p>
+        </div>
+        <div class="lms-tool-card" style="border-top:3px solid #7367f0">
+          <div class="lms-tool-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-clipboard-list"></i></div>
+          <h3>Control Plan</h3>
+          <p>Plan de surveillance — Plan de contrôle et de surveillance de vos processus. Assurez la conformité continue de votre production.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       MÉTHODES INDUSTRIELLES
+       ============================================ -->
+  <section class="lms-section lms-methodes" id="methodes">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-industry"></i> Méthodes Industrielles</span>
+        <h2 class="lms-section-title">Les méthodes qui font <span class="lms-gradient">la différence</span></h2>
+        <p class="lms-section-desc">Des méthodes éprouvées pour améliorer la qualité, réduire les coûts et optimiser votre production automobile.</p>
+      </div>
+      <div class="lms-methodes-grid">
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-tools"></i></div>
+          <h4>8D</h4>
+          <p>Méthode de résolution de problèmes en 8 disciplines. Approche structurée pour éliminer les causes racines.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(40,199,111,0.1);color:#28c76f"><i class="fas fa-bolt"></i></div>
+          <h4>QRQC</h4>
+          <p>Quick Response Quality Control — Réaction rapide aux problèmes qualité. Résolution en temps réel sur le terrain.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(0,207,232,0.1);color:#00cfe8"><i class="fas fa-leaf"></i></div>
+          <h4>Lean Manufacturing</h4>
+          <p>Production Lean — Éliminez le gaspillage, maximisez la valeur ajoutée et optimisez vos flux de production.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(255,159,67,0.1);color:#ff9f43"><i class="fas fa-th-large"></i></div>
+          <h4>5S</h4>
+          <p>Méthode d'organisation du poste de travail. Triez, rangez, nettoyez, standardisez et faites progresser.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(234,84,85,0.1);color:#ea5455"><i class="fas fa-chart-pie"></i></div>
+          <h4>Kaizen</h4>
+          <p>Amélioration continue. Petits pas quotidiens vers l'excellence opérationnelle.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-exchange-alt"></i></div>
+          <h4>SMED</h4>
+          <p>Single Minute Exchange of Die — Réduction des temps de changement de série. Passez d'une production à l'autre en un clin d'œil.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(40,199,111,0.1);color:#28c76f"><i class="fas fa-shield-alt"></i></div>
+          <h4>Poka-Yoke</h4>
+          <p>Système anti-erreur. Mécanismes simples pour prévenir les défauts à la source.</p>
+        </div>
+        <div class="lms-methode-card">
+          <div class="lms-methode-icon" style="background:rgba(0,207,232,0.1);color:#00cfe8"><i class="fas fa-layer-group"></i></div>
+          <h4>Kanban</h4>
+          <p>Système visuel de gestion des flux. Approvisionnement juste-à-temps pour une production sans rupture.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CATALOGUE DES FORMATIONS (Netflix-style)
+       ============================================ -->
+  <section class="lms-section lms-catalogue" id="catalogue">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-th"></i> Catalogue</span>
+        <h2 class="lms-section-title">Explorez nos <span class="lms-gradient">formations</span></h2>
+        <p class="lms-section-desc">Découvrez notre catalogue de formations premium. Faites défiler pour explorer.</p>
+      </div>
+    </div>
+    <div class="lms-catalogue-scroll" style="padding-left:calc((100vw - 1200px)/2 + 24px)">
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image">
+          <i class="fas fa-certificate"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>IATF 16949 — Maîtrise Complète</h4>
+          <p>Devenez expert du référentiel IATF 16949. Comprenez chaque exigence et son application.</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 40h</span>
+            <span><i class="fas fa-signal"></i> Avancé</span>
+            <span><i class="fas fa-globe"></i> FR/EN</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.8</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image" style="background:linear-gradient(135deg,rgba(115,103,240,0.2),rgba(0,207,232,0.1))">
+          <i class="fas fa-project-diagram"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>APQP & PPAP — Gestion de Projet</h4>
+          <p>Maîtrisez la planification qualité et l'approbation des pièces pour les constructeurs.</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 32h</span>
+            <span><i class="fas fa-signal"></i> Avancé</span>
+            <span><i class="fas fa-globe"></i> FR/EN</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.9</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image" style="background:linear-gradient(135deg,rgba(255,159,67,0.2),rgba(234,84,85,0.1))">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>FMEA — Analyse des Risques</h4>
+          <p>Anticipez les défaillances avec la méthode FMEA. Cas pratiques et templates inclus.</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 24h</span>
+            <span><i class="fas fa-signal"></i> Intermédiaire</span>
+            <span><i class="fas fa-globe"></i> FR</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.7</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image" style="background:linear-gradient(135deg,rgba(0,207,232,0.2),rgba(40,199,111,0.1))">
+          <i class="fas fa-chart-line"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>SPC & MSA — Maîtrise Statistique</h4>
+          <p>Pilotez vos processus avec les cartes de contrôle et analysez vos systèmes de mesure.</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 28h</span>
+            <span><i class="fas fa-signal"></i> Intermédiaire</span>
+            <span><i class="fas fa-globe"></i> FR/EN</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.6</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image" style="background:linear-gradient(135deg,rgba(40,199,111,0.2),rgba(115,103,240,0.1))">
+          <i class="fas fa-leaf"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>Lean Manufacturing — Excellence</h4>
+          <p>Transformez votre production avec les méthodes Lean. 5S, Kaizen, SMED, Kanban...</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 36h</span>
+            <span><i class="fas fa-signal"></i> Avancé</span>
+            <span><i class="fas fa-globe"></i> FR/EN</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.8</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+      <div class="lms-catalogue-card">
+        <div class="lms-catalogue-card-image" style="background:linear-gradient(135deg,rgba(234,84,85,0.2),rgba(255,159,67,0.1))">
+          <i class="fas fa-tools"></i>
+          <div class="lms-play-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+        <div class="lms-catalogue-card-body">
+          <h4>8D & QRQC — Résolution de Problèmes</h4>
+          <p>Maîtrisez les méthodes de résolution de problèmes. Approche terrain et structurée.</p>
+          <div class="lms-catalogue-meta">
+            <span><i class="far fa-clock"></i> 20h</span>
+            <span><i class="fas fa-signal"></i> Débutant</span>
+            <span><i class="fas fa-globe"></i> FR</span>
+            <span><i class="fas fa-star" style="color:#fbbf24"></i> 4.5</span>
+          </div>
+          <button class="lms-catalogue-btn"><i class="fas fa-play"></i> Commencer</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       COURS INTERACTIFS
+       ============================================ -->
+  <section class="lms-section lms-cours" id="cours">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-video"></i> Cours Interactifs</span>
+        <h2 class="lms-section-title">Une expérience <span class="lms-gradient">d'apprentissage</span> immersive</h2>
+        <p class="lms-section-desc">Vidéos HD, sous-titres, notes, documents joints et suivi de progression en temps réel.</p>
+      </div>
+      <div class="lms-player">
+        <div class="lms-player-screen">
+          <i class="fas fa-play-circle"></i>
+        </div>
+        <div class="lms-player-controls">
+          <button><i class="fas fa-play"></i></button>
+          <button><i class="fas fa-backward"></i></button>
+          <button><i class="fas fa-forward"></i></button>
+          <div class="lms-progress">
+            <div class="lms-progress-fill"></div>
+          </div>
+          <span class="lms-player-time">12:34 / 35:20</span>
+          <button><i class="fas fa-volume-up"></i></button>
+          <button><i class="fas fa-cog"></i></button>
+          <button><i class="fas fa-expand"></i></button>
+        </div>
+      </div>
+      <div class="lms-player-toolbar">
+        <div class="lms-player-tool"><i class="fas fa-closed-captioning"></i> Sous-titres</div>
+        <div class="lms-player-tool"><i class="fas fa-sticky-note"></i> Notes</div>
+        <div class="lms-player-tool"><i class="fas fa-paperclip"></i> Pièces jointes</div>
+        <div class="lms-player-tool"><i class="fas fa-file-pdf"></i> Documents</div>
+        <div class="lms-player-tool"><i class="fas fa-download"></i> Téléchargements</div>
+        <div class="lms-player-tool"><i class="fas fa-question-circle"></i> Questions</div>
+        <div class="lms-player-tool"><i class="fas fa-comments"></i> Commentaires</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       QUIZ
+       ============================================ -->
+  <section class="lms-section lms-quiz" id="quiz">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-question-circle"></i> Quiz</span>
+        <h2 class="lms-section-title">Testez vos <span class="lms-gradient">connaissances</span></h2>
+        <p class="lms-section-desc">Questions interactives avec feedback immédiat. Votre score évolue en temps réel.</p>
+      </div>
+      <div class="lms-quiz-box">
+        <div class="lms-quiz-progress">
+          <span>Question 1/4</span>
+          <div class="lms-quiz-progress-bar">
+            <div class="lms-quiz-progress-fill" style="width:25%"></div>
+          </div>
+          <span>Score: 0</span>
+        </div>
+        <div class="lms-quiz-question">
+          <h4>Quel est l'objectif principal de la norme IATF 16949 ?</h4>
+          <div class="lms-quiz-options">
+            <div class="lms-quiz-option"><span>A</span> Réduire les coûts de production</div>
+            <div class="lms-quiz-option"><span>B</span> Assurer la conformité des systèmes de management de la qualité dans l'automobile</div>
+            <div class="lms-quiz-option"><span>C</span> Augmenter la productivité</div>
+            <div class="lms-quiz-option"><span>D</span> Gérer les ressources humaines</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CERTIFICATION
+       ============================================ -->
+  <section class="lms-section lms-certification" id="certification">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-certificate"></i> Certification</span>
+        <h2 class="lms-section-title">Votre <span class="lms-gradient">certification</span> officielle</h2>
+        <p class="lms-section-desc">Cérémonie digitale avec badge numérique, QR code et certificat PDF téléchargeable.</p>
+      </div>
+      <div class="lms-certificate">
+        <div class="lms-certificate-badge"><i class="fas fa-award"></i></div>
+        <h3>Certificat de Réussite</h3>
+        <p class="lms-cert-subtitle">NOVAQYS Automotive Learning Platform</p>
+        <div class="lms-cert-name">Jean Dupont</div>
+        <p class="lms-cert-org">A complété la formation IATF 16949 — Maîtrise Complète</p>
+        <div class="lms-cert-details">
+          <span><i class="far fa-calendar"></i> 15 Juillet 2026</span>
+          <span><i class="far fa-clock"></i> 40 heures</span>
+          <span><i class="fas fa-trophy"></i> Score: 92%</span>
+        </div>
+        <div class="lms-cert-stamp">
+          <i class="fas fa-check"></i>
+        </div>
+        <div class="lms-cert-actions">
+          <button class="lms-cert-btn lms-cert-btn-primary"><i class="fas fa-download"></i> Télécharger PDF</button>
+          <button class="lms-cert-btn lms-cert-btn-secondary"><i class="fas fa-share-alt"></i> Partager</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       COMPÉTENCES
+       ============================================ -->
+  <section class="lms-section lms-competences" id="competences">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-chart-bar"></i> Compétences</span>
+        <h2 class="lms-section-title">Matrice de <span class="lms-gradient">compétences</span></h2>
+        <p class="lms-section-desc">Visualisez votre progression dans chaque domaine. Du débutant à l'expert.</p>
+      </div>
+      <div class="lms-skills-grid">
+        <div class="lms-skill-card">
+          <h4>IATF 16949 <span>Avancé</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="85" style="width:0;background:linear-gradient(90deg,#7367f0,#9b8cf7)"></div>
+          </div>
+          <span class="lms-skill-level">85% — 1024 apprenants</span>
+        </div>
+        <div class="lms-skill-card">
+          <h4>APQP & PPAP <span>Intermédiaire</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="72" style="width:0;background:linear-gradient(90deg,#28c76f,#4cd880)"></div>
+          </div>
+          <span class="lms-skill-level">72% — 876 apprenants</span>
+        </div>
+        <div class="lms-skill-card">
+          <h4>FMEA <span>Avancé</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="88" style="width:0;background:linear-gradient(90deg,#ff9f43,#ffb976)"></div>
+          </div>
+          <span class="lms-skill-level">88% — 654 apprenants</span>
+        </div>
+        <div class="lms-skill-card">
+          <h4>SPC & MSA <span>Intermédiaire</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="65" style="width:0;background:linear-gradient(90deg,#00cfe8,#4dd9f0)"></div>
+          </div>
+          <span class="lms-skill-level">65% — 543 apprenants</span>
+        </div>
+        <div class="lms-skill-card">
+          <h4>Lean Manufacturing <span>Expert</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="93" style="width:0;background:linear-gradient(90deg,#ea5455,#f07d7e)"></div>
+          </div>
+          <span class="lms-skill-level">93% — 432 apprenants</span>
+        </div>
+        <div class="lms-skill-card">
+          <h4>8D & QRQC <span>Débutant</span></h4>
+          <div class="lms-skill-bar">
+            <div class="lms-skill-bar-fill" data-width="45" style="width:0;background:linear-gradient(90deg,#7367f0,#9b8cf7)"></div>
+          </div>
+          <span class="lms-skill-level">45% — 321 apprenants</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       TABLEAU DE BORD
+       ============================================ -->
+  <section class="lms-section lms-dashboard" id="dashboard">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-chart-pie"></i> Tableau de Bord</span>
+        <h2 class="lms-section-title">Votre <span class="lms-gradient">dashboard</span> de progression</h2>
+        <p class="lms-section-desc">Suivez votre progression en temps réel. Objectifs, statistiques et performances.</p>
+      </div>
+      <div class="lms-dash-grid">
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-graduation-cap"></i></div>
+          <div class="lms-dash-value" data-target="12">0</div>
+          <div class="lms-dash-label">Cours suivis</div>
+        </div>
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(40,199,111,0.1);color:#28c76f"><i class="far fa-clock"></i></div>
+          <div class="lms-dash-value" data-target="156">0</div>
+          <div class="lms-dash-label">Heures passées</div>
+        </div>
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(0,207,232,0.1);color:#00cfe8"><i class="fas fa-trophy"></i></div>
+          <div class="lms-dash-value" data-target="8">0</div>
+          <div class="lms-dash-label">Compétences acquises</div>
+        </div>
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(255,159,67,0.1);color:#ff9f43"><i class="fas fa-question-circle"></i></div>
+          <div class="lms-dash-value" data-target="24">0</div>
+          <div class="lms-dash-label">Quiz réussis</div>
+        </div>
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(234,84,85,0.1);color:#ea5455"><i class="fas fa-certificate"></i></div>
+          <div class="lms-dash-value" data-target="5">0</div>
+          <div class="lms-dash-label">Certifications</div>
+        </div>
+        <div class="lms-dash-card">
+          <div class="lms-dash-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-bullseye"></i></div>
+          <div class="lms-dash-value" data-target="78">0%</div>
+          <div class="lms-dash-label">Objectifs atteints</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       INTELLIGENCE ARTIFICIELLE — Coach IA
+       ============================================ -->
+  <section class="lms-section lms-ia" id="ia">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-robot"></i> Coach IA</span>
+        <h2 class="lms-section-title">Un <span class="lms-gradient">coach intelligent</span> pour vous guider</h2>
+        <p class="lms-section-desc">Notre Intelligence Artificielle analyse votre niveau, vos forces et faiblesses, et vous recommande les prochaines formations.</p>
+      </div>
+      <div class="lms-ia-coach">
+        <div class="lms-ia-header">
+          <div class="lms-ia-avatar"><i class="fas fa-robot"></i></div>
+          <div class="lms-ia-info">
+            <h4>NOVA Coach IA</h4>
+            <span>Analyse intelligente · Recommandations personnalisées</span>
+          </div>
+        </div>
+        <div class="lms-ia-message">
+          <i class="fas fa-quote-left" style="opacity:0.3;margin-right:8px"></i>
+          Bonjour Jean ! J'ai analysé votre progression. Vous maîtrisez bien les normes IATF 16949 (88%).
+          Je vous recommande de renforcer vos compétences en SPC & MSA (65%) avant d'attaquer la
+          certification Lean Manufacturing. Voici vos prochaines étapes recommandées :
+        </div>
+        <div class="lms-ia-recos">
+          <div class="lms-ia-reco"><i class="fas fa-video"></i> SPC — Cartes de contrôle</div>
+          <div class="lms-ia-reco"><i class="fas fa-chart-bar"></i> MSA — Analyse R&R</div>
+          <div class="lms-ia-reco"><i class="fas fa-question-circle"></i> Quiz SPC & MSA</div>
+          <div class="lms-ia-reco"><i class="fas fa-certificate"></i> Certification Lean</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       ÉCOSYSTÈME NOVAQYS
+       ============================================ -->
+  <section class="lms-section lms-ecosystem" id="ecosystem">
+    <div class="lms-container">
+      <div class="lms-section-header">
+        <span class="lms-section-label"><i class="fas fa-cubes"></i> Écosystème</span>
+        <h2 class="lms-section-title">Le LMS, moteur de <span class="lms-gradient">votre progression</span></h2>
+        <p class="lms-section-desc">La formation est le point de départ de tout le parcours. Chaque compétence acquise vous rapproche de la conformité constructeur.</p>
+      </div>
+      <div class="lms-eco-flow">
+        <div class="lms-eco-node">
+          <div class="lms-eco-node-icon" style="background:rgba(26,115,232,0.1);color:#1a73e8"><i class="fas fa-graduation-cap"></i></div>
+          <div class="lms-eco-node-info">
+            <h4>NOVAQYS LMS</h4>
+            <p>Le collaborateur se forme et monte en compétences</p>
+          </div>
+        </div>
+        <div class="lms-eco-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="lms-eco-node">
+          <div class="lms-eco-node-icon" style="background:rgba(40,199,111,0.1);color:#28c76f"><i class="fas fa-chart-line"></i></div>
+          <div class="lms-eco-node-info">
+            <h4>AQMI</h4>
+            <p>L'entreprise améliore son score de maturité</p>
+          </div>
+        </div>
+        <div class="lms-eco-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="lms-eco-node">
+          <div class="lms-eco-node-icon" style="background:rgba(115,103,240,0.1);color:#7367f0"><i class="fas fa-industry"></i></div>
+          <div class="lms-eco-node-info">
+            <h4>NOVAQYS</h4>
+            <p>Déploiement de la plateforme industrielle intégrée</p>
+          </div>
+        </div>
+        <div class="lms-eco-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="lms-eco-node">
+          <div class="lms-eco-node-icon" style="background:rgba(255,159,67,0.1);color:#ff9f43"><i class="fas fa-shield-alt"></i></div>
+          <div class="lms-eco-node-info">
+            <h4>NARA</h4>
+            <p>Audit de conformité et certification</p>
+          </div>
+        </div>
+        <div class="lms-eco-arrow"><i class="fas fa-arrow-down"></i></div>
+        <div class="lms-eco-node">
+          <div class="lms-eco-node-icon" style="background:rgba(0,207,232,0.1);color:#00cfe8"><i class="fas fa-globe"></i></div>
+          <div class="lms-eco-node-info">
+            <h4>ASIN</h4>
+            <p>Publication sur le marketplace automotive mondial</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CTA
+       ============================================ -->
+  <section class="lms-cta">
+    <div class="lms-container">
+      <h2>Prêt à former vos équipes ?</h2>
+      <p>Rejoignez les entreprises qui transforment leurs collaborateurs en experts automobile avec NOVAQYS LMS.</p>
+      <a href="/user/register" class="lms-cta-btn">
+        <i class="fas fa-graduation-cap"></i> Commencer maintenant
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="lms-footer">
+    <div class="lms-container">
+      <div class="lms-footer-links">
+        <a href="/">NOVAQYS</a>
+        <a href="/asin.html">ASIN</a>
+        <a href="/hero360.html">Plateforme</a>
+        <a href="/user/login">Connexion</a>
+        <a href="/user/register">Inscription</a>
+      </div>
+      <p>&copy; 2026 NOVAQYS. Tous droits réservés. Automotive Learning Platform.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
