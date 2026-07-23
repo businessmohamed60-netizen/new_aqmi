@@ -1,52 +1,31 @@
 <?php
 namespace App\Helpers;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 /**
- * Mailer — Envoi d'emails via PHPMailer
- * Utilise la configuration SMTP du serveur cPanel
+ * Mailer — Envoi d'emails
+ * Utilise PHPMailer si disponible (via vendor/), sinon fallback natif PHP mail()
+ * En mode dev (MAIL_HOST=smtp.example.com), les emails sont loggués dans un fichier
  */
 class Mailer
 {
-    private static ?PHPMailer $mailer = null;
-
     private static array $config = [];
 
     /**
-     * Initialise et retourne l'instance PHPMailer configurée
+     * Charge la configuration mail
      */
-    public static function getInstance(): PHPMailer
-    {
-        if (self::$mailer === null) {
-            self::$config = require BASE_PATH . '/app/Config/mail.php';
-
-            $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->SMTPAuth   = true;
-            $mail->Host       = self::$config['host'];
-            $mail->Username   = self::$config['username'];
-            $mail->Password   = self::$config['password'];
-            $mail->SMTPSecure = self::$config['encryption'];
-            $mail->Port       = self::$config['port'];
-            $mail->CharSet    = 'UTF-8';
-            $mail->setFrom(self::$config['from_address'], self::$config['from_name']);
-            $mail->isHTML(true);
-
-            self::$mailer = $mail;
-        }
-        return self::$mailer;
-    }
-
-    /**
-     * Envoie un email HTML (ou le loggue en mode dev)
-     */
-    public static function send(string $to, string $subject, string $body): bool
+    private static function loadConfig(): void
     {
         if (empty(self::$config)) {
             self::$config = require BASE_PATH . '/app/Config/mail.php';
         }
+    }
+
+    /**
+     * Envoie un email HTML
+     */
+    public static function send(string $to, string $subject, string $body): bool
+    {
+        self::loadConfig();
 
         // Mode log : écrire dans un fichier au lieu d'envoyer
         if (self::$config['driver'] === 'log') {
@@ -56,7 +35,6 @@ class Mailer
             }
             $logFile = $logDir . '/mail.log';
             $logEntry = "[" . date('Y-m-d H:i:s') . "] TO: {$to} | SUBJECT: {$subject}\n";
-            // Extraire le code OTP du body pour faciliter le test
             if (preg_match('/<div class="code"><span>(\d{6})<\/span><\/div>/', $body, $m)) {
                 $logEntry .= "OTP CODE: {$m[1]}\n";
             }
@@ -68,19 +46,62 @@ class Mailer
             return true;
         }
 
+        // Essayer PHPMailer si disponible
+        if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
+            return self::sendWithPHPMailer($to, $subject, $body);
+        }
+
+        // Fallback : fonction mail() native de PHP
+        return self::sendWithNativeMail($to, $subject, $body);
+    }
+
+    /**
+     * Envoie via PHPMailer (si le package est installé)
+     */
+    private static function sendWithPHPMailer(string $to, string $subject, string $body): bool
+    {
         try {
-            $mail = self::getInstance();
-            $mail->clearAddresses();
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->SMTPAuth   = true;
+            $mail->Host       = self::$config['host'];
+            $mail->Username   = self::$config['username'];
+            $mail->Password   = self::$config['password'];
+            $mail->SMTPSecure = self::$config['encryption'];
+            $mail->Port       = self::$config['port'];
+            $mail->CharSet    = 'UTF-8';
+            $mail->setFrom(self::$config['from_address'], self::$config['from_name']);
+            $mail->isHTML(true);
             $mail->addAddress($to);
             $mail->Subject = $subject;
             $mail->Body    = $body;
             $mail->AltBody = strip_tags(str_replace(['<br>','<br/>','<br />'], "\n", $body));
             $mail->send();
             return true;
-        } catch (Exception $e) {
-            error_log("Mailer error: " . $e->getMessage());
-            return false;
+        } catch (\Exception $e) {
+            error_log("PHPMailer error: " . $e->getMessage());
+            return self::sendWithNativeMail($to, $subject, $body);
         }
+    }
+
+    /**
+     * Envoie via la fonction mail() native de PHP (fallback)
+     */
+    private static function sendWithNativeMail(string $to, string $subject, string $body): bool
+    {
+        $headers = [
+            'MIME-Version: 1.0',
+            'Content-Type: text/html; charset=UTF-8',
+            'From: ' . self::$config['from_name'] . ' <' . self::$config['from_address'] . '>',
+        ];
+
+        $sent = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+
+        if (!$sent) {
+            error_log("Native mail() failed to: {$to} subject: {$subject}");
+        }
+
+        return $sent;
     }
 
     /**
@@ -96,11 +117,11 @@ class Mailer
   body{margin:0;padding:0;background-color:#0a0a0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   .wrapper{width:100%;max-width:600px;margin:0 auto;padding:40px 20px}
   .card{background:#14141f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:48px 40px;text-align:center}
-  .logo{width:52px;height:52px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
+  .logo{width:52px;height:52px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
   h1{font-size:20px;font-weight:700;color:#f1f5f9;margin:0 0 8px}
   p{font-size:14px;color:#94a3b8;line-height:1.6;margin:0 0 28px}
   .code{font-size:48px;font-weight:800;letter-spacing:12px;color:#f1f5f9;background:#1a1a2e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px 32px;display:inline-block;margin:0 auto 28px;font-family:'SF Mono','Cascadia Code',monospace}
-  .code span{background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .code span{background:linear-gradient(135deg,#3b82f6,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .footer-text{font-size:12px;color:#64748b;line-height:1.5;margin:0}
   .divider{height:1px;background:rgba(255,255,255,0.06);margin:24px 0}
   .alert{font-size:12px;color:#f43f5e;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.15);border-radius:8px;padding:12px 16px;margin:0 0 24px}
@@ -108,8 +129,8 @@ class Mailer
 <body>
   <div class="wrapper">
     <div class="card">
-      <div class="logo">A</div>
-      <h1>Votre code de sécurité AQMI</h1>
+      <div class="logo">N</div>
+      <h1>Votre code de sécurité NOVAQYS</h1>
       <p>Bonjour <strong style="color:#f1f5f9">{$userName}</strong>,<br>Utilisez le code suivant pour vous connecter à votre espace AQMI.</p>
       <div class="code"><span>{$otpCode}</span></div>
       <div class="alert">⏱ Ce code expire dans 5 minutes</div>
@@ -136,11 +157,11 @@ HTML;
   body{margin:0;padding:0;background-color:#0a0a0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
   .wrapper{width:100%;max-width:600px;margin:0 auto;padding:40px 20px}
   .card{background:#14141f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:48px 40px;text-align:center}
-  .logo{width:52px;height:52px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
+  .logo{width:52px;height:52px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
   h1{font-size:20px;font-weight:700;color:#f1f5f9;margin:0 0 8px}
   p{font-size:14px;color:#94a3b8;line-height:1.6;margin:0 0 28px}
-  .btn{display:inline-block;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:12px;text-decoration:none;margin:0 auto 28px}
-  .btn:hover{background:linear-gradient(135deg,#60a5fa,#a78bfa)}
+  .btn{display:inline-block;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:12px;text-decoration:none;margin:0 auto 28px}
+  .btn:hover{background:linear-gradient(135deg,#60a5fa,#3b82f6)}
   .footer-text{font-size:12px;color:#64748b;line-height:1.5;margin:0}
   .divider{height:1px;background:rgba(255,255,255,0.06);margin:24px 0}
   .alert{font-size:12px;color:#f59e0b;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:12px 16px;margin:0 0 24px}
@@ -148,7 +169,7 @@ HTML;
 <body>
   <div class="wrapper">
     <div class="card">
-      <div class="logo">A</div>
+      <div class="logo">N</div>
       <h1>Réinitialisation de mot de passe</h1>
       <p>Bonjour <strong style="color:#f1f5f9">{$userName}</strong>,<br>Vous avez demandé la réinitialisation de votre mot de passe.</p>
       <a href="{$resetLink}" class="btn">Réinitialiser mon mot de passe</a>

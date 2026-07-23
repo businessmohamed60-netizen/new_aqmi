@@ -28,13 +28,19 @@ class ReportController
             $filePath = BASE_PATH . '/storage/reports/' . $filename;
 
             if (file_exists($filePath)) {
-                header('Content-Type: application/pdf');
-                header('Content-Disposition: attachment; filename="' . $filename . '"');
+                $ext = pathinfo($filename, PATHINFO_EXTENSION);
+                if ($ext === 'pdf') {
+                    header('Content-Type: application/pdf');
+                    header('Content-Disposition: attachment; filename="' . $filename . '"');
+                } else {
+                    header('Content-Type: text/html; charset=UTF-8');
+                    header('Content-Disposition: attachment; filename="' . $filename . '"');
+                }
                 header('Content-Length: ' . filesize($filePath));
                 readfile($filePath);
                 exit;
             }
-            $_SESSION['error'] = 'Erreur lors de la génération du PDF.';
+            $_SESSION['error'] = 'Erreur lors de la génération du rapport.';
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Erreur: ' . $e->getMessage();
         }

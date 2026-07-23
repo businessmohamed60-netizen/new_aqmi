@@ -3,7 +3,6 @@ namespace App\Services;
 
 use App\Models\Assessment;
 use App\Models\Lead;
-use Dompdf\Dompdf;
 
 class PdfService
 {
@@ -27,16 +26,25 @@ class PdfService
 
         $html = $this->buildHtml($assessment, $analysis, $recommendations, $lead);
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4');
-        $dompdf->render();
+        $fileName = 'rapport_AQMI_' . $assessmentId . '_' . date('Ymd_His');
+        $reportsDir = BASE_PATH . '/storage/reports';
+        if (!is_dir($reportsDir)) {
+            mkdir($reportsDir, 0775, true);
+        }
 
-        $fileName = 'rapport_AQMI_' . $assessmentId . '_' . date('Ymd_His') . '.pdf';
-        $filePath = BASE_PATH . '/storage/reports/' . $fileName;
-        file_put_contents($filePath, $dompdf->output());
+        if (class_exists('Dompdf\Dompdf')) {
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4');
+            $dompdf->render();
+            $pdfFile = $fileName . '.pdf';
+            file_put_contents($reportsDir . '/' . $pdfFile, $dompdf->output());
+            return $pdfFile;
+        }
 
-        return $fileName;
+        $htmlFile = $fileName . '.html';
+        file_put_contents($reportsDir . '/' . $htmlFile, $html);
+        return $htmlFile;
     }
 
     private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead): string
