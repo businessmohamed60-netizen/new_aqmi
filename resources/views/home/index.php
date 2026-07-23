@@ -22,7 +22,7 @@
   </div>
 
   <div class="nav-actions">
-    <a href="/user/login" class="btn-access">
+    <a href="/aqmi/login" class="btn-access">
       <i class="fas fa-lock"></i>
       Connexion AQMI
     </a>
@@ -42,7 +42,7 @@
   <a href="/lms.html" onclick="closeMobile()"><i class="fas fa-graduation-cap"></i> Automotive Learning</a>
   <a href="#contact" onclick="closeMobile()"><i class="fas fa-envelope"></i> Contact</a>
   <div class="nav-mobile-divider"></div>
-  <a href="/user/login" class="btn-access" onclick="closeMobile()">
+  <a href="/aqmi/login" class="btn-access" onclick="closeMobile()">
     <i class="fas fa-lock"></i> Connexion AQMI
   </a>
 </div>
@@ -84,7 +84,7 @@
           Demander une démonstration
         </button>
       </a>
-      <a href="/user/login">
+      <a href="/aqmi/login">
         <button class="btn-ghost">
           <i class="fas fa-lock"></i>
           Connexion AQMI
@@ -348,7 +348,7 @@
           <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Feuille de route personnalisée vers la conformité</div>
           <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Recommandations actionnables immédiatement</div>
         </div>
-        <a href="/user/login" class="btn-primary">
+        <a href="/aqmi/login" class="btn-primary">
           <i class="fas fa-lock"></i> Connexion AQMI
           <i class="fas fa-arrow-right"></i>
         </a>
@@ -853,7 +853,7 @@
           <i class="fas fa-arrow-right"></i>
         </button>
       </a>
-      <a href="/user/login">
+      <a href="/aqmi/login">
         <button class="btn-outline">
           <i class="fas fa-lock"></i> Connexion AQMI
         </button>
@@ -923,7 +923,7 @@
       <p class="footer-col-title">Écosystème</p>
       <div class="footer-links">
         <a href="/">NOVAQYS</a>
-        <a href="/user/login">AQMI</a>
+        <a href="/aqmi/login">AQMI</a>
         <a href="#nara">NARA</a>
         <a href="/lms.html">Automotive Learning</a>
         <a href="#asin">ASIN</a>
