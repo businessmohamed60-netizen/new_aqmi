@@ -1,15 +1,123 @@
 <?php $title = 'Tableau de bord - Espace Client'; ob_start(); ?>
 <style>
+:root {
+  --vx-primary: #6366f1;
+  --vx-primary-dark: #5558e3;
+  --vx-primary-light: rgba(99,102,241,0.12);
+  --vx-primary-glow: rgba(99,102,241,0.25);
+  --vx-primary-gradient: linear-gradient(135deg, #6366f1, #818cf8);
+  --vx-success: #10b981;
+  --vx-success-light: rgba(16,185,129,0.12);
+  --vx-success-gradient: linear-gradient(135deg, #10b981, #34d399);
+  --vx-danger: #ef4444;
+  --vx-danger-light: rgba(239,68,68,0.12);
+  --vx-danger-gradient: linear-gradient(135deg, #ef4444, #f87171);
+  --vx-warning: #f59e0b;
+  --vx-warning-light: rgba(245,158,11,0.12);
+  --vx-warning-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
+  --vx-info: #06b6d4;
+  --vx-info-light: rgba(6,182,212,0.12);
+  --vx-info-gradient: linear-gradient(135deg, #06b6d4, #22d3ee);
+  --vx-body-bg: #0f1525;
+  --vx-card-bg: rgba(30,38,59,0.7);
+  --vx-card-border: rgba(99,102,241,0.08);
+  --vx-card-border-hover: rgba(99,102,241,0.15);
+  --vx-divider: rgba(99,102,241,0.06);
+  --vx-text-primary: #f1f5f9;
+  --vx-text-secondary: #cbd5e1;
+  --vx-text-muted: #64748b;
+  --vx-radius-sm: 0.375rem;
+  --vx-radius-md: 0.625rem;
+  --vx-radius-lg: 0.875rem;
+  --vx-radius-xl: 1.25rem;
+  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.3);
+  --vx-shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+  --vx-transition: 0.25s ease;
+}
+.nova-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--vx-radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--vx-transition);
+  cursor: pointer;
+  border: none;
+}
+.nova-btn-primary {
+  background: var(--vx-primary-gradient);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--vx-primary-glow);
+}
+.nova-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--vx-primary-glow);
+  filter: brightness(1.1);
+  color: #fff;
+}
+.nova-btn-outline {
+  background: rgba(255,255,255,0.03);
+  color: var(--vx-text-secondary);
+  border: 1px solid var(--vx-card-border);
+}
+.nova-btn-outline:hover {
+  background: rgba(99,102,241,0.06);
+  border-color: var(--vx-card-border-hover);
+  color: var(--vx-text-primary);
+  transform: translateY(-1px);
+}
+.badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--vx-radius-sm);
+}
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--vx-divider);
+  padding: 0.875rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--vx-text-primary);
+}
+.row { display: flex; flex-wrap: wrap; }
+.col-4 { flex: 0 0 33.3333%; max-width: 33.3333%; }
+.col-sm-6, .col-md-4, .col-lg-2, .col-lg-4, .col-lg-6, .col-lg-8 { position: relative; width: 100%; }
+@media (min-width: 576px) { .col-sm-6 { flex: 0 0 50%; max-width: 50%; } }
+@media (min-width: 768px) { .col-md-4 { flex: 0 0 33.3333%; max-width: 33.3333%; } .d-md-none { display: none !important; } .d-md-inline { display: inline !important; } }
+@media (min-width: 992px) { .col-lg-2 { flex: 0 0 16.6667%; max-width: 16.6667%; } .col-lg-4 { flex: 0 0 33.3333%; max-width: 33.3333%; } .col-lg-6 { flex: 0 0 50%; max-width: 50%; } .col-lg-8 { flex: 0 0 66.6667%; max-width: 66.6667%; } }
+.g-3 { gap: 1rem; }
+.g-4 { gap: 1.5rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.me-1 { margin-right: 0.25rem; }
+.me-2 { margin-right: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.gap-4 { gap: 1.5rem; }
+.d-flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.align-items-center { align-items: center; }
+.justify-content-between { justify-content: space-between; }
+.justify-content-center { justify-content: center; }
+.text-decoration-none { text-decoration: none; }
+.table { width: 100%; font-size: 0.75rem; color: var(--vx-text-secondary); }
+.table th { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--vx-text-muted); font-weight: 600; padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--vx-divider); }
+.table td { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--vx-divider); }
+.table tbody tr:last-child td { border-bottom: none; }
 .user-dashboard {
   min-height: 100vh;
   background: var(--vx-body-bg);
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(115,103,240,0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(40,199,111,0.03) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(99,102,241,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
   padding-bottom: 5rem;
 }
 .user-topbar {
-  background: rgba(22,29,49,0.95);
+  background: rgba(15,21,37,0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--vx-card-border);
@@ -33,7 +141,7 @@
 .user-topbar .brand .brand-icon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, var(--vx-primary), #9b8cf7);
+  background: var(--vx-primary-gradient);
   border-radius: var(--vx-radius-sm);
   display: flex;
   align-items: center;
@@ -41,25 +149,60 @@
   font-size: 0.8rem;
   color: #fff;
   font-weight: 800;
+  box-shadow: 0 4px 16px var(--vx-primary-glow);
+  transition: transform 0.3s ease;
+}
+.user-topbar .brand:hover .brand-icon {
+  transform: scale(1.05) rotate(-3deg);
 }
 .user-content {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem;
 }
-.user-content .greeting h2 {
-  font-size: 1.4rem;
+.user-welcome {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(30,38,59,0.8) 40%, rgba(30,38,59,0.9) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--vx-card-border);
+  border-radius: var(--vx-radius-xl);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.user-welcome::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--vx-primary-glow) 0%, transparent 60%);
+  border-radius: 50%;
+  animation: userGlowPulse 6s ease-in-out infinite;
+}
+@keyframes userGlowPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.95); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+.user-welcome h2 {
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--vx-text-primary);
   margin-bottom: 0.15rem;
   letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
 }
-.user-content .greeting p {
+.user-welcome p {
   color: var(--vx-text-muted);
   font-size: 0.8rem;
+  position: relative;
+  z-index: 1;
 }
 .user-stat-card {
   background: var(--vx-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-lg);
   padding: 1.25rem;
@@ -68,10 +211,25 @@
   gap: 1rem;
   transition: all var(--vx-transition);
   min-height: 80px;
+  position: relative;
+  overflow: hidden;
+}
+.user-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, var(--vx-primary-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--vx-transition);
 }
 .user-stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--vx-shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--vx-shadow-lg);
+  border-color: var(--vx-card-border-hover);
+}
+.user-stat-card:hover::after {
+  opacity: 0.3;
 }
 .user-stat-icon {
   width: 2.75rem;
@@ -82,6 +240,10 @@
   justify-content: center;
   font-size: 1.125rem;
   flex-shrink: 0;
+  transition: transform var(--vx-transition);
+}
+.user-stat-card:hover .user-stat-icon {
+  transform: scale(1.08);
 }
 .user-stat-value {
   font-size: 1.25rem;
@@ -99,24 +261,26 @@
 }
 .user-assessment-card {
   background: var(--vx-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-lg);
-  box-shadow: var(--vx-shadow-card);
+  box-shadow: var(--vx-shadow-md);
 }
 .user-assessment-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.875rem 1.25rem;
   border-bottom: 1px solid var(--vx-divider);
-  transition: background var(--vx-transition);
+  transition: all var(--vx-transition);
 }
 .user-assessment-item:last-child {
   border-bottom: none;
 }
 .user-assessment-item:hover {
-  background: rgba(115,103,240,0.02);
+  background: rgba(99,102,241,0.03);
 }
 .user-assessment-company {
   font-size: 0.8125rem;
@@ -137,17 +301,22 @@
   padding: 3rem 1rem;
 }
 .user-empty-icon {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: var(--vx-primary-light);
-  border: 1px solid rgba(115,103,240,0.15);
+  border: 1px solid rgba(99,102,241,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1rem;
   color: var(--vx-primary);
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  animation: userEmptyPulse 3s ease-in-out infinite;
+}
+@keyframes userEmptyPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  50% { box-shadow: 0 0 24px 4px rgba(99,102,241,0.15); }
 }
 .user-empty-state p {
   color: var(--vx-text-muted);
@@ -157,8 +326,9 @@
 @media (max-width: 768px) {
   .user-topbar { padding: 0.5rem 1rem; }
   .user-content { padding: 1rem; }
-  .user-content .greeting h2 { font-size: 1.1rem; }
-  .user-content .greeting p { font-size: 0.7rem; }
+  .user-welcome { padding: 1.25rem; }
+  .user-welcome h2 { font-size: 1.15rem; }
+  .user-welcome p { font-size: 0.72rem; }
   .user-assessment-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 }
 </style>
@@ -182,16 +352,17 @@
 
   <!-- Content -->
   <div class="user-content">
-    <div class="greeting mb-4">
+    <!-- Welcome -->
+    <div class="user-welcome">
       <h2>Bonjour, <?= e($user['firstname'] ?? '') ?></h2>
-      <p>Bienvenue dans votre espace client.</p>
+      <p>Bienvenue dans votre espace client NOVAQYS.</p>
     </div>
 
     <!-- Stats -->
     <div class="row g-3 mb-4">
       <div class="col-4">
         <div class="user-stat-card">
-          <div class="user-stat-icon" style="background:var(--vx-primary-light);color:var(--vx-primary);border:1px solid rgba(115,103,240,0.15);">
+          <div class="user-stat-icon" style="background:var(--vx-primary-light);color:var(--vx-primary);border:1px solid rgba(99,102,241,0.15);">
             <i class="fas fa-clipboard-list"></i>
           </div>
           <div>
@@ -202,7 +373,7 @@
       </div>
       <div class="col-4">
         <div class="user-stat-card">
-          <div class="user-stat-icon" style="background:var(--vx-success-light);color:var(--vx-success);border:1px solid rgba(40,199,111,0.15);">
+          <div class="user-stat-icon" style="background:var(--vx-success-light);color:var(--vx-success);border:1px solid rgba(16,185,129,0.15);">
             <i class="fas fa-check-circle"></i>
           </div>
           <div>
@@ -213,7 +384,7 @@
       </div>
       <div class="col-4">
         <div class="user-stat-card">
-          <div class="user-stat-icon" style="background:var(--vx-warning-light);color:var(--vx-warning);border:1px solid rgba(255,159,67,0.15);">
+          <div class="user-stat-icon" style="background:var(--vx-warning-light);color:var(--vx-warning);border:1px solid rgba(245,158,11,0.15);">
             <i class="fas fa-hourglass-half"></i>
           </div>
           <div>
@@ -277,7 +448,7 @@
   </div>
 
   <!-- Mobile Bottom Navigation -->
-  <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:var(--vx-card-bg);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
+  <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(15,21,37,0.9);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/user/dashboard">
       <i class="fas fa-home" style="font-size:0.9rem;"></i><span>Accueil</span>
     </a>

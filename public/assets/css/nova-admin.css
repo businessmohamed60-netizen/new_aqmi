@@ -5,46 +5,63 @@
 
 /* ─── 1. ROOT VARIABLES ───────────────────────────────────────── */
 :root {
-  --vx-primary: #7367f0;
-  --vx-primary-dark: #5e50ee;
-  --vx-primary-light: rgba(115,103,240,0.12);
-  --vx-primary-glow: rgba(115,103,240,0.25);
-  --vx-success: #28c76f;
-  --vx-danger: #ea5455;
-  --vx-warning: #ff9f43;
-  --vx-info: #00cfe8;
+  --vx-primary: #6366f1;
+  --vx-primary-dark: #5558e3;
+  --vx-primary-light: rgba(99,102,241,0.12);
+  --vx-primary-glow: rgba(99,102,241,0.25);
+  --vx-primary-gradient: linear-gradient(135deg, #6366f1, #818cf8);
+  --vx-success: #10b981;
+  --vx-success-light: rgba(16,185,129,0.12);
+  --vx-success-gradient: linear-gradient(135deg, #10b981, #34d399);
+  --vx-danger: #ef4444;
+  --vx-danger-light: rgba(239,68,68,0.12);
+  --vx-danger-gradient: linear-gradient(135deg, #ef4444, #f87171);
+  --vx-warning: #f59e0b;
+  --vx-warning-light: rgba(245,158,11,0.12);
+  --vx-warning-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
+  --vx-info: #06b6d4;
+  --vx-info-light: rgba(6,182,212,0.12);
+  --vx-info-gradient: linear-gradient(135deg, #06b6d4, #22d3ee);
 
-  --vx-body-bg: #161d31;
-  --vx-card-bg: #283046;
-  --vx-card-border: #3b4253;
-  --vx-input-bg: #1e263b;
-  --vx-input-border: #3b4253;
-  --vx-divider: #3b4253;
+  --vx-body-bg: #0f1525;
+  --vx-card-bg: rgba(30,38,59,0.7);
+  --vx-card-bg-solid: #1e263b;
+  --vx-card-border: rgba(99,102,241,0.08);
+  --vx-card-border-hover: rgba(99,102,241,0.15);
+  --vx-input-bg: rgba(15,21,37,0.6);
+  --vx-input-border: rgba(99,102,241,0.08);
+  --vx-divider: rgba(99,102,241,0.06);
 
-  --vx-text-primary: #d0d2d6;
-  --vx-text-secondary: #b4b7bd;
-  --vx-text-muted: #676d7d;
+  --vx-text-primary: #f1f5f9;
+  --vx-text-secondary: #cbd5e1;
+  --vx-text-muted: #64748b;
 
-  --vx-sidebar-bg: #161d31;
+  --vx-sidebar-bg: rgba(15,21,37,0.85);
   --vx-sidebar-width: 260px;
   --vx-sidebar-collapsed: 80px;
-  --vx-topbar-height: 62px;
+  --vx-topbar-height: 64px;
 
   --vx-radius-sm: 0.375rem;
-  --vx-radius-md: 0.5rem;
-  --vx-radius-lg: 0.625rem;
-  --vx-radius-xl: 0.75rem;
+  --vx-radius-md: 0.625rem;
+  --vx-radius-lg: 0.875rem;
+  --vx-radius-xl: 1.25rem;
 
-  --vx-shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.25);
-  --vx-shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
-  --vx-transition: 0.2s ease;
-  --vx-transition-slow: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  --vx-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.3);
+  --vx-shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+  --vx-shadow-glow: 0 0 24px rgba(99,102,241,0.15);
+  --vx-transition: 0.25s ease;
+  --vx-transition-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  --vx-glass-blur: blur(20px);
 }
 
 /* ─── 2. BODY ─────────────────────────────────────────────────── */
 .nova-admin-body {
   background: var(--vx-body-bg);
+  background-image:
+    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(99,102,241,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
   color: var(--vx-text-secondary);
   font-family: 'Inter', -apple-system, sans-serif;
   font-size: 0.875rem;
@@ -66,6 +83,8 @@
   bottom: 0;
   width: var(--vx-sidebar-width);
   background: var(--vx-sidebar-bg);
+  backdrop-filter: var(--vx-glass-blur);
+  -webkit-backdrop-filter: var(--vx-glass-blur);
   border-right: 1px solid var(--vx-card-border);
   z-index: 1000;
   display: flex;
@@ -93,7 +112,7 @@
 .nova-sidebar-brand-icon {
   width: 2.25rem;
   height: 2.25rem;
-  background: linear-gradient(135deg, var(--vx-primary), #9b8cf7);
+  background: var(--vx-primary-gradient);
   border-radius: var(--vx-radius-md);
   display: flex;
   align-items: center;
@@ -102,7 +121,12 @@
   font-weight: 800;
   color: #fff;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px var(--vx-primary-glow);
+  box-shadow: 0 4px 16px var(--vx-primary-glow);
+  transition: transform var(--vx-transition);
+}
+
+.nova-sidebar-brand:hover .nova-sidebar-brand-icon {
+  transform: scale(1.05) rotate(-3deg);
 }
 
 .nova-sidebar-brand-text {
@@ -184,6 +208,7 @@
 .nova-sidebar-link:hover {
   background: var(--vx-primary-light);
   color: var(--vx-text-primary);
+  transform: translateX(2px);
 }
 
 .nova-sidebar-link.active {
@@ -199,9 +224,10 @@
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 1.25rem;
-  background: var(--vx-primary);
-  border-radius: 0 3px 3px 0;
+  height: 1.5rem;
+  background: var(--vx-primary-gradient);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 0 8px var(--vx-primary-glow);
 }
 
 .nova-sidebar-link i {
@@ -248,9 +274,9 @@
   top: 0;
   z-index: 500;
   height: var(--vx-topbar-height);
-  background: rgba(22,29,49,0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(15,21,37,0.75);
+  backdrop-filter: var(--vx-glass-blur);
+  -webkit-backdrop-filter: var(--vx-glass-blur);
   border-bottom: 1px solid var(--vx-card-border);
   display: flex;
   align-items: center;
@@ -466,6 +492,12 @@
 .nova-content-area {
   flex: 1;
   padding: 1.5rem;
+  animation: novaContentFadeIn 0.4s ease both;
+}
+
+@keyframes novaContentFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ─── 8. ALERTS ───────────────────────────────────────────────── */
@@ -553,9 +585,16 @@
 
 .nova-admin-body .card {
   background: var(--vx-card-bg);
+  backdrop-filter: var(--vx-glass-blur);
+  -webkit-backdrop-filter: var(--vx-glass-blur);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-lg);
   box-shadow: var(--vx-shadow-md);
+  transition: border-color var(--vx-transition), box-shadow var(--vx-transition);
+}
+
+.nova-admin-body .card:hover {
+  border-color: var(--vx-card-border-hover);
 }
 
 .nova-admin-body .card-header {
@@ -611,16 +650,15 @@
 }
 
 .nova-admin-body .btn-primary {
-  background: var(--vx-primary);
-  border-color: var(--vx-primary);
-  box-shadow: 0 4px 12px var(--vx-primary-glow);
+  background: var(--vx-primary-gradient);
+  border: none;
+  box-shadow: 0 4px 16px var(--vx-primary-glow);
 }
 
 .nova-admin-body .btn-primary:hover {
-  background: var(--vx-primary-dark);
-  border-color: var(--vx-primary-dark);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px var(--vx-primary-glow);
+  box-shadow: 0 8px 24px var(--vx-primary-glow);
+  filter: brightness(1.1);
 }
 
 .nova-admin-body .btn-success {
@@ -780,6 +818,8 @@
 /* Card metrics used in admin dashboard */
 .nova-metric-card {
   background: var(--vx-card-bg);
+  backdrop-filter: var(--vx-glass-blur);
+  -webkit-backdrop-filter: var(--vx-glass-blur);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-lg);
   padding: 1.25rem;
@@ -787,11 +827,30 @@
   align-items: center;
   gap: 1rem;
   transition: all var(--vx-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.nova-metric-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, var(--vx-primary-glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--vx-transition);
 }
 
 .nova-metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--vx-shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--vx-shadow-lg);
+  border-color: var(--vx-card-border-hover);
+}
+
+.nova-metric-card:hover::after {
+  opacity: 0.4;
 }
 
 .nova-metric-icon {
@@ -822,10 +881,12 @@
 
 /* Welcome card */
 .nova-welcome-card {
-  background: linear-gradient(135deg, #1a2442 0%, #283046 50%, #2f3a5c 100%);
+  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(30,38,59,0.8) 40%, rgba(30,38,59,0.9) 100%);
+  backdrop-filter: var(--vx-glass-blur);
+  -webkit-backdrop-filter: var(--vx-glass-blur);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-xl);
-  padding: 1.5rem 2rem;
+  padding: 1.75rem 2rem;
   position: relative;
   overflow: hidden;
 }
@@ -835,8 +896,14 @@
   position: absolute;
   top: -50%; right: -10%;
   width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(115,103,240,0.06) 0%, transparent 60%);
+  background: radial-gradient(circle, var(--vx-primary-glow) 0%, transparent 60%);
   border-radius: 50%;
+  animation: novaGlowPulse 6s ease-in-out infinite;
+}
+
+@keyframes novaGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.95); }
+  50% { opacity: 0.8; transform: scale(1.05); }
 }
 
 .nova-welcome-title {

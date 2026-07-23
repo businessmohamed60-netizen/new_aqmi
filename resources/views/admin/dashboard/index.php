@@ -9,19 +9,22 @@ ob_start();
         <div>
             <div class="nova-welcome-title">Tableau de Bord</div>
             <div class="nova-welcome-sub"><?= $stats['total_assessments'] ?> évaluations sur la plateforme</div>
-            <div class="d-flex align-items-center gap-4 mt-2">
+            <div class="d-flex align-items-center gap-4 mt-3">
                 <div class="nova-welcome-stat">
-                    <span class="nova-welcome-stat-value"><?= $stats['completed_assessments'] ?></span>
+                    <span class="nova-welcome-stat-value" style="background:var(--vx-success-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><?= $stats['completed_assessments'] ?></span>
                     <span class="nova-welcome-stat-label">Complétées</span>
                 </div>
+                <div style="width:1px;height:2rem;background:var(--vx-card-border);"></div>
                 <div class="nova-welcome-stat">
-                    <span class="nova-welcome-stat-value"><?= number_format($stats['average_score'], 1) ?>%</span>
+                    <span class="nova-welcome-stat-value" style="background:var(--vx-primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><?= number_format($stats['average_score'], 1) ?>%</span>
                     <span class="nova-welcome-stat-label">Score moyen</span>
                 </div>
             </div>
         </div>
-        <div class="d-none d-md-block">
-            <i class="fas fa-microchip" style="font-size:3.5rem;opacity:0.1;color:var(--vx-primary);"></i>
+        <div class="d-none d-md-block" style="position:relative;">
+            <div style="width:72px;height:72px;border-radius:var(--vx-radius-xl);background:var(--vx-primary-gradient);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;box-shadow:0 8px 32px var(--vx-primary-glow);">
+                <i class="fas fa-microchip"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -30,18 +33,18 @@ ob_start();
 <div class="row g-3 mb-4">
     <?php
     $metrics = [
-        ['label' => 'Évaluations', 'value' => $stats['total_assessments'], 'icon' => 'fa-clipboard-check', 'color' => 'var(--vx-primary)'],
-        ['label' => 'Complétées', 'value' => $stats['completed_assessments'], 'icon' => 'fa-check-circle', 'color' => 'var(--vx-success)'],
-        ['label' => 'Prospects', 'value' => $stats['total_leads'], 'icon' => 'fa-users', 'color' => 'var(--vx-info)'],
-        ['label' => 'Score Moyen', 'value' => number_format($stats['average_score'], 1) . '%', 'icon' => 'fa-chart-line', 'color' => 'var(--vx-warning)'],
-        ['label' => 'Modèles', 'value' => $stats['total_models'], 'icon' => 'fa-layer-group', 'color' => 'var(--vx-primary)'],
-        ['label' => 'Questions', 'value' => $stats['total_questions'], 'icon' => 'fa-question-circle', 'color' => 'var(--vx-danger)'],
+        ['label' => 'Évaluations', 'value' => $stats['total_assessments'], 'icon' => 'fa-clipboard-check', 'color' => 'var(--vx-primary)', 'gradient' => 'var(--vx-primary-gradient)'],
+        ['label' => 'Complétées', 'value' => $stats['completed_assessments'], 'icon' => 'fa-check-circle', 'color' => 'var(--vx-success)', 'gradient' => 'var(--vx-success-gradient)'],
+        ['label' => 'Prospects', 'value' => $stats['total_leads'], 'icon' => 'fa-users', 'color' => 'var(--vx-info)', 'gradient' => 'var(--vx-info-gradient)'],
+        ['label' => 'Score Moyen', 'value' => number_format($stats['average_score'], 1) . '%', 'icon' => 'fa-chart-line', 'color' => 'var(--vx-warning)', 'gradient' => 'var(--vx-warning-gradient)'],
+        ['label' => 'Modèles', 'value' => $stats['total_models'], 'icon' => 'fa-layer-group', 'color' => 'var(--vx-primary)', 'gradient' => 'var(--vx-primary-gradient)'],
+        ['label' => 'Questions', 'value' => $stats['total_questions'], 'icon' => 'fa-question-circle', 'color' => 'var(--vx-danger)', 'gradient' => 'var(--vx-danger-gradient)'],
     ];
     foreach ($metrics as $m):
     ?>
         <div class="col-sm-6 col-md-4 col-lg-2">
             <div class="nova-metric-card">
-                <div class="nova-metric-icon" style="background:<?= $m['color'] ?>12;color:<?= $m['color'] ?>;border:1px solid <?= $m['color'] ?>25;">
+                <div class="nova-metric-icon" style="background:<?= $m['color'] ?>15;color:<?= $m['color'] ?>;border:1px solid <?= $m['color'] ?>25;">
                     <i class="fas <?= $m['icon'] ?>"></i>
                 </div>
                 <div>
@@ -57,7 +60,7 @@ ob_start();
 <?php if (!empty($stats['models_stats'])): ?>
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-layer-group me-2"></i>Modèles d'Évaluation</span>
+        <span><i class="fas fa-layer-group me-2" style="color:var(--vx-primary);"></i>Modèles d'Évaluation</span>
         <a href="/admin/evaluation-models" class="btn btn-outline-secondary btn-sm">Gérer</a>
     </div>
     <div class="card-body">
@@ -87,7 +90,7 @@ ob_start();
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 style="color:var(--vx-text-primary);font-weight:600;margin-bottom:0;font-size:0.85rem;">Évolution Mensuelle</h6>
-                    <span class="badge" style="background:var(--vx-primary-light);color:var(--vx-primary);border:1px solid rgba(115,103,240,0.15);">12 mois</span>
+                    <span class="badge" style="background:var(--vx-primary-light);color:var(--vx-primary);border:1px solid rgba(99,102,241,0.15);">12 mois</span>
                 </div>
                 <div id="monthlyChart"></div>
             </div>
@@ -118,7 +121,7 @@ ob_start();
     <div class="col-lg-6">
         <div class="card" style="height:100%;">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-users me-2"></i>Prospects Récents</span>
+                <span><i class="fas fa-users me-2" style="color:var(--vx-info);"></i>Prospects Récents</span>
                 <a href="/admin/leads" class="btn btn-outline-secondary btn-sm">Voir tout</a>
             </div>
             <div style="overflow-x:auto;">
@@ -132,7 +135,7 @@ ob_start();
                                         <a href="/admin/leads/detail/<?= $l['id'] ?>" style="color:var(--vx-text-primary);text-decoration:none;"><?= e($l['firstname'] . ' ' . $l['lastname']) ?></a>
                                     </td>
                                     <td><?= e($l['company']) ?></td>
-                                    <td><span class="badge" style="background:var(--vx-primary-light);color:var(--vx-primary);"><?= e($l['sector'] ?? '-') ?></span></td>
+                                    <td><span class="badge" style="background:var(--vx-info-light);color:var(--vx-info);"><?= e($l['sector'] ?? '-') ?></span></td>
                                     <td>
                                         <?php if ($l['total_score']): ?>
                                             <span class="badge" style="background:var(--vx-success-light);color:var(--vx-success);"><?= e($l['total_score']) ?>%</span>
@@ -184,15 +187,15 @@ $extraScripts = <<<SCRIPTS
 document.addEventListener('DOMContentLoaded', function() {
     // Monthly Chart - ApexCharts
     var monthlyOptions = {
-        chart: { type: 'area', height: 280, toolbar: { show: false }, background: 'transparent', foreColor: 'var(--vx-text-muted)' },
+        chart: { type: 'area', height: 280, toolbar: { show: false }, background: 'transparent', foreColor: '#64748b' },
         series: [{ name: 'Évaluations', data: {$monthlyData} }],
-        xaxis: { categories: {$monthlyLabels}, labels: { style: { fontSize: '11px', colors: 'var(--vx-text-muted)' } } },
-        yaxis: { labels: { style: { colors: 'var(--vx-text-muted)' } } },
-        colors: ['var(--vx-primary)'],
-        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, colorStops: [{ offset: 0, color: '#7367f0', opacity: 0.3 }, { offset: 100, color: '#7367f0', opacity: 0.05 }] } },
-        stroke: { curve: 'smooth', width: 2, colors: ['#7367f0'] },
+        xaxis: { categories: {$monthlyLabels}, labels: { style: { fontSize: '11px', colors: '#64748b' } } },
+        yaxis: { labels: { style: { colors: '#64748b' } } },
+        colors: ['#6366f1'],
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, colorStops: [{ offset: 0, color: '#6366f1', opacity: 0.3 }, { offset: 100, color: '#6366f1', opacity: 0.05 }] } },
+        stroke: { curve: 'smooth', width: 2, colors: ['#6366f1'] },
         dataLabels: { enabled: false },
-        grid: { borderColor: 'rgba(115,103,240,0.06)' },
+        grid: { borderColor: 'rgba(99,102,241,0.06)' },
         tooltip: { theme: 'dark' }
     };
     if (document.getElementById('monthlyChart')) {
@@ -211,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 cutout: '70%',
                 plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, color: 'var(--vx-text-secondary)' } }
+                    legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, color: '#cbd5e1' } }
                 }
             }
         });
@@ -226,15 +229,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: {$domainNames},
                 datasets: [{
                     label: 'Moyenne %', data: {$domainAvgs},
-                    backgroundColor: 'rgba(115,103,240,0.6)', borderRadius: 4, borderSkipped: false
+                    backgroundColor: 'rgba(99,102,241,0.6)', borderRadius: 4, borderSkipped: false
                 }]
             },
             options: {
                 indexAxis: 'y',
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { beginAtZero: true, max: 100, grid: { color: 'rgba(115,103,240,0.04)' }, ticks: { color: 'var(--vx-text-muted)' } },
-                    y: { grid: { display: false }, ticks: { color: 'var(--vx-text-secondary)', font: { size: 11 } } }
+                    x: { beginAtZero: true, max: 100, grid: { color: 'rgba(99,102,241,0.04)' }, ticks: { color: '#64748b' } },
+                    y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { size: 11 } } }
                 }
             }
         });
