@@ -276,9 +276,9 @@
                 <div class="col-lg-3 col-md-4">
                     <div class="aqmi-footer-title">Plateforme</div>
                     <ul class="aqmi-footer-links">
-                        <li><a href="/aqmi/login"><i class="fas fa-lock" style="font-size:0.65rem;"></i> Connexion AQMI</a></li>
+                        <li><a href="/login"><i class="fas fa-lock" style="font-size:0.65rem;"></i> Connexion AQMI</a></li>
                         <li><a href="/assessment/start"><i class="fas fa-clipboard-check" style="font-size:0.65rem;"></i> Démarrer une évaluation</a></li>
-                        <li><a href="/aqmi/forgot"><i class="fas fa-key" style="font-size:0.65rem;"></i> Mot de passe oublié</a></li>
+                        <li><a href="/forgot"><i class="fas fa-key" style="font-size:0.65rem;"></i> Mot de passe oublié</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-4">

@@ -1,5 +1,5 @@
 <?php $title = 'Connexion Administration - NOVAQYS'; ob_start(); ?>
-<form method="GET" action="/login" class="aqmi-form">
+<form method="GET" action="/admin/login" class="aqmi-form">
     <?= csrf_field() ?>
     <div class="aqmi-field">
         <label class="aqmi-label">Email</label>

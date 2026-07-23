@@ -8,7 +8,7 @@
 
   // ─── URL Configuration ──────────────────────────────────────────
   const JOURNEY_URLS = {
-    'decouverte': '/aqmi/register',
+    'decouverte': '/register',
     'aqmi-starter': '/assessment/start',
     'formation-lms': '/lms',
     'digitalisation-qms': '/novaqys-qms',

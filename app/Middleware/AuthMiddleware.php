@@ -10,7 +10,7 @@ class AuthMiddleware
     {
         if (!Auth::check()) {
             Session::setFlash('error', 'Veuillez vous connecter pour accéder à cette page.');
-            redirect('/login');
+            redirect('/admin/login');
         }
     }
 }

@@ -26,7 +26,7 @@ ob_start();
       </div>
     <?php endif; ?>
 
-    <form method="POST" action="/aqmi/forgot" class="aqmi-form">
+    <form method="POST" action="/forgot" class="aqmi-form">
       <?= csrf_field() ?>
       <div class="aqmi-field">
         <label class="aqmi-label">Adresse email</label>
@@ -42,7 +42,7 @@ ob_start();
     </form>
 
     <div class="aqmi-auth-footer">
-      <a href="/aqmi/login" class="aqmi-link">
+      <a href="/login" class="aqmi-link">
         <i class="fas fa-arrow-left"></i> Retour à la connexion
       </a>
     </div>

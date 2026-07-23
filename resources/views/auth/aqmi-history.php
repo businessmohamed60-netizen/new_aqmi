@@ -26,7 +26,7 @@ ob_start();
         <p>Consultez l'historique de vos accès à la plateforme</p>
       </div>
       <div class="aqmi-dash-actions">
-        <a href="/aqmi/dashboard" class="aqmi-btn aqmi-btn-outline">
+        <a href="/dashboard" class="aqmi-btn aqmi-btn-outline">
           <i class="fas fa-arrow-left"></i>
           <span>Retour</span>
         </a>

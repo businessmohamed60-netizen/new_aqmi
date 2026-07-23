@@ -27,7 +27,7 @@ class AuthController
     {
         // Rediriger si déjà connecté
         if (Auth::check()) {
-            redirect('/aqmi/dashboard');
+            redirect('/dashboard');
         }
         view('auth.aqmi-login');
     }
@@ -40,7 +40,7 @@ class AuthController
     public function doLogin(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $email = trim($_POST['email'] ?? '');
@@ -49,7 +49,7 @@ class AuthController
         // Validation
         if (empty($email) || empty($password)) {
             Session::setFlash('error', 'Veuillez remplir tous les champs.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Vérifier l'utilisateur
@@ -61,27 +61,27 @@ class AuthController
         if (!$user || !Security::verifyPassword($password, $user['password'])) {
             LoginHistory::record(null, $email, 'failed', $ip, $ua['browser'], $ua['os']);
             Session::setFlash('error', 'Email ou mot de passe incorrect.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Vérifier si le compte est actif
         if (!$user['is_active']) {
             LoginHistory::record($user['id'], $email, 'failed', $ip, $ua['browser'], $ua['os']);
             Session::setFlash('error', 'Votre compte est désactivé. Contactez l\'administration.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Vérifier le rôle client
         if ($user['role_slug'] !== 'client') {
             Session::setFlash('error', 'Accès non autorisé.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Protection force brute : limiter à 5 échecs en 15 min
         $failures = LoginHistory::countRecentFailures($ip, 15);
         if ($failures >= 5) {
             Session::setFlash('error', 'Trop de tentatives. Veuillez réessayer dans 15 minutes.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Étape 1 réussie → Générer et envoyer le code OTP
@@ -95,7 +95,7 @@ class AuthController
 
         if (!$emailSent) {
             Session::setFlash('error', 'Erreur d\'envoi du code de vérification. Veuillez réessayer.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Stocker l'état en session
@@ -104,7 +104,7 @@ class AuthController
         Session::set('otp_device', $deviceInfo);
         Session::set('otp_expire', $otp['expire_at']);
 
-        redirect('/aqmi/otp');
+        redirect('/otp');
     }
 
     /**
@@ -113,7 +113,7 @@ class AuthController
     public function otp(): void
     {
         if (!Session::has('otp_user_id')) {
-            redirect('/aqmi/login');
+            redirect('/login');
         }
         view('auth.aqmi-otp', [
             'email' => Session::get('otp_email'),
@@ -128,19 +128,19 @@ class AuthController
     public function doOtp(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $userId = Session::get('otp_user_id');
         if (!$userId) {
             Session::setFlash('error', 'Session expirée. Veuillez vous reconnecter.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $code = trim($_POST['otp_code'] ?? '');
         if (empty($code) || !preg_match('/^\d{6}$/', $code)) {
             Session::setFlash('error', 'Veuillez entrer un code valide à 6 chiffres.');
-            redirect('/aqmi/otp');
+            redirect('/otp');
         }
 
         $result = OtpCode::verify($userId, $code);
@@ -149,14 +149,14 @@ class AuthController
 
         if (!$result['valid']) {
             Session::setFlash('error', $result['message']);
-            redirect('/aqmi/otp');
+            redirect('/otp');
         }
 
         // OTP validé — connexion réussie
         $user = User::find($userId);
         if (!$user) {
             Session::setFlash('error', 'Utilisateur introuvable.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         // Établir la session utilisateur
@@ -174,7 +174,7 @@ class AuthController
         Session::remove('otp_expire');
 
         Session::setFlash('success', 'Bienvenue ' . ($user['firstname'] ?? '') . ' !');
-        redirect('/aqmi/dashboard');
+        redirect('/dashboard');
     }
 
     /**
@@ -187,7 +187,7 @@ class AuthController
 
         if (!$userId || !$email) {
             Session::setFlash('error', 'Session expirée.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $user = User::find($userId);
@@ -209,7 +209,7 @@ class AuthController
             Session::setFlash('error', 'Erreur d\'envoi. Veuillez réessayer.');
         }
 
-        redirect('/aqmi/otp');
+        redirect('/otp');
     }
 
     /**
@@ -226,13 +226,13 @@ class AuthController
     public function doForgot(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/aqmi/forgot');
+            redirect('/forgot');
         }
 
         $email = trim($_POST['email'] ?? '');
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Session::setFlash('error', 'Veuillez entrer une adresse email valide.');
-            redirect('/aqmi/forgot');
+            redirect('/forgot');
         }
 
         $user = User::findByEmail($email);
@@ -241,19 +241,19 @@ class AuthController
         // Toujours afficher un message de succès (ne pas révéler si l'email existe)
         if (!$user) {
             Session::setFlash('success', 'Si cette adresse email existe, vous recevrez un lien de réinitialisation.');
-            redirect('/aqmi/forgot');
+            redirect('/forgot');
         }
 
         $fullname = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
         $reset = PasswordReset::create($user['id'], $ip);
         $appUrl = $_ENV['APP_URL'] ?? 'https://novaqys.com';
-        $resetLink = $appUrl . '/aqmi/reset?token=' . $reset['token'];
+        $resetLink = $appUrl . '/reset?token=' . $reset['token'];
 
         $emailBody = Mailer::resetTemplate($resetLink, $fullname);
         Mailer::send($email, 'Réinitialisation de votre mot de passe AQMI', $emailBody);
 
         Session::setFlash('success', 'Si cette adresse email existe, vous recevrez un lien de réinitialisation.');
-        redirect('/aqmi/forgot');
+        redirect('/forgot');
     }
 
     /**
@@ -264,13 +264,13 @@ class AuthController
         $token = trim($_GET['token'] ?? '');
         if (empty($token)) {
             Session::setFlash('error', 'Lien de réinitialisation invalide.');
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $reset = PasswordReset::verify($token);
         if (!$reset) {
             Session::setFlash('error', 'Lien de réinitialisation invalide ou expiré.');
-            redirect('/aqmi/forgot');
+            redirect('/forgot');
         }
 
         view('auth.aqmi-reset', ['token' => $token]);
@@ -282,7 +282,7 @@ class AuthController
     public function doReset(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/aqmi/login');
+            redirect('/login');
         }
 
         $token = trim($_POST['token'] ?? '');
@@ -291,23 +291,23 @@ class AuthController
 
         if (empty($token) || empty($password) || empty($confirm)) {
             Session::setFlash('error', 'Veuillez remplir tous les champs.');
-            redirect('/aqmi/reset?token=' . $token);
+            redirect('/reset?token=' . $token);
         }
 
         if (strlen($password) < 8) {
             Session::setFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
-            redirect('/aqmi/reset?token=' . $token);
+            redirect('/reset?token=' . $token);
         }
 
         if ($password !== $confirm) {
             Session::setFlash('error', 'Les mots de passe ne correspondent pas.');
-            redirect('/aqmi/reset?token=' . $token);
+            redirect('/reset?token=' . $token);
         }
 
         $reset = PasswordReset::verify($token);
         if (!$reset) {
             Session::setFlash('error', 'Lien de réinitialisation invalide ou expiré.');
-            redirect('/aqmi/forgot');
+            redirect('/forgot');
         }
 
         // Mettre à jour le mot de passe
@@ -316,7 +316,7 @@ class AuthController
         PasswordReset::markUsed($reset['id']);
 
         Session::setFlash('success', 'Votre mot de passe a été réinitialisé avec succès. Connectez-vous.');
-        redirect('/aqmi/login');
+        redirect('/login');
     }
 
     /**
@@ -382,7 +382,7 @@ class AuthController
     {
         Auth::logout();
         Session::setFlash('success', 'Vous avez été déconnecté.');
-        redirect('/aqmi/login');
+        redirect('/login');
     }
 
     /**
@@ -391,7 +391,7 @@ class AuthController
     public function register(): void
     {
         if (Auth::check()) {
-            redirect('/aqmi/dashboard');
+            redirect('/dashboard');
         }
         view('auth.aqmi-register');
     }
@@ -402,7 +402,7 @@ class AuthController
     public function doRegister(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         $firstname = trim($_POST['firstname'] ?? '');
@@ -417,41 +417,41 @@ class AuthController
         // Validation
         if (empty($firstname) || empty($lastname) || empty($email) || empty($password) || empty($company)) {
             Session::setFlash('error', 'Veuillez remplir tous les champs obligatoires.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Session::setFlash('error', 'Veuillez entrer une adresse email valide.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         if (strlen($password) < 8) {
             Session::setFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         if ($password !== $confirm) {
             Session::setFlash('error', 'Les mots de passe ne correspondent pas.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         if (!$terms) {
             Session::setFlash('error', 'Vous devez accepter les conditions d\'utilisation.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         // Vérifier si l'email existe déjà
         $existing = User::findByEmail($email);
         if ($existing) {
             Session::setFlash('error', 'Cette adresse email est déjà utilisée.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         // Récupérer le rôle client
         $clientRole = Database::fetch("SELECT id FROM roles WHERE slug = 'client' LIMIT 1");
         if (!$clientRole) {
             Session::setFlash('error', 'Erreur de configuration. Contactez l\'administration.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         // Créer l'utilisateur
@@ -467,13 +467,13 @@ class AuthController
 
         if (!$userId) {
             Session::setFlash('error', 'Erreur lors de la création du compte. Veuillez réessayer.');
-            redirect('/aqmi/register');
+            redirect('/register');
         }
 
         // Connexion automatique
         Auth::attempt($email, $password);
 
         Session::setFlash('success', 'Bienvenue ' . $firstname . ' ! Votre compte a été créé avec succès.');
-        redirect('/aqmi/dashboard');
+        redirect('/dashboard');
     }
 }

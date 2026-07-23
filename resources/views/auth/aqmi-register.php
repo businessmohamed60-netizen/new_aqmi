@@ -29,7 +29,7 @@ ob_start();
     <?php endif; ?>
 
     <!-- Register Form -->
-    <form method="POST" action="/aqmi/register" class="aqmi-form" autocomplete="off" id="registerForm">
+    <form method="POST" action="/register" class="aqmi-form" autocomplete="off" id="registerForm">
       <?= csrf_field() ?>
 
       <div class="aqmi-register-name">
@@ -118,7 +118,7 @@ ob_start();
     </div>
 
     <div class="aqmi-auth-footer">
-      <a href="/aqmi/login" class="aqmi-link" style="color:#3b82f6;">Se connecter</a>
+      <a href="/login" class="aqmi-link" style="color:#3b82f6;">Se connecter</a>
     </div>
   </div>
 </div>

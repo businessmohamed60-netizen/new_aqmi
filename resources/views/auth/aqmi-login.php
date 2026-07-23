@@ -29,7 +29,7 @@ ob_start();
     <?php endif; ?>
 
     <!-- Login Form -->
-    <form method="POST" action="/aqmi/login" class="aqmi-form" autocomplete="off">
+    <form method="POST" action="/login" class="aqmi-form" autocomplete="off">
       <?= csrf_field() ?>
       <div class="aqmi-field">
         <label class="aqmi-label">Adresse email</label>
@@ -56,7 +56,7 @@ ob_start();
 
     <!-- Footer links -->
     <div class="aqmi-auth-footer">
-      <a href="/aqmi/forgot" class="aqmi-link">Mot de passe oublié ?</a>
+      <a href="/forgot" class="aqmi-link">Mot de passe oublié ?</a>
       <span class="aqmi-sep">·</span>
       <a href="/" class="aqmi-link">Retour à l'accueil</a>
     </div>

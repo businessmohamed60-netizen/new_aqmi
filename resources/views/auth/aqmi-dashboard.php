@@ -35,11 +35,11 @@ ob_start();
           <i class="fas fa-plus"></i>
           <span>Nouvelle évaluation</span>
         </a>
-        <a href="/aqmi/history" class="aqmi-btn aqmi-btn-outline">
+        <a href="/history" class="aqmi-btn aqmi-btn-outline">
           <i class="fas fa-clock-rotate"></i>
           <span>Historique</span>
         </a>
-        <a href="/aqmi/logout" class="aqmi-btn aqmi-btn-ghost" style="color:var(--nova-text-tertiary)">
+        <a href="/logout" class="aqmi-btn aqmi-btn-ghost" style="color:var(--nova-text-tertiary)">
           <i class="fas fa-right-from-bracket"></i>
         </a>
       </div>

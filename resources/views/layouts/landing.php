@@ -24,8 +24,8 @@
         <div class="aqmi-auth-footer-copy">&copy; <?= date('Y') ?> NOVAQYS. Tous droits réservés.</div>
         <div class="aqmi-auth-footer-links">
           <a href="/">Accueil</a>
-          <a href="/aqmi/login">Connexion</a>
-          <a href="/aqmi/forgot">Mot de passe</a>
+          <a href="/login">Connexion</a>
+          <a href="/forgot">Mot de passe</a>
         </div>
       </div>
     </footer>

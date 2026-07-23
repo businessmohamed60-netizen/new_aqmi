@@ -122,7 +122,7 @@
                             <i class="fas fa-cog"></i> Paramètres
                         </a>
                         <div class="nova-dropdown-divider"></div>
-                        <a class="nova-dropdown-item danger" href="/logout">
+                        <a class="nova-dropdown-item danger" href="/admin/logout">
                             <i class="fas fa-sign-out-alt"></i> Déconnexion
                         </a>
                     </div>
@@ -163,7 +163,7 @@
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:<?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/reports') !== false ? 'var(--vx-primary)' : 'var(--vx-text-muted)' ?>;padding:0.25rem 0.5rem;gap:0.15rem;" href="/admin/reports">
         <i class="fas fa-file-alt" style="font-size:0.9rem;"></i><span>Rapports</span>
     </a>
-    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-danger);padding:0.25rem 0.5rem;gap:0.15rem;" href="/logout">
+    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-danger);padding:0.25rem 0.5rem;gap:0.15rem;" href="/admin/logout">
         <i class="fas fa-sign-out-alt" style="font-size:0.9rem;"></i><span>Quitter</span>
     </a>
 </nav>

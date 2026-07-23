@@ -344,7 +344,7 @@
       <span class="d-none d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
         <i class="fas fa-user me-1" style="color:var(--vx-primary);"></i><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?>
       </span>
-      <a href="/aqmi/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
+      <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
         <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
       </a>
     </div>
@@ -449,7 +449,7 @@
 
   <!-- Mobile Bottom Navigation -->
   <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(15,21,37,0.9);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
-    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/aqmi/dashboard">
+    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/dashboard">
       <i class="fas fa-home" style="font-size:0.9rem;"></i><span>Accueil</span>
     </a>
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-text-muted);padding:0.25rem 0.5rem;gap:0.15rem;" href="/assessment/start">
@@ -458,7 +458,7 @@
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-text-muted);padding:0.25rem 0.5rem;gap:0.15rem;" href="/">
       <i class="fas fa-globe" style="font-size:0.9rem;"></i><span>Site</span>
     </a>
-    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-danger);padding:0.25rem 0.5rem;gap:0.15rem;" href="/aqmi/logout">
+    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-danger);padding:0.25rem 0.5rem;gap:0.15rem;" href="/logout">
       <i class="fas fa-sign-out-alt" style="font-size:0.9rem;"></i><span>Quitter</span>
     </a>
   </nav>

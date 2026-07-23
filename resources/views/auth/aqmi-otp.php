@@ -38,7 +38,7 @@ ob_start();
     <?php endif; ?>
 
     <!-- OTP Form -->
-    <form method="POST" action="/aqmi/otp" class="aqmi-form" autocomplete="off" id="otpForm">
+    <form method="POST" action="/otp" class="aqmi-form" autocomplete="off" id="otpForm">
       <?= csrf_field() ?>
       <div class="aqmi-field">
         <label class="aqmi-label">Code de vérification</label>
@@ -76,12 +76,12 @@ ob_start();
     <!-- Resend -->
     <div class="aqmi-otp-resend">
       <span>Vous n'avez pas reçu le code ?</span>
-      <a href="/aqmi/otp/resend" class="aqmi-link" id="resendLink">Renvoyer un nouveau code</a>
+      <a href="/otp/resend" class="aqmi-link" id="resendLink">Renvoyer un nouveau code</a>
     </div>
 
     <!-- Back to login -->
     <div class="aqmi-auth-footer">
-      <a href="/aqmi/login" class="aqmi-link">
+      <a href="/login" class="aqmi-link">
         <i class="fas fa-arrow-left"></i> Retour à la connexion
       </a>
     </div>

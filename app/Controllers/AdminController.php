@@ -34,7 +34,7 @@ class AdminController
                 redirect('/admin');
             } else {
                 $_SESSION['error'] = 'Email ou mot de passe incorrect.';
-                redirect('/login');
+                redirect('/admin/login');
             }
             return;
         }

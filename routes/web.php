@@ -21,8 +21,8 @@ $router->get('/assessment/{id}/request-report', 'AssessmentController@requestRep
 $router->get('/report/{id}/download', 'ReportController@download');
 
 // Admin Auth
-$router->get('/login', 'AdminController@login');
-$router->get('/logout', 'AdminController@logout');
+$router->get('/admin/login', 'AdminController@login');
+$router->get('/admin/logout', 'AdminController@logout');
 
 // Client Auth
 $router->get('/user/login', 'UserController@login');
@@ -30,17 +30,17 @@ $router->get('/user/dashboard', 'UserController@dashboard');
 $router->get('/user/logout', 'UserController@logout');
 
 // AQMI Auth System (Secure with OTP)
-$router->get('/aqmi/login', 'AuthController@login');
-$router->post('/aqmi/login', 'AuthController@doLogin');
-$router->get('/aqmi/otp', 'AuthController@otp');
-$router->post('/aqmi/otp', 'AuthController@doOtp');
-$router->get('/aqmi/otp/resend', 'AuthController@resendOtp');
-$router->get('/aqmi/forgot', 'AuthController@forgot');
-$router->post('/aqmi/forgot', 'AuthController@doForgot');
-$router->get('/aqmi/reset', 'AuthController@reset');
-$router->post('/aqmi/reset', 'AuthController@doReset');
-$router->get('/aqmi/register', 'AuthController@register');
-$router->post('/aqmi/register', 'AuthController@doRegister');
-$router->get('/aqmi/dashboard', 'AuthController@dashboard');
-$router->get('/aqmi/history', 'AuthController@history');
-$router->get('/aqmi/logout', 'AuthController@logout');
+$router->get('/login', 'AuthController@login');
+$router->post('/login', 'AuthController@doLogin');
+$router->get('/otp', 'AuthController@otp');
+$router->post('/otp', 'AuthController@doOtp');
+$router->get('/otp/resend', 'AuthController@resendOtp');
+$router->get('/forgot', 'AuthController@forgot');
+$router->post('/forgot', 'AuthController@doForgot');
+$router->get('/reset', 'AuthController@reset');
+$router->post('/reset', 'AuthController@doReset');
+$router->get('/register', 'AuthController@register');
+$router->post('/register', 'AuthController@doRegister');
+$router->get('/dashboard', 'AuthController@dashboard');
+$router->get('/history', 'AuthController@history');
+$router->get('/logout', 'AuthController@logout');

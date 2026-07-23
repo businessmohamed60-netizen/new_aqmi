@@ -21,7 +21,7 @@ ob_start();
       </div>
     <?php endif; ?>
 
-    <form method="POST" action="/aqmi/reset" class="aqmi-form">
+    <form method="POST" action="/reset" class="aqmi-form">
       <?= csrf_field() ?>
       <input type="hidden" name="token" value="<?= e($token) ?>">
       <div class="aqmi-field">
@@ -48,7 +48,7 @@ ob_start();
     </form>
 
     <div class="aqmi-auth-footer">
-      <a href="/aqmi/login" class="aqmi-link">
+      <a href="/login" class="aqmi-link">
         <i class="fas fa-arrow-left"></i> Retour à la connexion
       </a>
     </div>
