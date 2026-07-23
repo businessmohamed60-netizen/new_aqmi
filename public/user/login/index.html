@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Connexion - Espace Client NOVAQYS</title>
-  <meta name="description" content="Connectez-vous à votre espace client NOVAQYS" />
+  <meta name="description" content="Connectez-vous à votre espace client NOVAQYS pour accéder à vos évaluations AQMI." />
   <meta name="theme-color" content="#0a0e17" />
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,49 +16,264 @@
   <link rel="stylesheet" href="/assets/css/effects.css" />
   <style>
     body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--nova-bg); margin: 0; padding: 20px; }
+    .aqmi-auth-tabs { display: flex; gap: 0.25rem; margin-bottom: 1.5rem; background: var(--nova-bg-elevated); border-radius: var(--radius-md); padding: 0.25rem; }
+    .aqmi-auth-tab { flex: 1; text-align: center; padding: 0.625rem; border-radius: calc(var(--radius-md) - 2px); font-size: 0.8125rem; font-weight: 600; color: var(--nova-text-tertiary); cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: var(--font-primary); }
+    .aqmi-auth-tab.active { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .aqmi-auth-tab:hover:not(.active) { color: var(--nova-text-secondary); }
+    .aqmi-form.hidden { display: none; }
+    .aqmi-spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
+    .aqmi-btn-primary.loading .aqmi-spinner { display: inline-block; }
+    .aqmi-btn-primary.loading span, .aqmi-btn-primary.loading i.fa-arrow-right { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .aqmi-pwd-strength { margin-top: 0.5rem; }
+    .aqmi-checkbox-wrap { margin-bottom: 1rem; }
   </style>
 </head>
 <body>
   <div class="aqmi-auth-wrap">
     <div class="aqmi-orb aqmi-orb-1"></div>
     <div class="aqmi-orb aqmi-orb-2"></div>
-    <div class="aqmi-auth-card aqmi-fade-in">
+    <div class="aqmi-auth-card aqmi-fade-in" id="authCard">
       <div class="aqmi-auth-header">
         <img src="/assets/img/logo-novaqys-header.png" alt="NOVAQYS" style="height:42px;width:auto;margin-bottom:0.5rem;">
         <h2 class="aqmi-auth-title">Espace Client</h2>
-        <p class="aqmi-auth-sub">Connectez-vous pour accéder à vos évaluations</p>
+        <p class="aqmi-auth-sub">Accédez à vos évaluations AQMI</p>
       </div>
-      <div class="aqmi-alert aqmi-alert-info" style="margin-bottom:1.5rem">
-        <i class="fas fa-info-circle"></i>
-        La connexion nécessite le serveur PHP. <a href="/" style="color:var(--nova-blue)">Retour à l'accueil</a>
+
+      <!-- Alert placeholder -->
+      <div id="alertBox"></div>
+
+      <!-- Tabs -->
+      <div class="aqmi-auth-tabs">
+        <button class="aqmi-auth-tab active" data-tab="login" id="tabLogin">Connexion</button>
+        <button class="aqmi-auth-tab" data-tab="register" id="tabRegister">Inscription</button>
       </div>
-      <form method="GET" action="/" class="aqmi-form">
+
+      <!-- Login Form -->
+      <form id="loginForm" class="aqmi-form" novalidate>
         <div class="aqmi-field">
           <label class="aqmi-label">Email</label>
           <div class="aqmi-input-wrap">
             <i class="fas fa-envelope aqmi-input-icon"></i>
-            <input type="email" class="aqmi-input" placeholder="votre@email.com" disabled />
+            <input type="email" id="loginEmail" class="aqmi-input" placeholder="votre@email.com" required autocomplete="email" />
           </div>
         </div>
         <div class="aqmi-field">
           <label class="aqmi-label">Mot de passe</label>
           <div class="aqmi-input-wrap">
             <i class="fas fa-lock aqmi-input-icon"></i>
-            <input type="password" class="aqmi-input" placeholder="••••••••" disabled />
+            <input type="password" id="loginPassword" class="aqmi-input" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="aqmi-pwd-toggle" onclick="novaTogglePwd(this)" aria-label="Afficher">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
         </div>
-        <a href="/" class="aqmi-btn aqmi-btn-primary aqmi-btn-full" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none">
-          <span>Retour à l'accueil</span>
+        <button type="submit" class="aqmi-btn aqmi-btn-primary aqmi-btn-full">
+          <span class="aqmi-spinner"></span>
+          <span>Se connecter</span>
           <i class="fas fa-arrow-right"></i>
-        </a>
+        </button>
       </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="aqmi-form hidden" novalidate>
+        <div class="aqmi-register-name">
+          <div class="aqmi-field">
+            <label class="aqmi-label">Prénom</label>
+            <div class="aqmi-input-wrap">
+              <i class="fas fa-user aqmi-input-icon"></i>
+              <input type="text" id="regFirstname" class="aqmi-input" placeholder="Prénom" required autocomplete="given-name" />
+            </div>
+          </div>
+          <div class="aqmi-field">
+            <label class="aqmi-label">Nom</label>
+            <div class="aqmi-input-wrap">
+              <i class="fas fa-user aqmi-input-icon"></i>
+              <input type="text" id="regLastname" class="aqmi-input" placeholder="Nom" required autocomplete="family-name" />
+            </div>
+          </div>
+        </div>
+        <div class="aqmi-field">
+          <label class="aqmi-label">Entreprise</label>
+          <div class="aqmi-input-wrap">
+            <i class="fas fa-industry aqmi-input-icon"></i>
+            <input type="text" id="regCompany" class="aqmi-input" placeholder="Nom de l'entreprise" required autocomplete="organization" />
+          </div>
+        </div>
+        <div class="aqmi-field">
+          <label class="aqmi-label">Email</label>
+          <div class="aqmi-input-wrap">
+            <i class="fas fa-envelope aqmi-input-icon"></i>
+            <input type="email" id="regEmail" class="aqmi-input" placeholder="votre@email.com" required autocomplete="email" />
+          </div>
+        </div>
+        <div class="aqmi-field">
+          <label class="aqmi-label">Mot de passe</label>
+          <div class="aqmi-input-wrap">
+            <i class="fas fa-lock aqmi-input-icon"></i>
+            <input type="password" id="regPassword" class="aqmi-input" placeholder="Min. 8 caractères" required autocomplete="new-password" />
+            <button type="button" class="aqmi-pwd-toggle" onclick="novaTogglePwd(this)" aria-label="Afficher">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="aqmi-pwd-strength">
+            <div class="aqmi-pwd-strength-bar" id="strBar1"></div>
+            <div class="aqmi-pwd-strength-bar" id="strBar2"></div>
+            <div class="aqmi-pwd-strength-bar" id="strBar3"></div>
+            <div class="aqmi-pwd-strength-bar" id="strBar4"></div>
+          </div>
+          <div class="aqmi-pwd-strength-label" id="strLabel"></div>
+        </div>
+        <div class="aqmi-checkbox-wrap">
+          <input type="checkbox" class="aqmi-checkbox" id="regTerms" required />
+          <label class="aqmi-checkbox-label" for="regTerms">J'accepte les conditions d'utilisation et la politique de confidentialité.</label>
+        </div>
+        <button type="submit" class="aqmi-btn aqmi-btn-primary aqmi-btn-full">
+          <span class="aqmi-spinner"></span>
+          <span>Créer mon compte</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="aqmi-auth-divider">
+        <span>Plateforme sécurisée</span>
+      </div>
+      <div class="aqmi-auth-security">
+        <i class="fas fa-shield-halved"></i>
+        <span>Connexion chiffrée · Données protégées</span>
+      </div>
       <div class="aqmi-auth-footer">
         <a href="/" class="aqmi-link"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
-        <span class="aqmi-sep">·</span>
-        <a href="/login" class="aqmi-link">Administration</a>
       </div>
     </div>
   </div>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var alertBox = document.getElementById('alertBox');
+    var loginForm = document.getElementById('loginForm');
+    var registerForm = document.getElementById('registerForm');
+    var tabLogin = document.getElementById('tabLogin');
+    var tabRegister = document.getElementById('tabRegister');
+    var loginBtn = loginForm.querySelector('.aqmi-btn-primary');
+    var regBtn = registerForm.querySelector('.aqmi-btn-primary');
+
+    window.novaTogglePwd = function (btn) {
+      var input = btn.closest('.aqmi-input-wrap').querySelector('input');
+      if (input.type === 'password') { input.type = 'text'; btn.querySelector('i').className = 'fas fa-eye-slash'; }
+      else { input.type = 'password'; btn.querySelector('i').className = 'fas fa-eye'; }
+    };
+
+    function showAlert(type, message) {
+      alertBox.innerHTML = '<div class="aqmi-alert aqmi-alert-' + type + '"><i class="fas fa-' +
+        (type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle') +
+        '"></i> ' + message + '</div>';
+      alertBox.querySelector('.aqmi-alert').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function clearAlert() { alertBox.innerHTML = ''; }
+
+    function setLoading(btn, on) { btn.classList.toggle('loading', on); btn.disabled = on; }
+
+    function switchTab(tab) {
+      clearAlert();
+      if (tab === 'login') {
+        tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+        loginForm.classList.remove('hidden'); registerForm.classList.add('hidden');
+        document.getElementById('loginEmail').focus();
+      } else {
+        tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+        registerForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+        document.getElementById('regFirstname').focus();
+      }
+    }
+    tabLogin.addEventListener('click', function () { switchTab('login'); });
+    tabRegister.addEventListener('click', function () { switchTab('register'); });
+
+    // Password strength
+    var regPassword = document.getElementById('regPassword');
+    var strBars = [1,2,3,4].map(function (n) { return document.getElementById('strBar' + n); });
+    var strLabel = document.getElementById('strLabel');
+    var strTexts = ['', 'Faible', 'Moyen', 'Bon', 'Excellent'];
+    var strClasses = ['', 'weak', 'medium', 'strong', 'very-strong'];
+    regPassword.addEventListener('input', function () {
+      var v = regPassword.value, score = 0;
+      if (v.length >= 8) score++;
+      if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+      if (/\d/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      strBars.forEach(function (bar, i) {
+        bar.className = 'aqmi-pwd-strength-bar' + (i < score ? ' ' + strClasses[score] : '');
+      });
+      strLabel.textContent = strTexts[score];
+    });
+
+    // Redirect if already logged in
+    window.novaSupabase.init().then(function (sb) {
+      sb.auth.getSession().then(function (res) {
+        if (res.data && res.data.session) {
+          window.location.href = '/user/dashboard.html';
+        }
+      });
+    });
+
+    // Login submit
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearAlert();
+      var email = document.getElementById('loginEmail').value.trim();
+      var password = document.getElementById('loginPassword').value;
+      if (!email || !password) { showAlert('error', 'Veuillez remplir tous les champs.'); return; }
+      setLoading(loginBtn, true);
+      window.novaSupabase.init().then(function (sb) {
+        sb.auth.signInWithPassword({ email: email, password: password })
+          .then(function (res) {
+            if (res.error) { setLoading(loginBtn, false); showAlert('error', 'Email ou mot de passe incorrect.'); return; }
+            showAlert('success', 'Connexion réussie. Redirection...');
+            setTimeout(function () { window.location.href = '/user/dashboard.html'; }, 600);
+          })
+          .catch(function () { setLoading(loginBtn, false); showAlert('error', 'Erreur de connexion. Vérifiez votre connexion internet.'); });
+      });
+    });
+
+    // Register submit
+    registerForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearAlert();
+      var firstname = document.getElementById('regFirstname').value.trim();
+      var lastname = document.getElementById('regLastname').value.trim();
+      var company = document.getElementById('regCompany').value.trim();
+      var email = document.getElementById('regEmail').value.trim();
+      var password = document.getElementById('regPassword').value;
+      var terms = document.getElementById('regTerms').checked;
+      if (!firstname || !lastname || !company || !email || !password) { showAlert('error', 'Veuillez remplir tous les champs obligatoires.'); return; }
+      if (password.length < 8) { showAlert('error', 'Le mot de passe doit contenir au moins 8 caractères.'); return; }
+      if (!terms) { showAlert('error', 'Vous devez accepter les conditions d\'utilisation.'); return; }
+      setLoading(regBtn, true);
+      window.novaSupabase.init().then(function (sb) {
+        sb.auth.signUp({
+          email: email,
+          password: password,
+          options: { data: { firstname: firstname, lastname: lastname, company: company } }
+        })
+          .then(function (res) {
+            setLoading(regBtn, false);
+            if (res.error) { showAlert('error', res.error.message || 'Erreur lors de la création du compte.'); return; }
+            if (res.data.user && res.data.session) {
+              showAlert('success', 'Compte créé. Redirection...');
+              setTimeout(function () { window.location.href = '/user/dashboard.html'; }, 800);
+            } else {
+              showAlert('info', 'Compte créé. Vous pouvez maintenant vous connecter.');
+              switchTab('login');
+              document.getElementById('loginEmail').value = email;
+            }
+          })
+          .catch(function () { setLoading(regBtn, false); showAlert('error', 'Erreur lors de l\'inscription. Vérifiez votre connexion internet.'); });
+      });
+    });
+  })();
+  </script>
 </body>
-<script src="/assets/js/effects.js"></script>
 </html>

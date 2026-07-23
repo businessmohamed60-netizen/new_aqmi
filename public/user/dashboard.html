@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tableau de bord - NOVAQYS AQMI</title>
+  <meta name="theme-color" content="#0a0e17" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/novaqys.css" />
+  <link rel="stylesheet" href="/assets/css/auth.css" />
+  <style>
+    body { margin: 0; background: var(--nova-bg); font-family: var(--font-primary); }
+    .aqmi-dash-loading { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; gap: 1rem; color: var(--nova-text-tertiary); }
+    .aqmi-dash-spinner { width: 40px; height: 40px; border: 3px solid rgba(59,130,246,0.2); border-top-color: #3b82f6; border-radius: 50%; animation: dashSpin 0.8s linear infinite; }
+    @keyframes dashSpin { to { transform: rotate(360deg); } }
+    .aqmi-dash-empty-hero { background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.05)); border: 1px solid var(--nova-border); border-radius: var(--radius-2xl); padding: 3rem 2rem; text-align: center; margin-bottom: 2rem; }
+    .aqmi-dash-empty-hero h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--nova-text-primary); margin: 0 0 0.75rem; }
+    .aqmi-dash-empty-hero p { color: var(--nova-text-tertiary); font-size: 0.9375rem; max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.6; }
+    .aqmi-quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .aqmi-quick-card { background: var(--nova-bg-card); border: 1px solid var(--nova-border); border-radius: var(--radius-xl); padding: 1.5rem; transition: all 0.2s; text-decoration: none; color: inherit; display: block; }
+    .aqmi-quick-card:hover { border-color: var(--nova-border-hover); transform: translateY(-2px); }
+    .aqmi-quick-icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.125rem; margin-bottom: 0.75rem; }
+    .aqmi-quick-card h3 { font-size: 0.9375rem; font-weight: 700; color: var(--nova-text-primary); margin: 0 0 0.25rem; }
+    .aqmi-quick-card p { font-size: 0.8125rem; color: var(--nova-text-tertiary); margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="dashRoot">
+    <div class="aqmi-dash-loading" id="dashLoading">
+      <div class="aqmi-dash-spinner"></div>
+      <span>Chargement de votre espace...</span>
+    </div>
+  </div>
+
+  <script src="/assets/js/supabase-client.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    function escapeHtml(s) {
+      var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML;
+    }
+    function initials(name) {
+      if (!name) return 'U';
+      return name.split(' ').map(function (w) { return w.charAt(0); }).join('').substring(0, 2).toUpperCase();
+    }
+    function avatarColor(seed) {
+      var colors = [
+        ['#3b82f6', '#8b5cf6'], ['#06b6d4', '#3b82f6'], ['#10b981', '#06b6d4'],
+        ['#f59e0b', '#ef4444'], ['#8b5cf6', '#ec4899']
+      ];
+      var idx = 0; if (seed) for (var i = 0; i < seed.length; i++) idx += seed.charCodeAt(i);
+      return 'linear-gradient(135deg,' + colors[idx % colors.length][0] + ',' + colors[idx % colors.length][1] + ')';
+    }
+
+    function renderDashboard(user) {
+      var meta = user.user_metadata || {};
+      var firstname = meta.firstname || (user.email ? user.email.split('@')[0] : 'Utilisateur');
+      var lastname = meta.lastname || '';
+      var company = meta.company || '';
+      var fullName = (firstname + ' ' + lastname).trim();
+
+      var html = '' +
+        '<div class="aqmi-dash-wrap">' +
+          '<header class="aqmi-dash-header">' +
+            '<div class="aqmi-dash-header-inner">' +
+              '<a href="/" class="aqmi-dash-brand" style="text-decoration:none">' +
+                '<img src="/assets/img/logo-novaqys-header.png" alt="NOVAQYS" style="height:28px;width:auto">' +
+                '<span>AQMI</span>' +
+              '</a>' +
+              '<div class="aqmi-dash-user">' +
+                '<span class="aqmi-dash-name">' + escapeHtml(fullName) + '</span>' +
+                '<div class="aqmi-dash-avatar" style="background:' + avatarColor(fullName) + '">' + initials(fullName) + '</div>' +
+                '<button id="logoutBtn" class="aqmi-btn aqmi-btn-ghost" style="color:var(--nova-text-tertiary)" title="Déconnexion"><i class="fas fa-right-from-bracket"></i></button>' +
+              '</div>' +
+            '</div>' +
+          '</header>' +
+          '<main class="aqmi-dash-main">' +
+            '<div class="aqmi-dash-welcome">' +
+              '<div>' +
+                '<h1>Bonjour, ' + escapeHtml(firstname) + '</h1>' +
+                '<p>Bienvenue dans votre espace AQMI' + (company ? ' — ' + escapeHtml(company) : '') + '</p>' +
+              '</div>' +
+              '<div class="aqmi-dash-actions">' +
+                '<a href="/aqmi-starter.html" class="aqmi-btn aqmi-btn-primary"><i class="fas fa-plus"></i><span>Nouvelle évaluation</span></a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="aqmi-dash-stats">' +
+              '<div class="aqmi-dash-stat">' +
+                '<div class="aqmi-dash-stat-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6"><i class="fas fa-file-pen"></i></div>' +
+                '<div><div class="aqmi-dash-stat-value">0</div><div class="aqmi-dash-stat-label">Évaluations</div></div>' +
+              '</div>' +
+              '<div class="aqmi-dash-stat">' +
+                '<div class="aqmi-dash-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981"><i class="fas fa-check-circle"></i></div>' +
+                '<div><div class="aqmi-dash-stat-value">0</div><div class="aqmi-dash-stat-label">Terminées</div></div>' +
+              '</div>' +
+              '<div class="aqmi-dash-stat">' +
+                '<div class="aqmi-dash-stat-icon" style="background:rgba(139,92,246,0.15);color:#8b5cf6"><i class="fas fa-chart-line"></i></div>' +
+                '<div><div class="aqmi-dash-stat-value">—</div><div class="aqmi-dash-stat-label">Score moyen</div></div>' +
+              '</div>' +
+              '<div class="aqmi-dash-stat">' +
+                '<div class="aqmi-dash-stat-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4"><i class="fas fa-shield-halved"></i></div>' +
+                '<div><div class="aqmi-dash-stat-value">IATF</div><div class="aqmi-dash-stat-label">16949 Conforme</div></div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="aqmi-dash-empty-hero">' +
+              '<div style="width:4rem;height:4rem;border-radius:50%;background:var(--nova-bg-elevated);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#3b82f6"><i class="fas fa-rocket"></i></div>' +
+              '<h2>Commencez votre parcours AQMI</h2>' +
+              '<p>Vous n\'avez pas encore d\'évaluation. Lancez votre première auto-évaluation de maturité qualité et découvrez vos points forts et axes d\'amélioration.</p>' +
+              '<a href="/aqmi-starter.html" class="aqmi-btn aqmi-btn-primary" style="display:inline-flex"><i class="fas fa-play"></i><span>Démarrer l\'évaluation</span></a>' +
+            '</div>' +
+
+            '<div class="aqmi-dash-section">' +
+              '<div class="aqmi-dash-section-header"><h2>Accès rapide</h2></div>' +
+              '<div class="aqmi-quick-grid">' +
+                '<a href="/aqmi-starter.html" class="aqmi-quick-card">' +
+                  '<div class="aqmi-quick-icon" style="background:rgba(59,130,246,0.15);color:#3b82f6"><i class="fas fa-clipboard-check"></i></div>' +
+                  '<h3>AQMI Starter</h3><p>Auto-évaluation gratuite</p>' +
+                '</a>' +
+                '<a href="/lms.html" class="aqmi-quick-card">' +
+                  '<div class="aqmi-quick-icon" style="background:rgba(16,185,129,0.15);color:#10b981"><i class="fas fa-graduation-cap"></i></div>' +
+                  '<h3>Formation LMS</h3><p>Cours et certifications</p>' +
+                '</a>' +
+                '<a href="/asin.html" class="aqmi-quick-card">' +
+                  '<div class="aqmi-quick-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-globe"></i></div>' +
+                  '<h3>ASIN</h3><p>Marketplace automotive</p>' +
+                '</a>' +
+                '<a href="/" class="aqmi-quick-card">' +
+                  '<div class="aqmi-quick-icon" style="background:rgba(139,92,246,0.15);color:#8b5cf6"><i class="fas fa-cubes"></i></div>' +
+                  '<h3>Écosystème</h3><p>Toutes les plateformes</p>' +
+                '</a>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="aqmi-dash-lastlogin">' +
+              '<i class="fas fa-clock-rotate"></i>' +
+              '<span>Session active · ' + escapeHtml(user.email) + '</span>' +
+            '</div>' +
+          '</main>' +
+        '</div>';
+
+      document.getElementById('dashRoot').innerHTML = html;
+      document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    }
+
+    function doLogout() {
+      window.novaSupabase.init().then(function (sb) {
+        sb.auth.signOut().then(function () {
+          window.location.href = '/user/login/';
+        });
+      });
+    }
+
+    window.novaSupabase.init().then(function (sb) {
+      sb.auth.getSession().then(function (res) {
+        var session = res.data && res.data.session;
+        if (!session) {
+          window.location.href = '/user/login/';
+          return;
+        }
+        renderDashboard(session.user);
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
