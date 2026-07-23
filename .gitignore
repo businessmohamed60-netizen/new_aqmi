@@ -12,3 +12,4 @@ public/uploads/*
 .DS_Store
 Thumbs.dbnode_modules
 .venv
+.env
