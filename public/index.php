@@ -38,7 +38,22 @@ if ($requestUri === '/' || $requestUri === '') {
 
 define('BASE_PATH', dirname(__DIR__));
 
-require_once BASE_PATH . '/vendor/autoload.php';
+// Load Composer autoloader, or fall back to simple PSR-4 loader
+$autoloadPath = BASE_PATH . '/vendor/autoload.php';
+if (file_exists($autoloadPath)) {
+    require_once $autoloadPath;
+} else {
+    spl_autoload_register(function ($class) {
+        $prefix = 'App\\';
+        if (str_starts_with($class, $prefix)) {
+            $relativeClass = substr($class, strlen($prefix));
+            $file = BASE_PATH . '/app/' . str_replace('\\', '/', $relativeClass) . '.php';
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    });
+}
 
 // Load .env
 $envFile = BASE_PATH . '/.env';

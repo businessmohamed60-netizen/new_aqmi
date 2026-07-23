@@ -97,7 +97,7 @@ class Auth
     {
         if (!self::check()) {
             Session::setFlash('error', 'Veuillez vous connecter pour accéder à cette page.');
-            redirect('/login');
+            redirect('/aqmi/login');
         }
     }
 

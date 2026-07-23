@@ -25,7 +25,8 @@ class Database
             ]);
         } catch (PDOException $e) {
             error_log("Database connection failed: " . $e->getMessage());
-            die('Database connection failed. Please try again later.');
+            http_response_code(503);
+            die('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Maintenance - NOVAQYS</title><style>body{font-family:sans-serif;background:#0a0a0f;color:#f1f5f9;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}.box{text-align:center;max-width:500px;padding:40px}.box h1{font-size:2rem;color:#3b82f6;margin-bottom:16px}.box p{color:#94a3b8;line-height:1.6}.box a{display:inline-block;margin-top:24px;padding:12px 32px;background:#1a56db;color:#fff;text-decoration:none;border-radius:8px}</style></head><body><div class="box"><h1>Service temporairement indisponible</h1><p>La base de données est en cours de configuration. Si le problème persiste, veuillez contacter l\'administrateur.</p><a href="/">Retour à l\'accueil</a></div></body></html>');
         }
     }
 
