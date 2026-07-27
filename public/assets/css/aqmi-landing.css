@@ -1,0 +1,1046 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AQMI — Automotive Quality Maturity Index
+   Premium Landing Page
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── CSS Variables ─────────────────────────────────────────────── */
+:root {
+  --aqmi-blue: #2563eb;
+  --aqmi-cyan: #06b6d4;
+  --aqmi-purple: #8b5cf6;
+  --aqmi-green: #22c55e;
+  --aqmi-orange: #f59e0b;
+  --aqmi-red: #ef4444;
+  --aqmi-glow: rgba(37,99,235,0.5);
+  --aqmi-bg: #030712;
+  --aqmi-bg-secondary: #0a0f1e;
+  --aqmi-card-bg: rgba(15,23,42,0.6);
+  --aqmi-border: rgba(37,99,235,0.15);
+  --aqmi-text: #f8fafc;
+  --aqmi-text-secondary: #94a3b8;
+  --aqmi-gradient: linear-gradient(135deg, #2563eb, #06b6d4, #8b5cf6);
+  --aqmi-gradient-green: linear-gradient(135deg, #22c55e, #06b6d4, #2563eb);
+}
+
+/* ─── Base ──────────────────────────────────────────────────────── */
+.aqmi-page {
+  background: var(--aqmi-bg);
+  color: var(--aqmi-text);
+  font-family: 'Inter', 'Sora', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── Section Utility ───────────────────────────────────────────── */
+.aqmi-section {
+  position: relative;
+  padding: 6rem 1.5rem;
+  overflow: hidden;
+}
+
+.aqmi-section-header {
+  text-align: center;
+  max-width: 48rem;
+  margin: 0 auto 4rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--aqmi-blue);
+  background: rgba(37,99,235,0.1);
+  border: 1px solid rgba(37,99,235,0.2);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+
+.aqmi-section-title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  font-family: 'Sora', sans-serif;
+}
+
+.aqmi-section-title .aqmi-gradient-text {
+  background: var(--aqmi-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-section-title .aqmi-gradient-green {
+  background: var(--aqmi-gradient-green);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-section-desc {
+  font-size: 1.05rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.7;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+/* ─── Fade Animation ────────────────────────────────────────────── */
+.aqmi-section-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.aqmi-section-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--aqmi-bg);
+}
+
+.aqmi-hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.aqmi-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 0%, #030712 100%),
+    radial-gradient(ellipse 60% 40% at 30% 20%, rgba(37,99,235,0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 70% 80%, rgba(34,197,94,0.06), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aqmi-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 2;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+.aqmi-hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 60rem;
+  padding: 2rem;
+}
+
+.aqmi-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--aqmi-blue);
+  background: rgba(37,99,235,0.08);
+  border: 1px solid rgba(37,99,235,0.15);
+  padding: 0.5rem 1.2rem;
+  border-radius: 100px;
+  margin-bottom: 2rem;
+}
+
+.aqmi-hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--aqmi-blue);
+  animation: aqmi-hero-pulse 2s ease-in-out infinite;
+}
+
+@keyframes aqmi-hero-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--aqmi-blue); }
+  50% { opacity: 0.5; box-shadow: 0 0 12px var(--aqmi-blue); }
+}
+
+.aqmi-hero-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  font-family: 'Sora', sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.aqmi-hero-title .aqmi-gradient {
+  background: var(--aqmi-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.aqmi-hero-word-highlight {
+  background: linear-gradient(135deg, #22c55e, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-hero-subtitle {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--aqmi-text-secondary);
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.aqmi-hero-tagline {
+  font-size: 0.85rem;
+  color: rgba(148,163,184,0.6);
+  margin-bottom: 2.5rem;
+}
+
+.aqmi-hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.aqmi-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.aqmi-hero-btn-primary {
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+}
+
+.aqmi-hero-btn-primary:hover {
+  box-shadow: 0 8px 40px rgba(37,99,235,0.5);
+  transform: translateY(-2px);
+}
+
+.aqmi-hero-btn-secondary {
+  background: rgba(255,255,255,0.05);
+  color: var(--aqmi-text);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.aqmi-hero-btn-secondary:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.aqmi-hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.aqmi-hero-stat {
+  text-align: center;
+}
+
+.aqmi-hero-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: var(--aqmi-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-hero-stat-label {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.2rem;
+}
+
+.aqmi-hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--aqmi-text-secondary);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+}
+
+.aqmi-hero-scroll-mouse {
+  width: 18px;
+  height: 28px;
+  border: 1.5px solid rgba(148,163,184,0.3);
+  border-radius: 10px;
+  position: relative;
+}
+
+.aqmi-hero-scroll-mouse::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 6px;
+  background: var(--aqmi-blue);
+  border-radius: 2px;
+  animation: aqmi-scroll-wheel 1.5s ease-in-out infinite;
+}
+
+@keyframes aqmi-scroll-wheel {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SCORE — Matrice de Maturité
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-score {
+  background: linear-gradient(180deg, var(--aqmi-bg), var(--aqmi-bg-secondary));
+}
+
+.aqmi-score-visual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-score-level {
+  position: relative;
+  background: var(--aqmi-card-bg);
+  border: 1px solid var(--aqmi-border);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+
+.aqmi-score-level:hover {
+  transform: translateY(-4px);
+  border-color: rgba(37,99,235,0.3);
+  box-shadow: 0 8px 40px rgba(37,99,235,0.1);
+}
+
+.aqmi-score-level-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  font-family: 'Sora', sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.aqmi-score-level-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-score-level-desc {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DOMAINS — 8 domaines d'évaluation
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-domains {
+  background: var(--aqmi-bg);
+}
+
+.aqmi-domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-domain-card {
+  background: var(--aqmi-card-bg);
+  border: 1px solid var(--aqmi-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+  text-decoration: none;
+  color: var(--aqmi-text);
+  display: block;
+}
+
+.aqmi-domain-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37,99,235,0.25);
+  box-shadow: 0 8px 30px rgba(37,99,235,0.08);
+}
+
+.aqmi-domain-card-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.aqmi-domain-card h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-domain-card p {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FEATURES — Premium
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-features {
+  background: linear-gradient(180deg, var(--aqmi-bg-secondary), var(--aqmi-bg));
+}
+
+.aqmi-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-feature-card {
+  background: var(--aqmi-card-bg);
+  border: 1px solid var(--aqmi-border);
+  border-radius: 14px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+
+.aqmi-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37,99,235,0.25);
+  box-shadow: 0 8px 30px rgba(37,99,235,0.08);
+}
+
+.aqmi-feature-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.aqmi-feature-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.aqmi-feature-card p {
+  font-size: 0.8rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PROCESS — Comment ça marche
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-process {
+  background: var(--aqmi-bg);
+}
+
+.aqmi-process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-process-step {
+  text-align: center;
+  position: relative;
+}
+
+.aqmi-process-step-number {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(37,99,235,0.3);
+}
+
+.aqmi-process-step h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.aqmi-process-step p {
+  font-size: 0.8rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.6;
+  max-width: 18rem;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   REPORT — Exemple de Rapport de Diagnostic
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-report {
+  background: linear-gradient(180deg, var(--aqmi-bg), var(--aqmi-bg-secondary));
+}
+
+.aqmi-report-card {
+  position: relative;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(15,23,42,0.8), rgba(10,15,30,0.9));
+  border: 1px solid var(--aqmi-border);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.aqmi-report-card-glow {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(37,99,235,0.06), transparent 70%);
+  pointer-events: none;
+}
+
+.aqmi-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.aqmi-report-company {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.aqmi-report-company-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.aqmi-report-company-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-report-company-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+}
+
+.aqmi-report-company-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.aqmi-report-header-right {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.aqmi-report-score-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}
+
+.aqmi-report-score-ring svg {
+  width: 100%;
+  height: 100%;
+}
+
+.aqmi-report-score-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: var(--aqmi-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-report-score-level {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.3rem;
+}
+
+/* ─── Domain Scores ─────────────────────────────────────────────── */
+.aqmi-report-domains {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.aqmi-report-domain {
+  padding: 0.5rem 0;
+}
+
+.aqmi-report-domain-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.aqmi-report-domain-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--aqmi-text);
+}
+
+.aqmi-report-domain-score {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--aqmi-text-secondary);
+}
+
+.aqmi-report-domain-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.aqmi-report-domain-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* ─── Recommendations ───────────────────────────────────────────── */
+.aqmi-report-recos {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.aqmi-report-recos-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--aqmi-text);
+}
+
+.aqmi-report-recos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.aqmi-report-reco {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.aqmi-report-reco-priority {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.aqmi-report-reco-text {
+  flex: 1;
+}
+
+.aqmi-report-reco-text strong {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  color: var(--aqmi-text);
+}
+
+.aqmi-report-reco-text span {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.4;
+}
+
+/* ─── Projection ────────────────────────────────────────────────── */
+.aqmi-report-projection {
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.aqmi-report-projection-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--aqmi-text);
+}
+
+.aqmi-report-projection-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  height: 120px;
+  justify-content: center;
+}
+
+.aqmi-report-projection-bar {
+  width: 60px;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+  transition: height 1s ease;
+}
+
+.aqmi-report-projection-bar span {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  opacity: 0.8;
+}
+
+.aqmi-report-projection-label {
+  position: absolute;
+  bottom: -1.3rem;
+  font-size: 0.6rem;
+  color: var(--aqmi-text-secondary);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BENCHMARK — Comparaison Industrie
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-benchmark {
+  background: var(--aqmi-bg);
+}
+
+.aqmi-benchmark-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-benchmark-card {
+  background: var(--aqmi-card-bg);
+  border: 1px solid var(--aqmi-border);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+
+.aqmi-benchmark-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(37,99,235,0.3);
+  box-shadow: 0 8px 40px rgba(37,99,235,0.1);
+}
+
+.aqmi-benchmark-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin: 0 auto 1rem;
+}
+
+.aqmi-benchmark-card-value {
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: 'Sora', sans-serif;
+  background: var(--aqmi-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-benchmark-card-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.aqmi-benchmark-card-sub {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   WHY AQMI — Pourquoi AQMI
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-why {
+  background: linear-gradient(180deg, var(--aqmi-bg-secondary), var(--aqmi-bg));
+}
+
+.aqmi-why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-why-card {
+  background: var(--aqmi-card-bg);
+  border: 1px solid var(--aqmi-border);
+  border-radius: 14px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+
+.aqmi-why-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--card-accent);
+  box-shadow: 0 8px 30px rgba(37,99,235,0.08);
+}
+
+.aqmi-why-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.aqmi-why-card h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.aqmi-why-card p {
+  font-size: 0.8rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CTA
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-cta {
+  background: linear-gradient(180deg, var(--aqmi-bg), var(--aqmi-bg-secondary));
+  padding: 6rem 1.5rem;
+  text-align: center;
+}
+
+.aqmi-cta-content {
+  max-width: 40rem;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.aqmi-cta-content h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  font-family: 'Sora', sans-serif;
+  line-height: 1.2;
+}
+
+.aqmi-cta-content p {
+  font-size: 1rem;
+  color: var(--aqmi-text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.aqmi-cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════ */
+.aqmi-footer {
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: var(--aqmi-bg);
+}
+
+.aqmi-footer p {
+  font-size: 0.7rem;
+  color: var(--aqmi-text-secondary);
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .aqmi-section { padding: 4rem 1rem; }
+  .aqmi-hero-stats { gap: 1.5rem; }
+  .aqmi-hero-actions { flex-direction: column; align-items: center; }
+  .aqmi-score-visual { grid-template-columns: repeat(2, 1fr); }
+  .aqmi-domains-grid { grid-template-columns: repeat(2, 1fr); }
+  .aqmi-features-grid { grid-template-columns: 1fr; }
+  .aqmi-process-steps { grid-template-columns: 1fr; }
+  .aqmi-report-header { flex-direction: column; }
+  .aqmi-report-domains { grid-template-columns: 1fr; }
+  .aqmi-report-card { padding: 1.5rem; }
+  .aqmi-report-projection-chart { gap: 0.75rem; }
+  .aqmi-report-projection-bar { width: 50px; }
+  .aqmi-benchmark-grid { grid-template-columns: repeat(2, 1fr); }
+  .aqmi-why-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .aqmi-score-visual { grid-template-columns: 1fr; }
+  .aqmi-domains-grid { grid-template-columns: 1fr; }
+}

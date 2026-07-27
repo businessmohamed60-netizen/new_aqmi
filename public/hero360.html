@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOVAQYS — L'écosystème de l'excellence automobile</title>
+  <meta name="description" content="NOVAQYS - Écosystème complet de développement des fabricants de pièces de rechange automobiles. Évaluation, formation, digitalisation et mise en relation industrielle." />
+  <meta name="theme-color" content="#0a0e17" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+
+  <meta property="og:title" content="NOVAQYS — Écosystème Intelligent 360°" />
+  <meta property="og:description" content="Explorez l'écosystème NOVAQYS en immersion 360°." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://novaqys.com" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preload" href="/assets/img/novaqys-ecosystem-360.png" as="image" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" as="script" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" as="script" />
+
+  <link rel="stylesheet" href="/assets/css/novaqys.css">
+  <link rel="stylesheet" href="/assets/css/mobile.css">
+  <link rel="stylesheet" href="/assets/css/automotive.css">
+  <link rel="stylesheet" href="/assets/css/auth.css">
+  <link rel="stylesheet" href="/assets/css/hero360.css" />
+  <link rel="stylesheet" href="/assets/css/effects.css" />
+  <link rel="stylesheet" href="/assets/css/journey.css" />
+  <link rel="stylesheet" href="/assets/css/nova-hero.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+</head>
+<body>
+
+  <!-- Hero section loads below -->
+
+  <!-- ===== HEADER / NAVIGATION ===== -->
+  <header class="nav-header" id="navHeader">
+    <a href="/" class="nav-brand">
+      <img src="/assets/img/logo-novaqys-header.png" alt="NOVAQYS" width="54" height="36" style="height:36px;width:auto">
+      <div>
+        <div class="nav-brand-text">NOVAQYS</div>
+        <span class="nav-brand-sub">Automotive Ecosystem</span>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="#ecosystem" class="nav-link">Écosystème</a>
+      <a href="#solutions" class="nav-link">Solutions</a>
+      <a href="/aqmi-landing.html" class="nav-link">AQMI</a>
+      <a href="/asin.html" class="nav-link">ASIN</a>
+      <a href="/lms.html" class="nav-link">Learning</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="/login" class="btn-access">
+        <i class="fas fa-lock"></i>
+        Connexion AQMI
+      </a>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="nav-mobile" id="navMobile">
+    <a href="#ecosystem" onclick="closeMobile()"><i class="fas fa-cube"></i> Écosystème</a>
+    <a href="#solutions" onclick="closeMobile()"><i class="fas fa-layer-group"></i> Solutions</a>
+    <a href="/aqmi-landing.html" onclick="closeMobile()"><i class="fas fa-chart-line"></i> AQMI</a>
+    <a href="/asin.html" onclick="closeMobile()"><i class="fas fa-globe"></i> ASIN</a>
+    <a href="/lms.html" onclick="closeMobile()"><i class="fas fa-graduation-cap"></i> Automotive Learning</a>
+    <a href="#contact" onclick="closeMobile()"><i class="fas fa-envelope"></i> Contact</a>
+    <div class="nav-mobile-divider"></div>
+    <a href="/login" class="btn-access" onclick="closeMobile()">
+      <i class="fas fa-lock"></i> Connexion AQMI
+    </a>
+  </div>
+
+  <!-- ===== HERO — Premium Holographic Globe ===== -->
+  <section class="nova-hero" id="hero360">
+    <canvas class="nova-hero-canvas"></canvas>
+    <div class="nova-hero-overlay"></div>
+    <div class="nova-hero-grid"></div>
+    <div class="nova-hero-rays">
+      <div class="nova-hero-ray"></div>
+      <div class="nova-hero-ray"></div>
+      <div class="nova-hero-ray"></div>
+      <div class="nova-hero-ray"></div>
+    </div>
+
+    <div class="nova-hero-content">
+      <div class="nova-hero-badge">
+        <span class="nova-hero-badge-dot"></span>
+        Automotive Manufacturing Management Platform
+      </div>
+
+      <h1 class="nova-hero-title">
+        <span class="nova-gradient nova-hero-word nova-hero-word-brand">NOVAQYS</span><br>
+        <span class="nova-hero-line">
+          <span class="nova-hero-word">Le</span>
+          <span class="nova-hero-word">cerveau</span>
+          <span class="nova-hero-word">numérique</span>
+          <span class="nova-hero-word">de</span>
+          <span class="nova-hero-word">l'usine</span>
+          <span class="nova-hero-word nova-hero-word-highlight">automobile</span>
+        </span>
+      </h1>
+
+      <p class="nova-hero-subtitle">Toute l'usine. Une seule plateforme. Zéro compromis.</p>
+      <p class="nova-hero-tagline">Production · Qualité · Maintenance · Supply Chain · ERP · IA · BI</p>
+
+      <div class="nova-hero-actions">
+        <a href="#ecosystem" class="nova-hero-btn nova-hero-btn-primary">
+          Découvrir l'écosystème <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="#arch" class="nova-hero-btn nova-hero-btn-secondary">
+          <i class="fas fa-cubes"></i> Architecture
+        </a>
+      </div>
+
+      <div class="nova-hero-stats">
+        <div class="nova-hero-stat">
+          <div class="nova-hero-stat-value">18+</div>
+          <div class="nova-hero-stat-label">Modules Intégrés</div>
+        </div>
+        <div class="nova-hero-stat">
+          <div class="nova-hero-stat-value">IATF</div>
+          <div class="nova-hero-stat-label">16949 Compliant</div>
+        </div>
+        <div class="nova-hero-stat">
+          <div class="nova-hero-stat-value">360°</div>
+          <div class="nova-hero-stat-label">Plateforme</div>
+        </div>
+        <div class="nova-hero-stat">
+          <div class="nova-hero-stat-value">IA</div>
+          <div class="nova-hero-stat-label">Intégrée</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nova-hero-scroll">
+      <div class="nova-hero-scroll-mouse"></div>
+      <span>Défiler</span>
+    </div>
+  </section>
+
+  <!-- ===== ARCHITECTURE — Modules connectés ===== -->
+  <section class="nova-arch" id="arch">
+    <div class="nova-arch-header">
+      <span class="section-label" style="display:inline-flex;align-items:center;gap:0.5rem;font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#2563eb;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);padding:0.4rem 1rem;border-radius:100px;margin-bottom:1.5rem">
+        <i class="fas fa-cubes"></i> Architecture
+      </span>
+      <h2>L'écosystème <span class="nova-gradient">NOVAQYS</span></h2>
+      <p>Tous les modules interconnectés. Une seule plateforme pour piloter l'intégralité de votre usine automobile.</p>
+    </div>
+
+    <div class="nova-arch-grid">
+      <div class="nova-arch-card" style="--arch-color:#2563eb"><div class="nova-arch-card-icon" style="color:#2563eb;background:rgba(37,99,235,0.1)"><i class="fas fa-industry"></i></div><h4>Production</h4><p>MES · OF · OEE</p></div>
+      <div class="nova-arch-card" style="--arch-color:#06b6d4"><div class="nova-arch-card-icon" style="color:#06b6d4;background:rgba(6,182,212,0.1)"><i class="fas fa-shield-alt"></i></div><h4>Qualité</h4><p>CAPA · FMEA · SPC</p></div>
+      <div class="nova-arch-card" style="--arch-color:#10b981"><div class="nova-arch-card-icon" style="color:#10b981;background:rgba(16,185,129,0.1)"><i class="fas fa-wrench"></i></div><h4>Maintenance</h4><p>GMAO · Alertes</p></div>
+      <div class="nova-arch-card" style="--arch-color:#8b5cf6"><div class="nova-arch-card-icon" style="color:#8b5cf6;background:rgba(139,92,246,0.1)"><i class="fas fa-truck"></i></div><h4>Supply Chain</h4><p>Stocks · Achats</p></div>
+      <div class="nova-arch-card" style="--arch-color:#f59e0b"><div class="nova-arch-card-icon" style="color:#f59e0b;background:rgba(245,158,11,0.1)"><i class="fas fa-globe"></i></div><h4>ERP Intégré</h4><p>RH · Finances · CRM</p></div>
+      <div class="nova-arch-card" style="--arch-color:#ef4444"><div class="nova-arch-card-icon" style="color:#ef4444;background:rgba(239,68,68,0.1)"><i class="fas fa-qrcode"></i></div><h4>Traçabilité</h4><p>Batch · Datamatrix</p></div>
+      <div class="nova-arch-card" style="--arch-color:#2563eb"><div class="nova-arch-card-icon" style="color:#2563eb;background:rgba(37,99,235,0.1)"><i class="fas fa-chart-line"></i></div><h4>Performance</h4><p>TRS · KPI · BI</p></div>
+      <div class="nova-arch-card" style="--arch-color:#06b6d4"><div class="nova-arch-card-icon" style="color:#06b6d4;background:rgba(6,182,212,0.1)"><i class="fas fa-chart-bar"></i></div><h4>SPC & FMEA</h4><p>AMDÉC · Contrôle</p></div>
+      <div class="nova-arch-card" style="--arch-color:#10b981"><div class="nova-arch-card-icon" style="color:#10b981;background:rgba(16,185,129,0.1)"><i class="fas fa-tasks"></i></div><h4>APQP & PPAP</h4><p>Projets · Livrables</p></div>
+      <div class="nova-arch-card" style="--arch-color:#8b5cf6"><div class="nova-arch-card-icon" style="color:#8b5cf6;background:rgba(139,92,246,0.1)"><i class="fas fa-folder-open"></i></div><h4>GED</h4><p>Documents · Workflow</p></div>
+      <div class="nova-arch-card" style="--arch-color:#f59e0b"><div class="nova-arch-card-icon" style="color:#f59e0b;background:rgba(245,158,11,0.1)"><i class="fas fa-clipboard-list"></i></div><h4>CAPA & Audits</h4><p>Actions · Validations</p></div>
+      <div class="nova-arch-card" style="--arch-color:#ef4444"><div class="nova-arch-card-icon" style="color:#ef4444;background:rgba(239,68,68,0.1)"><i class="fas fa-calendar-alt"></i></div><h4>Planification</h4><p>OF · Capacités</p></div>
+      <div class="nova-arch-card" style="--arch-color:#2563eb"><div class="nova-arch-card-icon" style="color:#2563eb;background:rgba(37,99,235,0.1)"><i class="fas fa-warehouse"></i></div><h4>Stocks</h4><p>RFID · Réapro</p></div>
+      <div class="nova-arch-card" style="--arch-color:#06b6d4"><div class="nova-arch-card-icon" style="color:#06b6d4;background:rgba(6,182,212,0.1)"><i class="fas fa-users"></i></div><h4>Ventes & CRM</h4><p>Clients · Devis</p></div>
+      <div class="nova-arch-card" style="--arch-color:#10b981"><div class="nova-arch-card-icon" style="color:#10b981;background:rgba(16,185,129,0.1)"><i class="fas fa-id-card"></i></div><h4>RH</h4><p>Compétences · Planning</p></div>
+      <div class="nova-arch-card" style="--arch-color:#8b5cf6"><div class="nova-arch-card-icon" style="color:#8b5cf6;background:rgba(139,92,246,0.1)"><i class="fas fa-chart-pie"></i></div><h4>BI</h4><p>Dashboards · Rapports</p></div>
+      <div class="nova-arch-card" style="--arch-color:#f59e0b"><div class="nova-arch-card-icon" style="color:#f59e0b;background:rgba(245,158,11,0.1)"><i class="fas fa-brain"></i></div><h4>IA</h4><p>Prédiction · Optimi.</p></div>
+      <div class="nova-arch-card" style="--arch-color:#ef4444"><div class="nova-arch-card-icon" style="color:#ef4444;background:rgba(239,68,68,0.1)"><i class="fas fa-diagram-project"></i></div><h4>Digitalisation</h4><p>IoT · Cloud · IA</p></div>
+    </div>
+
+    <div class="nova-arch-hub">
+      <div class="nova-arch-hub-icon">
+        <i class="fas fa-microchip"></i>
+      </div>
+      <h3>NOVAQYS — Le cerveau numérique de l'usine</h3>
+      <p>Tous les modules convergent vers une plateforme unique. Données en temps réel, IA intégrée, conformité IATF 16949. <strong>Un seul logiciel pour tout piloter.</strong></p>
+    </div>
+  </section>
+
+  <!-- ===== SOLUTION CONTENT (original sections) ===== -->
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-fade-left"></div>
+    <div class="marquee-fade-right"></div>
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="marquee-dot"></span> IATF 16949:2016</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> ISO 9001:2015</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> TISAX Ready</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> APQP / PPAP</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> 8D · Ishikawa</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> SPC & Capabilité</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> OEE Temps Réel</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> CAPA</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Supply Chain</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> FMEA / AMDEC</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Industry 4.0</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Lean Manufacturing</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> QRQC</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Control Plan</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> MSA</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> IATF 16949:2016</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> ISO 9001:2015</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> TISAX Ready</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> APQP / PPAP</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> 8D · Ishikawa</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> SPC & Capabilité</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> OEE Temps Réel</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> CAPA</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Supply Chain</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> FMEA / AMDEC</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Industry 4.0</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Lean Manufacturing</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> QRQC</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> Control Plan</span>
+      <span class="marquee-item"><span class="marquee-dot"></span> MSA</span>
+    </div>
+  </div>
+
+  <!-- Slogan -->
+  <section class="slogan-section">
+    <div class="slogan-content fade-up">
+      <div class="slogan-quote">
+        Créer un nouveau réseau de sous-traitance automobile<br>
+        avec une parfaite maîtrise des coûts,<br>
+        tout en maintenant <span class="slogan-highlight">la qualité</span>,<br>
+        <span class="slogan-highlight">la compétitivité</span> et <span class="slogan-highlight">la notoriété</span> des fabricants.
+      </div>
+      <div class="slogan-attribution">
+        <div class="slogan-line"></div>
+        <span>NOVAQYS Ecosystem Vision</span>
+        <div class="slogan-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Challenges -->
+  <section class="challenges-section" id="pourquoi">
+    <div class="max-w-7xl px-6">
+      <div class="section-header fade-up">
+        <span class="section-label"><i class="fas fa-question-circle"></i> Pourquoi NOVAQYS ?</span>
+        <h2 class="section-title">Les défis de l'industrie<br><span class="gradient-text">automobile aujourd'hui</span></h2>
+        <p class="section-desc">L'industrie automobile fait face à des exigences croissantes. NOVAQYS vous accompagne pour transformer chaque défi en opportunité.</p>
+      </div>
+      <div class="challenges-grid stagger-children observe-once">
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#7367f020"><i class="fas fa-globe" style="color:#7367f0"></i></div>
+          <h3>Concurrence mondiale</h3>
+          <p>Face à une compétition internationale intense, les fabricants doivent constamment améliorer leur compétitivité tout en maîtrisant leurs coûts de production.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#28c76f20"><i class="fas fa-coins" style="color:#28c76f"></i></div>
+          <h3>Réduction des coûts</h3>
+          <p>La pression sur les marges impose une optimisation continue des processus et une réduction des gaspillages sans compromis sur la qualité.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#9b8cf720"><i class="fas fa-check-double" style="color:#9b8cf7"></i></div>
+          <h3>Qualité & Traçabilité</h3>
+          <p>Les constructeurs exigent une traçabilité parfaite et une qualité irréprochable. Chaque défaut peut entraîner des pénalités et la perte de contrats.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#00cfe820"><i class="fas fa-laptop-code" style="color:#00cfe8"></i></div>
+          <h3>Digitalisation</h3>
+          <p>La transformation digitale est un impératif. Les fabricants doivent adopter les outils numériques pour rester compétitifs et répondre aux attentes des OEM.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#ff9f4320"><i class="fas fa-file-contract" style="color:#ff9f43"></i></div>
+          <h3>Nouvelles exigences</h3>
+          <p>Les cahiers des charges des constructeurs évoluent constamment. Les fournisseurs doivent s'adapter rapidement à des exigences toujours plus strictes.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#ea545520"><i class="fas fa-shield-halved" style="color:#ea5455"></i></div>
+          <h3>Transition IATF 16949</h3>
+          <p>La transition vers la norme IATF 16949 est complexe et coûteuse. Les PME ont besoin d'un accompagnement structuré pour réussir cette certification.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#7367f020"><i class="fas fa-robot" style="color:#7367f0"></i></div>
+          <h3>Industrie 4.0</h3>
+          <p>L'usine connectée, l'IoT et l'intelligence artificielle transforment les processus de fabrication. Les fabricants doivent intégrer ces technologies.</p>
+        </div>
+        <div class="challenge-card">
+          <div class="challenge-icon" style="background:#9b8cf720"><i class="fas fa-certificate" style="color:#9b8cf7"></i></div>
+          <h3>Conformité normative</h3>
+          <p>Multiplicité des normes (IATF, ISO, TISAX, RGPD) à respecter simultanément, nécessitant un système de management intégré et performant.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ecosystem -->
+  <section class="ecosystem-section" id="ecosystem">
+    <div class="max-w-7xl px-6">
+      <div class="section-header fade-up">
+        <span class="section-label"><i class="fas fa-cubes"></i> L'Écosystème</span>
+        <h2 class="section-title">L'écosystème complet<br><span class="gradient-text">NOVAQYS</span></h2>
+        <p class="section-desc">Six plateformes interconnectées qui couvrent l'intégralité du cycle de développement d'un fabricant de pièces automobiles.</p>
+      </div>
+      <div class="ecosystem-grid stagger-children observe-once">
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">01</span>
+          <div class="ecosystem-icon" style="background:#7367f020;color:#7367f0"><i class="fas fa-clipboard-check"></i></div>
+          <h3>AQMI Starter</h3>
+          <div class="ecosystem-subtitle">Automotive Quality & Manufacturing Index</div>
+          <p class="ecosystem-desc">Évaluez gratuitement le niveau de maturité de votre entreprise. Détectez vos points forts et identifiez vos axes de progrès en quelques minutes.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">Auto-évaluation</span>
+            <span class="ecosystem-tag">Rapport</span>
+            <span class="ecosystem-tag">Feuille de route</span>
+            <span class="ecosystem-tag">Recommandations</span>
+          </div>
+          <a href="/aqmi-landing.html" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">02</span>
+          <div class="ecosystem-icon" style="background:#9b8cf720;color:#9b8cf7"><i class="fas fa-chart-simple"></i></div>
+          <h3>AQMI Professional</h3>
+          <div class="ecosystem-subtitle">Évaluation Approfondie</div>
+          <p class="ecosystem-desc">Évaluation détaillée avec analyse approfondie de votre système qualité. Plan de progrès personnalisé intégré directement dans l'écosystème NOVAQYS.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">Analyse détaillée</span>
+            <span class="ecosystem-tag">Plan de progrès</span>
+            <span class="ecosystem-tag">Scoring</span>
+            <span class="ecosystem-tag">Benchmark</span>
+          </div>
+          <a href="#aqmi-pro" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">03</span>
+          <div class="ecosystem-icon" style="background:#00cfe820;color:#00cfe8"><i class="fas fa-search"></i></div>
+          <h3>NARA</h3>
+          <div class="ecosystem-subtitle">NOVAQYS Automotive Readiness Assessment</div>
+          <p class="ecosystem-desc">Outil professionnel d'audit pour constructeurs et équipementiers. Réalisez des évaluations directement chez vos fournisseurs avec collecte de preuves.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">Audit</span>
+            <span class="ecosystem-tag">Preuves</span>
+            <span class="ecosystem-tag">Scores</span>
+            <span class="ecosystem-tag">Tableaux de bord</span>
+          </div>
+          <a href="#nara" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">04</span>
+          <div class="ecosystem-icon" style="background:#28c76f20;color:#28c76f"><i class="fas fa-graduation-cap"></i></div>
+          <h3>NOVAQYS LMS</h3>
+          <div class="ecosystem-subtitle">Automotive Learning Platform</div>
+          <p class="ecosystem-desc">Plateforme de formation dédiée aux normes et méthodes automobiles. Formez vos équipes aux standards IATF, Core Tools et Lean Manufacturing.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">IATF 16949</span>
+            <span class="ecosystem-tag">Core Tools</span>
+            <span class="ecosystem-tag">APQP/PPAP</span>
+            <span class="ecosystem-tag">FMEA</span>
+            <span class="ecosystem-tag">8D</span>
+            <span class="ecosystem-tag">QRQC</span>
+          </div>
+          <a href="/lms.html" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">05</span>
+          <div class="ecosystem-icon" style="background:#ff9f4320;color:#ff9f43"><i class="fas fa-industry"></i></div>
+          <h3>NOVAQYS QMS</h3>
+          <div class="ecosystem-subtitle">Automotive Manufacturing Management Platform</div>
+          <p class="ecosystem-desc">Plateforme centrale de gestion de la production, qualité, maintenance et supply chain. Solution complète avec IA intégrée et BI temps réel.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">Production</span>
+            <span class="ecosystem-tag">Qualité</span>
+            <span class="ecosystem-tag">ERP/MES</span>
+            <span class="ecosystem-tag">OEE</span>
+            <span class="ecosystem-tag">BI</span>
+            <span class="ecosystem-tag">IA</span>
+          </div>
+          <a href="#qms" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ecosystem-card">
+          <span class="ecosystem-number">06</span>
+          <div class="ecosystem-icon" style="background:#ea545520;color:#ea5455"><i class="fas fa-globe"></i></div>
+          <h3>ASIN</h3>
+          <div class="ecosystem-subtitle">Automotive Supplier Intelligence Network</div>
+          <p class="ecosystem-desc">Marketplace B2B mondiale dédiée à la chaîne d'approvisionnement automobile. Le LinkedIn + Alibaba + ThomasNet de l'industrie auto.</p>
+          <div class="ecosystem-tags">
+            <span class="ecosystem-tag">Marketplace</span>
+            <span class="ecosystem-tag">RFQ</span>
+            <span class="ecosystem-tag">Passeport Industriel</span>
+            <span class="ecosystem-tag">Recherche IA</span>
+          </div>
+          <a href="#asin" class="ecosystem-btn">En savoir plus <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AQMI Starter -->
+  <section class="platform-section" id="aqmi-starter" style="background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="platform-layout">
+        <div class="platform-content fade-up">
+          <span class="platform-badge" style="background:rgba(115,103,240,0.1);border:1px solid rgba(115,103,240,0.15);color:#7367f0">
+            <i class="fas fa-clipboard-check"></i> AQMI Starter
+          </span>
+          <h3 class="platform-title">Automotive Quality &<br><span style="color:#7367f0">Manufacturing Index</span></h3>
+          <p class="platform-subtitle">Évaluez gratuitement votre niveau de maturité</p>
+          <p class="platform-desc">AQMI Starter vous permet de détecter les bonnes pratiques déjà appliquées dans votre entreprise, même lorsqu'elles ne sont pas documentées. Les PME peuvent identifier leurs points forts et leurs axes de progrès en toute autonomie.</p>
+          <div class="platform-list">
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Auto-évaluation gratuite de votre maturité qualité</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Rapport détaillé avec scoring par domaine</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Feuille de route personnalisée vers la conformité</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Recommandations actionnables immédiatement</div>
+          </div>
+          <a href="/login" class="btn-primary">
+            <i class="fas fa-lock"></i> Connexion AQMI <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        <div class="platform-visual fade-up">
+          <div class="platform-visual-inner">
+            <div class="platform-visual-grid">
+              <div class="platform-visual-item"><i class="fas fa-file-alt" style="color:#7367f0"></i><span>Auto-évaluation</span></div>
+              <div class="platform-visual-item"><i class="fas fa-chart-bar" style="color:#9b8cf7"></i><span>Rapport</span></div>
+              <div class="platform-visual-item"><i class="fas fa-road" style="color:#28c76f"></i><span>Feuille de route</span></div>
+              <div class="platform-visual-item"><i class="fas fa-tachometer-alt" style="color:#00cfe8"></i><span>Maturité</span></div>
+              <div class="platform-visual-item"><i class="fas fa-lightbulb" style="color:#ff9f43"></i><span>Recommandations</span></div>
+              <div class="platform-visual-item"><i class="fas fa-star" style="color:#ea5455"></i><span>Scoring</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AQMI Pro -->
+  <section class="platform-section" id="aqmi-pro" style="background:linear-gradient(180deg,#0a0a0f 0%,#0d0a1a 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="platform-layout" style="direction:rtl">
+        <div class="platform-content fade-up" style="direction:ltr">
+          <span class="platform-badge" style="background:rgba(115,103,240,0.1);border:1px solid rgba(115,103,240,0.15);color:#9b8cf7">
+            <i class="fas fa-chart-simple"></i> AQMI Professional
+          </span>
+          <h3 class="platform-title">L'évolution naturelle<br><span style="color:#9b8cf7">de votre évaluation</span></h3>
+          <p class="platform-subtitle">Évaluation approfondie · Analyse détaillée</p>
+          <p class="platform-desc">AQMI Professional est l'évolution naturelle d'AQMI Starter. Après l'auto-évaluation, bénéficiez d'une analyse approfondie avec un plan de progrès détaillé, intégré directement dans l'écosystème NOVAQYS.</p>
+          <div class="platform-list">
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#9b8cf7"><i class="fas fa-check"></i></div>Évaluation détaillée multicritères</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#9b8cf7"><i class="fas fa-check"></i></div>Analyse des écarts avec benchmark sectoriel</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#9b8cf7"><i class="fas fa-check"></i></div>Plan de progrès personnalisé et piloté</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#9b8cf7"><i class="fas fa-check"></i></div>Intégration directe dans NOVAQYS QMS</div>
+          </div>
+        </div>
+        <div class="platform-visual fade-up" style="direction:ltr">
+          <div class="platform-visual-inner">
+            <div class="platform-visual-grid">
+              <div class="platform-visual-item"><i class="fas fa-search-plus" style="color:#9b8cf7"></i><span>Analyse</span></div>
+              <div class="platform-visual-item"><i class="fas fa-balance-scale" style="color:#7367f0"></i><span>Écarts</span></div>
+              <div class="platform-visual-item"><i class="fas fa-tasks" style="color:#28c76f"></i><span>Plan</span></div>
+              <div class="platform-visual-item"><i class="fas fa-chart-line" style="color:#00cfe8"></i><span>Progrès</span></div>
+              <div class="platform-visual-item"><i class="fas fa-database" style="color:#ff9f43"></i><span>Intégration</span></div>
+              <div class="platform-visual-item"><i class="fas fa-crown" style="color:#ea5455"></i><span>Premium</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NARA -->
+  <section class="platform-section" id="nara" style="background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="platform-layout">
+        <div class="platform-content fade-up">
+          <span class="platform-badge" style="background:rgba(0,207,232,0.1);border:1px solid rgba(0,207,232,0.15);color:#00cfe8">
+            <i class="fas fa-search"></i> NARA
+          </span>
+          <h3 class="platform-title">NOVAQYS Automotive<br><span style="color:#00cfe8">Readiness Assessment</span></h3>
+          <p class="platform-subtitle">Outil professionnel d'audit fournisseur</p>
+          <p class="platform-desc">NARA permet aux constructeurs, équipementiers et auditeurs de réaliser des évaluations directement chez les fournisseurs. Collectez des preuves, générez des scores et pilotez la performance de votre supply chain.</p>
+          <div class="platform-list">
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(0,207,232,0.15);color:#00cfe8"><i class="fas fa-check"></i></div>Réalisation d'audits chez les fournisseurs</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(0,207,232,0.15);color:#00cfe8"><i class="fas fa-check"></i></div>Collecte et gestion des preuves d'audit</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(0,207,232,0.15);color:#00cfe8"><i class="fas fa-check"></i></div>Rapports détaillés avec scoring automatique</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(0,207,232,0.15);color:#00cfe8"><i class="fas fa-check"></i></div>Tableaux de bord consolidés multi-fournisseurs</div>
+          </div>
+        </div>
+        <div class="platform-visual fade-up">
+          <div class="platform-visual-inner">
+            <div class="platform-visual-grid">
+              <div class="platform-visual-item"><i class="fas fa-clipboard" style="color:#00cfe8"></i><span>Audit</span></div>
+              <div class="platform-visual-item"><i class="fas fa-camera" style="color:#7367f0"></i><span>Preuves</span></div>
+              <div class="platform-visual-item"><i class="fas fa-file-pdf" style="color:#9b8cf7"></i><span>Rapports</span></div>
+              <div class="platform-visual-item"><i class="fas fa-tachometer-alt" style="color:#28c76f"></i><span>Scores</span></div>
+              <div class="platform-visual-item"><i class="fas fa-columns" style="color:#ff9f43"></i><span>Dashboard</span></div>
+              <div class="platform-visual-item"><i class="fas fa-sync" style="color:#ea5455"></i><span>Suivi</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LMS -->
+  <section class="platform-section" id="learning" style="background:linear-gradient(180deg,#0a0a0f 0%,#0d0a1a 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="platform-layout" style="direction:rtl">
+        <div class="platform-content fade-up" style="direction:ltr">
+          <span class="platform-badge" style="background:rgba(40,199,111,0.1);border:1px solid rgba(40,199,111,0.15);color:#28c76f">
+            <i class="fas fa-graduation-cap"></i> NOVAQYS LMS
+          </span>
+          <h3 class="platform-title">Automotive Learning<br><span style="color:#28c76f">Platform</span></h3>
+          <p class="platform-subtitle">Formation aux normes et méthodes automobiles</p>
+          <p class="platform-desc">Formez vos équipes aux standards exigeants de l'industrie automobile. Vidéos, quiz et certifications couvrant l'intégralité des référentiels IATF 16949 et des Core Tools.</p>
+          <div class="platform-list">
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-check"></i></div>Normes : IATF 16949, ISO 9001, VDA</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-check"></i></div>Core Tools : APQP, PPAP, FMEA, SPC, MSA</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-check"></i></div>Méthodes : 8D, QRQC, Lean Manufacturing</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-check"></i></div>Vidéos interactives, quiz et certification</div>
+          </div>
+          <a href="/lms.html" class="platform-btn" style="display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:14px 28px;background:linear-gradient(135deg,#28c76f,#1f9d57);color:#fff;border-radius:12px;font-weight:600;text-decoration:none;transition:all 0.3s ease;font-size:0.95rem">
+            Découvrir la plateforme LMS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        <div class="platform-visual fade-up" style="direction:ltr">
+          <div class="platform-visual-inner">
+            <div class="platform-visual-grid">
+              <div class="platform-visual-item"><i class="fas fa-video" style="color:#28c76f"></i><span>Vidéos</span></div>
+              <div class="platform-visual-item"><i class="fas fa-question-circle" style="color:#7367f0"></i><span>Quiz</span></div>
+              <div class="platform-visual-item"><i class="fas fa-certificate" style="color:#9b8cf7"></i><span>Certification</span></div>
+              <div class="platform-visual-item"><i class="fas fa-book" style="color:#00cfe8"></i><span>Modules</span></div>
+              <div class="platform-visual-item"><i class="fas fa-chart-pie" style="color:#ff9f43"></i><span>Progression</span></div>
+              <div class="platform-visual-item"><i class="fas fa-users" style="color:#ea5455"></i><span>Groupes</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QMS -->
+  <section class="platform-section" id="qms" style="background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="section-header fade-up">
+        <span class="section-label"><i class="fas fa-industry"></i> Plateforme Centrale</span>
+        <h2 class="section-title">NOVAQYS Automotive<br><span class="gradient-text">Manufacturing Management Platform</span></h2>
+        <p class="section-desc">La plateforme centrale de gestion de votre entreprise. Modules interconnectés couvrant tous les aspects de votre production.</p>
+      </div>
+      <div class="ecosystem-grid stagger-children observe-once">
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#7367f015;color:#7367f0"><i class="fas fa-industry"></i></div>
+          <h3>Production & MES</h3>
+          <p class="ecosystem-desc">Gestion des ordres de fabrication, suivi shop floor et OEE temps réel.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#28c76f15;color:#28c76f"><i class="fas fa-shield-halved"></i></div>
+          <h3>Qualité</h3>
+          <p class="ecosystem-desc">CAPA, FMEA, SPC, plan de surveillance. Contrôle qualité intégral.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ff9f4315;color:#ff9f43"><i class="fas fa-wrench"></i></div>
+          <h3>Maintenance</h3>
+          <p class="ecosystem-desc">GMAO préventive et curative. Historique des interventions et alertes.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#9b8cf715;color:#9b8cf7"><i class="fas fa-truck"></i></div>
+          <h3>Supply Chain</h3>
+          <p class="ecosystem-desc">Gestion des stocks, achats et logistique. Approvisionnements optimisés.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#00cfe815;color:#00cfe8"><i class="fas fa-laptop"></i></div>
+          <h3>ERP Intégré</h3>
+          <p class="ecosystem-desc">Gestion complète des ressources : RH, ventes, finances et planification.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ea545515;color:#ea5455"><i class="fas fa-microchip"></i></div>
+          <h3>MES & Traçabilité</h3>
+          <p class="ecosystem-desc">Manufacturing Execution System avec traçabilité complète batch.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#7367f015;color:#7367f0"><i class="fas fa-chart-line"></i></div>
+          <h3>OEE & Performance</h3>
+          <p class="ecosystem-desc">Taux de rendement synthétique, indicateurs de performance en temps réel.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#28c76f15;color:#28c76f"><i class="fas fa-chart-bar"></i></div>
+          <h3>SPC & FMEA</h3>
+          <p class="ecosystem-desc">Maîtrise statistique des processus et analyse des modes de défaillance.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#9b8cf715;color:#9b8cf7"><i class="fas fa-code-branch"></i></div>
+          <h3>APQP & PPAP</h3>
+          <p class="ecosystem-desc">Gestion de projets, phases APQP et livrables PPAP.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#00cfe815;color:#00cfe8"><i class="fas fa-file-alt"></i></div>
+          <h3>GED</h3>
+          <p class="ecosystem-desc">Gestion documentaire. Procédures, processus et manuel qualité.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ff9f4315;color:#ff9f43"><i class="fas fa-bullseye"></i></div>
+          <h3>CAPA & Audits</h3>
+          <p class="ecosystem-desc">Actions correctives, audit interne et revue de direction.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ea545515;color:#ea5455"><i class="fas fa-calendar"></i></div>
+          <h3>Planification</h3>
+          <p class="ecosystem-desc">Planification de production, ordonnancement et gestion des capacités.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#7367f015;color:#7367f0"><i class="fas fa-boxes"></i></div>
+          <h3>Stocks & Achats</h3>
+          <p class="ecosystem-desc">Gestion des inventaires, approvisionnements et réapprovisionnement.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#28c76f15;color:#28c76f"><i class="fas fa-shopping-cart"></i></div>
+          <h3>Ventes & CRM</h3>
+          <p class="ecosystem-desc">Gestion des clients, devis, commandes et facturation.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#9b8cf715;color:#9b8cf7"><i class="fas fa-users"></i></div>
+          <h3>RH & Compétences</h3>
+          <p class="ecosystem-desc">Matrice de compétences, plan de formation et habilitations.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#00cfe815;color:#00cfe8"><i class="fas fa-chart-pie"></i></div>
+          <h3>BI & Reporting</h3>
+          <p class="ecosystem-desc">Business Intelligence, tableaux de bord et reporting automatisé.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ff9f4315;color:#ff9f43"><i class="fas fa-brain"></i></div>
+          <h3>Intelligence Artificielle</h3>
+          <p class="ecosystem-desc">Analyse prédictive, détection d'anomalies et recommandations IA.</p>
+        </div>
+        <div class="ecosystem-card">
+          <div class="ecosystem-icon" style="background:#ea545515;color:#ea5455"><i class="fas fa-database"></i></div>
+          <h3>Digitalisation</h3>
+          <p class="ecosystem-desc">Transformation numérique complète de vos processus industriels.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASIN -->
+  <section class="platform-section" id="asin" style="background:linear-gradient(180deg,#0a0a0f 0%,#0d0a1a 100%)">
+    <div class="max-w-7xl px-6">
+      <div class="platform-layout">
+        <div class="platform-content fade-up">
+          <span class="platform-badge" style="background:rgba(234,84,85,0.1);border:1px solid rgba(234,84,85,0.15);color:#ea5455">
+            <i class="fas fa-globe"></i> ASIN
+          </span>
+          <h3 class="platform-title">Automotive Supplier<br><span style="color:#ea5455">Intelligence Network</span></h3>
+          <p class="platform-subtitle">LinkedIn + Alibaba + ThomasNet de l'industrie automobile</p>
+          <p class="platform-desc">ASIN est la marketplace B2B mondiale dédiée à la chaîne d'approvisionnement automobile. Connectez-vous aux constructeurs, publiez votre offre et développez votre réseau de sous-traitance international.</p>
+          <div class="platform-list">
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-check"></i></div>Passeport Industriel intelligent avec scoring AQMI</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-check"></i></div>Marketplace produits, machines et matières premières</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-check"></i></div>Système de RFQ et messagerie intégrée</div>
+            <div class="platform-list-item"><div class="pl-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-check"></i></div>Recherche intelligente par procédés et capacités</div>
+          </div>
+        </div>
+        <div class="platform-visual fade-up">
+          <div class="platform-visual-inner">
+            <div class="platform-visual-grid">
+              <div class="platform-visual-item"><i class="fas fa-address-card" style="color:#ea5455"></i><span>Passeport</span></div>
+              <div class="platform-visual-item"><i class="fas fa-store" style="color:#7367f0"></i><span>Marketplace</span></div>
+              <div class="platform-visual-item"><i class="fas fa-file-invoice" style="color:#9b8cf7"></i><span>RFQ</span></div>
+              <div class="platform-visual-item"><i class="fas fa-comments" style="color:#28c76f"></i><span>Messagerie</span></div>
+              <div class="platform-visual-item"><i class="fas fa-search" style="color:#00cfe8"></i><span>Recherche IA</span></div>
+              <div class="platform-visual-item"><i class="fas fa-handshake" style="color:#ff9f43"></i><span>Mise en relation</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       JOURNEY — Parcours interactif d'une entreprise
+       Premium scroll-driven experience
+       ═══════════════════════════════════════════════════════════════════ -->
+  <section class="journey-section" id="solutions">
+    <div class="journey-header">
+      <span class="section-label"><i class="fas fa-road"></i> Le Parcours</span>
+      <h2>Le parcours d'une entreprise<br><span class="gradient-text">dans l'écosystème NOVAQYS</span></h2>
+      <p>Du diagnostic initial à l'intégration dans la supply chain mondiale, chaque étape est structurée pour garantir votre succès.</p>
+    </div>
+
+    <div class="journey-container">
+      <!-- Glowing Path -->
+      <div class="journey-path">
+        <div class="journey-path-track"></div>
+        <div class="journey-path-fill" style="height:0%"></div>
+        <div class="journey-path-glow"></div>
+      </div>
+
+      <!-- Step 1: Découverte -->
+      <div class="journey-step" data-step="1" data-color="#7367f0" data-id="decouverte">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#7367f0;color:#7367f0">
+            <div class="journey-step-dot-inner" style="background:#7367f0"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(115,103,240,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#7367f0">Étape 01</div>
+          <div class="journey-step-icon-wrap" style="color:#7367f0;background:rgba(115,103,240,0.1)">
+            <i class="fas fa-compass"></i>
+          </div>
+          <h3>Découverte</h3>
+          <p>L'entreprise découvre l'écosystème NOVAQYS et évalue sa maturité avec AQMI Starter. Une première vision claire de son potentiel.</p>
+          <a href="/register" class="journey-step-btn">
+            Découvrir AQMI <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 2: AQMI Starter -->
+      <div class="journey-step" data-step="2" data-color="#9b8cf7" data-id="aqmi-starter">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#9b8cf7;color:#9b8cf7">
+            <div class="journey-step-dot-inner" style="background:#9b8cf7"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(155,140,247,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#9b8cf7">Étape 02</div>
+          <div class="journey-step-icon-wrap" style="color:#9b8cf7;background:rgba(155,140,247,0.1)">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <h3>AQMI Starter</h3>
+          <p>Auto-évaluation gratuite. L'entreprise identifie ses forces et ses axes de progrès avec un premier score de maturité.</p>
+          <div class="journey-step-anim">
+            <div class="journey-gauge">
+              <div class="journey-gauge-fill" style="background:linear-gradient(90deg,#9b8cf7,#7367f0)" data-value="52%"></div>
+            </div>
+            <div class="journey-gauge-label">
+              <span>Score de maturité</span>
+              <span style="color:#9b8cf7;font-weight:700">52%</span>
+            </div>
+          </div>
+          <a href="/assessment/start" class="journey-step-btn" style="margin-top:1rem">
+            Évaluer gratuitement <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 3: Formation LMS -->
+      <div class="journey-step" data-step="3" data-color="#28c76f" data-id="formation-lms">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#28c76f;color:#28c76f">
+            <div class="journey-step-dot-inner" style="background:#28c76f"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(40,199,111,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#28c76f">Étape 03</div>
+          <div class="journey-step-icon-wrap" style="color:#28c76f;background:rgba(40,199,111,0.1)">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3>Formation LMS</h3>
+          <p>Les équipes sont formées aux normes IATF 16949, aux méthodes Lean et aux standards qualité automobile via notre plateforme LMS.</p>
+          <a href="/lms.html" class="journey-step-btn">
+            Découvrir LMS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 4: Digitalisation QMS -->
+      <div class="journey-step" data-step="4" data-color="#ff9f43" data-id="digitalisation-qms">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#ff9f43;color:#ff9f43">
+            <div class="journey-step-dot-inner" style="background:#ff9f43"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(255,159,67,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#ff9f43">Étape 04</div>
+          <div class="journey-step-icon-wrap" style="color:#ff9f43;background:rgba(255,159,67,0.1)">
+            <i class="fas fa-industry"></i>
+          </div>
+          <h3>Digitalisation QMS</h3>
+          <p>L'entreprise déploie NOVAQYS QMS pour structurer et digitaliser ses processus qualité, production et supply chain.</p>
+          <a href="/#solutions" class="journey-step-btn">
+            Découvrir NOVAQYS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 5: AQMI Professional -->
+      <div class="journey-step" data-step="5" data-color="#00cfe8" data-id="aqmi-professional">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#00cfe8;color:#00cfe8">
+            <div class="journey-step-dot-inner" style="background:#00cfe8"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(0,207,232,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#00cfe8">Étape 05</div>
+          <div class="journey-step-icon-wrap" style="color:#00cfe8;background:rgba(0,207,232,0.1)">
+            <i class="fas fa-chart-simple"></i>
+          </div>
+          <h3>AQMI Professional</h3>
+          <p>Évaluation approfondie avec analyse détaillée, plan de progrès personnalisé et suivi de la progression.</p>
+          <div class="journey-step-anim">
+            <div class="journey-gauge">
+              <div class="journey-gauge-fill" style="background:linear-gradient(90deg,#00cfe8,#7367f0)" data-value="95%"></div>
+            </div>
+            <div class="journey-gauge-label">
+              <span>Progression du score</span>
+              <span style="color:#00cfe8;font-weight:700">95%</span>
+            </div>
+            <div class="journey-score-row">
+              <span class="journey-score-badge" style="background:rgba(0,207,232,0.12);color:#00cfe8;border:1px solid rgba(0,207,232,0.2)">52%</span>
+              <span style="color:var(--nova-text-tertiary);font-size:0.75rem">→</span>
+              <span class="journey-score-badge" style="background:rgba(115,103,240,0.12);color:#7367f0;border:1px solid rgba(115,103,240,0.2)">78%</span>
+              <span style="color:var(--nova-text-tertiary);font-size:0.75rem">→</span>
+              <span class="journey-score-badge" style="background:rgba(40,199,111,0.12);color:#28c76f;border:1px solid rgba(40,199,111,0.2)">95%</span>
+            </div>
+          </div>
+          <a href="/assessment/start" class="journey-step-btn" style="margin-top:1rem">
+            Passer à l'étape supérieure <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 6: NARA -->
+      <div class="journey-step" data-step="6" data-color="#ea5455" data-id="nara">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#ea5455;color:#ea5455">
+            <div class="journey-step-dot-inner" style="background:#ea5455"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(234,84,85,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#ea5455">Étape 06</div>
+          <div class="journey-step-icon-wrap" style="color:#ea5455;background:rgba(234,84,85,0.1)">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3>Évaluation NARA</h3>
+          <p>Audit professionnel par un constructeur ou un équipementier via NARA. Validation officielle et rapport détaillé.</p>
+          <a href="#nara" class="journey-step-btn">
+            Découvrir NARA <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 7: ASIN -->
+      <div class="journey-step" data-step="7" data-color="#7367f0" data-id="asin">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#7367f0;color:#7367f0">
+            <div class="journey-step-dot-inner" style="background:#7367f0"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(115,103,240,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#7367f0">Étape 07</div>
+          <div class="journey-step-icon-wrap" style="color:#7367f0;background:rgba(115,103,240,0.1)">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3>Visibilité ASIN</h3>
+          <p>L'entreprise rejoint ASIN et publie son passeport industriel international. Visibilité mondiale auprès des donneurs d'ordre.</p>
+          <a href="/asin.html" class="journey-step-btn">
+            Découvrir ASIN <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 8: Accès Constructeurs -->
+      <div class="journey-step" data-step="8" data-color="#9b8cf7" data-id="acces-constructeurs">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#9b8cf7;color:#9b8cf7">
+            <div class="journey-step-dot-inner" style="background:#9b8cf7"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(155,140,247,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#9b8cf7">Étape 08</div>
+          <div class="journey-step-icon-wrap" style="color:#9b8cf7;background:rgba(155,140,247,0.1)">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>Accès constructeurs</h3>
+          <p>Mise en relation directe avec les acheteurs des plus grands constructeurs automobiles mondiaux.</p>
+          <div class="journey-step-anim">
+            <div class="journey-logos">
+              <span class="journey-logo-item">Stellantis</span>
+              <span class="journey-logo-item">Renault</span>
+              <span class="journey-logo-item">Volkswagen</span>
+              <span class="journey-logo-item">Toyota</span>
+              <span class="journey-logo-item">BMW</span>
+              <span class="journey-logo-item">Hyundai</span>
+            </div>
+          </div>
+          <a href="/asin.html" class="journey-step-btn">
+            Voir les opportunités <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 9: Développement -->
+      <div class="journey-step" data-step="9" data-color="#28c76f" data-id="developpement">
+        <div class="journey-step-marker">
+          <div class="journey-step-dot" style="border-color:#28c76f;color:#28c76f">
+            <div class="journey-step-dot-inner" style="background:#28c76f"></div>
+          </div>
+          <div class="journey-step-dot-glow" style="background:radial-gradient(circle,rgba(40,199,111,0.4),transparent 70%)"></div>
+        </div>
+        <div class="journey-step-card">
+          <div class="journey-step-number" style="color:#28c76f">Étape 09</div>
+          <div class="journey-step-icon-wrap" style="color:#28c76f;background:rgba(40,199,111,0.1)">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3>Développement</h3>
+          <p>Nouveaux contrats, croissance internationale, développement commercial accéléré. L'entreprise devient un fournisseur de rang mondial.</p>
+          <div class="journey-step-anim">
+            <div class="journey-final-scene">
+              <svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="140" y="50" width="120" height="60" rx="4" fill="rgba(40,199,111,0.08)" stroke="rgba(40,199,111,0.2)" stroke-width="0.5"/>
+                <rect x="155" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <rect x="180" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <rect x="205" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <rect x="155" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <rect x="180" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <rect x="205" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/>
+                <circle cx="80" cy="80" r="18" fill="rgba(115,103,240,0.08)" stroke="rgba(115,103,240,0.2)" stroke-width="0.5"/>
+                <circle cx="80" cy="80" r="8" fill="rgba(115,103,240,0.15)"/>
+                <circle cx="320" cy="80" r="18" fill="rgba(0,207,232,0.08)" stroke="rgba(0,207,232,0.2)" stroke-width="0.5"/>
+                <circle cx="320" cy="80" r="8" fill="rgba(0,207,232,0.15)"/>
+                <line x1="98" y1="80" x2="140" y2="80" stroke="rgba(115,103,240,0.2)" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <line x1="260" y1="80" x2="302" y2="80" stroke="rgba(0,207,232,0.2)" stroke-width="0.5" stroke-dasharray="3 3"/>
+                <rect x="130" y="20" width="140" height="25" rx="4" fill="rgba(255,159,67,0.06)" stroke="rgba(255,159,67,0.15)" stroke-width="0.5"/>
+                <rect x="140" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="156" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="172" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="192" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="208" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="224" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <rect x="240" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/>
+                <text x="200" y="16" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="6">Usine moderne</text>
+                <line x1="200" y1="45" x2="200" y2="50" stroke="rgba(255,159,67,0.15)" stroke-width="0.5"/>
+              </svg>
+            </div>
+          </div>
+          <a href="#contact" class="journey-step-btn">
+            Commencer maintenant <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="benefits-section">
+    <div class="max-w-7xl px-6">
+      <div class="section-header fade-up">
+        <span class="section-label"><i class="fas fa-star"></i> Bénéfices</span>
+        <h2 class="section-title">Les bénéfices de<br><span class="gradient-text">l'écosystème NOVAQYS</span></h2>
+        <p class="section-desc">Une transformation complète pour faire de votre entreprise un acteur incontournable de la supply chain automobile mondiale.</p>
+      </div>
+      <div class="benefits-grid stagger-children observe-once">
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#28c76f15;color:#28c76f"><i class="fas fa-coins"></i></div>
+          <h3>Réduction des coûts</h3>
+          <p>Optimisez vos processus et réduisez vos coûts de production jusqu'à 30% grâce à la digitalisation et l'élimination des gaspillages.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#7367f015;color:#7367f0"><i class="fas fa-check-circle"></i></div>
+          <h3>Amélioration qualité</h3>
+          <p>Atteignez un niveau de qualité conforme aux exigences des plus grands constructeurs avec un système QMS performant.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#9b8cf715;color:#9b8cf7"><i class="fas fa-shield-halved"></i></div>
+          <h3>Conformité IATF</h3>
+          <p>Maîtrisez les exigences IATF 16949 et obtenez votre certification avec un accompagnement structuré et progressif.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#00cfe815;color:#00cfe8"><i class="fas fa-graduation-cap"></i></div>
+          <h3>Montée en compétences</h3>
+          <p>Formez vos équipes aux standards automobiles internationaux grâce à notre plateforme LMS spécialisée.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#ff9f4315;color:#ff9f43"><i class="fas fa-laptop-code"></i></div>
+          <h3>Transformation digitale</h3>
+          <p>Digitalisez l'intégralité de vos processus qualité, production et supply chain avec une plateforme unifiée.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#ea545515;color:#ea5455"><i class="fas fa-globe-americas"></i></div>
+          <h3>Visibilité internationale</h3>
+          <p>Accédez au marché mondial de la sous-traitance automobile via ASIN, la marketplace B2B dédiée.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#7367f015;color:#7367f0"><i class="fas fa-project-diagram"></i></div>
+          <h3>Nouveau réseau</h3>
+          <p>Intégrez un nouveau réseau de sous-traitance performant et connectez-vous directement aux donneurs d'ordre.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon" style="background:#28c76f15;color:#28c76f"><i class="fas fa-trophy"></i></div>
+          <h3>Compétitivité</h3>
+          <p>Renforcez votre position concurrentielle grâce à une meilleure efficacité opérationnelle et une visibilité accrue.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RAPPORT AQMI EXEMPLE ===== -->
+  <section class="report-example-section">
+    <div class="report-example-orb report-example-orb-1"></div>
+    <div class="report-example-orb report-example-orb-2"></div>
+    <div class="report-example-dots"></div>
+    <div class="max-w-7xl px-6">
+      <div class="section-header">
+        <span class="section-label"><i class="fas fa-file-pdf"></i> Rapport AQMI</span>
+        <h2 class="section-title">Exemple de rapport<br><span class="gradient-text">d'évaluation AQMI</span></h2>
+        <p class="section-desc">Découvrez un aperçu du rapport détaillé que vous recevrez après votre évaluation. Score global, analyse par domaine, forces, faiblesses et recommandations personnalisées.</p>
+      </div>
+      <div class="report-example-layout">
+        <div class="report-example-preview">
+          <div class="report-example-preview-glow"></div>
+          <div class="report-example-preview-frame">
+            <a href="/assets/pdf/rapport-aqmi-exemple.png" target="_blank" class="report-example-image-link">
+              <img src="/assets/pdf/rapport-aqmi-exemple.png" alt="Aperçu du rapport AQMI" class="report-example-image" loading="lazy">
+              <div class="report-example-overlay">
+                <i class="fas fa-search-plus"></i>
+                <span>Cliquez pour agrandir</span>
+              </div>
+            </a>
+            <div class="report-example-frame-badge">
+              <i class="fas fa-file-pdf"></i> PDF
+            </div>
+          </div>
+        </div>
+        <div class="report-example-info">
+          <div class="report-example-badge">
+            <i class="fas fa-star"></i> Rapport officiel
+          </div>
+          <h3 class="report-example-title">Ce que contient le rapport</h3>
+          <ul class="report-example-list">
+            <li><span class="report-example-list-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-chart-line"></i></span> Score global de maturité</li>
+            <li><span class="report-example-list-icon" style="background:rgba(115,103,240,0.15);color:#9b8cf7"><i class="fas fa-layer-group"></i></span> Analyse détaillée par domaine</li>
+            <li><span class="report-example-list-icon" style="background:rgba(0,207,232,0.15);color:#00cfe8"><i class="fas fa-bolt"></i></span> Forces et axes d'amélioration</li>
+            <li><span class="report-example-list-icon" style="background:rgba(255,159,67,0.15);color:#ff9f43"><i class="fas fa-chart-bar"></i></span> Benchmark sectoriel</li>
+            <li><span class="report-example-list-icon" style="background:rgba(40,199,111,0.15);color:#28c76f"><i class="fas fa-lightbulb"></i></span> Recommandations personnalisées</li>
+            <li><span class="report-example-list-icon" style="background:rgba(234,84,85,0.15);color:#ea5455"><i class="fas fa-flag"></i></span> Plan d'action prioritaire</li>
+          </ul>
+          <div class="report-example-actions">
+            <a href="/assets/pdf/rapport-aqmi-exemple.png" download class="report-example-btn">
+              <i class="fas fa-download"></i> Télécharger l'exemple
+            </a>
+            <a href="/assessment/start" class="report-example-btn-outline">
+              <i class="fas fa-clipboard-check"></i> Faire mon évaluation
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SUCCESS STORY AQMI ===== -->
+  <section class="success-section">
+    <div class="success-orb success-orb-1"></div>
+    <div class="success-orb success-orb-2"></div>
+    <div class="max-w-7xl px-6">
+      <div class="section-header">
+        <span class="section-label"><i class="fas fa-trophy"></i> Success Story</span>
+        <h2 class="section-title">Ils ont réussi leur<br><span class="gradient-text">transformation AQMI</span></h2>
+        <p class="section-desc">Découvrez comment les entreprises du secteur automobile atteignent l'excellence opérationnelle grâce à l'écosystème NOVAQYS.</p>
+      </div>
+      <div class="success-layout">
+        <div class="success-card">
+          <div class="success-card-glow"></div>
+          <div class="success-card-inner">
+            <div class="success-image-wrap">
+              <img src="/assets/img/success-aqmi.png" alt="Success Story AQMI" class="success-image" loading="lazy">
+              <div class="success-score-badge">
+                <span class="success-score-value">87%</span>
+                <span class="success-score-label">Score AQMI</span>
+              </div>
+            </div>
+            <div class="success-content">
+              <div class="success-badge">
+                <i class="fas fa-medal"></i> Excellence
+              </div>
+              <h3 class="success-title">Leader Industriel Certifié</h3>
+              <p class="success-desc">Cette entreprise a atteint un score de maturité AQMI de 87%, démontrant une maîtrise exceptionnelle des processus qualité et une capacité d'innovation remarquable dans le secteur automobile.</p>
+              <div class="success-stats">
+                <div class="success-stat">
+                  <span class="success-stat-value">87%</span>
+                  <span class="success-stat-label">Score Global</span>
+                </div>
+                <div class="success-stat-divider"></div>
+                <div class="success-stat">
+                  <span class="success-stat-value">6/6</span>
+                  <span class="success-stat-label">Domaines maîtrisés</span>
+                </div>
+                <div class="success-stat-divider"></div>
+                <div class="success-stat">
+                  <span class="success-stat-value">Top 5%</span>
+                  <span class="success-stat-label">Benchmark sectoriel</span>
+                </div>
+              </div>
+              <a href="/assessment/start" class="success-btn">
+                <i class="fas fa-arrow-right"></i> Obtenez votre score AQMI
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-rings">
+      <div class="cta-ring"></div>
+      <div class="cta-ring"></div>
+    </div>
+    <div class="cta-content fade-up">
+      <h2 class="cta-title">Prêt à transformer<br>votre <span class="gradient-text">entreprise</span> ?</h2>
+      <p class="cta-desc">Rejoignez l'écosystème NOVAQYS et intégrez le nouveau réseau de sous-traitance automobile mondial.</p>
+      <div class="cta-buttons">
+        <a href="#ecosystem"><button class="btn-primary">Découvrir NOVAQYS <i class="fas fa-arrow-right"></i></button></a>
+        <a href="/login"><button class="btn-outline"><i class="fas fa-lock"></i> Connexion AQMI</button></a>
+        <a href="#contact"><button class="btn-ghost"><i class="fas fa-play"></i> Demander une démonstration</button></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact-section" id="contact">
+    <div class="px-6">
+      <div class="section-header fade-up">
+        <span class="section-label"><i class="fas fa-envelope"></i> Contact</span>
+        <h2 class="section-title">Parlons de votre<br><span class="gradient-text">projet</span></h2>
+      </div>
+      <div class="contact-card fade-up">
+        <div class="contact-avatar">MB</div>
+        <h3 class="contact-name">BENSAFI Mohammed El Bachir</h3>
+        <p class="contact-role">Consultant NOVAQYS Ecosystem</p>
+        <div class="contact-links">
+          <a href="tel:+213552609955" class="contact-link"><i class="fas fa-phone" style="color:#7367f0"></i> +213 552 60 99 55</a>
+          <a href="mailto:contact@novaqys.com" class="contact-link"><i class="fas fa-envelope" style="color:#9b8cf7"></i> contact@novaqys.com</a>
+          <a href="https://novaqys.com" target="_blank" class="contact-link"><i class="fas fa-globe" style="color:#28c76f"></i> NOVAQYS Ecosystem</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="/assets/img/logo-novaqys-header.png" alt="NOVAQYS" width="48" height="32" style="height:32px;width:auto">
+          <span class="footer-brand-text">NOVAQYS</span>
+        </div>
+        <p class="footer-desc">Écosystème complet de développement des fabricants de pièces de rechange automobiles. De l'évaluation à l'intégration dans la supply chain mondiale.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+          <a href="mailto:contact@novaqys.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Écosystème</p>
+        <div class="footer-links">
+          <a href="/">NOVAQYS</a>
+          <a href="/login">AQMI</a>
+          <a href="#nara">NARA</a>
+          <a href="/lms.html">Automotive Learning</a>
+          <a href="#asin">ASIN</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Solutions</p>
+        <div class="footer-links">
+          <a href="#qms">QMS</a>
+          <a href="/aqmi-landing.html">AQMI Starter</a>
+          <a href="#aqmi-pro">AQMI Pro</a>
+          <a href="#pourquoi">Pourquoi NOVAQYS</a>
+          <a href="#solutions">Parcours</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Liens</p>
+        <div class="footer-links">
+          <a href="#contact">Contact</a>
+          <a href="/login">Admin</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 NOVAQYS. Tous droits réservés.</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function closeMobile(){
+      document.getElementById('navMobile')?.classList.remove('open');
+      var icon = document.querySelector('#navToggle i');
+      if(icon) icon.className = 'fas fa-bars';
+    }
+  </script>
+  <script src="/assets/js/mobile.js"></script>
+  <script src="/assets/js/novaqys.js"></script>
+  <script src="/assets/js/effects.js"></script>
+  <script src="/assets/js/journey.js" defer></script>
+  <script src="/assets/js/nova-hero.js" defer></script>
+
+</body>
+</html>

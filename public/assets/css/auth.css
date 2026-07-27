@@ -1,0 +1,920 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NOVAQYS Auth System — Premium Authentication Library
+   Auth pages module: Login, Register, OTP, Forgot, Reset, Dashboard
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. AUTH WRAPPER (Full-page background) ─────────────────── */
+
+.aqmi-auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nova-bg);
+  background-image:
+    radial-gradient(ellipse at 50% 30%, rgba(59,130,246,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+/* Ambient glow orbs */
+.aqmi-auth-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent);
+  background-size: 200% 100%;
+  animation: aqmiDataStream 4s ease infinite;
+  z-index: 2;
+}
+
+@keyframes aqmiDataStream {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Floating particles */
+.aqmi-auth-wrap .aqmi-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.aqmi-auth-wrap .aqmi-orb-1 {
+  width: 400px; height: 400px;
+  background: rgba(59,130,246,0.06);
+  top: -10%; left: -10%;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.aqmi-auth-wrap .aqmi-orb-2 {
+  width: 300px; height: 300px;
+  background: rgba(139,92,246,0.05);
+  bottom: -10%; right: -10%;
+  animation: orbFloat 25s ease-in-out infinite reverse;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -30px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+/* ─── 2. AUTH CARD ────────────────────────────────────────────── */
+
+.aqmi-auth-card {
+  background: var(--nova-bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-2xl);
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: 2.5rem;
+  animation: aqmiFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Card glow border sweep */
+.aqmi-auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+  animation: aqmiSpeedLine 3s ease-in-out infinite;
+}
+
+@keyframes aqmiSpeedLine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes aqmiFadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Auth card header */
+.aqmi-auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Logo */
+.aqmi-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 auto 1rem;
+  box-shadow: 0 8px 32px rgba(59,130,246,0.3);
+}
+
+.aqmi-auth-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--nova-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.aqmi-auth-sub {
+  font-size: 0.8125rem;
+  color: var(--nova-text-tertiary);
+  line-height: 1.5;
+}
+
+/* ─── 3. ALERTS ───────────────────────────────────────────────── */
+
+.aqmi-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  animation: aqmiSlideIn 0.3s ease both;
+}
+
+@keyframes aqmiSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.aqmi-alert i { font-size: 0.875rem; flex-shrink: 0; }
+
+.aqmi-alert-success {
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.15);
+  color: #34d399;
+}
+
+.aqmi-alert-error {
+  background: rgba(244,63,94,0.08);
+  border: 1px solid rgba(244,63,94,0.15);
+  color: #fb7185;
+}
+
+.aqmi-alert-info {
+  background: rgba(59,130,246,0.08);
+  border: 1px solid rgba(59,130,246,0.15);
+  color: #60a5fa;
+}
+
+/* ─── 4. FORM ELEMENTS ────────────────────────────────────────── */
+
+.aqmi-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.aqmi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.aqmi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--nova-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aqmi-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.aqmi-input-icon {
+  position: absolute;
+  left: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--nova-text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.aqmi-input {
+  width: 100%;
+  padding: 0.75rem 0.875rem 0.75rem 2.5rem;
+  background: var(--nova-bg-elevated);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-md);
+  color: var(--nova-text-primary);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast, 0.2s);
+  outline: none;
+  font-family: var(--font-primary);
+}
+
+.aqmi-input:focus {
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  background: var(--nova-bg-card);
+}
+
+.aqmi-input:hover {
+  border-color: var(--nova-border-hover);
+}
+
+.aqmi-input::placeholder {
+  color: var(--nova-text-muted);
+}
+
+.aqmi-input.error {
+  border-color: rgba(244,63,94,0.3);
+  box-shadow: 0 0 0 3px rgba(244,63,94,0.1);
+}
+
+.aqmi-input-icon-right {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--nova-text-tertiary);
+  pointer-events: none;
+}
+
+/* Password toggle */
+.aqmi-pwd-toggle {
+  position: absolute;
+  right: 0.75rem;
+  color: var(--nova-text-tertiary);
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  transition: color var(--transition-fast, 0.2s);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.aqmi-pwd-toggle:hover { color: var(--nova-text-secondary); }
+
+/* Password strength bar */
+.aqmi-pwd-strength {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.aqmi-pwd-strength-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--nova-border);
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.aqmi-pwd-strength-bar.weak { background: #f43f5e; }
+.aqmi-pwd-strength-bar.medium { background: #f59e0b; }
+.aqmi-pwd-strength-bar.strong { background: #10b981; }
+.aqmi-pwd-strength-bar.very-strong { background: #3b82f6; }
+
+.aqmi-pwd-strength-label {
+  font-size: 0.625rem;
+  color: var(--nova-text-tertiary);
+  margin-top: 0.25rem;
+  text-align: right;
+}
+
+/* ─── 5. BUTTONS ──────────────────────────────────────────────── */
+
+.aqmi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition-fast, 0.2s);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  line-height: 1;
+  font-family: var(--font-primary);
+}
+
+.aqmi-btn-primary {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.25);
+  justify-content: center;
+}
+
+.aqmi-btn-primary:hover {
+  background: #60a5fa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(59,130,246,0.35);
+}
+
+.aqmi-btn-primary:active {
+  transform: translateY(0);
+}
+
+.aqmi-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.aqmi-btn-full {
+  width: 100%;
+  justify-content: center;
+}
+
+.aqmi-btn-outline {
+  background: transparent;
+  border: 1px solid var(--nova-border-light);
+  color: var(--nova-text-secondary);
+}
+
+.aqmi-btn-outline:hover {
+  background: var(--nova-bg-card);
+  border-color: var(--nova-border-hover);
+  color: var(--nova-text-primary);
+  transform: translateY(-1px);
+}
+
+.aqmi-btn-ghost {
+  background: transparent;
+  color: var(--nova-text-secondary);
+}
+
+.aqmi-btn-ghost:hover {
+  background: var(--nova-bg-elevated);
+  color: var(--nova-text-primary);
+}
+
+.aqmi-btn-link {
+  background: transparent;
+  color: var(--nova-text-tertiary);
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.aqmi-btn-link:hover {
+  color: #3b82f6;
+}
+
+/* ─── 6. LINKS & FOOTER ───────────────────────────────────────── */
+
+.aqmi-link {
+  color: var(--nova-text-tertiary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: color var(--transition-fast, 0.2s);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.aqmi-link:hover { color: #3b82f6; }
+
+.aqmi-sep {
+  color: var(--nova-border-light);
+  font-size: 0.75rem;
+}
+
+.aqmi-auth-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.aqmi-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.aqmi-auth-divider::before,
+.aqmi-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--nova-border);
+}
+
+.aqmi-auth-divider span {
+  font-size: 0.625rem;
+  color: var(--nova-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.aqmi-auth-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  color: var(--nova-text-tertiary);
+  margin-top: 0.75rem;
+}
+
+.aqmi-auth-security i { color: #34d399; font-size: 0.75rem; }
+
+/* ─── 7. OTP PAGE ─────────────────────────────────────────────── */
+
+.aqmi-otp-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: var(--nova-bg-elevated);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--nova-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.aqmi-otp-email i { color: #3b82f6; font-size: 0.875rem; }
+
+.aqmi-otp-inputs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.aqmi-otp-digit {
+  width: 3rem;
+  height: 3.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--nova-text-primary);
+  background: var(--nova-bg-elevated);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.aqmi-otp-digit:focus {
+  border-color: rgba(59,130,246,0.3);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  background: var(--nova-bg-card);
+}
+
+.aqmi-otp-digit.filled {
+  border-color: rgba(16,185,129,0.2);
+  background: rgba(16,185,129,0.05);
+}
+
+.aqmi-otp-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--nova-text-tertiary);
+  font-family: var(--font-display);
+}
+
+.aqmi-otp-timer i { color: #3b82f6; font-size: 0.875rem; }
+
+.aqmi-otp-device {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--nova-text-tertiary);
+}
+
+.aqmi-otp-device i { font-size: 0.75rem; }
+
+.aqmi-otp-resend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--nova-text-tertiary);
+}
+
+/* ─── 8. DASHBOARD ────────────────────────────────────────────── */
+
+.aqmi-dash-wrap {
+  min-height: 100vh;
+  background: var(--nova-bg);
+  position: relative;
+}
+
+.aqmi-dash-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--nova-border);
+}
+
+.aqmi-dash-header-inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aqmi-dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--nova-text-primary);
+}
+
+.aqmi-dash-brand img { width: 1.625rem; height: 1.625rem; }
+
+.aqmi-dash-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.aqmi-dash-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--nova-text-secondary);
+}
+
+.aqmi-dash-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.aqmi-dash-main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.aqmi-dash-welcome {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.aqmi-dash-welcome h1 {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--nova-text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.aqmi-dash-welcome p {
+  font-size: 0.875rem;
+  color: var(--nova-text-tertiary);
+}
+
+.aqmi-dash-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Stats */
+.aqmi-dash-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .aqmi-dash-stats { grid-template-columns: repeat(4, 1fr); }
+}
+
+.aqmi-dash-stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--nova-bg-card);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.aqmi-dash-stat:hover {
+  border-color: var(--nova-border-hover);
+  transform: translateY(-2px);
+}
+
+.aqmi-dash-stat-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.aqmi-dash-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--nova-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.aqmi-dash-stat-label {
+  font-size: 0.75rem;
+  color: var(--nova-text-tertiary);
+  margin-top: 0.25rem;
+}
+
+/* Last login */
+.aqmi-dash-lastlogin {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: var(--nova-bg-card);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  color: var(--nova-text-tertiary);
+  margin-bottom: 2rem;
+}
+
+.aqmi-dash-lastlogin i { color: #06b6d4; font-size: 0.75rem; }
+
+/* Section */
+.aqmi-dash-section {
+  margin-top: 2rem;
+}
+
+.aqmi-dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.aqmi-dash-section-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--nova-text-primary);
+}
+
+/* Table */
+.aqmi-dash-table-wrap {
+  background: var(--nova-bg-card);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.aqmi-dash-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.aqmi-dash-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--nova-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--nova-bg-elevated);
+  border-bottom: 1px solid var(--nova-border);
+}
+
+.aqmi-dash-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--nova-text-secondary);
+  border-bottom: 1px solid var(--nova-border);
+}
+
+.aqmi-dash-table tr:last-child td { border-bottom: none; }
+
+.aqmi-dash-table tr:hover td { background: rgba(59,130,246,0.02); }
+
+.aqmi-dash-table code {
+  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+  color: var(--nova-text-primary);
+}
+
+/* Badges */
+.aqmi-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.aqmi-badge-success {
+  background: rgba(16,185,129,0.1);
+  color: #34d399;
+  border: 1px solid rgba(16,185,129,0.15);
+}
+
+.aqmi-badge-warning {
+  background: rgba(245,158,11,0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(245,158,11,0.15);
+}
+
+.aqmi-badge-error {
+  background: rgba(244,63,94,0.1);
+  color: #fb7185;
+  border: 1px solid rgba(244,63,94,0.15);
+}
+
+.aqmi-text-muted {
+  color: var(--nova-text-tertiary);
+  font-size: 0.8125rem;
+}
+
+/* Empty state */
+.aqmi-dash-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--nova-bg-card);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--radius-xl);
+}
+
+.aqmi-dash-empty-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: var(--nova-bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+  color: var(--nova-text-tertiary);
+}
+
+.aqmi-dash-empty h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--nova-text-primary);
+  margin-bottom: 0.375rem;
+}
+
+.aqmi-dash-empty p {
+  font-size: 0.8125rem;
+  color: var(--nova-text-tertiary);
+}
+
+/* ─── 9. REGISTER SPECIFIC ────────────────────────────────────── */
+
+.aqmi-register-name {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Terms checkbox */
+.aqmi-checkbox-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.aqmi-checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--nova-border-light);
+  background: var(--nova-bg-elevated);
+  accent-color: #3b82f6;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.aqmi-checkbox-label {
+  font-size: 0.75rem;
+  color: var(--nova-text-tertiary);
+  line-height: 1.5;
+}
+
+.aqmi-checkbox-label a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.aqmi-checkbox-label a:hover {
+  text-decoration: underline;
+}
+
+/* ─── 10. UTILITY ──────────────────────────────────────────────── */
+
+.aqmi-fade-in {
+  animation: aqmiFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.aqmi-text-center { text-align: center; }
+.aqmi-mt-1 { margin-top: 0.5rem; }
+.aqmi-mt-2 { margin-top: 1rem; }
+.aqmi-mb-1 { margin-bottom: 0.5rem; }
+.aqmi-mb-2 { margin-bottom: 1rem; }
+.aqmi-gap-1 { gap: 0.5rem; }
+
+/* ─── 11. RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .aqmi-auth-card { padding: 1.5rem; }
+  .aqmi-otp-digit { width: 2.5rem; height: 3rem; font-size: 1.25rem; }
+  .aqmi-dash-welcome { flex-direction: column; }
+  .aqmi-dash-welcome h1 { font-size: 1.375rem; }
+  .aqmi-dash-main { padding: 1.5rem 1rem; }
+  .aqmi-dash-header-inner { padding: 0 1rem; }
+  .aqmi-register-name { grid-template-columns: 1fr; }
+
+  .aqmi-dash-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--nova-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .aqmi-dash-table td {
+    display: block;
+    padding: 0.5rem 1rem;
+    border-bottom: none;
+  }
+  .aqmi-dash-table tr {
+    display: block;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--nova-border);
+  }
+  .aqmi-dash-table thead { display: none; }
+}

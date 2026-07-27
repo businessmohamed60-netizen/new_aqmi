@@ -1,0 +1,76 @@
+/* ============================================================
+   NOVAQYS — Global Effects: Cursor Follower & Page Particles
+   ============================================================ */
+
+/* ---- Cursor Follower ---- */
+.nova-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 180, 255, 0.4);
+  box-shadow:
+    0 0 20px rgba(0, 180, 255, 0.3),
+    0 0 60px rgba(0, 180, 255, 0.1);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  mix-blend-mode: screen;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.nova-cursor--glow {
+  width: 40px;
+  height: 40px;
+  background: rgba(115, 103, 240, 0.3);
+  box-shadow:
+    0 0 30px rgba(115, 103, 240, 0.4),
+    0 0 80px rgba(115, 103, 240, 0.15);
+}
+
+.nova-cursor--trail {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  background: rgba(0, 180, 255, 0.08);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* ---- Page Particles Container ---- */
+.nova-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.nova-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---- Hide on mobile/touch ---- */
+@media (hover: none) and (pointer: coarse) {
+  .nova-cursor,
+  .nova-cursor--trail {
+    display: none !important;
+  }
+}
+
+/* ---- Reduce motion preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  .nova-cursor,
+  .nova-cursor--trail,
+  .nova-particle {
+    display: none !important;
+  }
+}
