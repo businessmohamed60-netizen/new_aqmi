@@ -1,14 +1,1 @@
-vendor/
-node_modules/
-storage/logs/*
-storage/reports/*
-storage/exports/*
-storage/backups/*
-storage/cache/*
-public/uploads/*
-!.gitkeep
-*.log
-.DS_Store
-Thumbs.dbnode_modules
-.venv
 .env
