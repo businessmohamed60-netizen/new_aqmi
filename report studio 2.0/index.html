@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQMI Report Studio — Aperçu</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">
+  <style id="theme-vars">
+    :root {
+      --rs-primary: #0d47a1;
+      --rs-secondary: #546e7a;
+      --rs-accent: #00897b;
+      --rs-background: #ffffff;
+      --rs-font: 'Segoe UI', Inter, Arial, sans-serif;
+      --rs-heading: #1a237e;
+      --rs-body: #37474f;
+    }
+  </style>
+</head>
+<body class="rs-preview-body portrait">
+<div class="rs-preview-toolbar d-flex align-items-center justify-content-between px-3 py-2 sticky-top">
+  <span class="fw-semibold"><i class="bi bi-eye"></i> Aperçu — Rapport de Certification AQMI <span class="badge bg-light text-dark ms-1">A4 PORTRAIT</span></span>
+  <div class="d-flex gap-2">
+    <select class="form-select form-select-sm" id="rs-preview-orient" style="width:auto">
+      <option value="portrait" selected>A4 Portrait</option>
+      <option value="landscape">A4 Paysage</option>
+    </select>
+    <button class="btn btn-sm btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer"></i> Imprimer / PDF</button>
+  </div>
+</div>
+
+<div class="rs-report-container rs-portrait" data-report-number="AQMI-RPT-001">
+  <div class="rs-watermark" style="opacity:0.08">CONFIDENTIEL</div>
+
+  <div class="rs-report" style="--rs-primary:#0d47a1;--rs-heading:#1a237e;--rs-body:#37474f;--rs-accent:#00897b">
+    <!-- Header -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="header">
+      <div class="rs-block-header py-2 text-left">
+        <h1 class="rs-header-title mb-0">Rapport de Certification AQMI</h1>
+        <div class="rs-header-meta small text-muted d-flex gap-3 mt-1">
+          <span>N° AQMI-RPT-001</span>
+          <span>31/07/2026</span>
+          <span class="rs-dynamic-page">Page 1/1</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- AQMI + Company Logos -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="aqmi_logo">
+      <div class="text-left py-2 d-flex justify-content-between align-items-center">
+        <span class="rs-aqmi-mark" style="font-size:1.6rem;color:var(--rs-primary)">AQMI</span>
+        <div class="text-end">
+          <small class="text-muted d-block">Audit Qualité Management International</small>
+          <small class="text-muted">Certification ISO 9001</small>
+        </div>
+      </div>
+    </section>
+
+    <hr class="my-3">
+
+    <!-- Company Info -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="company_info">
+      <div class="py-1">
+        <h6 class="rs-block-title mb-2"><i class="bi bi-building"></i> Informations entreprise</h6>
+        <dl class="row mb-0 small">
+          <dt class="col-5 text-muted">Raison sociale</dt><dd class="col-7">TechnoFlow Industries SARL</dd>
+          <dt class="col-5 text-muted">Adresse</dt><dd class="col-7">12 Rue de l'Innovation, 75001 Paris</dd>
+          <dt class="col-5 text-muted">SIRET</dt><dd class="col-7">123 456 789 00012</dd>
+          <dt class="col-5 text-muted">Secteur</dt><dd class="col-7">Industrie manufacturière</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Global Score -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="global_score">
+      <div class="text-center py-3">
+        <div class="rs-score-ring" style="--rs-pct:87">
+          <div class="rs-score-ring-inner">
+            <span class="rs-score-value">87<small>/100</small></span>
+          </div>
+        </div>
+        <h6 class="mt-1 mb-0 rs-score-label">Score Global de Conformité</h6>
+        <span class="badge rs-score-rating mt-1 px-3 py-1 text-white" data-rating="B" style="border-radius:20px">Niveau B — Conforme</span>
+      </div>
+    </section>
+
+    <!-- Radar Chart -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="radar_chart">
+      <div class="py-2">
+        <h6 class="rs-block-title mb-2"><i class="bi bi-graph-up"></i> Analyse multi-critères</h6>
+        <div style="max-width:500px;margin:0 auto">
+          <canvas id="radarChart" height="260"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gauge -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="gauge">
+      <div class="text-center py-2">
+        <div class="rs-score-ring" style="--rs-pct:92">
+          <div class="rs-score-ring-inner">
+            <span class="rs-score-value">92<small>%</small></span>
+          </div>
+        </div>
+        <small class="text-muted">Taux de conformité réglementaire</small>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="recommendations">
+      <div class="py-1">
+        <h6 class="rs-block-title mb-2"><i class="bi bi-list-check"></i> Recommandations</h6>
+        <ol class="rs-reco-list">
+          <li class="small">Mettre en place une procédure formelle de revue de direction trimestrielle.</li>
+          <li class="small">Renforcer la traçabilité des non-conformités via l'outil QMS numérique.</li>
+          <li class="small">Planifier un audit interne supplémentaire avant la fin du trimestre Q3.</li>
+          <li class="small">Former le personnel opérationnel aux nouvelles procédures qualité (session 2026-Q4).</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Official Stamp -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="official_stamp">
+      <div class="rs-block-stamp text-right py-3">
+        <div class="rs-stamp rs-stamp-circular" style="width:100px;height:100px;border-color:#0d47a1;color:#0d47a1">
+          <div class="rs-stamp-inner">
+            <span class="rs-stamp-text">CERTIFIÉ</span>
+            <span class="rs-stamp-subtext">AQMI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Signature -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="signature">
+      <div class="rs-block-signature py-3 d-flex align-items-end gap-3">
+        <div class="flex-grow-1">
+          <div class="rs-sig-line"></div>
+          <p class="mb-0 fw-semibold">Marie Dubois</p>
+          <p class="text-muted small mb-0">Auditrice Senior — AQMI</p>
+          <p class="text-muted small">Date : 31/07/2026</p>
+        </div>
+        <div class="rs-sig-stamp">
+          <div class="rs-stamp rs-stamp-circular" style="width:80px;height:80px;border-color:#0d47a1;color:#0d47a1">
+            <div class="rs-stamp-inner">
+              <span class="rs-stamp-text">CERTIFIÉ</span>
+              <span class="rs-stamp-subtext">AQMI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QR Code -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="qr_code">
+      <div class="text-center py-2">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=AQMI-RPT-001-2026-verify" width="120" height="120" alt="QR Code de vérification">
+        <p class="small text-muted mt-1 mb-0">Scannez pour vérifier l'authenticité de ce rapport</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="rs-report-block rs-vis-web_pdf" data-block-key="footer">
+      <div class="rs-block-footer py-2 text-center border-top">
+        <small class="text-muted">
+          AQMI — Audit Qualité Management International · N° AQMI-RPT-001 · 31/07/2026 · <span class="rs-dynamic-page">Page 1/1</span>
+        </small>
+      </div>
+    </section>
+  </div>
+
+  <div class="rs-page-footer">
+    <span class="rs-page-num"></span>
+  </div>
+</div>
+
+<script>
+// Orientation toggle
+document.getElementById('rs-preview-orient').addEventListener('change', function() {
+  var isLandscape = this.value === 'landscape';
+  document.querySelector('.rs-report-container').classList.toggle('rs-landscape', isLandscape);
+  document.querySelector('.rs-report-container').classList.toggle('rs-portrait', !isLandscape);
+  document.body.classList.toggle('landscape', isLandscape);
+  document.querySelector('.badge.bg-light').textContent = isLandscape ? 'A4 PAYSAGE' : 'A4 PORTRAIT';
+});
+
+// Radar chart
+window.addEventListener('load', function() {
+  var ctx = document.getElementById('radarChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Management', 'Processus', 'Ressources', 'Mesures', 'Amélioration', 'Satisfaction Client'],
+      datasets: [{
+        label: 'Score 2026',
+        data: [88, 92, 78, 95, 82, 87],
+        backgroundColor: 'rgba(13, 71, 161, 0.15)',
+        borderColor: 'rgba(13, 71, 161, 0.8)',
+        borderWidth: 2,
+        pointBackgroundColor: '#0d47a1',
+        pointRadius: 4,
+      }, {
+        label: 'Objectif',
+        data: [90, 90, 85, 90, 85, 90],
+        backgroundColor: 'rgba(0, 137, 123, 0.05)',
+        borderColor: 'rgba(0, 137, 123, 0.5)',
+        borderWidth: 1.5,
+        borderDash: [5, 5],
+        pointBackgroundColor: '#00897b',
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 20, font: { size: 9 } },
+          pointLabels: { font: { size: 11 } }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 } } }
+      }
+    }
+  });
+});
+
+// Chart resize for print
+window.addEventListener('beforeprint', function() {
+  if (window.Chart && Chart.instances) {
+    Object.values(Chart.instances).forEach(function(c) { try { c.resize(); } catch(e) {} });
+  }
+});
+</script>
+</body>
+</html>

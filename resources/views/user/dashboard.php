@@ -410,8 +410,10 @@
           $statusBg = $a['status'] === 'completed' ? 'var(--vx-success-light)' : 'var(--vx-warning-light)';
           $statusLabel = $a['status'] === 'completed' ? 'Terminée' : 'En cours';
           $reportBadge = '';
-          if ($a['report_status'] === 'validated') $reportBadge = '<span class="badge" style="background:var(--vx-info-light);color:var(--vx-info);"><i class="fas fa-check-circle me-1"></i>Validé</span>';
-          elseif ($a['report_status'] === 'pending') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-hourglass me-1"></i>Attente</span>';
+          if ($a['report_status'] === 'certified') $reportBadge = '<span class="badge" style="background:var(--vx-success-light);color:var(--vx-success);"><i class="fas fa-certificate me-1"></i>Certifié</span>';
+          elseif ($a['report_status'] === 'approved') $reportBadge = '<span class="badge" style="background:var(--vx-info-light);color:var(--vx-info);"><i class="fas fa-thumbs-up me-1"></i>Approuvé</span>';
+          elseif ($a['report_status'] === 'under_review') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-magnifying-glass me-1"></i>En examen</span>';
+          elseif ($a['report_status'] === 'certification_requested') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-hourglass me-1"></i>En attente de validation</span>';
           elseif ($a['report_status'] === 'rejected') $reportBadge = '<span class="badge" style="background:var(--vx-danger-light);color:var(--vx-danger);"><i class="fas fa-times-circle me-1"></i>Rejeté</span>';
         ?>
           <div class="user-assessment-item">
@@ -424,11 +426,16 @@
                 <?= $reportBadge ?>
               </div>
             </div>
-            <div>
+            <div style="display:flex;gap:0.5rem;">
               <?php if ($a['status'] === 'completed'): ?>
                 <a href="/assessment/<?= $a['id'] ?>/results" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
                   <i class="fas fa-file-alt me-1"></i>Résultats
                 </a>
+                <?php if ($a['report_status'] === 'certified'): ?>
+                  <a href="/report/<?= $a['id'] ?>/download" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
+                    <i class="fas fa-certificate me-1"></i>Télécharger mon certificat AQMI
+                  </a>
+                <?php endif; ?>
               <?php else: ?>
                 <a href="/assessment/<?= $a['id'] ?>" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
                   <i class="fas fa-arrow-right me-1"></i>Continuer

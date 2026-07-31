@@ -70,6 +70,12 @@ $router->get('/admin/reports', 'AdminController@reports', $adminMiddleware);
 $router->post('/admin/reports/validate/{id}', 'AdminController@reportValidate', $adminMiddleware);
 $router->post('/admin/reports/reject/{id}', 'AdminController@reportReject', $adminMiddleware);
 
+// Certification workflow (dossier de demande)
+$router->get('/admin/reports/{id}', 'AdminController@reportDetail', $adminMiddleware);
+$router->post('/admin/reports/{id}/review', 'AdminController@reportStartReview', $adminMiddleware);
+$router->post('/admin/reports/{id}/approve', 'AdminController@reportApprove', $adminMiddleware);
+$router->post('/admin/reports/{id}/certify', 'AdminController@reportCertify', $adminMiddleware);
+
 // Users
 $router->get('/admin/users', 'AdminController@users', $adminMiddleware);
 $router->get('/admin/users/create', 'AdminController@userForm', $adminMiddleware);

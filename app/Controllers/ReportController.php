@@ -29,7 +29,7 @@ class ReportController
 
         $pdfService = new PdfService();
         try {
-            $filename = $pdfService->generate($assessmentId);
+            $filename = $pdfService->generateCertificate($report['id']);
             $filePath = BASE_PATH . '/storage/reports/' . $filename;
 
             if (file_exists($filePath)) {
@@ -46,10 +46,24 @@ class ReportController
                 exit;
             }
             $_SESSION['error'] = 'Erreur lors de la génération du rapport.';
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $_SESSION['error'] = 'Erreur: ' . $e->getMessage();
         }
         back();
+    }
+
+    /**
+     * Page publique de vérification d'un certificat AQMI, accessible via
+     * le QR code imprimé sur le PDF officiel. Ne révèle que des
+     * informations non sensibles (pas les réponses, pas les coordonnées).
+     */
+    public function verify(array $params): void
+    {
+        $reportNumber = trim($params['report_number'] ?? '');
+        $report = $reportNumber !== '' ? Report::findByNumber($reportNumber) : null;
+        $isValid = $report !== null && $report['status'] === 'certified';
+
+        view('public.verify', compact('report', 'reportNumber', 'isValid'));
     }
 
     /**
@@ -83,7 +97,7 @@ class ReportController
                 exit;
             }
             $_SESSION['error'] = 'Erreur lors de la génération du résumé.';
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $_SESSION['error'] = 'Erreur: ' . $e->getMessage();
         }
         back();

@@ -71,12 +71,6 @@ class AuthController
             redirect('/login');
         }
 
-        // Vérifier le rôle client
-        if ($user['role_slug'] !== 'client') {
-            Session::setFlash('error', 'Accès non autorisé.');
-            redirect('/login');
-        }
-
         // Protection force brute : limiter à 5 échecs en 15 min
         $failures = LoginHistory::countRecentFailures($ip, 15);
         if ($failures >= 5) {
@@ -162,6 +156,7 @@ class AuthController
         // Établir la session utilisateur
         Session::set('user_id', $user['id']);
         Session::set('user_role', $user['role_id']);
+        Session::set('role_slug', $user['role_slug']);
 
         // Enregistrer la connexion
         LoginHistory::record($user['id'], $user['email'], 'success', $ip, $ua['browser'], $ua['os']);
@@ -174,7 +169,13 @@ class AuthController
         Session::remove('otp_expire');
 
         Session::setFlash('success', 'Bienvenue ' . ($user['firstname'] ?? '') . ' !');
-        redirect('/dashboard');
+
+        // Redirection selon le rôle
+        if (in_array($user['role_slug'], ['admin', 'super_admin', 'manager'], true)) {
+            redirect('/admin');
+        } else {
+            redirect('/dashboard');
+        }
     }
 
     /**
@@ -210,15 +211,6 @@ class AuthController
         }
 
         redirect('/otp');
-        if ($user['role'] === 'admin') {
-
-    redirect('/admin');
-
-} else {
-
-    redirect('/dashboard');
-
-}
     }
 
     /**

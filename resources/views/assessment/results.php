@@ -13,10 +13,12 @@ $phone = $lead['phone'] ?? '';
 $country = $lead['country'] ?? '';
 
 $reportStatus = $report['status'] ?? null;
-$isReportValidated = $reportStatus === 'validated';
-$isReportPending = $reportStatus === 'pending';
-$isReportRejected = $reportStatus === 'rejected';
-$noReportRequested = $report === null;
+$hasNoRequest = $reportStatus === null;
+$isCertRequested = $reportStatus === 'certification_requested';
+$isUnderReview = $reportStatus === 'under_review';
+$isApproved = $reportStatus === 'approved';
+$isCertified = $reportStatus === 'certified';
+$isRejected = $reportStatus === 'rejected';
 
 $domainScores = $analysis['domain_scores'];
 $domainCount = count($domainScores);
@@ -128,6 +130,24 @@ ob_start();
               <div class="aqmi-domain-name"><?= e($ds['domain_name_fr'] ?: $ds['domain_name']) ?></div>
             </div>
           <?php endforeach; ?>
+        </div>
+      </div>
+      <div class="aqmi-split-grid" style="margin-top:1rem;">
+        <div class="aqmi-results-card">
+          <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
+            <i class="fas fa-chart-area" style="color:var(--aqmi-accent);"></i> Vue radar
+          </h4>
+          <div style="position:relative;height:280px;">
+            <canvas id="domainRadarChart"></canvas>
+          </div>
+        </div>
+        <div class="aqmi-results-card">
+          <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
+            <i class="fas fa-chart-column" style="color:var(--aqmi-accent);"></i> Comparaison par domaine
+          </h4>
+          <div style="position:relative;height:280px;">
+            <canvas id="domainBarChart"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -347,25 +367,36 @@ ob_start();
 
     <!-- Actions -->
     <div class="aqmi-results-actions">
-      <?php if ($noReportRequested): ?>
-        <a href="/assessment/<?= $assessment['id'] ?>/lead-form" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-purple));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
-          <i class="fas fa-file-export"></i> Demander un rapport certifié
-        </a>
-      <?php elseif ($isReportPending): ?>
-        <span class="btn" style="pointer-events:none;opacity:0.75;">
-          <i class="fas fa-clock"></i> Demande transmise — en attente de validation
+      <a href="/assessment/<?= $assessment['id'] ?>/download-summary" class="btn" style="border-color:var(--aqmi-accent);color:var(--aqmi-accent);">
+        <i class="fas fa-file-arrow-down"></i> Télécharger le résumé gratuit
+      </a>
+
+      <?php if ($hasNoRequest): ?>
+        <form method="GET" action="/assessment/<?= $assessment['id'] ?>/request-report" style="display:inline;">
+          <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-purple));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
+            <i class="fas fa-certificate"></i> Demander un Rapport AQMI Certifié
+          </button>
+        </form>
+      <?php elseif ($isCertRequested || $isUnderReview): ?>
+        <span class="btn" style="background:rgba(245,158,11,0.08);border-color:var(--aqmi-warning);color:var(--aqmi-warning);cursor:default;">
+          <i class="fas fa-hourglass-half"></i> En attente de validation
         </span>
-      <?php elseif ($isReportRejected): ?>
+      <?php elseif ($isApproved): ?>
+        <span class="btn" style="background:rgba(59,130,246,0.08);border-color:#3b82f6;color:#3b82f6;cursor:default;">
+          <i class="fas fa-cog fa-spin"></i> Approuvé — génération du certificat en cours
+        </span>
+      <?php elseif ($isRejected): ?>
         <form method="GET" action="/assessment/<?= $assessment['id'] ?>/request-report" style="display:inline;">
           <button type="submit" class="btn" style="background:var(--aqmi-warning);border-color:var(--aqmi-warning);color:#fff;">
             <i class="fas fa-redo"></i> Renvoyer la demande
           </button>
         </form>
-      <?php else: ?>
+      <?php elseif ($isCertified): ?>
         <a href="/report/<?= $assessment['id'] ?>/download" class="btn btn-primary">
-          <i class="fas fa-file-pdf"></i> Télécharger le rapport officiel
+          <i class="fas fa-file-circle-check"></i> Télécharger le Rapport Certifié
         </a>
       <?php endif; ?>
+
       <button onclick="window.print()" class="btn">
         <i class="fas fa-print"></i> Imprimer
       </button>
@@ -388,6 +419,15 @@ ob_start();
 <?php
 $projLabelsJson = json_encode(array_map(fn($p) => $p['label'], $projected));
 $projScoresJson = json_encode(array_map(fn($p) => $p['score'], $projected));
+
+$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores));
+$domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores));
+$domainBenchmarkJson = json_encode(array_map(
+    fn($d) => $benchmark['domain_avgs'][$d['domain_id']] ?? null,
+    $domainScores
+));
+
+$extraStyles = '<link rel="stylesheet" href="/css/aqmi-results-print.css">';
 
 $extraScripts = <<<SCRIPT
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -453,6 +493,86 @@ $extraScripts = <<<SCRIPT
           x: { ticks: { color: 'var(--aqmi-text-tertiary)' }, grid: { display: false } }
         }
       }
+    });
+  }
+  // Radar chart — vue d'ensemble par domaine
+  var radarEl = document.getElementById('domainRadarChart');
+  if (radarEl) {
+    new Chart(radarEl, {
+      type: 'radar',
+      data: {
+        labels: {$domainLabelsJson},
+        datasets: [{
+          label: 'Score (%)',
+          data: {$domainScoresJson},
+          borderColor: '{$currentLevel['color']}',
+          backgroundColor: '{$currentLevel['color']}22',
+          pointBackgroundColor: '{$currentLevel['color']}',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          r: {
+            min: 0, max: 100, ticks: { stepSize: 25, display: false },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            angleLines: { color: 'rgba(255,255,255,0.06)' },
+            pointLabels: { color: 'var(--aqmi-text-tertiary)', font: { size: 10 } }
+          }
+        }
+      }
+    });
+  }
+
+  // Bar chart — mes scores vs benchmark marché
+  var barEl = document.getElementById('domainBarChart');
+  if (barEl) {
+    var barDatasets = [{
+      label: 'Mes scores',
+      data: {$domainScoresJson},
+      backgroundColor: '{$currentLevel['color']}',
+      borderRadius: 4
+    }];
+    var benchmarkData = {$domainBenchmarkJson};
+    if (benchmarkData.some(function(v) { return v !== null; })) {
+      barDatasets.push({
+        label: 'Benchmark marché',
+        data: benchmarkData,
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        borderRadius: 4
+      });
+    }
+    new Chart(barEl, {
+      type: 'bar',
+      data: { labels: {$domainLabelsJson}, datasets: barDatasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: barDatasets.length > 1, labels: { color: 'var(--aqmi-text-tertiary)', font: { size: 10 } } } },
+        scales: {
+          y: { min: 0, max: 100, ticks: { color: 'var(--aqmi-text-tertiary)', callback: function(v) { return v + '%'; } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          x: { ticks: { color: 'var(--aqmi-text-tertiary)', font: { size: 9 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // Les canvases Chart.js sont dimensionnés pour l'écran au chargement et
+  // ne se redimensionnent pas seuls pour le format papier — sans ça, les
+  // graphiques radar/bar sont coupés ou déformés à l'impression.
+  // On redessine directement toutes les instances Chart.js (plus fiable
+  // qu'un simple événement "resize" générique, qui ne se déclenche pas
+  // de façon homogène selon les navigateurs lors de l'impression).
+  function resizeChartsForPrint() {
+    if (window.Chart && Chart.instances) {
+      Object.values(Chart.instances).forEach(function(c) { c.resize(); });
+    }
+  }
+  window.addEventListener('beforeprint', resizeChartsForPrint);
+  if (window.matchMedia) {
+    window.matchMedia('print').addEventListener('change', function(e) {
+      if (e.matches) resizeChartsForPrint();
     });
   }
 })();

@@ -25,6 +25,17 @@ class Report
     }
 
     /**
+     * Utilisé par la page publique /verify/{report_number}.
+     */
+    public static function findByNumber(string $reportNumber): ?array
+    {
+        return Database::fetch(
+            "SELECT r.*, l.company, l.country FROM reports r LEFT JOIN leads l ON r.lead_id = l.id WHERE r.report_number = ? LIMIT 1",
+            [$reportNumber]
+        );
+    }
+
+    /**
      * Crée une demande de certification.
      * N'est appelée QUE lorsque l'utilisateur clique sur
      * "Demander un Rapport AQMI Certifié" — jamais automatiquement

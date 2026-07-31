@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Models\Assessment;
 use App\Models\Lead;
+use App\Models\Report;
+use App\Models\ScoreLevel;
 
 class PdfService
 {
@@ -13,6 +15,20 @@ class PdfService
     {
         $this->scoringService = new ScoringService();
         $this->recommendationService = new RecommendationService();
+    }
+
+    /**
+     * Extrait le contenu intérieur d'une balise (<style>...</style> ou
+     * <body>...</body>) d'un document HTML complet, pour pouvoir le
+     * refusionner dans un document englobant unique sans dupliquer
+     * <!DOCTYPE>/<html>/<head> et sans casser l'encodage UTF-8.
+     */
+    private function extractHtmlPart(string $html, string $tag): string
+    {
+        if (preg_match('/<' . $tag . '[^>]*>(.*)<\/' . $tag . '>/is', $html, $matches)) {
+            return $matches[1];
+        }
+        return '';
     }
 
     public function generate(int $assessmentId): string
@@ -47,7 +63,439 @@ class PdfService
         return $htmlFile;
     }
 
-    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead): string
+    /**
+     * Génère le PDF officiel "Rapport AQMI Certifié" pour une demande
+     * de certification déjà approuvée par un administrateur.
+     * Réutilise buildHtml() (identique au contenu du rapport existant)
+     * et l'entoure d'une page de couverture + une page de certification
+     * (observations, plan d'action, signature, QR code de vérification).
+     */
+    public function generateCertificate(int $reportId): string
+    {
+        $report = Report::find($reportId);
+        if (!$report) throw new \RuntimeException('Report not found');
+
+        $assessment = Assessment::find($report['assessment_id']);
+        if (!$assessment) throw new \RuntimeException('Assessment not found');
+
+        $analysis = $this->scoringService->analyzeAssessment($assessment['id']);
+        $recommendations = $this->recommendationService->generate($assessment['id']);
+        $lead = Lead::findByAssessment($assessment['id']);
+
+        $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
+        $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
+
+        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
+        $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false);
+        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
+
+        // buildHtml() renvoie un DOCUMENT COMPLET (<!DOCTYPE>, <html>, <head><style>,
+        // <body>). On ne peut pas le coller tel quel entre deux fragments — ça
+        // produirait un <html> imbriqué au milieu du document, et le cover/cert
+        // se retrouveraient hors de tout <body>, ce qui casse l'encodage UTF-8
+        // (c'était le bug des accents illisibles dans le PDF précédent).
+        // On extrait donc son <style> et son <body>, et on fusionne le tout dans
+        // un unique document bien formé avec un seul <meta charset="UTF-8">.
+        $bodyStyle = $this->extractHtmlPart($rawBodyHtml, 'style');
+        $bodyInner = $this->extractHtmlPart($rawBodyHtml, 'body');
+
+        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+            . '<style>' . $bodyStyle . '</style>'
+            . '</head><body>'
+            . $coverHtml
+            . '<div style="page-break-before:always;"></div>'
+            . $bodyInner
+            . '<div style="page-break-before:always;"></div>'
+            . $certPageHtml
+            . '</body></html>';
+
+        $fileName = 'certificat_AQMI_' . $reportNumber . '_' . date('Ymd_His');
+        $reportsDir = BASE_PATH . '/storage/reports';
+        if (!is_dir($reportsDir)) {
+            mkdir($reportsDir, 0775, true);
+        }
+
+        if (class_exists('Dompdf\Dompdf')) {
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4');
+            $dompdf->render();
+            $pdfFile = $fileName . '.pdf';
+            file_put_contents($reportsDir . '/' . $pdfFile, $dompdf->output());
+            return $pdfFile;
+        }
+
+        $htmlFile = $fileName . '.html';
+        file_put_contents($reportsDir . '/' . $htmlFile, $html);
+        return $htmlFile;
+    }
+
+    /**
+     * Génère un QR code pointant vers la page publique de vérification
+     * /verify/{report_number}, l'enregistre sur disque (qr_code_path) et
+     * retourne une data-URI base64 prête à être intégrée dans le PDF.
+     * Retourne null si endroid/qr-code n'est pas encore installé
+     * (composer update requis) — le PDF se génère quand même, sans QR.
+     */
+    private function generateQrCode(int $reportId, string $reportNumber): ?string
+    {
+        if (!class_exists('Endroid\QrCode\Builder\Builder')) {
+            return null;
+        }
+
+        $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+        if ($appUrl === '') {
+            $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+                . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        }
+        $verifyUrl = $appUrl . '/verify/' . $reportNumber;
+
+        try {
+            $result = \Endroid\QrCode\Builder\Builder::create()
+                ->writer(new \Endroid\QrCode\Writer\PngWriter())
+                ->data($verifyUrl)
+                ->size(240)
+                ->margin(8)
+                ->build();
+
+            $qrDir = BASE_PATH . '/storage/qrcodes';
+            if (!is_dir($qrDir)) {
+                mkdir($qrDir, 0775, true);
+            }
+            $qrRelativePath = 'qrcodes/' . $reportNumber . '.png';
+            $result->saveToFile(BASE_PATH . '/storage/' . $qrRelativePath);
+
+            Report::setQrCodePath($reportId, $qrRelativePath);
+
+            return 'data:image/png;base64,' . base64_encode($result->getString());
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Page de couverture du certificat officiel.
+     */
+    private function buildCoverPageHtml(array $assessment, array $analysis, ?array $lead, array $report, string $reportNumber): string
+    {
+        $companyName = $lead['company'] ?? 'Entreprise';
+        $sector = $lead['sector'] ?? '—';
+        $country = $lead['country'] ?? '—';
+        $globalScore = $analysis['global_score'];
+        $level = $analysis['maturity_level'];
+        $levelName = $report['aqmi_level_assigned'] ?: ($level['name_fr'] ?? $level['name'] ?? 'Non défini');
+        $levelColor = $level['color'] ?? '#7367f0';
+        $certDate = $report['certified_at'] ? date('d/m/Y', strtotime($report['certified_at'])) : date('d/m/Y');
+        $domainScores = $analysis['domain_scores'];
+
+        $navy = '#0b1f4d';
+        $gold = '#b8860b';
+
+        $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
+        $radarSvg = $this->buildRadarSvg($domainScores, $levelColor);
+        $legendHtml = $this->buildLevelLegendHtml();
+        $sealSvg = $this->buildSealSvg($levelColor);
+
+        $domainRows = '';
+        foreach ($domainScores as $d) {
+            $pct = round($d['percent_score']);
+            $c = $pct >= 70 ? '#16a34a' : ($pct >= 50 ? '#d97706' : '#dc2626');
+            $domainRows .= '
+                <tr>
+                    <td style="padding:6px 0;font-size:9pt;color:#374151;width:52%;border-bottom:1px solid #f1f2f6;">' . htmlspecialchars($d['domain_name_fr'] ?: $d['domain_name']) . '</td>
+                    <td style="padding:6px 0;width:38%;border-bottom:1px solid #f1f2f6;">
+                        <div style="background:#eef0f4;border-radius:5px;height:7px;width:100%;">
+                            <div style="background:' . $c . ';border-radius:5px;height:7px;width:' . $pct . '%;"></div>
+                        </div>
+                    </td>
+                    <td style="padding:6px 0 6px 10px;font-size:9pt;font-weight:bold;color:' . $c . ';text-align:right;width:10%;border-bottom:1px solid #f1f2f6;">' . $pct . '%</td>
+                </tr>';
+        }
+
+        $strengths = '';
+        foreach (($analysis['strengths'] ?? []) as $s) {
+            $strengths .= '<div style="font-size:8.5pt;color:#374151;margin-bottom:7px;padding-left:14px;position:relative;">
+                <span style="position:absolute;left:0;color:#16a34a;font-weight:bold;">•</span>' . htmlspecialchars($s['domain_name_fr'] ?: $s['domain_name']) . '
+            </div>';
+        }
+        $weaknesses = '';
+        foreach (($analysis['weaknesses'] ?? []) as $w) {
+            $weaknesses .= '<div style="font-size:8.5pt;color:#374151;margin-bottom:7px;padding-left:14px;position:relative;">
+                <span style="position:absolute;left:0;color:#d97706;font-weight:bold;">•</span>' . htmlspecialchars($w['domain_name_fr'] ?: $w['domain_name']) . '
+            </div>';
+        }
+
+        return '
+        <div style="font-family:sans-serif;">
+            <!-- Bandeau de marque -->
+            <table style="width:100%;background:linear-gradient(135deg,' . $navy . ' 0%,#173b8c 100%);border-collapse:collapse;">
+                <tr>
+                    <td style="padding:22px 40px;width:55%;">
+                        <div style="font-size:22pt;font-weight:800;color:#ffffff;letter-spacing:1.5px;">AQMI</div>
+                        <div style="font-size:7pt;color:#c7d2fe;letter-spacing:2.5px;margin-top:2px;">AUTOMOTIVE QUALITY MATURITY INDEX</div>
+                    </td>
+                    <td style="padding:22px 40px;width:45%;text-align:right;">
+                        <div style="font-size:12pt;font-weight:700;color:#ffffff;">NOVAQYS</div>
+                        <div style="font-size:6.5pt;color:#c7d2fe;">Plateforme intégrée de performance industrielle &amp; qualité</div>
+                    </td>
+                </tr>
+            </table>
+            <div style="height:3px;background:linear-gradient(90deg,' . $gold . ',' . $levelColor . ');"></div>
+
+            <div style="padding:26px 40px 0;">
+                <table style="width:100%;">
+                    <tr>
+                        <td style="vertical-align:top;width:72%;">
+                            <div style="font-size:8pt;color:#9ca3af;letter-spacing:2px;">CERTIFICAT N° ' . htmlspecialchars($reportNumber) . '</div>
+                            <div style="font-size:24pt;font-weight:800;color:' . $navy . ';margin-top:2px;">Rapport de Certification AQMI</div>
+                            <div style="font-size:10.5pt;color:#4b5563;margin-top:2px;">Évaluation officielle de maturité qualité industrielle</div>
+                        </td>
+                        <td style="vertical-align:top;width:28%;text-align:center;">
+                            ' . $sealSvg . '
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width:100%;margin-top:22px;">
+                    <tr>
+                        <td style="width:48%;vertical-align:top;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:10px;padding:16px 18px;">
+                            <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:10px;">DOSSIER ENTREPRISE</div>
+                            <table style="font-size:9pt;color:#374151;width:100%;">
+                                <tr><td style="color:#9ca3af;padding:4px 0;">Entreprise</td><td style="font-weight:bold;text-align:right;">' . htmlspecialchars($companyName) . '</td></tr>
+                                <tr><td style="color:#9ca3af;padding:4px 0;">Secteur</td><td style="font-weight:bold;text-align:right;">' . htmlspecialchars($sector) . '</td></tr>
+                                <tr><td style="color:#9ca3af;padding:4px 0;">Pays</td><td style="font-weight:bold;text-align:right;">' . htmlspecialchars($country) . '</td></tr>
+                                <tr><td style="color:#9ca3af;padding:4px 0;">Date de certification</td><td style="font-weight:bold;text-align:right;">' . $certDate . '</td></tr>
+                            </table>
+                        </td>
+                        <td style="width:4%;"></td>
+                        <td style="width:48%;vertical-align:top;text-align:center;border:1px solid #e9ebf2;border-radius:10px;padding:14px 10px;">
+                            <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">SCORE AQMI GLOBAL</div>
+                            ' . $gaugeSvg . '
+                            <div style="display:inline-block;background:' . $levelColor . '18;border:1px solid ' . $levelColor . ';border-radius:999px;padding:4px 16px;margin-top:-4px;">
+                                <span style="font-size:10pt;font-weight:800;color:' . $levelColor . ';">Niveau ' . htmlspecialchars($levelName) . '</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width:100%;margin-top:20px;">
+                    <tr>
+                        <td style="width:40%;vertical-align:top;">
+                            <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:10px;">RÉSULTATS PAR DOMAINE</div>
+                            <table style="width:100%;">' . $domainRows . '</table>
+                        </td>
+                        <td style="width:2%;"></td>
+                        <td style="width:58%;vertical-align:top;text-align:center;">
+                            <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:2px;">PROFIL DE MATURITÉ</div>
+                            ' . $radarSvg . '
+                        </td>
+                    </tr>
+                </table>
+
+                ' . $legendHtml . '
+
+                <table style="width:100%;margin-top:8px;">
+                    <tr>
+                        <td style="width:32%;vertical-align:top;background:#ffffff;border:1px solid #e9ebf2;border-top:3px solid #16a34a;border-radius:8px;padding:12px 14px;">
+                            <div style="font-size:7.5pt;font-weight:700;color:#16a34a;letter-spacing:1px;margin-bottom:8px;">POINTS FORTS</div>
+                            ' . ($strengths ?: '<div style="font-size:8.5pt;color:#9ca3af;">—</div>') . '
+                        </td>
+                        <td style="width:2%;"></td>
+                        <td style="width:32%;vertical-align:top;background:#ffffff;border:1px solid #e9ebf2;border-top:3px solid #d97706;border-radius:8px;padding:12px 14px;">
+                            <div style="font-size:7.5pt;font-weight:700;color:#d97706;letter-spacing:1px;margin-bottom:8px;">AXES D\'AMÉLIORATION</div>
+                            ' . ($weaknesses ?: '<div style="font-size:8.5pt;color:#9ca3af;">—</div>') . '
+                        </td>
+                        <td style="width:2%;"></td>
+                        <td style="width:32%;vertical-align:top;background:#ffffff;border:1px solid #e9ebf2;border-top:3px solid ' . $navy . ';border-radius:8px;padding:12px 14px;">
+                            <div style="font-size:7.5pt;font-weight:700;color:' . $navy . ';letter-spacing:1px;margin-bottom:8px;">RECOMMANDATION AQMI</div>
+                            <div style="font-size:8.5pt;color:#374151;line-height:1.5;">L\'entreprise est recommandée pour le <strong>niveau ' . htmlspecialchars($levelName) . '</strong> et peut prétendre à des opportunités de développement au sein de la chaîne d\'approvisionnement.</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="margin-top:24px;padding-top:10px;border-top:1px solid #e9ebf2;text-align:center;font-size:6.5pt;color:#9ca3af;">
+                    Document confidentiel généré le ' . date('d/m/Y') . ' — AQMI by NOVAQYS © ' . date('Y') . '
+                </div>
+            </div>
+        </div>';
+    }
+
+    /**
+     * Anneau de score SVG (stroke-dasharray) avec graduations discrètes,
+     * compatible dompdf — évite conic-gradient/canvas non supportés.
+     */
+    private function buildGaugeSvg(float $percent, string $color): string
+    {
+        $radius = 60;
+        $circumference = 2 * M_PI * $radius;
+        $pct = max(0, min(100, $percent));
+        $offset = $circumference * (1 - $pct / 100);
+
+        $ticks = '';
+        for ($t = 0; $t < 100; $t += 10) {
+            $angle = (2 * M_PI * $t / 100) - (M_PI / 2);
+            $x1 = 75 + 52 * cos($angle); $y1 = 75 + 52 * sin($angle);
+            $x2 = 75 + 58 * cos($angle); $y2 = 75 + 58 * sin($angle);
+            $ticks .= '<line x1="' . round($x1, 1) . '" y1="' . round($y1, 1) . '" x2="' . round($x2, 1) . '" y2="' . round($y2, 1) . '" stroke="#e5e7eb" stroke-width="1.5"/>';
+        }
+
+        return '
+        <svg width="150" height="150" viewBox="0 0 150 150">
+            ' . $ticks . '
+            <circle cx="75" cy="75" r="' . $radius . '" fill="none" stroke="#eef0f4" stroke-width="12"/>
+            <circle cx="75" cy="75" r="' . $radius . '" fill="none" stroke="' . $color . '" stroke-width="12"
+                stroke-dasharray="' . round($circumference, 2) . '" stroke-dashoffset="' . round($offset, 2) . '"
+                stroke-linecap="round" transform="rotate(-90 75 75)"/>
+            <text x="75" y="72" text-anchor="middle" font-size="27" font-weight="bold" fill="' . $color . '">' . round($pct) . '%</text>
+            <text x="75" y="90" text-anchor="middle" font-size="7" fill="#9ca3af" letter-spacing="1">MATURITÉ</text>
+        </svg>';
+    }
+
+    /**
+     * Radar/spider chart en SVG calculé en PHP (trigonométrie) — pas de
+     * JS/canvas possible dans dompdf, donc les polygones sont dessinés
+     * directement en coordonnées.
+     */
+    private function buildRadarSvg(array $domainScores, string $color = '#1a56db'): string
+    {
+        $n = count($domainScores);
+        if ($n < 3) return '<div style="font-size:8pt;color:#9ca3af;">Pas assez de domaines pour un radar.</div>';
+
+        $size = 230;
+        $center = $size / 2;
+        $maxR = 88;
+
+        $gridPolygons = '';
+        foreach ([25, 50, 75, 100] as $lvl) {
+            $r = $maxR * ($lvl / 100);
+            $pts = [];
+            for ($i = 0; $i < $n; $i++) {
+                $angle = (2 * M_PI * $i / $n) - (M_PI / 2);
+                $pts[] = round($center + $r * cos($angle), 1) . ',' . round($center + $r * sin($angle), 1);
+            }
+            $gridPolygons .= '<polygon points="' . implode(' ', $pts) . '" fill="none" stroke="#eef0f4" stroke-width="0.75"/>';
+        }
+
+        $axisLines = '';
+        $dataPts = [];
+        $dots = '';
+        for ($i = 0; $i < $n; $i++) {
+            $angle = (2 * M_PI * $i / $n) - (M_PI / 2);
+            $axisLines .= '<line x1="' . $center . '" y1="' . $center . '" x2="' . round($center + $maxR * cos($angle), 1) . '" y2="' . round($center + $maxR * sin($angle), 1) . '" stroke="#eef0f4" stroke-width="0.75"/>';
+
+            $pct = max(0, min(100, $domainScores[$i]['percent_score']));
+            $r = $maxR * ($pct / 100);
+            $px = round($center + $r * cos($angle), 1);
+            $py = round($center + $r * sin($angle), 1);
+            $dataPts[] = $px . ',' . $py;
+            $dots .= '<circle cx="' . $px . '" cy="' . $py . '" r="2.5" fill="' . $color . '"/>';
+        }
+
+        return '
+        <svg width="' . $size . '" height="' . $size . '" viewBox="0 0 ' . $size . ' ' . $size . '">
+            ' . $gridPolygons . $axisLines . '
+            <polygon points="' . implode(' ', $dataPts) . '" fill="' . $color . '22" stroke="' . $color . '" stroke-width="2"/>
+            ' . $dots . '
+        </svg>';
+    }
+
+    /**
+     * Légende des niveaux AQMI sous forme de puces (chips), tirée
+     * dynamiquement de la table score_levels.
+     */
+    private function buildLevelLegendHtml(): string
+    {
+        $levels = ScoreLevel::all();
+        if (empty($levels)) return '';
+
+        $items = '';
+        foreach ($levels as $lvl) {
+            $items .= '<span style="display:inline-block;margin:0 10px 4px 0;padding:3px 10px;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:999px;font-size:7pt;color:#374151;">
+                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:' . $lvl['color'] . ';margin-right:4px;"></span>
+                ' . htmlspecialchars($lvl['name_fr'] ?: $lvl['name']) . ' (' . round($lvl['min_percent']) . '–' . round($lvl['max_percent']) . '%)
+            </span>';
+        }
+        return '<div style="text-align:center;margin:6px 0 4px;">' . $items . '</div>';
+    }
+
+    /**
+     * Sceau circulaire "certifié" en SVG pur (double anneau + coche),
+     * pour remplacer un logo/badge image qu\'on n\'a pas en assets.
+     */
+    private function buildSealSvg(string $color): string
+    {
+        return '
+        <svg width="105" height="105" viewBox="0 0 105 105">
+            <circle cx="52.5" cy="52.5" r="50" fill="none" stroke="' . $color . '" stroke-width="2"/>
+            <circle cx="52.5" cy="52.5" r="43" fill="none" stroke="' . $color . '" stroke-width="1" stroke-dasharray="2,3"/>
+            <circle cx="52.5" cy="52.5" r="36" fill="' . $color . '0d"/>
+            <path d="M 38 53 L 47 62 L 68 40" fill="none" stroke="' . $color . '" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="52.5" y="80" text-anchor="middle" font-size="6.5" font-weight="bold" fill="' . $color . '" letter-spacing="1.5">CERTIFIÉ AQMI</text>
+        </svg>';
+    }
+
+    /**
+     * Dernière page : observations, plan d'action, déclaration officielle,
+     * signature électronique de l'administrateur et QR code de vérification.
+     */
+    private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri): string
+    {
+        $navy = '#0b1f4d';
+        $gold = '#b8860b';
+
+        $qrImg = $qrDataUri
+            ? '<img src="' . $qrDataUri . '" style="width:110px;height:110px;" />'
+            : '<div style="width:110px;height:110px;border:1px dashed #d1d5db;border-radius:8px;text-align:center;padding-top:46px;font-size:7.5pt;color:#9ca3af;">QR indisponible</div>';
+
+        $certDate = $report['certified_at'] ? date('d/m/Y', strtotime($report['certified_at'])) : date('d/m/Y');
+
+        return '
+        <div style="font-family:sans-serif;">
+            <table style="width:100%;background:linear-gradient(135deg,' . $navy . ' 0%,#173b8c 100%);border-collapse:collapse;">
+                <tr><td style="padding:18px 40px;">
+                    <div style="font-size:14pt;font-weight:800;color:#ffffff;letter-spacing:1px;">Déclaration Officielle de Certification</div>
+                </td></tr>
+            </table>
+            <div style="height:3px;background:' . $gold . ';"></div>
+
+            <div style="padding:28px 40px;">
+                <div style="font-size:9pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:8px;">OBSERVATIONS DE L\'ADMINISTRATEUR</div>
+                <p style="font-size:9.5pt;color:#374151;line-height:1.7;padding-bottom:14px;border-bottom:1px solid #eef0f4;">' . nl2br(htmlspecialchars($report['observations'] ?: 'Aucune observation particulière.')) . '</p>
+
+                <div style="font-size:9pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin:20px 0 8px;">PLAN D\'ACTION RECOMMANDÉ</div>
+                <p style="font-size:9.5pt;color:#374151;line-height:1.7;">' . nl2br(htmlspecialchars($report['action_plan'] ?: 'Aucun plan d\'action spécifique.')) . '</p>
+
+                <table style="width:100%;margin-top:40px;border-top:2px solid ' . $navy . ';padding-top:22px;">
+                    <tr>
+                        <td style="width:62%;vertical-align:top;">
+                            <p style="font-size:8.5pt;color:#6b7280;line-height:1.7;">
+                                Ce certificat atteste que l\'entreprise mentionnée a fait l\'objet d\'une évaluation
+                                de maturité qualité selon la méthodologie officielle <strong style="color:' . $navy . ';">AQMI by NOVAQYS</strong>.
+                                Le QR code ci-contre permet d\'en vérifier l\'authenticité en ligne à tout moment.
+                            </p>
+                            <div style="margin-top:26px;">
+                                <div style="font-size:7.5pt;color:#9ca3af;letter-spacing:1px;">SIGNATURE ÉLECTRONIQUE</div>
+                                <div style="font-size:13pt;font-weight:bold;font-style:italic;color:' . $navy . ';border-bottom:1.5px solid ' . $navy . ';display:inline-block;padding:6px 24px 6px 0;margin-top:8px;">' . htmlspecialchars($report['admin_signature'] ?? '') . '</div>
+                                <div style="font-size:7.5pt;color:#9ca3af;margin-top:4px;">Certifié le ' . $certDate . '</div>
+                            </div>
+                        </td>
+                        <td style="width:38%;text-align:center;vertical-align:top;">
+                            <div style="display:inline-block;padding:10px;border:1px solid #e9ebf2;border-radius:10px;">
+                                ' . $qrImg . '
+                            </div>
+                            <div style="font-size:7.5pt;color:#9ca3af;margin-top:8px;">Réf. ' . htmlspecialchars($reportNumber) . '</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="margin-top:30px;text-align:center;padding:14px;background:#f8f9fc;border-radius:8px;">
+                    <span style="font-size:9pt;font-weight:800;color:' . $navy . ';letter-spacing:1px;">RAPPORT AQMI CERTIFIÉ</span>
+                </div>
+            </div>
+        </div>';
+    }
+
+    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
         $leadName = ($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? '');
@@ -80,6 +528,17 @@ class PdfService
                 </td>
                 <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;text-align:center;font-weight:bold;font-size:11pt;color:' . $barColor . ';">' . $pct . '%</td>
                 <td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;text-align:center;">' . $ds['avg_score'] . '/5</td>
+            </tr>';
+        }
+
+        // ---- Légende des niveaux : construite depuis la vraie table
+        // score_levels (avant, ce tableau était codé en dur et contredisait
+        // la légende réelle affichée sur la page de couverture) ----
+        $levelLegendRows = '';
+        foreach (ScoreLevel::all() as $lvl) {
+            $levelLegendRows .= '<tr>
+                <td style="text-align:center;font-weight:bold;color:' . $lvl['color'] . ';">' . round($lvl['min_percent']) . '-' . round($lvl['max_percent']) . '%</td>
+                <td style="font-weight:bold;" colspan="2">' . htmlspecialchars($lvl['name_fr'] ?: $lvl['name']) . '</td>
             </tr>';
         }
 
@@ -153,6 +612,105 @@ class PdfService
         }
 
         $levelDesc = $this->getMaturityLevelDescription($levelName);
+
+        // ---- Section "Parc Industriel" : contient des données déclaratives
+        // génériques par secteur, pas les vraies réponses de l'utilisateur.
+        // Exclue du certificat officiel (voir generateCertificate()) pour ne
+        // pas faire figurer d'informations non vérifiées dans un document
+        // certifié ; conservée par défaut dans le résumé gratuit existant.
+        $industrialParkSection = '';
+        if ($includeIndustrialPark) {
+            $industrialParkSection = '
+<!-- ============================================================ -->
+<!-- PAGE 3: ÉVALUATION DU PARC INDUSTRIEL -->
+<!-- ============================================================ -->
+<div class="page page-break">
+    <div class="section-header">
+        <div class="num">3</div>
+        <div>
+            <h2>Évaluation du Parc Industriel</h2>
+            <div class="sub">Inventaire des équipements, capacités et état des installations</div>
+        </div>
+    </div>
+
+    <p class="desc-text">
+        Diagnostic détaillé du parc machines et équipements industriels de <strong>' . $companyName . '</strong>.
+        Cette section présente l\'inventaire des actifs de production, leur état opérationnel et les capacités installées.
+    </p>
+
+    <div class="industrial-summary">
+        <div class="stat-box">
+            <div class="num">' . count($industrialData['machines']) . '</div>
+            <div class="lbl">Machines<br>et Équipements</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">' . count($industrialData['production_lines']) . '</div>
+            <div class="lbl">Lignes de<br>Production</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">' . $industrialData['total_capacity'] . '</div>
+            <div class="lbl">Capacité<br>Journalière</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">' . $industrialData['avg_efficiency'] . '%</div>
+            <div class="lbl">Rendement<br>Opérationnel</div>
+        </div>
+        <div class="stat-box">
+            <div class="num">' . $industrialData['total_quantity'] . '</div>
+            <div class="lbl">Total Unités<br>Installées</div>
+        </div>
+    </div>
+
+    <div class="section-title-sm">Inventaire des Machines et Équipements</div>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th style="width:22%;">Machine / Équipement</th>
+                <th style="width:18%;">Type / Marque</th>
+                <th style="width:16%;">Capacité</th>
+                <th style="width:10%;">Qté</th>
+                <th style="width:16%;">État</th>
+                <th style="width:10%;">Année</th>
+            </tr>
+        </thead>
+        <tbody>' . $machineRows . '</tbody>
+    </table>
+
+    <div class="section-title-sm" style="margin-top:25px;">Lignes de Production</div>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th style="width:28%;">Ligne / Atelier</th>
+                <th style="width:22%;">Produits</th>
+                <th style="width:25%;">Capacité Journalière</th>
+                <th style="width:15%;">Rendement</th>
+            </tr>
+        </thead>
+        <tbody>' . $prodLineRows . '</tbody>
+    </table>
+
+    <div class="section-title-sm" style="margin-top:25px;">Infrastructure et Installations</div>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th style="width:25%;">Installation</th>
+                <th style="width:50%;">Description</th>
+                <th style="width:15%;">État</th>
+            </tr>
+        </thead>
+        <tbody>' . $infraRows . '</tbody>
+    </table>
+
+    <div style="margin-top:20px;padding:14px 18px;background:#fffbeb;border-radius:10px;border-left:4px solid #d97706;">
+        <div style="font-size:10pt;font-weight:700;color:#92400e;margin-bottom:4px;">Note d\'Évaluation du Parc Industriel</div>
+        <div style="font-size:9pt;color:#78350f;">
+            L\'évaluation du parc industriel est basée sur les données déclarées et l\'analyse sectorielle.
+            ' . ($industrialData['avg_efficiency'] >= 80 ? 'Le parc industriel présente un bon niveau de performance avec des équipements modernes et bien maintenus.' : ($industrialData['avg_efficiency'] >= 60 ? 'Le parc industriel est opérationnel mais nécessite des investissements ciblés pour améliorer la productivité.' : 'Le parc industriel nécessite une attention particulière avec un plan de modernisation et de maintenance à mettre en œuvre.')) . '
+        </div>
+    </div>
+</div>
+';
+        }
 
         // ==============================================
         // BUILD THE COMPLETE HTML
@@ -589,99 +1147,7 @@ class PdfService
     </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- PAGE 3: ÉVALUATION DU PARC INDUSTRIEL -->
-<!-- ============================================================ -->
-<div class="page page-break">
-    <div class="section-header">
-        <div class="num">3</div>
-        <div>
-            <h2>Évaluation du Parc Industriel</h2>
-            <div class="sub">Inventaire des équipements, capacités et état des installations</div>
-        </div>
-    </div>
-
-    <p class="desc-text">
-        Diagnostic détaillé du parc machines et équipements industriels de <strong>' . $companyName . '</strong>.
-        Cette section présente l\'inventaire des actifs de production, leur état opérationnel et les capacités installées.
-    </p>
-
-    <!-- Industrial Summary Stats -->
-    <div class="industrial-summary">
-        <div class="stat-box">
-            <div class="num">' . count($industrialData['machines']) . '</div>
-            <div class="lbl">Machines<br>et Équipements</div>
-        </div>
-        <div class="stat-box">
-            <div class="num">' . count($industrialData['production_lines']) . '</div>
-            <div class="lbl">Lignes de<br>Production</div>
-        </div>
-        <div class="stat-box">
-            <div class="num">' . $industrialData['total_capacity'] . '</div>
-            <div class="lbl">Capacité<br>Journalière</div>
-        </div>
-        <div class="stat-box">
-            <div class="num">' . $industrialData['avg_efficiency'] . '%</div>
-            <div class="lbl">Rendement<br>Opérationnel</div>
-        </div>
-        <div class="stat-box">
-            <div class="num">' . $industrialData['total_quantity'] . '</div>
-            <div class="lbl">Total Unités<br>Installées</div>
-        </div>
-    </div>
-
-    <!-- Machines / Equipment Table -->
-    <div class="section-title-sm">Inventaire des Machines et Équipements</div>
-    <table class="striped">
-        <thead>
-            <tr>
-                <th style="width:22%;">Machine / Équipement</th>
-                <th style="width:18%;">Type / Marque</th>
-                <th style="width:16%;">Capacité</th>
-                <th style="width:10%;">Qté</th>
-                <th style="width:16%;">État</th>
-                <th style="width:10%;">Année</th>
-            </tr>
-        </thead>
-        <tbody>' . $machineRows . '</tbody>
-    </table>
-
-    <!-- Production Lines -->
-    <div class="section-title-sm" style="margin-top:25px;">Lignes de Production</div>
-    <table class="striped">
-        <thead>
-            <tr>
-                <th style="width:28%;">Ligne / Atelier</th>
-                <th style="width:22%;">Produits</th>
-                <th style="width:25%;">Capacité Journalière</th>
-                <th style="width:15%;">Rendement</th>
-            </tr>
-        </thead>
-        <tbody>' . $prodLineRows . '</tbody>
-    </table>
-
-    <!-- Infrastructure -->
-    <div class="section-title-sm" style="margin-top:25px;">Infrastructure et Installations</div>
-    <table class="striped">
-        <thead>
-            <tr>
-                <th style="width:25%;">Installation</th>
-                <th style="width:50%;">Description</th>
-                <th style="width:15%;">État</th>
-            </tr>
-        </thead>
-        <tbody>' . $infraRows . '</tbody>
-    </table>
-
-    <!-- Assessment Notes -->
-    <div style="margin-top:20px;padding:14px 18px;background:#fffbeb;border-radius:10px;border-left:4px solid #d97706;">
-        <div style="font-size:10pt;font-weight:700;color:#92400e;margin-bottom:4px;">Note d\'Évaluation du Parc Industriel</div>
-        <div style="font-size:9pt;color:#78350f;">
-            L\'évaluation du parc industriel est basée sur les données déclarées et l\'analyse sectorielle.
-            ' . ($industrialData['avg_efficiency'] >= 80 ? 'Le parc industriel présente un bon niveau de performance avec des équipements modernes et bien maintenus.' : ($industrialData['avg_efficiency'] >= 60 ? 'Le parc industriel est opérationnel mais nécessite des investissements ciblés pour améliorer la productivité.' : 'Le parc industriel nécessite une attention particulière avec un plan de modernisation et de maintenance à mettre en œuvre.')) . '
-        </div>
-    </div>
-</div>
+' . $industrialParkSection . '
 
 <!-- ============================================================ -->
 <!-- PAGE 4: ANALYSE DÉTAILLÉE PAR DOMAINE -->
@@ -725,10 +1191,7 @@ class PdfService
                 </tr>
             </thead>
             <tbody>
-                <tr><td style="text-align:center;font-weight:bold;color:#059669;">80-100%</td><td style="font-weight:bold;">Optimisé</td><td>Processus maîtrisés, amélioration continue active</td></tr>
-                <tr><td style="text-align:center;font-weight:bold;color:#1a56db;">60-79%</td><td style="font-weight:bold;">Avancé</td><td>Processus structurés et mesurés, résultats conformes</td></tr>
-                <tr><td style="text-align:center;font-weight:bold;color:#d97706;">40-59%</td><td style="font-weight:bold;">En Développement</td><td>Processus définis mais application irrégulière</td></tr>
-                <tr><td style="text-align:center;font-weight:bold;color:#dc3545;">0-39%</td><td style="font-weight:bold;">Initial</td><td>Processus non structurés, actions correctives urgentes</td></tr>
+                ' . $levelLegendRows . '
             </tbody>
         </table>
     </div>

@@ -581,6 +581,12 @@ class AdminController
 
     public function reportValidate(array $params): void
     {
+        // NOTE: méthode conservée pour compatibilité de route (ne jamais
+        // supprimer une route existante), mais le workflow de validation
+        // passe maintenant par reportApprove() + reportCertify() depuis la
+        // page de dossier (/admin/reports/{id}). 'validated' n'existe plus
+        // dans les statuts valides ; on route donc vers 'certified' pour
+        // éviter une exception si cette route legacy est encore appelée.
         Auth::requireAuth();
         $id = (int)($params['id'] ?? 0);
         $report = Report::find($id);
@@ -589,10 +595,11 @@ class AdminController
         $assessmentId = $report['assessment_id'];
         $pdfService = new \App\Services\PdfService();
         try {
-            $filename = $pdfService->generate($assessmentId);
-            $adminName = ($_SESSION['user']['firstname'] ?? '') . ' ' . ($_SESSION['user']['lastname'] ?? 'Admin');
-            Report::updateStatus($id, 'validated', $adminName, $filename);
-            $_SESSION['success'] = 'Rapport validé avec succès.';
+            $adminName = trim((Auth::user()['firstname'] ?? '') . ' ' . (Auth::user()['lastname'] ?? 'Admin'));
+            Report::assignReportNumber($id);
+            $filename = $pdfService->generateCertificate($id);
+            Report::updateStatus($id, 'certified', $adminName, $filename);
+            $_SESSION['success'] = 'Rapport certifié avec succès.';
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Erreur de génération PDF: ' . $e->getMessage();
         }
@@ -606,9 +613,110 @@ class AdminController
         $report = Report::find($id);
         if (!$report) { $_SESSION['error'] = 'Rapport introuvable.'; redirect('/admin/reports'); return; }
 
+        Report::saveAdminReview($id, ['admin_comment' => $_POST['admin_comment'] ?? $report['admin_comment']]);
         Report::updateStatus($id, 'rejected');
-        $_SESSION['success'] = 'Rapport rejeté.';
-        redirect('/admin/reports');
+        $_SESSION['success'] = 'Demande rejetée.';
+        redirect($_SERVER['HTTP_REFERER'] ?? '/admin/reports');
+    }
+
+    /**
+     * Dossier complet d'une demande de certification :
+     * rapport, évaluation, lead, réponses détaillées, scores,
+     * recommandations, champs personnalisés.
+     */
+    public function reportDetail(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) { $_SESSION['error'] = 'Dossier introuvable.'; redirect('/admin/reports'); return; }
+
+        // Ouvrir le dossier d'une demande fraîche la fait passer "en cours d'examen"
+        Report::markUnderReviewIfNeeded($id);
+        $report = Report::find($id);
+
+        $assessment = Assessment::find($report['assessment_id']);
+        $lead = $assessment ? Lead::findByAssessment($assessment['id']) : null;
+        $customFields = $lead ? LeadCustomField::getValues($lead['id']) : [];
+
+        $scoringService = new \App\Services\ScoringService();
+        $analysis = $assessment ? $scoringService->analyzeAssessment($assessment['id']) : null;
+        $recommendations = $assessment ? (new \App\Services\RecommendationService())->generate($assessment['id']) : [];
+
+        $answers = $assessment ? Database::fetchAll(
+            "SELECT aa.score, q.title, q.title_fr, d.name as domain_name, d.name_fr as domain_name_fr
+             FROM assessment_answers aa
+             JOIN questions q ON aa.question_id = q.id
+             JOIN domains d ON q.domain_id = d.id
+             WHERE aa.assessment_id = ?
+             ORDER BY d.sort_order, q.sort_order",
+            [$assessment['id']]
+        ) : [];
+
+        view('admin.reports.detail', compact('report', 'assessment', 'lead', 'customFields', 'analysis', 'recommendations', 'answers'));
+    }
+
+    public function reportStartReview(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        Report::markUnderReviewIfNeeded($id);
+        $_SESSION['success'] = 'Dossier passé en cours d\'examen.';
+        redirect('/admin/reports/' . $id);
+    }
+
+    public function reportApprove(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) { $_SESSION['error'] = 'Dossier introuvable.'; redirect('/admin/reports'); return; }
+
+        Report::saveAdminReview($id, [
+            'admin_comment' => $_POST['admin_comment'] ?? null,
+            'observations' => $_POST['observations'] ?? null,
+            'action_plan' => $_POST['action_plan'] ?? null,
+            'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? null,
+        ]);
+        Report::updateStatus($id, 'approved');
+        $_SESSION['success'] = 'Dossier approuvé. Vous pouvez maintenant le certifier.';
+        redirect('/admin/reports/' . $id);
+    }
+
+    public function reportCertify(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) { $_SESSION['error'] = 'Dossier introuvable.'; redirect('/admin/reports'); return; }
+        if ($report['status'] !== 'approved') {
+            $_SESSION['error'] = 'Le dossier doit être approuvé avant certification.';
+            redirect('/admin/reports/' . $id);
+            return;
+        }
+
+        Report::saveAdminReview($id, [
+            'admin_comment' => $_POST['admin_comment'] ?? $report['admin_comment'],
+            'observations' => $_POST['observations'] ?? $report['observations'],
+            'action_plan' => $_POST['action_plan'] ?? $report['action_plan'],
+            'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? $report['aqmi_level_assigned'],
+        ]);
+
+        $reportNumber = Report::assignReportNumber($id);
+        $adminName = trim((Auth::user()['firstname'] ?? '') . ' ' . (Auth::user()['lastname'] ?? 'Admin'));
+        Report::setSignature($id, $adminName);
+
+        try {
+            $pdfService = new \App\Services\PdfService();
+            $filename = $pdfService->generateCertificate($id);
+            Report::updateStatus($id, 'certified', $adminName, $filename);
+            $_SESSION['success'] = "Rapport certifié sous le numéro {$reportNumber}.";
+        } catch (\Exception $e) {
+            Report::updateStatus($id, 'certified', $adminName);
+            $_SESSION['error'] = "Certifié (n° {$reportNumber}) mais la génération du PDF a échoué : " . $e->getMessage();
+        }
+
+        redirect('/admin/reports/' . $id);
     }
 
     // === USERS ===
