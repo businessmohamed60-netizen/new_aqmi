@@ -82,4 +82,76 @@ class Database
     {
         return (int)self::getInstance()->pdo->lastInsertId();
     }
+
+    // ------------------------------------------------------------------
+    // Table-oriented convenience API (used by the Report Studio module).
+    // These complement the raw-SQL methods above; both sets coexist.
+    // ------------------------------------------------------------------
+
+    /**
+     * Fetch a single row by raw SQL. Alias kept for module compatibility.
+     */
+    public static function fetchOne(string $sql, array $params = []): ?array
+    {
+        return self::fetch($sql, $params);
+    }
+
+    /**
+     * Insert a row from an associative array and return the new id.
+     */
+    public static function insertRow(string $table, array $data): int
+    {
+        $pdo = self::getInstance()->pdo;
+        $columns = array_keys($data);
+        $placeholders = array_map(fn($c) => ':' . $c, $columns);
+        $sql = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $table,
+            implode(', ', $columns),
+            implode(', ', $placeholders)
+        );
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(array_combine($placeholders, array_values($data)));
+        return (int) $pdo->lastInsertId();
+    }
+
+    /**
+     * Update rows matching a where clause from an associative array.
+     */
+    public static function updateRow(string $table, array $data, array $where): bool
+    {
+        $setClauses = [];
+        $params = [];
+        foreach ($data as $col => $val) {
+            $setClauses[] = $col . ' = :set_' . $col;
+            $params[':set_' . $col] = $val;
+        }
+        $whereClauses = [];
+        foreach ($where as $col => $val) {
+            $whereClauses[] = $col . ' = :where_' . $col;
+            $params[':where_' . $col] = $val;
+        }
+        $sql = sprintf(
+            'UPDATE %s SET %s WHERE %s',
+            $table,
+            implode(', ', $setClauses),
+            implode(' AND ', $whereClauses)
+        );
+        return self::execute($sql, $params) >= 0;
+    }
+
+    /**
+     * Delete rows matching a where clause from an associative array.
+     */
+    public static function deleteRow(string $table, array $where): bool
+    {
+        $whereClauses = [];
+        $params = [];
+        foreach ($where as $col => $val) {
+            $whereClauses[] = $col . ' = :where_' . $col;
+            $params[':where_' . $col] = $val;
+        }
+        $sql = sprintf('DELETE FROM %s WHERE %s', $table, implode(' AND ', $whereClauses));
+        return self::execute($sql, $params) >= 0;
+    }
 }

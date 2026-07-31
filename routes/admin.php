@@ -86,3 +86,22 @@ $router->get('/admin/users/delete/{id}', 'AdminController@userDelete', $adminMid
 // Settings
 $router->get('/admin/settings', 'AdminController@settings', $adminMiddleware);
 $router->post('/admin/settings/save', 'AdminController@settingsSave', $adminMiddleware);
+
+// Report Studio module
+$router->get('/admin/reportstudio', 'ReportStudioController@index', $adminMiddleware);
+$router->get('/admin/reportstudio/templates', 'TemplateController@index', $adminMiddleware);
+$router->get('/admin/reportstudio/templates/create', 'TemplateController@create', $adminMiddleware);
+$router->post('/admin/reportstudio/templates', 'TemplateController@store', $adminMiddleware);
+$router->get('/admin/reportstudio/templates/{id}', 'TemplateController@show', $adminMiddleware);
+$router->get('/admin/reportstudio/templates/{id}/edit', 'TemplateController@edit', $adminMiddleware);
+$router->post('/admin/reportstudio/templates/{id}', 'TemplateController@update', $adminMiddleware);
+$router->post('/admin/reportstudio/templates/{id}/delete', 'TemplateController@destroy', $adminMiddleware);
+$router->get('/admin/reportstudio/builder/{id}/edit', 'BuilderController@edit', $adminMiddleware);
+$router->post('/admin/reportstudio/builder/{id}', 'BuilderController@update', $adminMiddleware);
+$router->get('/admin/reportstudio/preview/{id}', 'PreviewController@show', $adminMiddleware);
+$router->get('/admin/reportstudio/themes', 'ThemeController@index', $adminMiddleware);
+$router->get('/admin/reportstudio/themes/create', 'ThemeController@create', $adminMiddleware);
+$router->post('/admin/reportstudio/themes', 'ThemeController@store', $adminMiddleware);
+$router->get('/admin/reportstudio/themes/{id}/edit', 'ThemeController@edit', $adminMiddleware);
+$router->post('/admin/reportstudio/themes/{id}', 'ThemeController@update', $adminMiddleware);
+$router->post('/admin/reportstudio/themes/{id}/delete', 'ThemeController@destroy', $adminMiddleware);

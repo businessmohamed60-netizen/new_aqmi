@@ -40,7 +40,11 @@ class PdfService
         $recommendations = $this->recommendationService->generate($assessmentId);
         $lead = Lead::findByAssessment($assessmentId);
 
-        $html = $this->buildHtml($assessment, $analysis, $recommendations, $lead);
+        if ($this->hasStudioTemplate()) {
+            $html = $this->renderWithStudioTemplate($assessment, $analysis, $recommendations, $lead);
+        } else {
+            $html = $this->buildHtml($assessment, $analysis, $recommendations, $lead);
+        }
 
         $fileName = 'rapport_AQMI_' . $assessmentId . '_' . date('Ymd_His');
         $reportsDir = BASE_PATH . '/storage/reports';
@@ -493,6 +497,105 @@ class PdfService
                 </div>
             </div>
         </div>';
+    }
+
+    /**
+     * Check whether any published Report Studio template exists.
+     */
+    private function hasStudioTemplate(): bool
+    {
+        if (!class_exists(\App\Modules\ReportStudio\Models\ReportTemplate::class)) {
+            return false;
+        }
+        try {
+            return \App\Modules\ReportStudio\Models\ReportTemplate::publishedCount() > 0;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Render a report using a Report Studio template (blocks + theme).
+     * Falls back gracefully if the module or tables are missing.
+     */
+    private function renderWithStudioTemplate(array $assessment, array $analysis, array $recommendations, ?array $lead): string
+    {
+        $previewService = new \App\Modules\ReportStudio\Services\PreviewService();
+        $renderer = new \App\Modules\ReportStudio\Services\TemplateRenderer();
+
+        $templates = \App\Modules\ReportStudio\Models\ReportTemplate::all();
+        $template = null;
+        foreach ($templates as $t) {
+            if ($t->status === 'published') {
+                $template = $t;
+                break;
+            }
+        }
+        if (!$template) {
+            $template = $templates[0] ?? null;
+        }
+        if (!$template) {
+            return $this->buildHtml($assessment, $analysis, $recommendations, $lead);
+        }
+
+        $data = $previewService->loadForPreview((int) $template->id);
+        if (!$data) {
+            return $this->buildHtml($assessment, $analysis, $recommendations, $lead);
+        }
+
+        $reportNumber = $data['reportNumber'] ?? 'AQMI-RPT-' . str_pad((string) $assessment['id'], 3, '0', STR_PAD_LEFT);
+        $blocksHtml = $renderer->renderAll($data['blocks'], $data['template'], $reportNumber, 'pdf');
+
+        $globalScore = $analysis['global_score'];
+        $level = $analysis['maturity_level'];
+        $levelName = $level['name_fr'] ?? $level['name'] ?? 'Non défini';
+        $levelColor = $level['color'] ?? '#0d47a1';
+
+        $domainLabels = [];
+        $domainValues = [];
+        foreach ($analysis['domain_scores'] as $ds) {
+            $domainLabels[] = $ds['domain_name_fr'] ?: $ds['domain_name'];
+            $domainValues[] = $ds['percent_score'];
+        }
+
+        $radarSvg = $this->buildRadarSvg($analysis['domain_scores'], $levelColor);
+        $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
+
+        $recoHtml = '';
+        foreach ($recommendations as $rec) {
+            $recoHtml .= '<li style="font-size:10pt;margin-bottom:6px;">' . htmlspecialchars($rec['text'] ?? '') . '</li>';
+        }
+
+        $companyName = $lead['company'] ?? 'Entreprise';
+        $sector = $lead['sector'] ?? '—';
+        $country = $lead['country'] ?? '—';
+
+        $themeCss = $data['themeCss'] ?? '';
+        $themeStyle = $data['themeStyle'] ?? '';
+
+        $blocksHtml = str_replace(
+            ['{{GLOBAL_SCORE}}', '{{LEVEL_NAME}}', '{{LEVEL_COLOR}}', '{{RADAR_SVG}}', '{{GAUGE_SVG}}', '{{RECOMMENDATIONS}}', '{{COMPANY_NAME}}', '{{SECTOR}}', '{{COUNTRY}}', '{{REPORT_NUMBER}}', '{{DATE}}'],
+            [(string) $globalScore, $levelName, $levelColor, $radarSvg, $gaugeSvg, $recoHtml, htmlspecialchars($companyName), htmlspecialchars($sector), htmlspecialchars($country), htmlspecialchars($reportNumber), date('d/m/Y')],
+            $blocksHtml
+        );
+
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+' . $themeCss . '
+body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-body, #37474f); margin:0; padding:0; }
+.rs-report { max-width: 210mm; margin: 0 auto; padding: 20mm 15mm; background: var(--rs-background, #fff); }
+.rs-report-block { margin-bottom: 16px; page-break-inside: avoid; }
+.rs-block-title { font-size: 12pt; font-weight: 700; color: var(--rs-heading, #1a237e); margin-bottom: 8px; }
+.rs-score-ring { width: 120px; height: 120px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 8px solid var(--rs-primary, #0d47a1); }
+.rs-score-value { font-size: 28pt; font-weight: 800; color: var(--rs-primary, #0d47a1); }
+.rs-stamp { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 3px solid var(--rs-primary, #0d47a1); color: var(--rs-primary, #0d47a1); font-weight: 800; }
+.rs-sig-line { border-top: 1px solid #999; margin-bottom: 6px; }
+</style>
+</head><body>
+<div class="rs-report" style="' . $themeStyle . '">
+' . $blocksHtml . '
+</div>
+</body></html>';
     }
 
     private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true): string

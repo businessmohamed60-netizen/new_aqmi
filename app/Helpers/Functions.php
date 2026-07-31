@@ -83,6 +83,64 @@ function view(string $view, array $data = []): void
     }
 }
 
+/**
+ * Render a view partial to a string (used by Report Studio block renderer).
+ */
+function view_partial(string $view, array $data = [], bool $return = false): string
+{
+    extract($data);
+    $viewFile = BASE_PATH . '/resources/views/' . str_replace('.', '/', $view) . '.php';
+    if (!file_exists($viewFile)) {
+        return '';
+    }
+    ob_start();
+    require $viewFile;
+    $output = ob_get_clean();
+    if ($return) {
+        return $output;
+    }
+    echo $output;
+    return $output;
+}
+
+/**
+ * Generate a URL for a named Report Studio route.
+ * Supports: reportstudio, reportstudio.templates.index, reportstudio.builder.edit,
+ * reportstudio.themes.index, reportstudio.preview.show
+ */
+function route(string $name, array $params = []): string
+{
+    $routes = [
+        'reportstudio'                  => '/admin/reportstudio',
+        'reportstudio.templates.index' => '/admin/reportstudio/templates',
+        'reportstudio.templates.create'=> '/admin/reportstudio/templates/create',
+        'reportstudio.templates.show'   => '/admin/reportstudio/templates/{id}',
+        'reportstudio.templates.edit'   => '/admin/reportstudio/templates/{id}/edit',
+        'reportstudio.builder.edit'     => '/admin/reportstudio/builder/{id}/edit',
+        'reportstudio.themes.index'     => '/admin/reportstudio/themes',
+        'reportstudio.themes.create'    => '/admin/reportstudio/themes/create',
+        'reportstudio.themes.edit'      => '/admin/reportstudio/themes/{id}/edit',
+        'reportstudio.preview.show'     => '/admin/reportstudio/preview/{id}',
+    ];
+    $url = $routes[$name] ?? '/';
+    foreach ($params as $key => $value) {
+        $url = str_replace('{' . $key . '}', (string) $value, $url);
+    }
+    return $url;
+}
+
+/**
+ * Abort with an HTTP status code.
+ */
+function abort(int $code): void
+{
+    http_response_code($code);
+    if ($code === 404) {
+        echo '<div style="text-align:center;padding:100px 20px;font-family:sans-serif;"><h1 style="font-size:4rem;color:#1a56db;">404</h1><p style="color:#6b7280;">Page non trouvée</p><a href="/" style="color:#1a56db;">Retour à l\'accueil</a></div>';
+    }
+    exit;
+}
+
 function jsonResponse($data, int $code = 200): void
 {
     http_response_code($code);

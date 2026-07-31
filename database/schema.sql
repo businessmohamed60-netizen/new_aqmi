@@ -292,4 +292,152 @@ CREATE INDEX idx_leads_email ON leads(email);
 CREATE INDEX idx_leads_company ON leads(company);
 CREATE INDEX idx_recommendations_domain ON recommendations(domain_id);
 CREATE INDEX idx_audit_logs_user ON audit_logs(user_id);
-CREATE INDEX idx_audit_logs_action ON audit_logs(action);
+CREATE INDEX idx_audit_logs_action ON audit_logs(action);-- =============================================================
+-- AQMI Report Studio — Module schema
+-- Dialect : MySQL 8 / InnoDB / utf8mb4
+-- Module  : Report Studio (templates, builder, blocks, themes)
+-- Assumes : auth, router, base DB layer, PDF engine already exist
+-- =============================================================
+
+-- 1. Themes -----------------------------------------------------
+CREATE TABLE report_themes (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  name              VARCHAR(100) NOT NULL,
+  description       VARCHAR(255) NULL,
+  primary_color     VARCHAR(20)  NOT NULL DEFAULT '#0d47a1',
+  secondary_color   VARCHAR(20)  NOT NULL DEFAULT '#546e7a',
+  accent_color      VARCHAR(20)  NOT NULL DEFAULT '#00897b',
+  heading_color     VARCHAR(20)  NULL,
+  body_color        VARCHAR(20)  NULL,
+  background_color  VARCHAR(20)  NOT NULL DEFAULT '#ffffff',
+  font_family       VARCHAR(100) NOT NULL DEFAULT 'Inter, Arial, sans-serif',
+  css_variables     JSON         NULL,
+  is_default        TINYINT(1)   NOT NULL DEFAULT 0,
+  is_active         TINYINT(1)   NOT NULL DEFAULT 1,
+  created_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_report_themes_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Block library (catalog of available block types) ----------
+CREATE TABLE report_blocks (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  block_key       VARCHAR(50)  NOT NULL,
+  name            VARCHAR(100) NOT NULL,
+  category        VARCHAR(50)  NOT NULL,
+  icon            VARCHAR(50)  NULL,
+  description     VARCHAR(255) NULL,
+  default_config  JSON         NULL,
+  is_active       TINYINT(1)   NOT NULL DEFAULT 1,
+  sort_order      INT          NOT NULL DEFAULT 0,
+  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_report_blocks_key (block_key),
+  INDEX idx_report_blocks_category (category),
+  INDEX idx_report_blocks_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. Templates --------------------------------------------------
+CREATE TABLE report_templates (
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  name         VARCHAR(150) NOT NULL,
+  description  TEXT         NULL,
+  theme_id     INT          NULL,
+  category     VARCHAR(50)  NULL,
+  status       ENUM('draft','published','archived') NOT NULL DEFAULT 'draft',
+  thumbnail    VARCHAR(255) NULL,
+  settings     JSON         NULL,
+  is_system    TINYINT(1)   NOT NULL DEFAULT 0,
+  created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_templates_theme FOREIGN KEY (theme_id)
+      REFERENCES report_themes(id) ON DELETE SET NULL,
+  INDEX idx_report_templates_status (status),
+  INDEX idx_report_templates_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. Template blocks (instances placed by the drag&drop builder)
+CREATE TABLE report_template_blocks (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  template_id   INT          NOT NULL,
+  block_id      INT          NOT NULL,
+  block_key     VARCHAR(50)  NOT NULL,
+  title         VARCHAR(150) NULL,
+  block_config  JSON         NULL,
+  sort_order    INT          NOT NULL DEFAULT 0,
+  is_enabled    TINYINT(1)   NOT NULL DEFAULT 1,
+  created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_tblocks_template FOREIGN KEY (template_id)
+      REFERENCES report_templates(id) ON DELETE CASCADE,
+  CONSTRAINT fk_tblocks_block FOREIGN KEY (block_id)
+      REFERENCES report_blocks(id) ON DELETE CASCADE,
+  INDEX idx_report_tblocks_template (template_id),
+  INDEX idx_report_tblocks_sort (template_id, sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- =============================================================
+-- AQMI Report Studio — Seed data
+-- Inserts the built-in block library and one default theme.
+-- =============================================================
+
+-- Default theme ------------------------------------------------
+INSERT INTO report_themes
+  (name, description, primary_color, secondary_color, accent_color, heading_color, body_color, background_color, font_family, is_default, is_active)
+VALUES
+  ('AQMI Corporate', 'Default AQMI brand theme', '#0d47a1', '#546e7a', '#00897b', '#1a237e', '#37474f', '#ffffff', 'Inter, Arial, sans-serif', 1, 1),
+  ('Ocean Blue', 'Calm blue corporate theme', '#1565c0', '#42a5f5', '#26c6da', '#0d47a1', '#455a64', '#f5f9fc', 'Inter, Arial, sans-serif', 0, 1),
+  ('Monochrome', 'Minimal monochrome theme', '#212121', '#616161', '#9e9e9e', '#000000', '#424242', '#ffffff', 'Inter, Arial, sans-serif', 0, 1);
+
+-- Block library ------------------------------------------------
+INSERT INTO report_blocks (block_key, name, category, icon, description, default_config, is_active, sort_order) VALUES
+  ('global_score',  'Global Score',        'metrics',    'bi-speedometer',     'Overall AQMI score with rating', JSON_OBJECT('score', 0, 'max', 100, 'show_rating', true), 1, 10),
+  ('radar_chart',   'Radar Chart',         'charts',     'bi-graph-up',        'Multi-axis radar chart',          JSON_OBJECT('axes', JSON_ARRAY(), 'legend', true), 1, 20),
+  ('gauge',         'Gauge',               'metrics',    'bi-dial',            'Single-value gauge indicator',    JSON_OBJECT('value', 0, 'min', 0, 'max', 100), 1, 30),
+  ('recommendations','Recommendations',    'content',    'bi-list-check',      'List of recommendations',         JSON_OBJECT('items', JSON_ARRAY()), 1, 40),
+  ('company_info',  'Company Information', 'content',    'bi-building',        'Company details block',           JSON_OBJECT('fields', JSON_ARRAY()), 1, 50),
+  ('aqmi_logo',     'AQMI Logo',           'branding',   'bi-award',           'Official AQMI logo',              JSON_OBJECT('size', 'md', 'align', 'left'), 1, 60),
+  ('company_logo',  'Company Logo',        'branding',   'bi-image',           'Client company logo',             JSON_OBJECT('size', 'md', 'align', 'left'), 1, 70),
+  ('qr_code',       'QR Code',             'utility',    'bi-qr-code',         'Generated QR code',               JSON_OBJECT('value', '', 'size', 120), 1, 80),
+  ('signature',     'Signature',           'utility',    'bi-pen',             'Signature line block',            JSON_OBJECT('label', '', 'role', ''), 1, 90),
+  ('header',        'Header',              'structure',  'bi-text-left',       'Page header block',               JSON_OBJECT('text', '', 'level', 1), 1, 100),
+  ('footer',        'Footer',              'structure',  'bi-text-right',      'Page footer block',               JSON_OBJECT('text', '', 'align', 'center'), 1, 110),
+  ('rich_text',     'Rich Text',           'content',    'bi-fonts',           'Editable rich text content',      JSON_OBJECT('html', ''), 1, 120),
+  ('image',         'Image',               'media',      'bi-card-image',      'Image block',                     JSON_OBJECT('url', '', 'alt', '', 'width', '100%'), 1, 130);
+-- =============================================================
+-- AQMI Report Studio — Feature completion migration
+-- Adds: block visibility (web/pdf), official stamp block,
+--        page settings columns (orientation, watermark, metadata)
+-- =============================================================
+
+-- 1. Add visibility column to template blocks -------------------
+ALTER TABLE report_template_blocks
+  ADD COLUMN visibility ENUM('web_pdf','web_only','pdf_only') NOT NULL DEFAULT 'web_pdf'
+  AFTER is_enabled;
+
+-- 2. Add report metadata + page settings to templates -----------
+ALTER TABLE report_templates
+  ADD COLUMN report_number_prefix  VARCHAR(20)  NULL DEFAULT 'AQMI-RPT-'  AFTER category,
+  ADD COLUMN orientation           ENUM('portrait','landscape') NOT NULL DEFAULT 'portrait'  AFTER report_number_prefix,
+  ADD COLUMN watermark_text        VARCHAR(100) NULL  AFTER orientation,
+  ADD COLUMN watermark_opacity     DECIMAL(3,2) NOT NULL DEFAULT 0.08  AFTER watermark_text,
+  ADD COLUMN certification_date    DATE         NULL  AFTER watermark_opacity,
+  ADD COLUMN expiration_date       DATE         NULL  AFTER certification_date,
+  ADD INDEX idx_report_templates_number (report_number_prefix);
+
+-- 3. Seed the official stamp/seal block -------------------------
+INSERT INTO report_blocks (block_key, name, category, icon, description, default_config, is_active, sort_order) VALUES
+  ('official_stamp', 'Official Stamp', 'branding', 'bi-patch-check-fill',
+   'Official AQMI certification stamp/seal',
+   JSON_OBJECT('style', 'circular', 'text', 'CERTIFIÉ', 'subtext', 'AQMI', 'color', '#0d47a1', 'size', 100, 'align', 'right'),
+   1, 65)
+  ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+-- 4. Enrich header/footer default configs with dynamic var support
+UPDATE report_blocks SET default_config = JSON_OBJECT('text', '', 'align', 'left', 'show_page_number', false, 'show_report_number', false, 'show_date', false)
+  WHERE block_key = 'header';
+UPDATE report_blocks SET default_config = JSON_OBJECT('text', '', 'align', 'center', 'show_page_number', true, 'show_report_number', false, 'show_date', false)
+  WHERE block_key = 'footer';
+
+-- 5. Update signature default config to include stamp option -----
+UPDATE report_blocks SET default_config = JSON_OBJECT('label', '', 'role', '', 'show_date', true, 'show_stamp', false)
+  WHERE block_key = 'signature';

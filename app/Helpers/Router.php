@@ -73,13 +73,21 @@ class Router
     private function handleControllerCallback(string $callback, array $params): void
     {
         $parts = explode('@', $callback);
-        $controllerName = 'App\\Controllers\\' . $parts[0];
         $method = $parts[1] ?? 'index';
 
-        if (class_exists($controllerName)) {
-            $controller = new $controllerName();
-            if (method_exists($controller, $method)) {
-                call_user_func_array([$controller, $method], [$params]);
+        $namespaces = [
+            'App\\Controllers\\',
+            'App\\Modules\\ReportStudio\\Controllers\\',
+        ];
+
+        foreach ($namespaces as $ns) {
+            $controllerName = $ns . $parts[0];
+            if (class_exists($controllerName)) {
+                $controller = new $controllerName();
+                if (method_exists($controller, $method)) {
+                    call_user_func_array([$controller, $method], [$params]);
+                }
+                return;
             }
         }
     }
