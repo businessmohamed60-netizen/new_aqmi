@@ -16,6 +16,10 @@ final class BlockRegistry
     private const BLOCKS = [
         'global_score'    => ['metrics',   'Global Score',         'bi-speedometer'],
         'radar_chart'     => ['charts',    'Radar Chart',          'bi-graph-up'],
+        'bar_chart'       => ['charts',    'Bar Chart',            'bi-bar-chart'],
+        'line_chart'      => ['charts',    'Line Chart',           'bi-graph-up-arrow'],
+        'donut_chart'     => ['charts',    'Donut Chart',          'bi-pie-chart'],
+        'area_chart'      => ['charts',    'Area Chart',           'bi-graph-up-arrow'],
         'gauge'           => ['metrics',   'Gauge',                'bi-dial'],
         'recommendations' => ['content',   'Recommendations',      'bi-list-check'],
         'company_info'    => ['content',   'Company Information',  'bi-building'],

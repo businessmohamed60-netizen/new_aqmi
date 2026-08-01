@@ -1,7 +1,8 @@
 /**
  * Report Studio Builder — React App
  * CDN React 18 + ApexCharts + SortableJS
- * Features: grid column layout, live ApexCharts previews, property panel, undo/redo, save
+ * Features: true drag & drop, visual resize handles, live ApexCharts previews,
+ *   property panel, undo/redo, save, keyboard shortcuts
  */
 (function () {
   'use strict';
@@ -13,9 +14,13 @@
   const BLOCK_META = {
     global_score:    { category: 'metrics',   label: 'Global Score',        icon: 'bi-speedometer' },
     radar_chart:     { category: 'charts',    label: 'Radar Chart',         icon: 'bi-graph-up' },
+    bar_chart:       { category: 'charts',    label: 'Bar Chart',           icon: 'bi-bar-chart' },
+    line_chart:      { category: 'charts',    label: 'Line Chart',          icon: 'bi-graph-up-arrow' },
+    donut_chart:     { category: 'charts',    label: 'Donut Chart',         icon: 'bi-pie-chart' },
+    area_chart:      { category: 'charts',    label: 'Area Chart',          icon: 'bi-graph-up-arrow' },
     gauge:           { category: 'metrics',   label: 'Gauge',               icon: 'bi-dial' },
-    recommendations: { category: 'content',  label: 'Recommendations',     icon: 'bi-list-check' },
-    company_info:    { category: 'content',  label: 'Company Information', icon: 'bi-building' },
+    recommendations: { category: 'content',   label: 'Recommendations',     icon: 'bi-list-check' },
+    company_info:    { category: 'content',   label: 'Company Information', icon: 'bi-building' },
     aqmi_logo:       { category: 'branding',  label: 'AQMI Logo',           icon: 'bi-award' },
     company_logo:    { category: 'branding',  label: 'Company Logo',        icon: 'bi-image' },
     official_stamp:  { category: 'branding',  label: 'Official Stamp',      icon: 'bi-patch-check-fill' },
@@ -30,6 +35,10 @@
   const DEFAULT_CONFIGS = {
     global_score:    { label: 'Score global', score: 0, max: 100, show_rating: true },
     radar_chart:     { axes: [{ label: 'Domaine 1', value: 0 }], legend: true },
+    bar_chart:       { series: [{ label: 'Série 1', data: [{ label: 'A', value: 0 }] }], horizontal: false, legend: true },
+    line_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true },
+    donut_chart:     { series: [{ label: 'A', value: 1 }], legend: true },
+    area_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true },
     gauge:           { label: 'Indicateur', value: 0, min: 0, max: 100, unit: '%' },
     recommendations: { title: 'Recommandations', items: [{ text: '' }] },
     company_info:    { fields: [{ key: '', label: '' }], show_logo: true },
@@ -50,51 +59,117 @@
   const uid = () => 'b_' + Math.random().toString(36).slice(2, 10);
 
   // ---- ApexCharts Live Preview Components ----
-  function RadarPreview({ cfg }) {
+  function useApexChart(buildOptions, deps) {
     const ref = useRef(null);
     const chartRef = useRef(null);
     useEffect(() => {
       if (!ref.current || !window.ApexCharts) return;
-      const axes = cfg.axes || [];
-      const labels = axes.map(a => a.label || '');
-      const values = axes.map(a => +a.value || 0);
       if (chartRef.current) { try { chartRef.current.destroy(); } catch (e) {} }
-      chartRef.current = new ApexCharts(ref.current, {
+      chartRef.current = new ApexCharts(ref.current, buildOptions());
+      chartRef.current.render();
+      return () => { try { chartRef.current.destroy(); } catch (e) {} };
+    }, deps);
+    return ref;
+  }
+
+  function RadarPreview({ cfg }) {
+    const ref = useApexChart(() => {
+      const axes = cfg.axes || [];
+      return {
         chart: { type: 'radar', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
-        series: [{ name: 'Radar', data: values }],
-        xaxis: { categories: labels },
+        series: [{ name: 'Radar', data: axes.map(a => +a.value || 0) }],
+        xaxis: { categories: axes.map(a => a.label || '') },
         yaxis: { min: 0, max: 100 },
         legend: { show: cfg.legend !== false },
         colors: ['#0d47a1'],
         fill: { opacity: 0.2 },
         markers: { size: 4, colors: ['#0d47a1'] },
-      });
-      chartRef.current.render();
-      return () => { try { chartRef.current.destroy(); } catch (e) {} };
+      };
     }, [cfg]);
     return h('div', { ref });
   }
 
   function GaugePreview({ cfg }) {
-    const ref = useRef(null);
-    const chartRef = useRef(null);
-    useEffect(() => {
-      if (!ref.current || !window.ApexCharts) return;
+    const ref = useApexChart(() => {
       const v = +cfg.value || 0, max = +cfg.max || 100, min = +cfg.min || 0;
       const range = Math.max(1, max - min);
       const pct = Math.min(100, Math.max(0, Math.round(((v - min) / range) * 100)));
-      if (chartRef.current) { try { chartRef.current.destroy(); } catch (e) {} }
-      chartRef.current = new ApexCharts(ref.current, {
+      return {
         chart: { type: 'radialBar', height: 160, sparkline: { enabled: true } },
         series: [pct],
         plotOptions: { radialBar: { startAngle: -135, endAngle: 135, hollow: { size: '62%' }, dataLabels: { name: { show: false }, value: { show: false } }, track: { background: '#e2e8f0' } } },
         fill: { colors: ['#00897b'] },
         stroke: { lineCap: 'round' },
-      });
-      chartRef.current.render();
-      return () => { try { chartRef.current.destroy(); } catch (e) {} };
+      };
     }, [cfg]);
     return h('div', { ref, style: { display: 'inline-block' } });
+  }
+
+  function BarPreview({ cfg }) {
+    const ref = useApexChart(() => {
+      const series = cfg.series || [];
+      const categories = (series[0]?.data || []).map(d => d.label || '');
+      return {
+        chart: { type: 'bar', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
+        xaxis: { categories },
+        plotOptions: { bar: { horizontal: !!cfg.horizontal, borderRadius: 4 } },
+        legend: { show: cfg.legend !== false },
+        colors: ['#0d47a1', '#00897b', '#546e7a', '#d97706'],
+        fill: { opacity: 0.9 },
+      };
+    }, [cfg]);
+    return h('div', { ref });
+  }
+
+  function LinePreview({ cfg }) {
+    const ref = useApexChart(() => {
+      const series = cfg.series || [];
+      const categories = (series[0]?.data || []).map(d => d.label || '');
+      return {
+        chart: { type: 'line', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
+        xaxis: { categories },
+        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: 2 },
+        legend: { show: cfg.legend !== false },
+        colors: ['#0d47a1', '#00897b', '#d97706', '#dc2626'],
+        markers: { size: 3 },
+      };
+    }, [cfg]);
+    return h('div', { ref });
+  }
+
+  function DonutPreview({ cfg }) {
+    const ref = useApexChart(() => {
+      const series = cfg.series || [];
+      return {
+        chart: { type: 'donut', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        series: series.map(s => +s.value || 0),
+        labels: series.map(s => s.label || ''),
+        legend: { show: cfg.legend !== false, position: 'bottom' },
+        colors: ['#0d47a1', '#00897b', '#546e7a', '#d97706', '#dc2626', '#7c3aed'],
+        stroke: { width: 2 },
+      };
+    }, [cfg]);
+    return h('div', { ref });
+  }
+
+  function AreaPreview({ cfg }) {
+    const ref = useApexChart(() => {
+      const series = cfg.series || [];
+      const categories = (series[0]?.data || []).map(d => d.label || '');
+      return {
+        chart: { type: 'area', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
+        xaxis: { categories },
+        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: 2 },
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } },
+        legend: { show: cfg.legend !== false },
+        colors: ['#0d47a1', '#00897b'],
+        markers: { size: 3 },
+      };
+    }, [cfg]);
+    return h('div', { ref });
   }
 
   // ---- Block Live Preview ----
@@ -112,6 +187,14 @@
       }
       case 'radar_chart':
         return h(RadarPreview, { cfg });
+      case 'bar_chart':
+        return h(BarPreview, { cfg });
+      case 'line_chart':
+        return h(LinePreview, { cfg });
+      case 'donut_chart':
+        return h(DonutPreview, { cfg });
+      case 'area_chart':
+        return h(AreaPreview, { cfg });
       case 'gauge':
         return h('div', { className: 'text-center py-2' },
           h(GaugePreview, { cfg }),
@@ -214,8 +297,49 @@
         newCfg.items = val.split('\n').filter(l => l.trim()).map(line => ({ text: line.trim() }));
         delete newCfg.items_raw;
       }
+      if (key === 'series_raw_bar' || key === 'series_raw_line' || key === 'series_raw_area') {
+        const rawKey = key;
+        newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
+          const [label, ...rest] = line.split(',');
+          const dataStr = rest.join(',');
+          const pairs = dataStr.split(';').filter(p => p.trim());
+          const data = pairs.map(p => {
+            const [dl, dv] = p.split(':');
+            return { label: (dl || '').trim(), value: parseFloat(dv || '0') || 0 };
+          });
+          return { label: (label || '').trim(), data };
+        });
+        delete newCfg[rawKey];
+      }
+      if (key === 'series_raw_donut') {
+        newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
+          const [label, value] = line.split(',');
+          return { label: (label || '').trim(), value: parseFloat(value || '0') || 0 };
+        });
+        delete newCfg.series_raw_donut;
+      }
       onUpdate({ ...block, block_config: newCfg });
     };
+
+    function label(text) { return h('label', { className: 'form-label small fw-bold' }, text); }
+    function field(lbl, type, prop, def) {
+      return h(React.Fragment, null, label(lbl),
+        h('input', { type, className: 'form-control form-control-sm mb-2', value: def, onChange: e => setCfg(prop, type === 'number' ? (parseFloat(e.target.value) || 0) : e.target.value) }));
+    }
+    function selectField(lbl, prop, options, current) {
+      return h(React.Fragment, null, label(lbl),
+        h('select', { className: 'form-select form-select-sm mb-2', value: current, onChange: e => setCfg(prop, e.target.value) },
+          options.map(o => h('option', { key: o.v, value: o.v }, o.l))));
+    }
+    function switchField(lbl, prop, checked) {
+      return h('div', { className: 'form-check form-switch' },
+        h('input', { className: 'form-check-input', type: 'checkbox', checked: checked, onChange: e => setCfg(prop, e.target.checked) }),
+        h('label', { className: 'form-check-label small' }, lbl));
+    }
+    function colorField(lbl, prop, def) {
+      return h(React.Fragment, null, label(lbl),
+        h('input', { type: 'color', className: 'form-control form-control-color mb-2', value: def, onChange: e => setCfg(prop, e.target.value) }));
+    }
 
     const renderField = (key) => {
       const val = (k, d) => cfg[k] !== undefined ? escAttr(cfg[k]) : d;
@@ -232,6 +356,41 @@
           return h(React.Fragment, null,
             label('Axes (Libellé, Valeur par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('axes_raw', e.target.value) }),
+            switchField('Afficher la légende', 'legend', cfg.legend !== false));
+        }
+        case 'bar_chart': {
+          const series = cfg.series || [];
+          const raw = series.map(s => (s.label || '') + ',' + (s.data || []).map(d => (d.label || '') + ':' + (d.value || 0)).join(';')).join('\n');
+          return h(React.Fragment, null,
+            label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
+            h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_bar', e.target.value) }),
+            switchField('Horizontal', 'horizontal', !!cfg.horizontal),
+            switchField('Afficher la légende', 'legend', cfg.legend !== false));
+        }
+        case 'line_chart': {
+          const series = cfg.series || [];
+          const raw = series.map(s => (s.label || '') + ',' + (s.data || []).map(d => (d.label || '') + ':' + (d.value || 0)).join(';')).join('\n');
+          return h(React.Fragment, null,
+            label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
+            h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_line', e.target.value) }),
+            switchField('Courbe lisse', 'smooth', cfg.smooth !== false),
+            switchField('Afficher la légende', 'legend', cfg.legend !== false));
+        }
+        case 'area_chart': {
+          const series = cfg.series || [];
+          const raw = series.map(s => (s.label || '') + ',' + (s.data || []).map(d => (d.label || '') + ':' + (d.value || 0)).join(';')).join('\n');
+          return h(React.Fragment, null,
+            label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
+            h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_area', e.target.value) }),
+            switchField('Courbe lisse', 'smooth', cfg.smooth !== false),
+            switchField('Afficher la légende', 'legend', cfg.legend !== false));
+        }
+        case 'donut_chart': {
+          const series = cfg.series || [];
+          const raw = series.map(s => (s.label || '') + ',' + (s.value || 0)).join('\n');
+          return h(React.Fragment, null,
+            label('Segments (Libellé, Valeur par ligne)'),
+            h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_donut', e.target.value) }),
             switchField('Afficher la légende', 'legend', cfg.legend !== false));
         }
         case 'gauge':
@@ -322,34 +481,13 @@
       }
     };
 
-    // Helper components
-    function label(text) { return h('label', { className: 'form-label small fw-bold' }, text); }
-    function field(lbl, type, prop, def) {
-      return h(React.Fragment, null, label(lbl),
-        h('input', { type, className: 'form-control form-control-sm mb-2', value: def, onChange: e => setCfg(prop, type === 'number' ? (parseFloat(e.target.value) || 0) : e.target.value) }));
-    }
-    function selectField(lbl, prop, options, current) {
-      return h(React.Fragment, null, label(lbl),
-        h('select', { className: 'form-select form-select-sm mb-2', value: current, onChange: e => setCfg(prop, e.target.value) },
-          options.map(o => h('option', { key: o.v, value: o.v }, o.l))));
-    }
-    function switchField(lbl, prop, checked) {
-      return h('div', { className: 'form-check form-switch' },
-        h('input', { className: 'form-check-input', type: 'checkbox', checked: checked, onChange: e => setCfg(prop, e.target.checked) }),
-        h('label', { className: 'form-check-label small' }, lbl));
-    }
-    function colorField(lbl, prop, def) {
-      return h(React.Fragment, null, label(lbl),
-        h('input', { type: 'color', className: 'form-control form-control-color mb-2', value: def, onChange: e => setCfg(prop, e.target.value) }));
-    }
-
     const meta = BLOCK_META[block.block_key] || { label: block.block_key, icon: 'bi-box' };
     return h('div', { className: 'rs-prop-content' },
       h('div', { className: 'rs-prop-block-info mb-2' },
         h('span', { className: 'badge bg-primary' }, h('i', { className: 'bi ' + meta.icon }), ' ' + meta.label)),
       h('div', { className: 'mb-2' },
         h('label', { className: 'form-label small fw-bold' }, 'Titre du bloc'),
-        h('input', { type: 'text', className: 'form-control form-control-sm', value: block.title || '', onChange: e => onUpdate({ ...block, title: e.target.value }) })),
+        h('input', { type: 'text', className: 'form-control form-control-sm', value: block.title || '', onChange: e => onUpdate({ ...block, title: e.target.value) })),
       h('div', { className: 'mb-2' },
         h('label', { className: 'form-label small fw-bold' }, 'Largeur (colonnes / 12)'),
         h('input', { type: 'range', className: 'form-range', min: 1, max: 12, value: block.column_span || 12, onChange: e => onUpdate({ ...block, column_span: parseInt(e.target.value) }) }),
@@ -372,17 +510,25 @@
           h('i', { className: 'bi bi-trash' }), ' Supprimer')));
   }
 
-  // ---- Block Card on Canvas ----
-  function BlockCard({ block, isSelected, onSelect, onMoveUp, onMoveDown, index, total }) {
+  // ---- Block Card on Canvas (with drag handle + resize handle) ----
+  function BlockCard({ block, isSelected, onSelect, onMoveUp, onMoveDown, onResize, onDragStart, onDragEnd, onDragOver, onDrop, isDragOver, index, total }) {
     const meta = BLOCK_META[block.block_key] || { label: block.block_key, icon: 'bi-box' };
     const visMeta = { web_pdf: { icon: 'bi-eye', label: 'Web+PDF' }, web_only: { icon: 'bi-globe', label: 'Web' }, pdf_only: { icon: 'bi-file-pdf', label: 'PDF' } }[block.visibility || 'web_pdf'] || { icon: 'bi-eye', label: 'Web+PDF' };
     const colClass = 'col-' + (block.column_span || 12);
-    return h('div', { className: colClass + ' rs-block-col' },
+    return h('div', {
+      className: colClass + ' rs-block-col' + (isDragOver ? ' rs-drag-over' : ''),
+      draggable: true,
+      onDragStart: (e) => onDragStart(e, block),
+      onDragEnd: onDragEnd,
+      onDragOver: (e) => onDragOver(e, index),
+      onDrop: (e) => onDrop(e, index),
+    },
       h('div', {
         className: 'rs-block' + (isSelected ? ' rs-selected' : '') + (!block.is_enabled ? ' rs-block-disabled' : ''),
         onClick: e => { e.stopPropagation(); onSelect(block); }
       },
         h('div', { className: 'rs-block-toolbar' },
+          h('i', { className: 'bi bi-grip-vertical rs-block-handle' }),
           h('i', { className: 'bi ' + meta.icon + ' rs-block-type-icon' }),
           h('span', { className: 'rs-block-type' }, esc(block.title || meta.label)),
           h('span', { className: 'badge rs-vis-badge bg-light text-dark' }, h('i', { className: 'bi ' + visMeta.icon }), ' ' + visMeta.label),
@@ -392,14 +538,33 @@
             h('button', { type: 'button', className: 'btn btn-sm', title: 'Descendre', onClick: e => { e.stopPropagation(); onMoveDown(index); } }, h('i', { className: 'bi bi-arrow-down' })))),
         h('div', { className: 'rs-block-preview' },
           h('div', { className: 'rs-live-render' },
-            h(BlockPreview, { blockKey: block.block_key, cfg: block.block_config || {} })))));
+            h(BlockPreview, { blockKey: block.block_key, cfg: block.block_config || {} }))),
+        h('div', { className: 'rs-resize-handle', title: 'Glisser pour redimensionner' },
+          h('i', { className: 'bi bi-arrows-angle-right' }))));
   }
 
   // ---- Palette ----
   function Palette({ palette, onAdd }) {
     const [collapsed, setCollapsed] = useState({});
+    const [search, setSearch] = useState('');
+
+    const filtered = useMemo(() => {
+      if (!search.trim()) return palette;
+      const q = search.toLowerCase();
+      const result = {};
+      for (const [category, items] of Object.entries(palette)) {
+        const matched = items.filter(b => b.label.toLowerCase().includes(q) || b.block_key.toLowerCase().includes(q));
+        if (matched.length) result[category] = matched;
+      }
+      return result;
+    }, [palette, search]);
+
     return h('div', { className: 'rs-pane-body' },
-      Object.entries(palette).map(([category, items]) =>
+      h('div', { className: 'rs-palette-search mb-2' },
+        h('div', { className: 'input-group input-group-sm' },
+          h('span', { className: 'input-group-text' }, h('i', { className: 'bi bi-search' })),
+          h('input', { type: 'text', className: 'form-control', placeholder: 'Rechercher un bloc...', value: search, onChange: e => setSearch(e.target.value) }))),
+      Object.entries(filtered).map(([category, items]) =>
         h('div', { key: category, className: 'rs-palette-group' + (collapsed[category] ? ' collapsed' : '') },
           h('div', { className: 'rs-palette-cat', onClick: () => setCollapsed(c => ({ ...c, [category]: !c[category] })) },
             h('i', { className: 'bi bi-chevron-down rs-toggle' }),
@@ -407,7 +572,13 @@
             h('span', { className: 'rs-count' }, items.length)),
           h('div', { className: 'rs-palette-items' },
             items.map(block =>
-              h('div', { key: block.block_key, className: 'rs-palette-item', onClick: () => onAdd(block.block_key) },
+              h('div', {
+                key: block.block_key,
+                className: 'rs-palette-item',
+                draggable: true,
+                onDragStart: (e) => { e.dataTransfer.effectAllowed = 'copy'; e.dataTransfer.setData('text/block-key', block.block_key); },
+                onClick: () => onAdd(block.block_key),
+              },
                 h('i', { className: 'bi ' + block.icon }),
                 h('span', null, esc(block.label))))))));
   }
@@ -453,6 +624,8 @@
     const [undoStack, setUndoStack] = useState([]);
     const [redoStack, setRedoStack] = useState([]);
     const [toast, setToast] = useState(null);
+    const [dragIndex, setDragIndex] = useState(null);
+    const [dragOverIndex, setDragOverIndex] = useState(null);
 
     const selectedBlock = blocks.find(b => b._uid === selectedUid);
 
@@ -480,6 +653,7 @@
         column_span: 12,
       };
       updateBlocks([...blocks, newBlock]);
+      setSelectedUid(newBlock._uid);
     };
 
     const updateBlock = (updated) => {
@@ -512,6 +686,73 @@
       if (target < 0 || target >= newBlocks.length) return;
       [newBlocks[index], newBlocks[target]] = [newBlocks[target], newBlocks[index]];
       updateBlocks(newBlocks);
+    };
+
+    const resizeBlock = (index, newSpan) => {
+      const span = Math.max(1, Math.min(12, newSpan));
+      updateBlocks(blocks.map((b, i) => i === index ? { ...b, column_span: span } : b));
+    };
+
+    // ---- Drag & Drop reordering ----
+    const handleDragStart = (e, block) => {
+      const idx = blocks.findIndex(b => b._uid === block._uid);
+      setDragIndex(idx);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', block._uid);
+    };
+
+    const handleDragEnd = () => {
+      setDragIndex(null);
+      setDragOverIndex(null);
+    };
+
+    const handleDragOver = (e, index) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      setDragOverIndex(index);
+    };
+
+    const handleDrop = (e, index) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const blockKey = e.dataTransfer.getData('text/block-key');
+      if (blockKey) {
+        const newBlock = {
+          _uid: uid(),
+          block_key: blockKey,
+          title: BLOCK_META[blockKey]?.label || blockKey,
+          block_config: JSON.parse(JSON.stringify(DEFAULT_CONFIGS[blockKey] || {})),
+          sort_order: index,
+          is_enabled: true,
+          visibility: 'web_pdf',
+          column_span: 12,
+        };
+        const newBlocks = [...blocks];
+        newBlocks.splice(index, 0, newBlock);
+        updateBlocks(newBlocks);
+        setSelectedUid(newBlock._uid);
+      } else {
+        const uid = e.dataTransfer.getData('text/plain');
+        const fromIdx = blocks.findIndex(b => b._uid === uid);
+        if (fromIdx === -1 || fromIdx === index) return;
+        const newBlocks = [...blocks];
+        const [moved] = newBlocks.splice(fromIdx, 1);
+        newBlocks.splice(index, 0, moved);
+        updateBlocks(newBlocks);
+      }
+      setDragIndex(null);
+      setDragOverIndex(null);
+    };
+
+    // Drop on empty canvas
+    const handleCanvasDrop = (e) => {
+      e.preventDefault();
+      const blockKey = e.dataTransfer.getData('text/block-key');
+      if (blockKey) {
+        addBlock(blockKey);
+      }
+      setDragIndex(null);
+      setDragOverIndex(null);
     };
 
     const undo = () => {
@@ -557,7 +798,7 @@
         if (data.ok) {
           setDirty(false);
           setStatusMsg('Enregistré à ' + new Date().toLocaleTimeString('fr-FR'));
-          setToast({ type: 'success', msg: 'Modifications enregistrées' });
+          setToast({ type: 'success', msg: 'Modifications enregistrées (' + data.count + ' blocs)' });
         } else {
           setStatusMsg('Erreur: ' + (data.error || 'inconnue'));
           setToast({ type: 'danger', msg: 'Erreur: ' + (data.error || 'inconnue') });
@@ -580,10 +821,15 @@
       return () => window.removeEventListener('keydown', handler);
     });
 
+    useEffect(() => {
+      const handler = (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } };
+      window.addEventListener('beforeunload', handler);
+      return () => window.removeEventListener('beforeunload', handler);
+    });
+
     const orientationClass = settings.orientation === 'landscape' ? ' rs-landscape' : '';
 
     return h(React.Fragment, null,
-      // Topbar
       h('div', { className: 'rs-topbar d-flex align-items-center justify-content-between px-3' },
         h('div', { className: 'd-flex align-items-center gap-2' },
           h('a', { href: window.RS_DASHBOARD_URL, className: 'btn btn-sm btn-outline-light' }, h('i', { className: 'bi bi-arrow-left' }), ' Dashboard'),
@@ -595,14 +841,14 @@
           h('button', { type: 'button', className: 'btn btn-sm btn-outline-light', onClick: redo, title: 'Refaire (Ctrl+Y)' }, h('i', { className: 'bi bi-arrow-clockwise' })),
           h('a', { href: window.RS_PREVIEW_URL, target: '_blank', className: 'btn btn-sm btn-light' }, h('i', { className: 'bi bi-eye' }), ' Aperçu'),
           h('button', { type: 'button', className: 'btn btn-sm btn-success', onClick: save, disabled: saving }, h('i', { className: 'bi bi-check-lg' }), saving ? ' ...' : ' Enregistrer'))),
-      // Settings bar
       h(SettingsBar, { settings, onUpdate: (s) => { setSettings(s); setDirty(true); setStatusMsg('Modifications non enregistrées'); } }),
-      // 3 panes
       h('div', { className: 'rs-panes' },
         h('aside', { className: 'rs-pane rs-palette' },
           h('div', { className: 'rs-pane-header' }, h('i', { className: 'bi bi-blocks' }), h('span', null, 'Bibliothèque de blocs')),
           h(Palette, { palette, onAdd: addBlock })),
-        h('main', { className: 'rs-pane rs-canvas-pane', onClick: () => setSelectedUid(null) },
+        h('main', { className: 'rs-pane rs-canvas-pane', onClick: () => setSelectedUid(null),
+          onDragOver: (e) => { if (blocks.length === 0) e.preventDefault(); },
+          onDrop: (e) => { if (blocks.length === 0) handleCanvasDrop(e); } },
           h('div', { className: 'rs-pane-header rs-canvas-header' },
             h('i', { className: 'bi bi-file-earmark-text' }),
             h('span', null, 'Canvas du rapport'),
@@ -610,27 +856,36 @@
           h('div', { className: 'rs-canvas-scroll' },
             h('div', { className: 'rs-canvas' + orientationClass, onClick: e => e.stopPropagation() },
               blocks.length === 0
-                ? h('div', { className: 'rs-canvas-empty' },
+                ? h('div', { className: 'rs-canvas-empty',
+                    onDragOver: (e) => e.preventDefault(),
+                    onDrop: handleCanvasDrop },
                     h('i', { className: 'bi bi-arrows-move' }),
-                    h('p', null, 'Cliquez sur un bloc dans la bibliothèque pour l\'ajouter'))
+                    h('p', null, 'Glissez un bloc ici ou cliquez dans la bibliothèque'))
                 : h('div', { className: 'row g-2' },
                     blocks.map((block, i) =>
-                      h(BlockCard, { key: block._uid, block, isSelected: block._uid === selectedUid, onSelect: setSelectedUid, onMoveUp: moveBlock, onMoveDown: moveBlock, index: i, total: blocks.length })))))),
+                      h(BlockCard, {
+                        key: block._uid, block,
+                        isSelected: block._uid === selectedUid,
+                        onSelect: setSelectedUid,
+                        onMoveUp: moveBlock, onMoveDown: moveBlock,
+                        onResize: resizeBlock,
+                        onDragStart: handleDragStart, onDragEnd: handleDragEnd,
+                        onDragOver: handleDragOver, onDrop: handleDrop,
+                        isDragOver: dragOverIndex === i && dragIndex !== i,
+                        index: i, total: blocks.length,
+                      })))))),
         h('aside', { className: 'rs-pane rs-properties' },
           h('div', { className: 'rs-pane-header' }, h('i', { className: 'bi bi-sliders' }), h('span', null, 'Propriétés')),
           h('div', { className: 'rs-pane-body' },
             h(PropertyPanel, { block: selectedBlock, onUpdate: updateBlock, onDelete: deleteBlock, onDuplicate: duplicateBlock, onToggleEnabled: toggleEnabled })))),
-      // Status bar
       h('div', { className: 'rs-statusbar' },
         h('span', { id: 'rs-status-msg' }, statusMsg),
         h('span', { className: 'ms-auto small text-muted' }, dirty ? 'Non enregistré' : '')),
-      // Toast
       toast && h('div', { className: 'position-fixed bottom-0 end-0 p-3', style: { zIndex: 11 } },
         h('div', { className: 'toast align-items-center text-white bg-' + toast.type + ' border-0 show', role: 'alert' },
           h('div', { className: 'toast-body' }, toast.msg))));
   }
 
-  // Mount
   const root = document.getElementById('rs-builder-root');
   if (root) {
     ReactDOM.createRoot(root).render(h(BuilderApp));

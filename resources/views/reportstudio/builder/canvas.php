@@ -24,6 +24,7 @@ declare(strict_types=1);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style><?= $themeCss ?? '' ?></style>
 </head>
 <body class="rs-builder-body">
@@ -52,7 +53,6 @@ window.RS_DASHBOARD_URL = '<?= e(route('reportstudio.index')) ?>';
 <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script src="/assets/modules/reportstudio/js/react_builder.js"></script>
 </body>
 </html>

@@ -47,10 +47,14 @@ class Router
                 $_REQUEST['route_params'] = $params;
 
                 foreach ($route['middleware'] as $middlewareClass) {
-                    if (class_exists($middlewareClass)) {
-                        $middleware = new $middlewareClass();
-                        $middleware->handle();
+                    if (!class_exists($middlewareClass)) {
+                        http_response_code(500);
+                        error_log('Middleware class not found: ' . $middlewareClass);
+                        echo '<div style="text-align:center;padding:100px 20px;font-family:sans-serif;"><h1 style="color:#dc2626;">Erreur 500</h1><p>Erreur de configuration du serveur. Contactez l\'administrateur.</p></div>';
+                        exit;
                     }
+                    $middleware = new $middlewareClass();
+                    $middleware->handle();
                 }
 
                 if (is_callable($route['callback'])) {

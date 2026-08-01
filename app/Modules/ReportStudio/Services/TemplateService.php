@@ -50,7 +50,7 @@ class TemplateService
             'recent'         => ReportTemplate::recent(6),
             'template_count' => ReportTemplate::count(),
             'published'      => ReportTemplate::publishedCount(),
-            'block_count'    => 14,
+            'block_count'    => 18,
             'theme_count'    => 3,
         ];
     }

@@ -18,6 +18,7 @@ class AssessmentController
 
     public function start(): void
     {
+        Auth::requireAuth();
         $sessionId = session_id();
 
         // Check if there's an existing in-progress assessment
@@ -40,6 +41,7 @@ class AssessmentController
 
     public function show(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment) { redirect('/'); return; }
@@ -102,6 +104,7 @@ class AssessmentController
 
     public function saveAnswer(): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($_GET['assessment_id'] ?? 0);
         $questionId = (int)($_GET['question_id'] ?? 0);
         $score = (int)($_GET['score'] ?? -1);
@@ -117,6 +120,7 @@ class AssessmentController
 
     public function complete(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment) { redirect('/'); return; }
@@ -133,6 +137,7 @@ class AssessmentController
 
     public function showLeadForm(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }
@@ -143,6 +148,7 @@ class AssessmentController
 
     public function saveLead(): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($_POST['assessment_id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment) { redirect('/'); return; }
@@ -197,6 +203,7 @@ class AssessmentController
 
     public function results(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }
@@ -210,6 +217,7 @@ class AssessmentController
 
     public function requestReport(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }

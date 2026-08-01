@@ -39,7 +39,8 @@ class ReportBlock
     public static function builtInKeys(): array
     {
         return [
-            'global_score', 'radar_chart', 'gauge', 'recommendations',
+            'global_score', 'radar_chart', 'bar_chart', 'line_chart',
+            'donut_chart', 'area_chart', 'gauge', 'recommendations',
             'company_info', 'aqmi_logo', 'company_logo', 'official_stamp',
             'qr_code', 'signature', 'header', 'footer', 'rich_text', 'image',
         ];

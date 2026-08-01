@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Helpers\Auth;
 use App\Models\Assessment;
 use App\Models\Lead;
 use App\Models\Report;
@@ -15,6 +16,7 @@ class ReportController
      */
     public function download(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }
@@ -78,6 +80,7 @@ class ReportController
      */
     public function downloadSummary(array $params): void
     {
+        Auth::requireAuth();
         $assessmentId = (int)($params['id'] ?? 0);
         $assessment = Assessment::find($assessmentId);
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }

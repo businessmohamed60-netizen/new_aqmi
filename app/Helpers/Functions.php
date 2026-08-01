@@ -112,6 +112,7 @@ function route(string $name, array $params = []): string
 {
     $routes = [
         'reportstudio'                  => '/admin/reportstudio',
+        'reportstudio.index'            => '/admin/reportstudio',
         'reportstudio.templates.index' => '/admin/reportstudio/templates',
         'reportstudio.templates.create'=> '/admin/reportstudio/templates/create',
         'reportstudio.templates.store'  => '/admin/reportstudio/templates',
