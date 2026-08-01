@@ -20,11 +20,6 @@ class TemplateRenderer
      */
     public function renderBlock(string $blockKey, array $config, string $title = '', array $template = [], string $reportNumber = ''): string
     {
-        $partial = BlockRegistry::partial($blockKey);
-        if (!$partial) {
-            return '';
-        }
-
         $partialPath = BASE_PATH . '/resources/views/reportstudio/report/' . $blockKey . '.php';
 
         if (!file_exists($partialPath)) {

@@ -28,14 +28,13 @@ app/Modules/ReportStudio/
 │   └── BlockRegistry.php            block_key → metadata map
 ├── Traits/
 │   └── HasJsonFields.php            JSON column cast helpers
-├── Views/
-│   ├── dashboard.php
-│   ├── templates/       index, form, detail
-│   ├── builder/         canvas, block_card, property_panel, properties/*
-│   ├── themes/          index, form
-│   ├── preview/         show
-│   └── report/          14 final-render block partials
 └── README.md
+
+Views live in the host app at resources/views/reportstudio/
+(loaded via the view() and view_partial() helpers):
+    dashboard.php, templates/{index,form,detail}, builder/{canvas,block_card,
+    property_panel,properties/*}, themes/{index,form}, preview/show,
+    report/* (14 final-render block partials)
 ```
 
 ## Data flow
