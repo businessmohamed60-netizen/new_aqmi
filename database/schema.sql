@@ -207,6 +207,8 @@ CREATE TABLE `leads` (
     `founded_year` VARCHAR(4) DEFAULT NULL,
     `production_type` VARCHAR(20) DEFAULT NULL,
     `notes` TEXT DEFAULT NULL,
+    `consent_contact` TINYINT(1) NOT NULL DEFAULT 0,
+    `consent_share_industry` TINYINT(1) NOT NULL DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`assessment_id`) REFERENCES `assessments`(`id`) ON DELETE CASCADE

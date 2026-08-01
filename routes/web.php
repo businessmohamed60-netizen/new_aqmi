@@ -8,15 +8,17 @@ $router->get('/', 'HomeController@index');
 $router->post('/contact', 'HomeController@contact');
 $router->get('/lang/{lang}', 'HomeController@switchLang');
 
-// Assessment
-$router->get('/assessment/start', 'AssessmentController@start');
-$router->get('/assessment/{id}', 'AssessmentController@show');
-$router->get('/assessment/save-answer', 'AssessmentController@saveAnswer');
-$router->get('/assessment/{id}/complete', 'AssessmentController@complete');
-$router->get('/assessment/save-lead', 'AssessmentController@saveLead');
-$router->get('/assessment/{id}/results', 'AssessmentController@results');
-$router->get('/assessment/{id}/download-summary', 'ReportController@downloadSummary');
-$router->get('/assessment/{id}/request-report', 'AssessmentController@requestCertification');
+// Assessment (auth required)
+$auth = [\App\Middleware\AuthMiddleware::class];
+$router->get('/assessment/start', 'AssessmentController@start', $auth);
+$router->get('/assessment/{id}', 'AssessmentController@show', $auth);
+$router->get('/assessment/save-answer', 'AssessmentController@saveAnswer', $auth);
+$router->get('/assessment/{id}/complete', 'AssessmentController@complete', $auth);
+$router->get('/assessment/{id}/lead', 'AssessmentController@showLeadForm', $auth);
+$router->post('/assessment/save-lead', 'AssessmentController@saveLead', $auth);
+$router->get('/assessment/{id}/results', 'AssessmentController@results', $auth);
+$router->get('/assessment/{id}/download-summary', 'ReportController@downloadSummary', $auth);
+$router->get('/assessment/{id}/request-report', 'AssessmentController@requestCertification', $auth);
 
 // Report
 $router->get('/report/{id}/download', 'ReportController@download');

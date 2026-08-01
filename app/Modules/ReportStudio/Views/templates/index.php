@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 /** @var array $templates */
+$title = 'Modèles de rapport';
+ob_start();
 ?>
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -45,3 +47,11 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
+<?php
+$content = ob_get_clean();
+$extraStyles = '<link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">';
+\App\Helpers\ViewHelper::renderLayout('admin', [
+    'title'        => $title,
+    'content'      => $content,
+    'extraStyles'  => $extraStyles,
+]);

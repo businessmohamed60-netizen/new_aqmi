@@ -7,6 +7,7 @@
     <title><?= e($title ?? 'NOVAQYS - Administration') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/nova-admin.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/automotive.css') ?>">
@@ -60,6 +61,11 @@
             </a>
             <a class="nova-sidebar-link <?= isActive('/admin/reports') ?>" href="/admin/reports">
                 <i class="fas fa-file-alt"></i><span>Rapports</span>
+            </a>
+
+            <div class="nova-sidebar-section">Studio</div>
+            <a class="nova-sidebar-link <?= isActive('/admin/reportstudio') ?>" href="/admin/reportstudio">
+                <i class="fas fa-palette"></i><span>Report Studio</span>
             </a>
 
             <div class="nova-sidebar-section">Système</div>

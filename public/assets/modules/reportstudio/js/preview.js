@@ -58,9 +58,11 @@
 
   // Resize charts before printing so they render correctly in PDF
   window.addEventListener('beforeprint', function () {
-    if (window.Chart && Chart.instances) {
-      Object.values(Chart.instances).forEach(function (c) {
-        try { c.resize(); } catch (e) {}
+    if (window.ApexCharts) {
+      document.querySelectorAll('[id^="rs-radar-"], [id^="rs-gauge-"]').forEach(function(el) {
+        if (el.__apexChart) {
+          try { el.__apexChart.resize(); } catch (e) {}
+        }
       });
     }
   });

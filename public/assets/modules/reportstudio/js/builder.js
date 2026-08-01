@@ -305,8 +305,8 @@
     const blocks = collectBlocks();
     const settings = collectSettings();
     statusMsg.textContent = 'Enregistrement...';
-    fetch(`/reportstudio/builder/${TEMPLATE_ID}`, {
-      method: 'PUT',
+    fetch(`/admin/reportstudio/builder/${TEMPLATE_ID}`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
       body: JSON.stringify({ blocks, settings }),
     })

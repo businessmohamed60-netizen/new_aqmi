@@ -74,6 +74,8 @@ class BuilderService
                 'sort_order'   => $order++,
                 'is_enabled'   => isset($item['is_enabled']) ? (bool) $item['is_enabled'] : true,
                 'visibility'   => in_array($vis, $validVisibility, true) ? $vis : 'web_pdf',
+                'column_span'  => $this->validateColumnSpan($item['column_span'] ?? 12),
+                'row_id'       => (int) ($item['row_id'] ?? 0),
             ];
         }
         return $rows;
@@ -92,5 +94,11 @@ class BuilderService
             'certification_date'   => !empty($settings['certification_date']) ? $settings['certification_date'] : null,
             'expiration_date'      => !empty($settings['expiration_date']) ? $settings['expiration_date'] : null,
         ];
+    }
+
+    private function validateColumnSpan($span): int
+    {
+        $span = (int) $span;
+        return max(1, min(12, $span === 0 ? 12 : $span));
     }
 }

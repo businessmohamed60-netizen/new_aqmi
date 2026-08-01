@@ -3,15 +3,13 @@ $title = 'Informations - AQMI Premium';
 ob_start();
 $customFields = [];
 try { $customFields = \App\Models\LeadCustomField::allActive(); } catch (\Exception $e) {}
-$sections = [];
-foreach ($customFields as $cf) {
-    $sections[$cf['section']][] = $cf;
-}
+$error = $_SESSION['error'] ?? '';
+unset($_SESSION['error']);
 ?>
 <div class="aqmi-lead-wrap">
-  <div class="aqmi-lead-card" style="animation: aqmi-fade-in 0.6s ease;">
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--aqmi-success),#16a34a);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.5rem;color:#fff;box-shadow:0 0 30px rgba(34,197,94,0.25);">
+  <div class="aqmi-lead-card">
+    <div class="aqmi-lead-header">
+      <div class="aqmi-lead-badge">
         <i class="fas fa-check"></i>
       </div>
       <h1 class="aqmi-lead-title">Demande de rapport certifié</h1>
@@ -19,30 +17,37 @@ foreach ($customFields as $cf) {
     </div>
 
     <!-- Steps indicator -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:2rem;">
-      <div style="width:28px;height:28px;border-radius:50%;background:var(--aqmi-success);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff;"><i class="fas fa-check"></i></div>
-      <div style="width:40px;height:2px;background:var(--aqmi-success);border-radius:2px;"></div>
-      <div style="width:28px;height:28px;border-radius:50%;background:var(--aqmi-accent);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#fff;">2</div>
-      <div style="width:40px;height:2px;background:var(--aqmi-border);border-radius:2px;"></div>
-      <div style="width:28px;height:28px;border-radius:50%;border:1px solid var(--aqmi-border);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:600;color:var(--aqmi-text-tertiary);">3</div>
+    <div class="aqmi-lead-steps">
+      <div class="aqmi-lead-step done"><i class="fas fa-check"></i></div>
+      <div class="aqmi-lead-step-bar done"></div>
+      <div class="aqmi-lead-step current">2</div>
+      <div class="aqmi-lead-step-bar"></div>
+      <div class="aqmi-lead-step">3</div>
     </div>
+
+    <?php if ($error): ?>
+      <div class="aqmi-lead-error" role="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><?= e($error) ?></span>
+      </div>
+    <?php endif; ?>
 
     <form method="POST" action="/assessment/save-lead" novalidate>
       <?= csrf_field() ?>
       <input type="hidden" name="assessment_id" value="<?= $assessment['id'] ?>">
 
       <!-- Identity -->
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--aqmi-text);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;">
-          <i class="fas fa-user-circle" style="color:var(--aqmi-accent);"></i> Identité
+      <div class="aqmi-lead-section">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-user-circle"></i> Identité
         </div>
         <div class="aqmi-lead-split">
           <div class="aqmi-lead-field">
-            <label>Prénom <span style="color:var(--aqmi-danger);">*</span></label>
+            <label>Prénom <span class="aqmi-req">*</span></label>
             <input type="text" name="firstname" required placeholder="Votre prénom">
           </div>
           <div class="aqmi-lead-field">
-            <label>Nom <span style="color:var(--aqmi-danger);">*</span></label>
+            <label>Nom <span class="aqmi-req">*</span></label>
             <input type="text" name="lastname" required placeholder="Votre nom">
           </div>
         </div>
@@ -53,12 +58,12 @@ foreach ($customFields as $cf) {
       </div>
 
       <!-- Company -->
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--aqmi-text);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;">
-          <i class="fas fa-building" style="color:var(--aqmi-accent);"></i> Entreprise
+      <div class="aqmi-lead-section">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-building"></i> Entreprise
         </div>
         <div class="aqmi-lead-field">
-          <label>Entreprise / Société <span style="color:var(--aqmi-danger);">*</span></label>
+          <label>Entreprise / Société <span class="aqmi-req">*</span></label>
           <input type="text" name="company" required placeholder="Nom de votre entreprise">
         </div>
         <div class="aqmi-lead-split">
@@ -125,9 +130,9 @@ foreach ($customFields as $cf) {
 
       <!-- Custom Fields -->
       <?php if (!empty($customFields)): ?>
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--aqmi-text);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;">
-          <i class="fas fa-chart-bar" style="color:var(--aqmi-accent);"></i> Informations complémentaires
+      <div class="aqmi-lead-section">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-chart-bar"></i> Informations complémentaires
         </div>
         <div class="aqmi-lead-split">
           <?php foreach ($customFields as $cf):
@@ -139,7 +144,7 @@ foreach ($customFields as $cf) {
             <div class="aqmi-lead-field">
               <label for="<?= $fieldId ?>">
                 <?= e($cf['label_fr'] ?: $cf['label']) ?>
-                <?php if ($cf['is_required']): ?><span style="color:var(--aqmi-danger);">*</span><?php endif; ?>
+                <?php if ($cf['is_required']): ?><span class="aqmi-req">*</span><?php endif; ?>
               </label>
               <?php if ($cf['field_type'] === 'text' || $cf['field_type'] === 'number' || $cf['field_type'] === 'phone'): ?>
                 <input type="<?= $cf['field_type'] === 'number' ? 'number' : ($cf['field_type'] === 'phone' ? 'tel' : 'text') ?>" name="<?= $fieldName ?>" id="<?= $fieldId ?>" placeholder="<?= e($placeholder) ?>" <?= $cf['is_required'] ? 'required' : '' ?>>
@@ -162,13 +167,13 @@ foreach ($customFields as $cf) {
       <?php endif; ?>
 
       <!-- Contact -->
-      <div style="margin-bottom:1.5rem;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--aqmi-text);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;">
-          <i class="fas fa-envelope" style="color:var(--aqmi-accent);"></i> Contact
+      <div class="aqmi-lead-section">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-envelope"></i> Contact
         </div>
         <div class="aqmi-lead-split">
           <div class="aqmi-lead-field">
-            <label>Email <span style="color:var(--aqmi-danger);">*</span></label>
+            <label>Email <span class="aqmi-req">*</span></label>
             <input type="email" name="email" required placeholder="votre@email.com">
           </div>
           <div class="aqmi-lead-field">
@@ -178,11 +183,52 @@ foreach ($customFields as $cf) {
         </div>
       </div>
 
+      <!-- Consent -->
+      <div class="aqmi-lead-section aqmi-lead-consent">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-shield-alt"></i> Consentement et protection des données
+        </div>
+
+        <div class="aqmi-consent-block">
+          <p class="aqmi-consent-text">
+            J'accepte que mes données personnelles soient utilisées pour me contacter au sujet de mon rapport de maturité qualité.
+          </p>
+          <div class="aqmi-consent-toggle" data-name="consent_contact">
+            <label class="aqmi-consent-option">
+              <input type="radio" name="consent_contact" value="yes" required>
+              <span class="aqmi-consent-pill">Oui</span>
+            </label>
+            <label class="aqmi-consent-option">
+              <input type="radio" name="consent_contact" value="no">
+              <span class="aqmi-consent-pill">Non</span>
+            </label>
+          </div>
+          <span class="aqmi-consent-required">Obligatoire</span>
+        </div>
+
+        <div class="aqmi-consent-block">
+          <p class="aqmi-consent-text">
+            J'accepte que mon score soit partagé avec des industriels qui pourraient être intéressés par mon profil qualité.
+          </p>
+          <div class="aqmi-consent-toggle" data-name="consent_share_industry">
+            <label class="aqmi-consent-option">
+              <input type="radio" name="consent_share_industry" value="yes" required>
+              <span class="aqmi-consent-pill">Oui</span>
+            </label>
+            <label class="aqmi-consent-option">
+              <input type="radio" name="consent_share_industry" value="no">
+              <span class="aqmi-consent-pill">Non</span>
+            </label>
+          </div>
+          <span class="aqmi-consent-required">Obligatoire</span>
+        </div>
+      </div>
+
       <button type="submit" class="aqmi-lead-submit">
-        <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i> Envoyer ma demande
+        <i class="fas fa-paper-plane"></i> Envoyer ma demande
       </button>
-      <p style="text-align:center;font-size:0.72rem;color:var(--aqmi-text-tertiary);margin-top:1rem;">
-        <i class="fas fa-lock" style="margin-right:0.3rem;"></i>Vos données sont confidentielles et ne seront pas partagées
+      <p class="aqmi-lead-footer">
+        <i class="fas fa-lock"></i>Vos données sont confidentielles et traitées conformément au RGPD
       </p>
     </form>
   </div>

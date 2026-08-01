@@ -90,15 +90,17 @@
   padding: 28px 32px;
 }
 .rs-canvas.rs-landscape { max-width: 1100px; }
+.rs-canvas .row { --bs-gutter-x: 12px; }
 .rs-canvas-empty {
   text-align: center; color: #94a3b8; padding: 60px 20px; border: 2px dashed var(--rs-pane-border); border-radius: 8px;
 }
 .rs-canvas-empty i { font-size: 2.5rem; display: block; margin-bottom: 8px; }
 
-/* ---------- Block card on canvas ---------- */
+/* ---------- Block card on canvas (grid) ---------- */
+.rs-block-col { padding: 0 6px; }
 .rs-block {
   border: 1px solid var(--rs-pane-border); border-radius: 8px; margin-bottom: 12px;
-  background: #fff; overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fff; overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s; cursor: pointer;
 }
 .rs-block:hover { border-color: var(--rs-secondary); }
 .rs-block.rs-selected { border-color: var(--rs-primary); box-shadow: 0 0 0 2px rgba(13,71,161,0.25); }
@@ -193,6 +195,8 @@
 }
 .rs-report-block { margin-bottom: 20px; page-break-inside: avoid; }
 .rs-report-block:last-child { margin-bottom: 0; }
+.rs-report-row { margin-bottom: 8px; }
+.rs-report-block-col { page-break-inside: avoid; }
 .rs-block-title { color: var(--rs-heading); font-weight: 600; }
 
 /* Visibility classes — used in preview */

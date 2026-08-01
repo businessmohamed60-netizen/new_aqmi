@@ -147,6 +147,15 @@ class AssessmentController
         $assessment = Assessment::find($assessmentId);
         if (!$assessment) { redirect('/'); return; }
 
+        $consentContact = $_POST['consent_contact'] ?? '';
+        $consentShare = $_POST['consent_share_industry'] ?? '';
+
+        if ($consentContact !== 'yes' || $consentShare !== 'yes') {
+            $_SESSION['error'] = 'Vous devez accepter les deux consentements pour transmettre votre demande.';
+            redirect('/assessment/' . $assessmentId . '/lead');
+            return;
+        }
+
         $data = [
             'assessment_id' => $assessmentId,
             'firstname' => $_POST['firstname'] ?? '',
@@ -160,6 +169,8 @@ class AssessmentController
             'company_size' => $_POST['company_size'] ?? '',
             'website' => $_POST['website'] ?? '',
             'founded_year' => $_POST['founded_year'] ?? '',
+            'consent_contact' => $consentContact === 'yes' ? 1 : 0,
+            'consent_share_industry' => $consentShare === 'yes' ? 1 : 0,
         ];
 
         $leadId = \App\Models\Lead::create($data);

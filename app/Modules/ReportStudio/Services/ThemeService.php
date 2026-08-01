@@ -32,12 +32,22 @@ class ThemeService
 
     public function createTheme(array $post): int
     {
-        return ReportTheme::create($this->validate($post));
+        $data = $this->validate($post);
+        $id = ReportTheme::create($data);
+        if ($data['is_default']) {
+            $this->unsetOtherDefaults($id);
+        }
+        return $id;
     }
 
     public function updateTheme(int $id, array $post): bool
     {
-        return ReportTheme::update($id, $this->validate($post));
+        $data = $this->validate($post);
+        $ok = ReportTheme::update($id, $data);
+        if ($ok && $data['is_default']) {
+            $this->unsetOtherDefaults($id);
+        }
+        return $ok;
     }
 
     public function deleteTheme(int $id): bool
@@ -47,6 +57,14 @@ class ThemeService
             return false;
         }
         return ReportTheme::delete($id);
+    }
+
+    private function unsetOtherDefaults(int $keepId): void
+    {
+        \App\Helpers\Database::query(
+            'UPDATE report_themes SET is_default = 0 WHERE id != ?',
+            [$keepId]
+        );
     }
 
     private function validate(array $post): array

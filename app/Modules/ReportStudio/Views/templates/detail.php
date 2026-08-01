@@ -3,6 +3,8 @@ declare(strict_types=1);
 /** @var array $template */
 $t = $template['template'] ?? ($template ?? []);
 $blocks = $template['blocks'] ?? [];
+$title = $t['name'] ?? 'Détail du modèle';
+ob_start();
 ?>
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -43,3 +45,11 @@ $blocks = $template['blocks'] ?? [];
         </div>
     </div>
 </div>
+<?php
+$content = ob_get_clean();
+$extraStyles = '<link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">';
+\App\Helpers\ViewHelper::renderLayout('admin', [
+    'title'        => $title,
+    'content'      => $content,
+    'extraStyles'  => $extraStyles,
+]);

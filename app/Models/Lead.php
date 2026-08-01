@@ -18,13 +18,15 @@ class Lead
     public static function create(array $data): int
     {
         return Database::insert(
-            "INSERT INTO leads (assessment_id, firstname, lastname, company, sector, job_title, phone, email, country, company_size, website, certifications, founded_year, production_type, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO leads (assessment_id, firstname, lastname, company, sector, job_title, phone, email, country, company_size, website, certifications, founded_year, production_type, notes, consent_contact, consent_share_industry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 $data['assessment_id'], $data['firstname'], $data['lastname'], $data['company'],
                 $data['sector'] ?? '', $data['job_title'] ?? '', $data['phone'] ?? '', $data['email'],
                 $data['country'] ?? '', $data['company_size'] ?? '', $data['website'] ?? '',
                 $data['certifications'] ?? '', $data['founded_year'] ?? '', $data['production_type'] ?? '',
-                $data['notes'] ?? ''
+                $data['notes'] ?? '',
+                !empty($data['consent_contact']) ? 1 : 0,
+                !empty($data['consent_share_industry']) ? 1 : 0,
             ]
         );
     }

@@ -27,7 +27,7 @@ $renderer     = new TemplateRenderer();
     <title>Aperçu — <?= e($template['name'] ?? 'Rapport') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js"></script>
     <link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">
     <style><?= $themeCss ?></style>
 </head>
@@ -62,18 +62,41 @@ $renderer     = new TemplateRenderer();
                 <p class="text-muted">Ce rapport ne contient aucun bloc actif.</p>
             </div>
         <?php else: ?>
-            <?php foreach ($blocks as $block): ?>
-                <section class="rs-report-block rs-vis-<?= e($block['visibility'] ?? 'web_pdf') ?>"
-                         data-block-key="<?= e($block['block_key'] ?? '') ?>">
-                    <?= $renderer->renderBlock(
-                        $block['block_key'] ?? '',
-                        $block['block_config'] ?? [],
-                        $block['title'] ?? '',
-                        $template,
-                        $reportNumber
-                    ) ?>
-                </section>
-            <?php endforeach; ?>
+            <?php
+            // Group blocks into rows: consecutive blocks fill a 12-col grid.
+            // When the row is full (sum >= 12) or the block is full-width (span=12), start a new row.
+            $currentSpan = 0;
+            $rowOpen = false;
+            foreach ($blocks as $block):
+                $span = (int)($block['column_span'] ?? 12);
+                $span = max(1, min(12, $span === 0 ? 12 : $span));
+                if ($rowOpen && ($currentSpan + $span > 12 || $span === 12 || $currentSpan === 12)) {
+                    echo '</div>';
+                    $rowOpen = false;
+                    $currentSpan = 0;
+                }
+                if (!$rowOpen) {
+                    echo '<div class="row g-2 rs-report-row">';
+                    $rowOpen = true;
+                    $currentSpan = 0;
+                }
+                $currentSpan += $span;
+            ?>
+                <div class="col-<?= $span ?> rs-report-block-col">
+                    <section class="rs-report-block rs-vis-<?= e($block['visibility'] ?? 'web_pdf') ?>"
+                             data-block-key="<?= e($block['block_key'] ?? '') ?>">
+                        <?= $renderer->renderBlock(
+                            $block['block_key'] ?? '',
+                            $block['block_config'] ?? [],
+                            $block['title'] ?? '',
+                            $template,
+                            $reportNumber
+                        ) ?>
+                    </section>
+                </div>
+            <?php endforeach;
+            if ($rowOpen) echo '</div>';
+            ?>
         <?php endif; ?>
     </div>
 

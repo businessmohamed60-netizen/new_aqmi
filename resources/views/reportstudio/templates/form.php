@@ -6,6 +6,8 @@ declare(strict_types=1);
  * @var array      $themes
  */
 $t = $template ?? [];
+$title = !empty($t) ? 'Modifier le modèle' : 'Nouveau modèle';
+ob_start();
 ?>
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
@@ -65,3 +67,11 @@ $t = $template ?? [];
         </div>
     </div>
 </div>
+<?php
+$content = ob_get_clean();
+$extraStyles = '<link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">';
+\App\Helpers\ViewHelper::renderLayout('admin', [
+    'title'        => $title,
+    'content'      => $content,
+    'extraStyles'  => $extraStyles,
+]);
