@@ -27,10 +27,10 @@ foreach ($domainQuestions as $dq) {
             'help_text' => $q['help_text_fr'] ?? $q['help_text'] ?? null,
             'question_type' => $q['question_type'] ?? 'rating_scale',
             'options' => $q['options'] ?? null,
-            'weight' => $q['weight'] ?? 1,
+            'weight' => (float)($q['weight'] ?? 1),
             'sort_order' => $q['sort_order'] ?? 0,
             'answered' => $answered,
-            'score' => $answeredScore,
+            'score' => $answeredScore !== null ? (int)$answeredScore : null,
         ];
         $totalQuestions++;
     }

@@ -11,6 +11,10 @@
   if (!cfg) return;
 
   var questions = cfg.questions || [];
+  for (var _i = 0; _i < questions.length; _i++) {
+    if (questions[_i].weight != null) questions[_i].weight = parseFloat(questions[_i].weight) || 1;
+    if (questions[_i].score != null) questions[_i].score = parseInt(questions[_i].score, 10);
+  }
   var domains = cfg.domains || [];
   var totalQ = cfg.totalQuestions || questions.length;
   var currentIdx = cfg.currentQuestion || 0;
@@ -267,16 +271,6 @@
     el.prevBtn.style.display = index > 0 ? '' : 'none';
     el.nextBtn.style.display = 'none';
     el.nextBtn.className = 'aqmi-nav-btn primary';
-
-    // Ripple effect
-    var card = this;
-    var rect = card.getBoundingClientRect();
-    card.style.setProperty('--ripple-x', ((event.clientX - rect.left) / rect.width * 100) + '%');
-    card.style.setProperty('--ripple-y', ((event.clientY - rect.top) / rect.height * 100) + '%');
-    card.classList.remove('ripple');
-    void card.offsetWidth;
-    card.classList.add('ripple');
-    setTimeout(function() { card.classList.remove('ripple'); }, 600);
 
     // Check if all answered
     updateProgress();
