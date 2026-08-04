@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460" fill="none">
+  <!-- Background -->
+  <rect width="400" height="400" rx="60" fill="#1a237e"/>
+
+  <!-- Right leg - full height piece -->
+  <polygon points="380,20 380,380 200,380 200,330 280,330 280,70 200,70 200,20" fill="#1a237e"/>
+
+  <!-- Top-left to center-right diagonal piece -->
+  <polygon points="20,20 200,20 200,200 160,200 160,70 60,70 60,160 20,160" fill="#1a237e"/>
+
+  <!-- Bottom-left piece -->
+  <polygon points="20,160 160,160 160,200 200,200 200,380 20,380" fill="#1a237e"/>
+
+  <!-- Inner diamond cutout (white) -->
+  <polygon points="200,90 260,200 200,310 140,200" fill="#fff"/>
+
+  <!-- NOVAQYS text -->
+  <text x="200" y="450" text-anchor="middle" font-family="'Inter',-apple-system,sans-serif" font-size="48" font-weight="900" fill="#1a237e" letter-spacing="10">NOVAQYS</text>
+</svg>
