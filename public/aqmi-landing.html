@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AQMI — Automotive Quality Maturity Index</title>
+  <meta name="description" content="AQMI - Évaluez, pilotez et améliorez la maturité qualité de votre usine automobile. Référentiel IATF 16949, 8 domaines, scoring intelligent." />
+  <meta name="theme-color" content="#030712" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+
+  <meta property="og:title" content="AQMI — Automotive Quality Maturity Index" />
+  <meta property="og:description" content="L'indice de maturité qualité de l'industrie automobile." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://novaqys.com/aqmi" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/css/aqmi-landing.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+</head>
+<body class="aqmi-page">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-hero" id="aqmiHero">
+    <canvas class="aqmi-hero-canvas"></canvas>
+    <div class="aqmi-hero-overlay"></div>
+    <div class="aqmi-hero-grid"></div>
+
+    <div class="aqmi-hero-content">
+      <div class="aqmi-hero-badge">
+        <span class="aqmi-hero-badge-dot"></span>
+        Automotive Quality Maturity Index
+      </div>
+
+      <h1 class="aqmi-hero-title">
+        <span class="aqmi-gradient">AQMI</span><br>
+        <span class="aqmi-hero-line">
+          <span class="aqmi-hero-word">L'indice</span>
+          <span class="aqmi-hero-word">de</span>
+          <span class="aqmi-hero-word">maturité</span>
+        </span><br>
+        <span class="aqmi-hero-line">
+          <span class="aqmi-hero-word">qualité</span>
+          <span class="aqmi-hero-word aqmi-hero-word-highlight">automobile</span>
+        </span>
+      </h1>
+
+      <p class="aqmi-hero-subtitle">Évaluez, pilotez et améliorez la performance qualité de votre site de production.</p>
+      <p class="aqmi-hero-tagline">IATF 16949 · 8 Domaines · Scoring Intelligent · IA Intégrée</p>
+
+      <div class="aqmi-hero-actions">
+        <a href="/assessment/start" class="aqmi-hero-btn aqmi-hero-btn-primary">
+          Commencer l'évaluation <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="#domaines" class="aqmi-hero-btn aqmi-hero-btn-secondary">
+          <i class="fas fa-info-circle"></i> Découvrir les domaines
+        </a>
+      </div>
+
+      <div class="aqmi-hero-stats">
+        <div class="aqmi-hero-stat">
+          <div class="aqmi-hero-stat-value">8</div>
+          <div class="aqmi-hero-stat-label">Domaines</div>
+        </div>
+        <div class="aqmi-hero-stat">
+          <div class="aqmi-hero-stat-value">50+</div>
+          <div class="aqmi-hero-stat-label">Questions</div>
+        </div>
+        <div class="aqmi-hero-stat">
+          <div class="aqmi-hero-stat-value">IATF</div>
+          <div class="aqmi-hero-stat-label">16949</div>
+        </div>
+        <div class="aqmi-hero-stat">
+          <div class="aqmi-hero-stat-value">IA</div>
+          <div class="aqmi-hero-stat-label">Intégrée</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aqmi-hero-scroll">
+      <div class="aqmi-hero-scroll-mouse"></div>
+      <span>Défiler</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SCORE — Matrice de Maturité
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-score aqmi-section-fade" id="score">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-chart-line"></i> Score de Maturité</span>
+      <h2 class="aqmi-section-title">Matrice de<br><span class="aqmi-gradient-text">Maturité AQMI</span></h2>
+      <p class="aqmi-section-desc">De 0 à 5, chaque niveau représente un palier de maturité qualité. Votre score global détermine votre position sur l'échelle d'excellence.</p>
+    </div>
+
+    <div class="aqmi-score-visual">
+      <div class="aqmi-score-level" style="border-color:rgba(229,72,77,0.2)">
+        <div class="aqmi-score-level-number" style="color:var(--aqmi-red)">0</div>
+        <div class="aqmi-score-level-label">Inexistant</div>
+        <div class="aqmi-score-level-desc">Aucun processus qualité défini</div>
+      </div>
+      <div class="aqmi-score-level" style="border-color:rgba(201,162,39,0.2)">
+        <div class="aqmi-score-level-number" style="color:var(--aqmi-orange)">1</div>
+        <div class="aqmi-score-level-label">Initial</div>
+        <div class="aqmi-score-level-desc">Processus informel, non standardisé</div>
+      </div>
+      <div class="aqmi-score-level" style="border-color:rgba(234,179,8,0.2)">
+        <div class="aqmi-score-level-number" style="color:#eab308">2</div>
+        <div class="aqmi-score-level-label">Basique</div>
+        <div class="aqmi-score-level-desc">Processus défini mais non maîtrisé</div>
+      </div>
+      <div class="aqmi-score-level" style="border-color:rgba(46,196,182,0.2)">
+        <div class="aqmi-score-level-number" style="color:var(--aqmi-green)">3</div>
+        <div class="aqmi-score-level-label">Maîtrisé</div>
+        <div class="aqmi-score-level-desc">Processus standardisé et contrôlé</div>
+      </div>
+      <div class="aqmi-score-level" style="border-color:rgba(46,196,182,0.2)">
+        <div class="aqmi-score-level-number" style="color:var(--aqmi-cyan)">4</div>
+        <div class="aqmi-score-level-label">Performant</div>
+        <div class="aqmi-score-level-desc">Processus optimisé, indicateurs suivis</div>
+      </div>
+      <div class="aqmi-score-level" style="border-color:rgba(201,162,39,0.2)">
+        <div class="aqmi-score-level-number" style="color:var(--aqmi-purple)">5</div>
+        <div class="aqmi-score-level-label">Excellence</div>
+        <div class="aqmi-score-level-desc">Leadership, amélioration continue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DOMAINS — 8 domaines d'évaluation
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-domains aqmi-section-fade" id="domaines">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-cubes"></i> Domaines</span>
+      <h2 class="aqmi-section-title">8 Domaines<br><span class="aqmi-gradient-text">d'Évaluation</span></h2>
+      <p class="aqmi-section-desc">Notre référentiel couvre l'ensemble des exigences IATF 16949 à travers 8 domaines clés de la performance industrielle.</p>
+    </div>
+
+    <div class="aqmi-domains-grid">
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-blue)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-industry"></i></div>
+        <h4>Production</h4>
+        <p>Organisation, planification, gestion des flux et capacité de production.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-cyan)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-cyan);background:rgba(46,196,182,0.1)"><i class="fas fa-flask"></i></div>
+        <h4>Qualité</h4>
+        <p>Contrôle qualité, SPC, capabilité, gestion des non-conformités.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-purple)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-robot"></i></div>
+        <h4>Maintenance</h4>
+        <p>GMAO, maintenance préventive, TRS et disponibilité des équipements.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-green)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-green);background:rgba(46,196,182,0.1)"><i class="fas fa-truck"></i></div>
+        <h4>Supply Chain</h4>
+        <p>Gestion des stocks, approvisionnements, logistique et expéditions.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-orange)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-orange);background:rgba(201,162,39,0.1)"><i class="fas fa-users"></i></div>
+        <h4>Management</h4>
+        <p>Leadership, politique qualité, revues de direction, objectifs.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-green)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-green);background:rgba(46,196,182,0.1)"><i class="fas fa-graduation-cap"></i></div>
+        <h4>Compétences</h4>
+        <p>Formation, qualification, matrice de polyvalence et gestion des talents.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-blue)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-file-lines"></i></div>
+        <h4>Documentation</h4>
+        <p>GED, procédures, enregistrements et maîtrise des documents IATF.</p>
+      </div>
+      <div class="aqmi-domain-card" style="--card-accent:var(--aqmi-purple)">
+        <div class="aqmi-domain-card-icon" style="color:var(--aqmi-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-qrcode"></i></div>
+        <h4>Traçabilité</h4>
+        <p>Batch, DATAMATRIX, traçabilité descendante et ascendante.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FEATURES — Premium
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-features aqmi-section-fade" id="features">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-star"></i> Fonctionnalités</span>
+      <h2 class="aqmi-section-title">Une expérience<br><span class="aqmi-gradient-text">Premium</span></h2>
+      <p class="aqmi-section-desc">Un questionnaire intelligent, une interface immersive et des résultats actionnables pour piloter votre transformation qualité.</p>
+    </div>
+
+    <div class="aqmi-features-grid">
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-brain"></i></div>
+        <h4>Assistant IA</h4>
+        <p>Un assistant intelligent vous guide question par question avec des explications contextuelles et des recommandations personnalisées.</p>
+      </div>
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-cyan);background:rgba(46,196,182,0.1)"><i class="fas fa-chart-pie"></i></div>
+        <h4>Scoring Temps Réel</h4>
+        <p>Votre score de maturité évolue en temps réel. Visualisez instantanément l'impact de chaque réponse sur votre indice global.</p>
+      </div>
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-file-pen"></i></div>
+        <h4>Rapport Automatisé</h4>
+        <p>Un rapport de diagnostic complet généré automatiquement avec plans d'action, priorités et benchmarking.</p>
+      </div>
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-green);background:rgba(46,196,182,0.1)"><i class="fas fa-cubes"></i></div>
+        <h4>8 Domaines Clés</h4>
+        <p>Production, Qualité, Maintenance, Supply Chain, Management, Compétences, Documentation et Traçabilité.</p>
+      </div>
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-orange);background:rgba(201,162,39,0.1)"><i class="fas fa-mobile-screen"></i></div>
+        <h4>Interface Immersive</h4>
+        <p>Une question à la fois, animations fluides, illustrations dynamiques et transitions premium.</p>
+      </div>
+      <div class="aqmi-feature-card">
+        <div class="aqmi-feature-card-icon" style="color:var(--aqmi-red);background:rgba(229,72,77,0.1)"><i class="fas fa-certificate"></i></div>
+        <h4>Conforme IATF 16949</h4>
+        <p>Référentiel aligné sur les exigences IATF 16949:2016 et les attentes des constructeurs automobiles.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PROCESS — Comment ça marche
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-process aqmi-section-fade" id="process">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-circle-play"></i> Processus</span>
+      <h2 class="aqmi-section-title">Comment ça<br><span class="aqmi-gradient-text">marche</span> ?</h2>
+      <p class="aqmi-section-desc">Trois étapes simples pour évaluer la maturité qualité de votre site de production.</p>
+    </div>
+
+    <div class="aqmi-process-steps">
+      <div class="aqmi-process-step">
+        <div class="aqmi-process-step-number">1</div>
+        <h4>Répondez au questionnaire</h4>
+        <p>Une question à la fois, guidé par l'assistant IA. Choisissez le niveau qui correspond à votre situation réelle.</p>
+      </div>
+      <div class="aqmi-process-step">
+        <div class="aqmi-process-step-number">2</div>
+        <h4>Obtenez votre score</h4>
+        <p>Votre indice de maturité AQMI s'affiche en temps réel. Visualisez vos forces et axes d'amélioration par domaine.</p>
+      </div>
+      <div class="aqmi-process-step">
+        <div class="aqmi-process-step-number">3</div>
+        <h4>Pilotez votre progression</h4>
+        <p>Téléchargez votre rapport de diagnostic et mettez en place un plan d'action pour améliorer votre score.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       REPORT — Exemple de Rapport de Diagnostic
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-report aqmi-section-fade" id="rapport">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-file-chart-column"></i> Rapport de Diagnostic</span>
+      <h2 class="aqmi-section-title">Exemple de<br><span class="aqmi-gradient-text">Rapport AQMI</span></h2>
+      <p class="aqmi-section-desc">Un diagnostic complet généré automatiquement après l'évaluation. Visualisez votre score, vos forces et vos axes d'amélioration.</p>
+    </div>
+
+    <div class="aqmi-report-card">
+      <div class="aqmi-report-card-glow"></div>
+
+      <!-- Report Header -->
+      <div class="aqmi-report-header">
+        <div class="aqmi-report-header-left">
+          <div class="aqmi-report-company">
+            <div class="aqmi-report-company-avatar">IP</div>
+            <div>
+              <div class="aqmi-report-company-name">INDUSTRIAL PARTS S.A.S.</div>
+              <div class="aqmi-report-company-meta">
+                <span><i class="fas fa-industry"></i> Usinage · Injection</span>
+                <span><i class="fas fa-map-pin"></i> Algérie</span>
+                <span><i class="fas fa-calendar"></i> Évaluation 2025</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aqmi-report-header-right">
+          <div class="aqmi-report-score-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="bg" cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.04)" stroke-width="6" fill="none"/>
+              <circle class="fg" cx="60" cy="60" r="52" stroke="url(#scoreGrad)" stroke-width="6" fill="none"
+                stroke-dasharray="326.7" stroke-dashoffset="98" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1F6FEB"/>
+                  <stop offset="100%" stop-color="#2EC4B6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="aqmi-report-score-value">70%</div>
+          </div>
+          <div class="aqmi-report-score-level" style="color:var(--aqmi-cyan)">Avancé</div>
+        </div>
+      </div>
+
+      <!-- Domain Scores -->
+      <div class="aqmi-report-domains">
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Production</span>
+            <span class="aqmi-report-domain-score">82%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:82%;background:linear-gradient(90deg,var(--aqmi-blue),#1F6FEB)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Qualité</span>
+            <span class="aqmi-report-domain-score">75%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:75%;background:linear-gradient(90deg,var(--aqmi-cyan),#2EC4B6)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Maintenance</span>
+            <span class="aqmi-report-domain-score">68%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:68%;background:linear-gradient(90deg,var(--aqmi-purple),#C9A227)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Supply Chain</span>
+            <span class="aqmi-report-domain-score">60%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:60%;background:linear-gradient(90deg,var(--aqmi-green),#2EC4B6)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Management</span>
+            <span class="aqmi-report-domain-score">55%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:55%;background:linear-gradient(90deg,var(--aqmi-orange),#C9A227)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Compétences</span>
+            <span class="aqmi-report-domain-score">72%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:72%;background:linear-gradient(90deg,var(--aqmi-green),#2EC4B6)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Documentation</span>
+            <span class="aqmi-report-domain-score">45%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:45%;background:linear-gradient(90deg,var(--aqmi-red),#E5484D)"></div>
+          </div>
+        </div>
+        <div class="aqmi-report-domain">
+          <div class="aqmi-report-domain-info">
+            <span class="aqmi-report-domain-name">Traçabilité</span>
+            <span class="aqmi-report-domain-score">38%</span>
+          </div>
+          <div class="aqmi-report-domain-bar">
+            <div class="aqmi-report-domain-fill" style="width:38%;background:linear-gradient(90deg,var(--aqmi-red),#E5484D)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="aqmi-report-recos">
+        <h4 class="aqmi-report-recos-title"><i class="fas fa-lightbulb"></i> Recommandations Prioritaires</h4>
+        <div class="aqmi-report-recos-list">
+          <div class="aqmi-report-reco critical">
+            <div class="aqmi-report-reco-priority" style="background:var(--aqmi-red)">1</div>
+            <div class="aqmi-report-reco-text">
+              <strong>Mettre en place un système de traçabilité batch</strong>
+              <span>Implémenter un système de scanning DATAMATRIX à chaque étape de production</span>
+            </div>
+          </div>
+          <div class="aqmi-report-reco critical">
+            <div class="aqmi-report-reco-priority" style="background:var(--aqmi-red)">2</div>
+            <div class="aqmi-report-reco-text">
+              <strong>Structurer la gestion documentaire IATF</strong>
+              <span>Centraliser les procédures et enregistrements dans un système GED conforme</span>
+            </div>
+          </div>
+          <div class="aqmi-report-reco high">
+            <div class="aqmi-report-reco-priority" style="background:var(--aqmi-orange)">3</div>
+            <div class="aqmi-report-reco-text">
+              <strong>Renforcer le management qualité</strong>
+              <span>Mettre en place des revues de direction mensuelles avec indicateurs de performance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projected Progression -->
+      <div class="aqmi-report-projection">
+        <h4 class="aqmi-report-projection-title"><i class="fas fa-chart-line"></i> Projection d'Amélioration</h4>
+        <div class="aqmi-report-projection-chart">
+          <div class="aqmi-report-projection-bar" style="height:70%;background:linear-gradient(180deg,var(--aqmi-blue),#1F6FEB)">
+            <span>70%</span>
+            <div class="aqmi-report-projection-label">Aujourd'hui</div>
+          </div>
+          <div class="aqmi-report-projection-bar" style="height:80%;background:linear-gradient(180deg,var(--aqmi-cyan),#2EC4B6)">
+            <span>80%</span>
+            <div class="aqmi-report-projection-label">6 Mois</div>
+          </div>
+          <div class="aqmi-report-projection-bar" style="height:88%;background:linear-gradient(180deg,var(--aqmi-purple),#C9A227)">
+            <span>88%</span>
+            <div class="aqmi-report-projection-label">12 Mois</div>
+          </div>
+          <div class="aqmi-report-projection-bar" style="height:95%;background:linear-gradient(180deg,var(--aqmi-green),#2EC4B6)">
+            <span>95%</span>
+            <div class="aqmi-report-projection-label">24 Mois</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       BENCHMARK — Comparaison Industrie
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-benchmark aqmi-section-fade" id="benchmark">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-chart-simple"></i> Benchmark</span>
+      <h2 class="aqmi-section-title">Benchmark<br><span class="aqmi-gradient-text">Industriel</span></h2>
+      <p class="aqmi-section-desc">Comparez votre performance qualité aux moyennes de l'industrie par secteur et par région.</p>
+    </div>
+
+    <div class="aqmi-benchmark-grid">
+      <div class="aqmi-benchmark-card">
+        <div class="aqmi-benchmark-card-icon" style="color:var(--aqmi-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-car"></i></div>
+        <div class="aqmi-benchmark-card-value">78%</div>
+        <div class="aqmi-benchmark-card-label">Moyenne Générale</div>
+        <div class="aqmi-benchmark-card-sub">Tous secteurs confondus</div>
+      </div>
+      <div class="aqmi-benchmark-card">
+        <div class="aqmi-benchmark-card-icon" style="color:var(--aqmi-green);background:rgba(46,196,182,0.1)"><i class="fas fa-industry"></i></div>
+        <div class="aqmi-benchmark-card-value">85%</div>
+        <div class="aqmi-benchmark-card-label">Équipementiers</div>
+        <div class="aqmi-benchmark-card-sub">Fournisseurs Tier 1</div>
+      </div>
+      <div class="aqmi-benchmark-card">
+        <div class="aqmi-benchmark-card-icon" style="color:var(--aqmi-orange);background:rgba(201,162,39,0.1)"><i class="fas fa-wrench"></i></div>
+        <div class="aqmi-benchmark-card-value">62%</div>
+        <div class="aqmi-benchmark-card-label">Sous-traitants</div>
+        <div class="aqmi-benchmark-card-sub">PME / ETI</div>
+      </div>
+      <div class="aqmi-benchmark-card">
+        <div class="aqmi-benchmark-card-icon" style="color:var(--aqmi-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-globe"></i></div>
+        <div class="aqmi-benchmark-card-value">72%</div>
+        <div class="aqmi-benchmark-card-label">Moyenne Régionale</div>
+        <div class="aqmi-benchmark-card-sub">Afrique du Nord / Moyen-Orient</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       WHY AQMI — Pourquoi AQMI
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-section aqmi-why aqmi-section-fade" id="why">
+    <div class="aqmi-section-header">
+      <span class="aqmi-section-label"><i class="fas fa-star"></i> Pourquoi AQMI ?</span>
+      <h2 class="aqmi-section-title">Pourquoi choisir<br><span class="aqmi-gradient-text">AQMI</span> ?</h2>
+      <p class="aqmi-section-desc">L'indice de maturité qualité qui fait la différence pour les constructeurs et donneurs d'ordre.</p>
+    </div>
+
+    <div class="aqmi-why-grid">
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-blue)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-certificate"></i></div>
+        <h3>Conforme IATF 16949</h3>
+        <p>Référentiel aligné sur les exigences IATF 16949:2016, le standard mondial des constructeurs automobiles.</p>
+      </div>
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-cyan)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-cyan);background:rgba(46,196,182,0.1)"><i class="fas fa-brain"></i></div>
+        <h3>Scoring Intelligent</h3>
+        <p>Algorithme IA qui pondère chaque réponse par domaine et génère un score de maturité global précis.</p>
+      </div>
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-purple)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-file-pen"></i></div>
+        <h3>Rapport Automatisé</h3>
+        <p>Génération instantanée d'un rapport de diagnostic avec plans d'action, priorités et benchmarking.</p>
+      </div>
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-green)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-green);background:rgba(46,196,182,0.1)"><i class="fas fa-chart-line"></i></div>
+        <h3>Suivi Temps Réel</h3>
+        <p>Votre score évolue en direct pendant l'évaluation. Visualisez l'impact immédiat de vos réponses.</p>
+      </div>
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-orange)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-orange);background:rgba(201,162,39,0.1)"><i class="fas fa-gauge-high"></i></div>
+        <h3>Avantage Concurrentiel</h3>
+        <p>Un score AQMI élevé vous distingue auprès des constructeurs. Prouvez votre niveau d'excellence.</p>
+      </div>
+      <div class="aqmi-why-card" style="--card-accent:var(--aqmi-red)">
+        <div class="aqmi-why-card-icon" style="color:var(--aqmi-red);background:rgba(229,72,77,0.1)"><i class="fas fa-arrow-trend-up"></i></div>
+        <h3>Progression Pilotée</h3>
+        <p>Des recommandations prioritaires et une projection d'amélioration pour piloter votre transformation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="aqmi-cta aqmi-section-fade">
+    <div class="aqmi-cta-content">
+      <h2>Prêt à évaluer<br><span class="aqmi-gradient-text">votre maturité qualité</span> ?</h2>
+      <p>Rejoignez les industriels qui utilisent AQMI pour piloter leur performance qualité et répondre aux exigences des constructeurs automobiles.</p>
+      <div class="aqmi-cta-buttons">
+        <a href="/assessment/start" class="aqmi-hero-btn aqmi-hero-btn-primary">
+          Commencer l'évaluation <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="/" class="aqmi-hero-btn aqmi-hero-btn-secondary">
+          <i class="fas fa-arrow-left"></i> Retour à NOVAQYS
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer class="aqmi-footer">
+    <p>AQMI — Automotive Quality Maturity Index &copy; 2025 NOVAQYS Ecosystem. Tous droits réservés.</p>
+  </footer>
+
+  <script src="/assets/js/aqmi-landing.js"></script>
+</body>
+</html>
