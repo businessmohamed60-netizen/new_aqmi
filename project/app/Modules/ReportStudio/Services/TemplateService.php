@@ -49,7 +49,7 @@ class TemplateService
     public function dashboardStats(): array
     {
         return [
-            'recent'         => ReportTemplate::recent(6),
+            'recent'         => array_map(fn($t) => $t->toArray(), ReportTemplate::recent(6)),
             'template_count' => ReportTemplate::count(),
             'published'      => ReportTemplate::publishedCount(),
             'block_count'    => count(ReportBlock::all()),

@@ -6,6 +6,7 @@ namespace App\Modules\ReportStudio\Models;
 use App\Helpers\Database;
 use App\Modules\ReportStudio\Traits\HasJsonFields;
 
+#[\AllowDynamicProperties]
 class ReportTheme
 {
     use HasJsonFields;
