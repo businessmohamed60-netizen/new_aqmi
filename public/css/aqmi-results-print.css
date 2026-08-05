@@ -26,16 +26,16 @@
    ========================================================== */
 @media print {
 
-    /* Mise en page papier */
+    /* Mise en page papier — marges réduites pour plus de contenu par page */
     @page {
-        margin: 14mm 12mm;
+        margin: 10mm 10mm;
     }
 
     /* Rien à gauche/droite qui dépasse, pas de fond sombre à imprimer */
     html, body {
         background: #ffffff !important;
         color: #1a1a1a !important;
-        font-size: 11pt;
+        font-size: 9.5pt;
     }
 
     /* Actions interactives : inutiles sur papier */
@@ -75,7 +75,7 @@
     .aqmi-roadmap > * {
         display: block !important;
         width: 100% !important;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     /* Titres : lisibles en noir, pas en blanc/clair comme sur fond sombre */
@@ -86,7 +86,7 @@
         color: #1a1a1a;
     }
 
-    /* On ne casse pas les couleurs volontaires (scores colorés,
+    /* On ne casse pas les couleurs volontaire (scores colorés,
        badges de statut, légendes, etc.) posées en style inline
        dans le HTML — elles restent prioritaires par défaut. */
 
@@ -96,12 +96,7 @@
     .aqmi-domain-grid {
         page-break-inside: avoid;
         break-inside: avoid;
-        margin-bottom: 14px;
-    }
-
-    /* Nouvelle page avant les sections clés, pour un rendu plus propre */
-    .aqmi-results-section:nth-of-type(3) {
-        page-break-before: always;
+        margin-bottom: 10px;
     }
 
     /* Graphiques (Chart.js / SVG) : toujours visibles, taille contenue.
@@ -119,7 +114,12 @@
        soit rogné par la pagination */
     div[style*="height:280px"],
     div[style*="height: 280px"] {
-        height: 220px !important;
+        height: 200px !important;
+        page-break-inside: avoid;
+    }
+    div[style*="height:220px"],
+    div[style*="height: 220px"] {
+        height: 180px !important;
         page-break-inside: avoid;
     }
 
@@ -131,7 +131,30 @@
 
     /* Barres de progression : garder la couleur de fond pleine à l'impression
        (certains navigateurs désactivent les couleurs de fond par défaut) */
-    .aqmi-domain-item div[style*="background"] {
+    .aqmi-domain-item div[style*="background"],
+    .aqmi-bmk-fill {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Réduire les marges internes des cartes pour gagner de l'espace */
+    .aqmi-results-card {
+        padding: 10px 14px !important;
+    }
+
+    /* Réduire l'espacement entre les sections */
+    .aqmi-results-section {
+        margin-bottom: 10px !important;
+    }
+
+    /* Le header de la page de résultats : plus compact à l'impression */
+    .aqmi-results-header {
+        padding-bottom: 10px !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* Forcer les couleurs de fond à s'imprimer (navigateurs modernes) */
+    * {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }

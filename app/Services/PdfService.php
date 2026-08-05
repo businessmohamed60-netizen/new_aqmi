@@ -603,11 +603,9 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
     private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
-        $leadName = ($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? '');
         $leadFullName = ($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? '');
         if (empty(trim($leadFullName)) && $user) {
             $leadFullName = ($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? '');
-            $leadName = trim($leadFullName);
         }
         $globalScore = $analysis['global_score'];
         $level = $analysis['maturity_level'];
@@ -625,484 +623,209 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $navy = '#0b1f4d';
         $gold = '#b8860b';
 
-        // ---- Domain score bars ----
-        $domainBars = '';
+        // Domain score rows — NO nested tables, use div-based bars instead
+        $domainRows = '';
         foreach ($analysis['domain_scores'] as $ds) {
             $pct = round($ds['percent_score']);
             $barColor = $pct >= 70 ? '#059669' : ($pct >= 50 ? '#d97706' : '#dc3545');
-            $domainBars .= '<tr>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;font-size:9.5pt;">' . htmlspecialchars($ds['domain_name_fr'] ?: $ds['domain_name']) . '</td>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;width:150px;">
-                    <table style="margin:0;border:none;"><tr><td style="padding:0;border:none;background:#f3f4f6;border-radius:4px;height:16px;width:' . $pct . '%;">
-                        <div style="background:' . $barColor . ';height:16px;border-radius:4px;width:100%;"></div>
-                    </td></tr></table>
-                </td>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-weight:bold;font-size:10pt;color:' . $barColor . ';">' . $pct . '%</td>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:9pt;color:#6b7280;">' . round($ds['avg_score'], 1) . '/5</td>
-            </tr>';
+            $domainRows .= '<tr>'
+                . '<td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:9pt;">' . htmlspecialchars($ds['domain_name_fr'] ?: $ds['domain_name']) . '</td>'
+                . '<td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;">'
+                . '<div style="background:#f3f4f6;border-radius:3px;height:14px;width:100%;">'
+                . '<div style="background:' . $barColor . ';border-radius:3px;height:14px;width:' . $pct . '%;"></div>'
+                . '</div></td>'
+                . '<td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-weight:bold;font-size:9pt;color:' . $barColor . ';">' . $pct . '%</td>'
+                . '<td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;color:#6b7280;">' . round($ds['avg_score'], 1) . '/5</td>'
+                . '</tr>';
         }
 
-        // ---- Level legend from DB ----
-        $levelLegendRows = '';
-        foreach (ScoreLevel::all() as $lvl) {
-            $levelLegendRows .= '<tr>
-                <td style="text-align:center;font-weight:bold;color:' . $lvl['color'] . ';padding:6px 10px;border-bottom:1px solid #e5e7eb;">' . round($lvl['min_percent']) . '-' . round($lvl['max_percent']) . '%</td>
-                <td style="font-weight:bold;padding:6px 10px;border-bottom:1px solid #e5e7eb;color:' . $lvl['color'] . ';">' . htmlspecialchars($lvl['name_fr'] ?: $lvl['name']) . '</td>
-                <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;color:#6b7280;">' . $this->getMaturityLevelDescription($lvl['name_fr'] ?: $lvl['name']) . '</td>
-            </tr>';
-        }
-
-        // ---- Strengths & Weaknesses ----
+        // Strengths & weaknesses — simple list, no nested tables
         $strengthsHtml = '';
         foreach ($analysis['strengths'] as $i => $s) {
-            $strengthsHtml .= '<tr>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;width:24px;text-align:center;color:#059669;font-weight:bold;font-size:8pt;">' . ($i+1) . '</td>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($s['domain_name_fr'] ?: $s['domain_name']) . '</td>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:bold;color:#059669;font-size:8.5pt;">' . round($s['percent_score']) . '%</td>
-            </tr>';
+            $strengthsHtml .= '<div style="padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:8.5pt;">'
+                . '<span style="color:#059669;font-weight:bold;">' . ($i + 1) . '.</span> '
+                . htmlspecialchars($s['domain_name_fr'] ?: $s['domain_name'])
+                . ' <span style="float:right;font-weight:bold;color:#059669;">' . round($s['percent_score']) . '%</span>'
+                . '</div>';
         }
         $weaknessesHtml = '';
         foreach ($analysis['weaknesses'] as $i => $w) {
-            $weaknessesHtml .= '<tr>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;width:24px;text-align:center;color:#dc3545;font-weight:bold;font-size:8pt;">' . ($i+1) . '</td>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($w['domain_name_fr'] ?: $w['domain_name']) . '</td>
-                <td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:bold;color:#dc3545;font-size:8.5pt;">' . round($w['percent_score']) . '%</td>
-            </tr>';
+            $weaknessesHtml .= '<div style="padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:8.5pt;">'
+                . '<span style="color:#dc3545;font-weight:bold;">' . ($i + 1) . '.</span> '
+                . htmlspecialchars($w['domain_name_fr'] ?: $w['domain_name'])
+                . ' <span style="float:right;font-weight:bold;color:#dc3545;">' . round($w['percent_score']) . '%</span>'
+                . '</div>';
         }
 
-        // ---- Recommendations ----
+        // Recommendations — simple list
         $recHtml = '';
         foreach ($recommendations as $i => $rec) {
             $pClass = $rec['priority'];
             $pColor = $pClass === 'critical' ? '#dc3545' : ($pClass === 'high' ? '#d97706' : ($pClass === 'medium' ? '#1F6FEB' : '#6b7280'));
-            $pBg   = $pClass === 'critical' ? '#fef2f2' : ($pClass === 'high' ? '#fffbeb' : ($pClass === 'medium' ? '#eff6ff' : '#f9fafb'));
             $pBadge = $pClass === 'critical' ? 'Critique' : ($pClass === 'high' ? 'Haute' : ($pClass === 'medium' ? 'Moyenne' : 'Basse'));
-            $recHtml .= '<tr>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;text-align:center;width:28px;font-weight:bold;color:' . $pColor . ';font-size:9pt;">' . ($i+1) . '</td>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;font-size:9pt;color:#374151;">' . htmlspecialchars($rec['text'] ?? '') . '</td>
-                <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;text-align:center;width:80px;">
-                    <span style="background:' . $pBg . ';color:' . $pColor . ';padding:3px 8px;border-radius:4px;font-size:7.5pt;font-weight:bold;">' . $pBadge . '</span>
-                </td>
-            </tr>';
-        }
-
-        // ---- Industrial Park data ----
-        $industrialData = $this->getIndustrialParkData($sector, $companyName);
-        $machineRows = '';
-        foreach ($industrialData['machines'] as $m) {
-            $statusColor = $m['status'] === 'Excellent' ? '#059669' : ($m['status'] === 'Bon' ? '#1F6FEB' : ($m['status'] === 'Moyen' ? '#d97706' : '#dc3545'));
-            $machineRows .= '<tr>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($m['name']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($m['type']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . htmlspecialchars($m['capacity']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . $m['quantity'] . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;color:' . $statusColor . ';font-weight:bold;">' . $m['status'] . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . $m['year'] . '</td>
-            </tr>';
-        }
-
-        $prodLineRows = '';
-        foreach ($industrialData['production_lines'] as $pl) {
-            $capColor = $pl['efficiency'] >= 85 ? '#059669' : ($pl['efficiency'] >= 70 ? '#1F6FEB' : ($pl['efficiency'] >= 50 ? '#d97706' : '#dc3545'));
-            $prodLineRows .= '<tr>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($pl['name']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . htmlspecialchars($pl['products']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . htmlspecialchars($pl['daily_capacity']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;color:' . $capColor . ';font-weight:bold;">' . $pl['efficiency'] . '%</td>
-            </tr>';
-        }
-
-        $infraRows = '';
-        foreach ($industrialData['infrastructure'] as $inf) {
-            $infraRows .= '<tr>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($inf['item']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;">' . htmlspecialchars($inf['description']) . '</td>
-                <td style="padding:6px 8px;border:1px solid #e5e7eb;font-size:8.5pt;text-align:center;">' . htmlspecialchars($inf['status']) . '</td>
-            </tr>';
+            $recHtml .= '<div style="padding:5px 0;border-bottom:1px solid #f3f4f6;font-size:8.5pt;">'
+                . '<span style="color:' . $pColor . ';font-weight:bold;">' . ($i + 1) . '.</span> '
+                . htmlspecialchars($rec['text'] ?? '')
+                . ' <span style="float:right;background:' . $pColor . '15;color:' . $pColor . ';padding:1px 6px;border-radius:3px;font-size:7pt;font-weight:bold;">' . $pBadge . '</span>'
+                . '</div>';
         }
 
         $levelDesc = $this->getMaturityLevelDescription($levelName);
-
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
         $radarSvg = $this->buildRadarSvg($analysis['domain_scores'], $levelColor);
         $legendHtml = $this->buildLevelLegendHtml();
-
-        // ---- Industrial park section ----
-        $industrialParkSection = '';
-        if ($includeIndustrialPark) {
-            $statBoxes = '';
-            $stats = [
-                [count($industrialData['machines']), 'Machines et Équipements'],
-                [count($industrialData['production_lines']), 'Lignes de Production'],
-                [$industrialData['total_capacity'], 'Capacité Journalière'],
-                [$industrialData['avg_efficiency'] . '%', 'Rendement Opérationnel'],
-                [$industrialData['total_quantity'], 'Total Unités Installées'],
-            ];
-            foreach ($stats as $s) {
-                $statBoxes .= '<td style="width:20%;text-align:center;padding:12px 6px;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:8px;">
-                    <div style="font-size:16pt;font-weight:800;color:' . $navy . ';">' . $s[0] . '</div>
-                    <div style="font-size:7pt;color:#6b7280;margin-top:2px;">' . $s[1] . '</div>
-                </td>';
-            }
-
-            $industrialParkSection = '
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
-        <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">3</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Évaluation du Parc Industriel</div>
-                <div style="font-size:8pt;color:#9ca3af;">Inventaire des équipements, capacités et état des installations</div>
-            </td>
-        </tr>
-    </table>
-
-    <p style="font-size:9pt;color:#4b5563;line-height:1.6;margin:8px 0 14px;">
-        Diagnostic détaillé du parc machines et équipements industriels de <strong>' . htmlspecialchars($companyName) . '</strong>.
-        Cette section présente l\'inventaire des actifs de production, leur état opérationnel et les capacités installées.
-    </p>
-
-    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;"><tr>' . $statBoxes . '</tr></table>
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Inventaire des Machines et Équipements</div>
-    <table style="width:100%;border-collapse:collapse;">
-        <thead><tr>
-            <th style="width:22%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Machine / Équipement</th>
-            <th style="width:18%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Type / Marque</th>
-            <th style="width:16%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Capacité</th>
-            <th style="width:10%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">Qté</th>
-            <th style="width:16%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">État</th>
-            <th style="width:10%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">Année</th>
-        </tr></thead>
-        <tbody>' . $machineRows . '</tbody>
-    </table>
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Lignes de Production</div>
-    <table style="width:100%;border-collapse:collapse;">
-        <thead><tr>
-            <th style="width:28%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Ligne / Atelier</th>
-            <th style="width:22%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Produits</th>
-            <th style="width:25%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Capacité Journalière</th>
-            <th style="width:15%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">Rendement</th>
-        </tr></thead>
-        <tbody>' . $prodLineRows . '</tbody>
-    </table>
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Infrastructure et Installations</div>
-    <table style="width:100%;border-collapse:collapse;">
-        <thead><tr>
-            <th style="width:25%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Installation</th>
-            <th style="width:50%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Description</th>
-            <th style="width:15%;background:' . $navy . ';color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">État</th>
-        </tr></thead>
-        <tbody>' . $infraRows . '</tbody>
-    </table>
-
-    <div style="margin-top:16px;padding:12px 16px;background:#fffbeb;border-radius:8px;border-left:4px solid #d97706;">
-        <div style="font-size:9pt;font-weight:700;color:#92400e;margin-bottom:3px;">Note d\'Évaluation du Parc Industriel</div>
-        <div style="font-size:8.5pt;color:#78350f;line-height:1.5;">
-            L\'évaluation du parc industriel est basée sur les données déclarées et l\'analyse sectorielle.
-            ' . ($industrialData['avg_efficiency'] >= 80 ? 'Le parc industriel présente un bon niveau de performance avec des équipements modernes et bien maintenus.' : ($industrialData['avg_efficiency'] >= 60 ? 'Le parc industriel est opérationnel mais nécessite des investissements ciblés pour améliorer la productivité.' : 'Le parc industriel nécessite une attention particulière avec un plan de modernisation et de maintenance à mettre en œuvre.')) . '
-        </div>
-    </div>
-</div>
-';
-        }
 
         $criticalCount = count(array_filter($recommendations, fn($r) => $r['priority'] === 'critical'));
         $highCount = count(array_filter($recommendations, fn($r) => $r['priority'] === 'high'));
         $mediumCount = count(array_filter($recommendations, fn($r) => $r['priority'] === 'medium'));
         $lowCount = count(array_filter($recommendations, fn($r) => $r['priority'] === 'low'));
 
+        // Compact 3-page report: Cover+Identity | Scores+Analysis | Recommendations+Conclusion
         return '<!DOCTYPE html>
 <html><head><meta charset="utf-8">
 <style>
 @page { margin: 0; }
 body { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; color: #1f2937; line-height: 1.5; margin: 0; padding: 0; }
-.page { padding: 45px 40px 35px; }
+.page { padding: 35px 40px 30px; }
 .page-break { page-break-before: always; }
 table { border-collapse: collapse; }
 </style>
 </head><body>
 
-<!-- ===== COVER PAGE ===== -->
-<div style="width:100%;background:' . $navy . ';padding:50px 40px 40px;text-align:center;">
-    <div style="font-size:48pt;font-weight:900;color:#ffffff;letter-spacing:6px;">AQMI</div>
-    <div style="font-size:10pt;color:#c7d2fe;letter-spacing:3px;margin-top:4px;">AUTOMOTIVE QUALITY MATURITY INDEX</div>
-    <div style="width:60px;height:3px;background:' . $gold . ';margin:25px auto;"></div>
-    <div style="font-size:22pt;color:#ffffff;font-weight:700;line-height:1.3;">Rapport d\'Évaluation<br>de Maturité Qualité</div>
-    <div style="font-size:11pt;color:#c7d2fe;margin-top:10px;">Assessment &amp; Diagnostic de Performance Industrielle</div>
+<!-- ===== PAGE 1: COVER + IDENTITÉ ===== -->
+<div style="width:100%;background:' . $navy . ';padding:35px 40px 30px;text-align:center;">
+    <div style="font-size:42pt;font-weight:900;color:#ffffff;letter-spacing:6px;">AQMI</div>
+    <div style="font-size:9pt;color:#c7d2fe;letter-spacing:3px;margin-top:3px;">AUTOMOTIVE QUALITY MATURITY INDEX</div>
+    <div style="width:50px;height:3px;background:' . $gold . ';margin:18px auto;"></div>
+    <div style="font-size:18pt;color:#ffffff;font-weight:700;line-height:1.3;">Rapport d\'Évaluation de Maturité Qualité</div>
 </div>
 <div style="height:3px;background:' . $gold . ';"></div>
 
-<div style="padding:30px 40px;text-align:center;">
-    <table style="width:100%;max-width:420px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:30px;">
-        <tr><td style="text-align:center;padding:0 20px;">
-            <div style="font-size:17pt;font-weight:700;color:' . $navy . ';">' . htmlspecialchars($companyName) . '</div>
-            <div style="font-size:10pt;color:#6b7280;margin-top:4px;">' . htmlspecialchars($leadFullName) . '</div>
-            <div style="font-size:8.5pt;color:#9ca3af;margin-top:8px;">' . htmlspecialchars($sector) . ' &bull; ' . htmlspecialchars($country) . '</div>
-            <div style="margin-top:16px;display:inline-block;background:' . $levelColor . ';color:#ffffff;padding:10px 36px;border-radius:6px;font-size:15pt;font-weight:700;">' . $globalScore . '%</div>
-            <div style="margin-top:10px;font-size:9pt;color:#6b7280;">Niveau : <strong style="color:' . $levelColor . ';">' . htmlspecialchars($levelName) . '</strong></div>
-            <div style="margin-top:12px;font-size:7.5pt;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:10px;">Réf: ' . $ref . ' &nbsp;|&nbsp; Date: ' . $date . '</div>
-        </td></tr>
-    </table>
-    <div style="margin-top:20px;font-size:7.5pt;color:#9ca3af;">AQMI &copy; ' . date('Y') . ' — Document confidentiel</div>
-</div>
-
-<!-- ===== PAGE 1: FICHE D\'IDENTITÉ ===== -->
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
+<div style="padding:20px 40px 0;">
+    <table style="width:100%;margin-bottom:14px;">
         <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">1</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Fiche d\'Identité du Candidat</div>
-                <div style="font-size:8pt;color:#9ca3af;">Informations personnelles et professionnelles</div>
-            </td>
-        </tr>
-    </table>
-
-    <table style="width:100%;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:8px;margin-bottom:16px;">
-        <tr><td style="padding:18px 20px;">
-            <table style="width:100%;">
-                <tr><td style="width:140px;font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Nom &amp; Prénom</td><td style="font-weight:bold;padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($leadFullName) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Entreprise / Société</td><td style="font-weight:bold;padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($companyName) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Secteur d\'Activité</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($sector) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Fonction / Poste</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($jobTitle) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Email</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($email) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Téléphone</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($phone) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Pays</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($country) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Date d\'Évaluation</td><td style="padding:5px 0;font-size:9.5pt;">' . $date . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Référence Rapport</td><td style="padding:5px 0;font-size:9.5pt;">' . $ref . '</td></tr>
-            </table>
-        </td></tr>
-    </table>
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Informations Complémentaires</div>
-    <table style="width:100%;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:8px;">
-        <tr><td style="padding:18px 20px;">
-            <table style="width:100%;">
-                <tr><td style="width:140px;font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Domaine d\'Expertise</td><td style="padding:5px 0;font-size:9.5pt;">Qualité, Management Industriel, Conformité Automobile</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Type d\'Évaluation</td><td style="padding:5px 0;font-size:9.5pt;">Auto-évaluation de Maturité Qualité</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Périmètre</td><td style="padding:5px 0;font-size:9.5pt;">' . $domainCount . ' domaines de performance</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Score Global</td><td style="font-weight:bold;padding:5px 0;font-size:9.5pt;">' . $globalScore . '%</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Niveau de Maturité</td><td style="font-weight:bold;color:' . $levelColor . ';padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($levelName) . '</td></tr>
-            </table>
-        </td></tr>
-    </table>
-</div>
-
-<!-- ===== PAGE 2: RÉSUMÉ EXÉCUTIF ===== -->
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
-        <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">2</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Résumé Exécutif</div>
-                <div style="font-size:8pt;color:#9ca3af;">Synthèse de l\'évaluation de maturité qualité</div>
-            </td>
-        </tr>
-    </table>
-
-    <p style="font-size:9pt;color:#4b5563;line-height:1.6;margin:8px 0 14px;">
-        Ce rapport présente les résultats de l\'évaluation de maturité qualité réalisée pour
-        <strong>' . htmlspecialchars($companyName) . '</strong>. L\'analyse couvre <strong>' . $domainCount . ' domaines</strong>
-        de performance et fournit une vision claire des forces, axes d\'amélioration et priorités stratégiques.
-    </p>
-
-    <table style="width:100%;background:' . $levelColor . ';border-radius:12px;margin:10px 0 18px;">
-        <tr><td style="text-align:center;padding:25px 30px;">
-            <div style="font-size:42pt;font-weight:900;color:#ffffff;line-height:1;">' . $globalScore . '%</div>
-            <div style="font-size:11pt;color:#ffffff;margin-top:4px;">Score Global de Maturité Qualité</div>
-            <div style="margin-top:10px;display:inline-block;background:rgba(255,255,255,0.25);padding:5px 20px;border-radius:6px;font-size:9pt;font-weight:600;color:#ffffff;">Niveau : ' . htmlspecialchars($levelName) . '</div>
-        </td></tr>
-    </table>
-
-    <p style="text-align:center;font-size:9.5pt;color:#6b7280;line-height:1.6;margin:8px 0 14px;">' . $levelDesc . '</p>
-
-    <table style="width:100%;margin-top:10px;">
-        <tr>
-            <td style="width:50%;vertical-align:top;padding-right:8px;">
-                <div style="font-size:11pt;font-weight:700;color:#059669;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;">Points Forts</div>
-                <table style="width:100%;">
-                    <thead><tr>
-                        <th style="background:#059669;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:center;width:24px;">#</th>
-                        <th style="background:#059669;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:left;">Domaine</th>
-                        <th style="background:#059669;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:right;">Score</th>
-                    </tr></thead>
-                    <tbody>' . $strengthsHtml . '</tbody>
-                </table>
-            </td>
-            <td style="width:50%;vertical-align:top;padding-left:8px;">
-                <div style="font-size:11pt;font-weight:700;color:#dc3545;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;">Points à Améliorer</div>
-                <table style="width:100%;">
-                    <thead><tr>
-                        <th style="background:#dc3545;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:center;width:24px;">#</th>
-                        <th style="background:#dc3545;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:left;">Domaine</th>
-                        <th style="background:#dc3545;color:#fff;padding:5px 6px;font-size:7.5pt;text-align:right;">Score</th>
-                    </tr></thead>
-                    <tbody>' . $weaknessesHtml . '</tbody>
-                </table>
-            </td>
-        </tr>
-    </table>
-
-    <div style="margin-top:18px;padding:14px 18px;background:#eff6ff;border-radius:8px;border-left:4px solid ' . $navy . ';">
-        <div style="font-size:9.5pt;font-weight:700;color:' . $navy . ';margin-bottom:3px;">Interprétation du Score</div>
-        <div style="font-size:8.5pt;color:#4b5563;line-height:1.5;">
-            ' . htmlspecialchars($companyName) . ' se situe au niveau <strong>"' . htmlspecialchars($levelName) . '"</strong> avec un score global de <strong>' . $globalScore . '%</strong>.
-            ' . ($globalScore >= 70 ? 'L\'entreprise démontre une maîtrise solide de ses processus qualité avec des pratiques bien établies.' : ($globalScore >= 50 ? 'Des processus qualité sont en place mais des améliorations significatives sont nécessaires pour atteindre les standards d\'excellence.' : 'L\'entreprise est dans une phase de construction de son système qualité. Un plan d\'action structuré est fortement recommandé.')) . '
-        </div>
-    </div>
-</div>
-
-' . $industrialParkSection . '
-
-<!-- ===== PAGE 4: ANALYSE PAR DOMAINE ===== -->
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
-        <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">4</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Analyse Détaillée par Domaine</div>
-                <div style="font-size:8pt;color:#9ca3af;">Répartition des scores par domaine d\'évaluation</div>
-            </td>
-        </tr>
-    </table>
-
-    <table style="width:100%;margin:10px 0;">
-        <tr>
-            <td style="width:48%;vertical-align:top;text-align:center;">
-                <div style="font-size:8pt;font-weight:700;color:' . $navy . ';letter-spacing:1px;margin-bottom:4px;">SCORE GLOBAL</div>
-                ' . $gaugeSvg . '
+            <td style="width:48%;vertical-align:top;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:8px;padding:14px 16px;">
+                <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:8px;">DOSSIER ENTREPRISE</div>
+                <div style="font-size:9pt;color:#374151;line-height:1.8;">
+                    <strong style="font-size:11pt;color:' . $navy . ';">' . htmlspecialchars($companyName) . '</strong><br>
+                    <span style="color:#6b7280;">Secteur:</span> ' . htmlspecialchars($sector) . '<br>
+                    <span style="color:#6b7280;">Pays:</span> ' . htmlspecialchars($country) . '<br>
+                    <span style="color:#6b7280;">Évalué par:</span> ' . htmlspecialchars($leadFullName) . '<br>
+                    <span style="color:#6b7280;">Email:</span> ' . htmlspecialchars($email) . '<br>
+                    <span style="color:#6b7280;">Téléphone:</span> ' . htmlspecialchars($phone) . '<br>
+                    <span style="color:#6b7280;">Date:</span> ' . $date . ' &nbsp;|&nbsp; <span style="color:#6b7280;">Réf:</span> ' . $ref . '
+                </div>
             </td>
             <td style="width:4%;"></td>
-            <td style="width:48%;vertical-align:top;text-align:center;">
-                <div style="font-size:8pt;font-weight:700;color:' . $navy . ';letter-spacing:1px;margin-bottom:4px;">PROFIL DE MATURITÉ</div>
+            <td style="width:48%;vertical-align:top;text-align:center;border:1px solid #e9ebf2;border-radius:8px;padding:14px 10px;">
+                <div style="font-size:7.5pt;color:' . $navy . ';font-weight:700;letter-spacing:1.5px;margin-bottom:6px;">SCORE AQMI GLOBAL</div>
+                ' . $gaugeSvg . '
+                <div style="display:inline-block;background:' . $levelColor . '18;border:1px solid ' . $levelColor . ';border-radius:999px;padding:4px 16px;margin-top:4px;">
+                    <span style="font-size:10pt;font-weight:800;color:' . $levelColor . ';">Niveau ' . htmlspecialchars($levelName) . '</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- ===== PAGE 2: ANALYSE PAR DOMAINE ===== -->
+<div class="page page-break">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;border-bottom:3px solid ' . $navy . ';">
+        <tr>
+            <td style="width:28px;height:28px;background:' . $navy . ';color:#fff;text-align:center;font-size:10pt;font-weight:700;border-radius:50%;vertical-align:middle;">2</td>
+            <td style="padding-left:10px;vertical-align:middle;">
+                <div style="font-size:13pt;font-weight:700;color:' . $navy . ';">Analyse Détaillée par Domaine</div>
+                <div style="font-size:8pt;color:#9ca3af;">Répartition des scores et profil de maturité</div>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width:100%;margin:8px 0;">
+        <tr>
+            <td style="width:50%;vertical-align:top;text-align:center;">
+                <div style="font-size:8pt;font-weight:700;color:' . $navy . ';letter-spacing:1px;margin-bottom:4px;">PROFIL DE MATURITÉ (RADAR)</div>
                 ' . $radarSvg . '
+            </td>
+            <td style="width:50%;vertical-align:top;">
+                <div style="font-size:8pt;font-weight:700;color:' . $navy . ';letter-spacing:1px;margin-bottom:8px;">SCORES PAR DOMAINE</div>
+                <table style="width:100%;">
+                    <thead><tr>
+                        <th style="background:' . $navy . ';color:#fff;padding:5px 8px;font-size:8pt;text-align:left;">Domaine</th>
+                        <th style="background:' . $navy . ';color:#fff;padding:5px 8px;font-size:8pt;text-align:center;width:50px;">Score</th>
+                        <th style="background:' . $navy . ';color:#fff;padding:5px 8px;font-size:8pt;text-align:center;width:40px;">/5</th>
+                    </tr></thead>
+                    <tbody>' . $domainRows . '</tbody>
+                </table>
             </td>
         </tr>
     </table>
 
     ' . $legendHtml . '
 
-    <table style="width:100%;margin-top:16px;">
-        <thead><tr>
-            <th style="width:28%;background:' . $navy . ';color:#fff;padding:7px 10px;font-size:8.5pt;text-align:left;">Domaine d\'Évaluation</th>
-            <th style="width:30%;background:' . $navy . ';color:#fff;padding:7px 10px;font-size:8.5pt;text-align:left;">Niveau de Maîtrise</th>
-            <th style="width:15%;background:' . $navy . ';color:#fff;padding:7px 10px;font-size:8.5pt;text-align:center;">Score %</th>
-            <th style="width:12%;background:' . $navy . ';color:#fff;padding:7px 10px;font-size:8.5pt;text-align:center;">/5</th>
-        </tr></thead>
-        <tbody>' . $domainBars . '</tbody>
-    </table>
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:20px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Légende des Niveaux de Maturité</div>
-    <table style="width:100%;">
-        <thead><tr>
-            <th style="width:18%;background:#6b7280;color:#fff;padding:6px 8px;font-size:8pt;text-align:center;">Score</th>
-            <th style="width:30%;background:#6b7280;color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Niveau</th>
-            <th style="background:#6b7280;color:#fff;padding:6px 8px;font-size:8pt;text-align:left;">Interprétation</th>
-        </tr></thead>
-        <tbody>' . $levelLegendRows . '</tbody>
-    </table>
-</div>
-
-<!-- ===== PAGE 5: PLAN D\'AMÉLIORATION ===== -->
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
+    <table style="width:100%;margin-top:14px;">
         <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">5</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Plan d\'Amélioration</div>
-                <div style="font-size:8pt;color:#9ca3af;">Recommandations et actions prioritaires</div>
+            <td style="width:49%;vertical-align:top;background:#f0fdf4;border:1px solid #d1fae5;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:9pt;font-weight:700;color:#059669;margin-bottom:6px;">Points Forts</div>
+                ' . $strengthsHtml . '
+            </td>
+            <td style="width:2%;"></td>
+            <td style="width:49%;vertical-align:top;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:9pt;font-weight:700;color:#dc3545;margin-bottom:6px;">Axes d\'Amélioration</div>
+                ' . $weaknessesHtml . '
             </td>
         </tr>
     </table>
 
-    <p style="font-size:9pt;color:#4b5563;line-height:1.6;margin:8px 0 14px;">
-        Sur la base des résultats de l\'évaluation, les recommandations suivantes sont proposées
-        pour guider <strong>' . htmlspecialchars($companyName) . '</strong> dans l\'amélioration de sa maturité qualité.
-        Les actions sont classées par ordre de priorité.
-    </p>
+    <div style="margin-top:12px;padding:10px 14px;background:#eff6ff;border-radius:8px;border-left:4px solid ' . $navy . ';">
+        <div style="font-size:9pt;font-weight:700;color:' . $navy . ';margin-bottom:3px;">Interprétation</div>
+        <div style="font-size:8.5pt;color:#4b5563;line-height:1.5;">' . $levelDesc . '</div>
+    </div>
+</div>
 
-    ' . (!empty($recommendations) ? '
+<!-- ===== PAGE 3: RECOMMANDATIONS + CONCLUSION ===== -->
+<div class="page page-break">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;border-bottom:3px solid ' . $navy . ';">
+        <tr>
+            <td style="width:28px;height:28px;background:' . $navy . ';color:#fff;text-align:center;font-size:10pt;font-weight:700;border-radius:50%;vertical-align:middle;">3</td>
+            <td style="padding-left:10px;vertical-align:middle;">
+                <div style="font-size:13pt;font-weight:700;color:' . $navy . ';">Plan d\'Amélioration &amp; Conclusion</div>
+                <div style="font-size:8pt;color:#9ca3af;">Recommandations prioritaires et synthèse</div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="font-size:10pt;font-weight:700;color:' . $navy . ';margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;">Recommandations Prioritaires</div>
+    ' . (!empty($recommendations) ? $recHtml : '<div style="text-align:center;color:#6b7280;padding:16px;background:#f9fafb;border-radius:8px;font-size:9pt;">Aucune recommandation spécifique générée automatiquement.</div>') . '
+
+    <div style="font-size:10pt;font-weight:700;color:' . $navy . ';margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;">Synthèse du Plan d\'Action</div>
     <table style="width:100%;">
         <thead><tr>
-            <th style="width:28px;background:' . $navy . ';color:#fff;padding:7px 8px;font-size:8pt;text-align:center;">#</th>
-            <th style="background:' . $navy . ';color:#fff;padding:7px 8px;font-size:8pt;text-align:left;">Recommandation</th>
-            <th style="width:80px;background:' . $navy . ';color:#fff;padding:7px 8px;font-size:8pt;text-align:center;">Priorité</th>
-        </tr></thead>
-        <tbody>' . $recHtml . '</tbody>
-    </table>' : '<p style="text-align:center;color:#6b7280;padding:25px;background:#f9fafb;border-radius:8px;font-size:9pt;">Aucune recommandation spécifique générée automatiquement. Continuez sur votre lancée !</p>') . '
-
-    <div style="font-size:11pt;font-weight:700;color:' . $navy . ';margin:20px 0 8px;padding-bottom:5px;border-bottom:1px solid #e5e7eb;">Synthèse du Plan d\'Action</div>
-    <table style="width:100%;">
-        <thead><tr>
-            <th style="background:#059669;color:#fff;padding:7px 10px;font-size:8pt;text-align:left;">Priorité</th>
-            <th style="background:#059669;color:#fff;padding:7px 10px;font-size:8pt;text-align:center;">Nombre d\'Actions</th>
-            <th style="background:#059669;color:#fff;padding:7px 10px;font-size:8pt;text-align:left;">Délai Recommandé</th>
+            <th style="background:#059669;color:#fff;padding:5px 8px;font-size:8pt;text-align:left;">Priorité</th>
+            <th style="background:#059669;color:#fff;padding:5px 8px;font-size:8pt;text-align:center;">Nb</th>
+            <th style="background:#059669;color:#fff;padding:5px 8px;font-size:8pt;text-align:left;">Délai</th>
         </tr></thead>
         <tbody>
-            <tr><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#dc3545;font-weight:bold;">●</span> Critique</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $criticalCount . '</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">Immédiat (0-3 mois)</td></tr>
-            <tr><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#d97706;font-weight:bold;">●</span> Haute</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $highCount . '</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">Court terme (3-6 mois)</td></tr>
-            <tr><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#1F6FEB;font-weight:bold;">●</span> Moyenne</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $mediumCount . '</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">Moyen terme (6-12 mois)</td></tr>
-            <tr><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#6b7280;font-weight:bold;">●</span> Basse</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $lowCount . '</td><td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">Long terme (12+ mois)</td></tr>
-            <tr style="background:#f9fafb;font-weight:bold;"><td style="padding:6px 10px;font-size:8.5pt;">Total</td><td style="padding:6px 10px;text-align:center;font-size:8.5pt;">' . count($recommendations) . '</td><td style="padding:6px 10px;font-size:8.5pt;">—</td></tr>
+            <tr><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#dc3545;font-weight:bold;">●</span> Critique</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $criticalCount . '</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">0-3 mois</td></tr>
+            <tr><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#d97706;font-weight:bold;">●</span> Haute</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $highCount . '</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">3-6 mois</td></tr>
+            <tr><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#1F6FEB;font-weight:bold;">●</span> Moyenne</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $mediumCount . '</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">6-12 mois</td></tr>
+            <tr><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;"><span style="color:#6b7280;font-weight:bold;">●</span> Basse</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:8.5pt;">' . $lowCount . '</td><td style="padding:4px 8px;border-bottom:1px solid #e5e7eb;font-size:8.5pt;">12+ mois</td></tr>
+            <tr style="background:#f9fafb;font-weight:bold;"><td style="padding:4px 8px;font-size:8.5pt;">Total</td><td style="padding:4px 8px;text-align:center;font-size:8.5pt;">' . count($recommendations) . '</td><td style="padding:4px 8px;font-size:8.5pt;">—</td></tr>
         </tbody>
     </table>
-</div>
 
-<!-- ===== PAGE 6: CONCLUSION ===== -->
-<div class="page page-break">
-    <table style="width:100%;border-collapse:collapse;margin-bottom:18px;border-bottom:3px solid ' . $navy . ';">
-        <tr>
-            <td style="width:32px;height:32px;background:' . $navy . ';color:#fff;text-align:center;font-size:11pt;font-weight:700;border-radius:50%;vertical-align:middle;">6</td>
-            <td style="padding-left:10px;vertical-align:middle;">
-                <div style="font-size:15pt;font-weight:700;color:' . $navy . ';">Conclusion</div>
-                <div style="font-size:8pt;color:#9ca3af;">Synthèse finale et recommandations stratégiques</div>
-            </td>
-        </tr>
-    </table>
-
-    <table style="width:100%;margin:16px 0 24px;"><tr><td style="text-align:center;">
-        <table style="display:inline-block;background:' . $levelColor . ';border-radius:12px;"><tr><td style="text-align:center;padding:18px 36px;">
-            <div style="font-size:32pt;font-weight:900;color:#ffffff;">' . $globalScore . '%</div>
-            <div style="font-size:10pt;color:#ffffff;">Score Global de Maturité</div>
-            <div style="margin-top:6px;display:inline-block;background:rgba(255,255,255,0.25);padding:4px 14px;border-radius:6px;font-size:9pt;font-weight:600;color:#ffffff;">Niveau : ' . htmlspecialchars($levelName) . '</div>
-        </td></tr></table>
-    </td></tr></table>
-
-    <table style="width:100%;background:#f8f9fc;border:1px solid #e9ebf2;border-radius:8px;margin-bottom:16px;">
-        <tr><td style="padding:18px 20px;">
-            <table style="width:100%;">
-                <tr><td style="width:140px;font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Entreprise</td><td style="font-weight:bold;padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($companyName) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Évalué par</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($leadFullName) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Secteur</td><td style="padding:5px 0;font-size:9.5pt;">' . htmlspecialchars($sector) . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Score Global</td><td style="padding:5px 0;font-size:9.5pt;"><strong>' . $globalScore . '%</strong> — Niveau <span style="color:' . $levelColor . ';font-weight:bold;">"' . htmlspecialchars($levelName) . '"</span></td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Domaines évalués</td><td style="padding:5px 0;font-size:9.5pt;">' . $domainCount . '</td></tr>
-                <tr><td style="font-weight:600;color:#6b7280;padding:5px 0;font-size:9.5pt;">Date du rapport</td><td style="padding:5px 0;font-size:9.5pt;">' . $date . '</td></tr>
-            </table>
-        </td></tr>
-    </table>
-
-    <div style="padding:14px 18px;background:#f0fdf4;border-radius:8px;border-left:4px solid #059669;margin-bottom:16px;">
-        <div style="font-size:9.5pt;font-weight:700;color:#065f46;margin-bottom:4px;">Prochaines Étapes Recommandées</div>
-        <table style="font-size:8.5pt;color:#065f46;line-height:1.8;">
-            <tr><td style="padding:2px 8px 2px 0;font-weight:bold;">1.</td><td>Analyser en détail les axes d\'amélioration identifiés dans ce rapport</td></tr>
-            <tr><td style="padding:2px 8px 2px 0;font-weight:bold;">2.</td><td>Élaborer un plan d\'action structuré avec des jalons mesurables</td></tr>
-            <tr><td style="padding:2px 8px 2px 0;font-weight:bold;">3.</td><td>Engager les équipes dans une démarche d\'amélioration continue</td></tr>
-            <tr><td style="padding:2px 8px 2px 0;font-weight:bold;">4.</td><td>Réaliser une nouvelle évaluation dans 6 à 12 mois pour mesurer les progrès</td></tr>
-            <tr><td style="padding:2px 8px 2px 0;font-weight:bold;">5.</td><td>Utiliser le référentiel AQMI comme guide de progression vers l\'excellence</td></tr>
-        </table>
+    <div style="margin-top:14px;padding:10px 14px;background:#f0fdf4;border-radius:8px;border-left:4px solid #059669;">
+        <div style="font-size:9pt;font-weight:700;color:#065f46;margin-bottom:4px;">Prochaines Étapes Recommandées</div>
+        <div style="font-size:8.5pt;color:#065f46;line-height:1.7;">
+            1. Analyser les axes d\'amélioration identifiés<br>
+            2. Élaborer un plan d\'action structuré avec des jalons mesurables<br>
+            3. Engager les équipes dans une démarche d\'amélioration continue<br>
+            4. Réaliser une nouvelle évaluation dans 6 à 12 mois
+        </div>
     </div>
 
-    <p style="text-align:center;margin-top:20px;font-size:9pt;color:#6b7280;line-height:1.6;">
-        <strong>AQMI — Automotive Quality Maturity Index</strong><br>
-        Référentiel d\'évaluation de la maturité qualité dans l\'industrie automobile<br>
-        Document confidentiel généré le ' . $date . '
-    </p>
-
-    <div style="text-align:center;color:#9ca3af;font-size:7.5pt;margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;">
-        AQMI &copy; ' . date('Y') . ' — Tous droits réservés — Ce document est confidentiel et destiné à ' . htmlspecialchars($companyName) . '
+    <div style="text-align:center;margin-top:16px;padding-top:10px;border-top:1px solid #e5e7eb;">
+        <div style="font-size:9pt;font-weight:700;color:' . $navy . ';">AQMI — Automotive Quality Maturity Index</div>
+        <div style="font-size:7.5pt;color:#9ca3af;margin-top:4px;">Document confidentiel généré le ' . $date . ' — AQMI &copy; ' . date('Y') . ' by NOVAQYS — Destiné à ' . htmlspecialchars($companyName) . '</div>
     </div>
 </div>
 
