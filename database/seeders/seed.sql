@@ -129,10 +129,10 @@ INSERT INTO `questions` (`domain_id`, `title`, `title_fr`, `title_ar`, `descript
 -- Score Levels
 INSERT INTO `score_levels` (`name`, `name_fr`, `name_ar`, `min_percent`, `max_percent`, `color`, `icon`, `sort_order`, `is_active`) VALUES
 ('Beginner', 'Débutant', 'مبتدئ', 0, 30, '#6c757d', 'fa-flag', 1, 1),
-('Developing', 'En Développement', 'قيد التطوير', 31, 50, '#fd7e14', 'fa-chart-bar', 2, 1),
-('Structured', 'Structuré', 'منظم', 51, 70, '#1a56db', 'fa-layer-group', 3, 1),
-('Performing', 'Performant', 'متميز', 71, 85, '#059669', 'fa-trophy', 4, 1),
-('Excellence', 'Excellence', 'امتياز', 86, 100, '#d97706', 'fa-crown', 5, 1);
+('Developing', 'En Développement', 'قيد التطوير', 30, 50, '#fd7e14', 'fa-chart-bar', 2, 1),
+('Structured', 'Structuré', 'منظم', 50, 70, '#1a56db', 'fa-layer-group', 3, 1),
+('Performing', 'Performant', 'متميز', 70, 85, '#059669', 'fa-trophy', 4, 1),
+('Excellence', 'Excellence', 'امتياز', 85, 100, '#d97706', 'fa-crown', 5, 1);
 
 -- Recommendations
 INSERT INTO `recommendations` (`domain_id`, `condition_field`, `condition_operator`, `condition_value`, `recommendation_text`, `recommendation_text_fr`, `priority`, `is_active`) VALUES

@@ -33,15 +33,24 @@ $benchmark = $analysis['benchmark'] ?? ['global_avg' => 0, 'domain_avgs' => []];
 $hasBenchmark = $benchmark['global_avg'] > 0;
 
 $maturityInfo = [
-    ['max' => 20, 'label' => 'Initial', 'color' => '#E5484D', 'desc' => 'Processus non structurés'],
-    ['max' => 40, 'label' => 'En Développement', 'color' => '#C9A227', 'desc' => 'Processus en construction'],
-    ['max' => 60, 'label' => 'Structuré', 'color' => '#1F6FEB', 'desc' => 'Processus définis et documentés'],
-    ['max' => 80, 'label' => 'Avancé', 'color' => '#2EC4B6', 'desc' => 'Processus maîtrisés et mesurés'],
-    ['max' => 100, 'label' => 'Optimisé', 'color' => '#2EC4B6', 'desc' => 'Excellence opérationnelle'],
+    ['max' => 30, 'label' => 'Débutant', 'color' => '#6c757d', 'desc' => 'Processus non structurés'],
+    ['max' => 50, 'label' => 'En Développement', 'color' => '#fd7e14', 'desc' => 'Processus en construction'],
+    ['max' => 70, 'label' => 'Structuré', 'color' => '#1a56db', 'desc' => 'Processus définis et documentés'],
+    ['max' => 85, 'label' => 'Performant', 'color' => '#059669', 'desc' => 'Processus maîtrisés et mesurés'],
+    ['max' => 100, 'label' => 'Excellence', 'color' => '#d97706', 'desc' => 'Excellence opérationnelle'],
 ];
 $currentLevel = null;
 foreach ($maturityInfo as $m) { if ($globalScore <= $m['max']) { $currentLevel = $m; break; } }
 if (!$currentLevel) $currentLevel = $maturityInfo[count($maturityInfo)-1];
+
+if ($level) {
+    $currentLevel = [
+        'max' => (float)($level['max_percent'] ?? 100),
+        'label' => $level['name_fr'] ?: $level['name'],
+        'color' => $level['color'] ?? $currentLevel['color'],
+        'desc' => $currentLevel['desc'],
+    ];
+}
 
 $projected = [
     ['label' => "Aujourd'hui", 'score' => $globalScore],

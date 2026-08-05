@@ -92,7 +92,10 @@ ob_start();
           <svg viewBox="0 0 200 200">
             <defs>
               <linearGradient id="aqmiGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#1F6FEB"/>
+                <stop offset="0%" stop-color="#E5484D"/>
+                <stop offset="25%" stop-color="#E8823A"/>
+                <stop offset="50%" stop-color="#C9A227"/>
+                <stop offset="75%" stop-color="#1F6FEB"/>
                 <stop offset="100%" stop-color="#2EC4B6"/>
               </linearGradient>
             </defs>
@@ -100,7 +103,7 @@ ob_start();
             <circle class="aqmi-main-gauge-fg" id="aqmiMainGaugeCircle" cx="100" cy="100" r="85"/>
           </svg>
           <div class="aqmi-main-gauge-center">
-            <div class="aqmi-main-gauge-emoji" id="aqmiMainGaugeEmoji">🎯</div>
+            <div class="aqmi-main-gauge-icon" id="aqmiMainGaugeIcon"><i class="fas fa-gauge-high"></i></div>
             <div class="aqmi-main-gauge-value" id="aqmiMainGaugeValue">0%</div>
             <div class="aqmi-main-gauge-label" id="aqmiMainGaugeLabel">Maturité</div>
           </div>
@@ -175,18 +178,12 @@ ob_start();
       <div class="aqmi-gauge-value" id="aqmiGaugeValue">0%</div>
       <div class="aqmi-gauge-pulse" id="aqmiGaugePulse" style="display:none;"></div>
     </div>
-    <div class="aqmi-gauge-label">Maturité</div>
+    <div class="aqmi-gauge-label">Score Global</div>
   </div>
 
   <!-- Domain Transition Banner -->
   <div class="aqmi-domain-transition" id="aqmiDomainTransition"></div>
 
-  <!-- Keyboard Hint -->
-  <div class="aqmi-keyboard-hint" id="aqmiKeyboardHint">
-    <kbd>←</kbd> <kbd>→</kbd> navigation
-    <span style="margin:0 0.5rem;">·</span>
-    <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> réponses
-  </div>
 </div>
 
 <?php

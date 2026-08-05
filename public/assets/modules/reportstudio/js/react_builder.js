@@ -37,28 +37,28 @@
   };
 
   const DEFAULT_CONFIGS = {
-    global_score:    { label: 'Score global', score: 0, max: 100, show_rating: true },
-    radar_chart:     { axes: [{ label: 'Domaine 1', value: 0 }], legend: true },
-    bar_chart:       { series: [{ label: 'Série 1', data: [{ label: 'A', value: 0 }] }], horizontal: false, legend: true },
-    line_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true },
-    donut_chart:     { series: [{ label: 'A', value: 1 }], legend: true },
-    area_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true },
-    gauge:           { label: 'Indicateur', value: 0, min: 0, max: 100, unit: '%' },
-    recommendations: { title: 'Recommandations', items: [{ text: '' }] },
-    company_info:    { fields: [{ key: '', label: '' }], show_logo: true },
-    aqmi_logo:       { size: 'md', align: 'left' },
-    company_logo:    { url: '', size: 'md', align: 'left' },
-    official_stamp:  { style: 'circular', text: 'CERTIFIÉ', subtext: 'AQMI', color: '#102A43', size: 100, align: 'right' },
-    qr_code:         { value: '', size: 120, label: '' },
-    signature:       { label: '', role: '', show_date: true, show_stamp: false },
-    header:          { text: 'Titre', level: 1, align: 'left', show_report_number: false, show_date: false, show_page_number: false },
-    footer:          { text: '', align: 'center', show_report_number: false, show_date: false, show_page_number: true },
-    rich_text:       { html: '' },
-    image:           { url: '', alt: '', width: '100%', align: 'center' },
-    cover_page:      { company_name: 'Nom de l\'entreprise', report_title: 'Rapport d\'Audit Qualité', subtitle: 'Automotive Quality Maturity Index', show_logo: true, show_stamp: true, show_date: true, show_number: true, accent_color: '#102A43' },
-    kpi_card:        { label: 'Indicateur', value: 0, unit: '', icon: 'bi-check-circle', color: '#102A43', trend: '', trend_direction: 'up' },
-    domain_scores:   { title: 'Scores par domaine', domains: [{ label: 'Domaine 1', score: 0, max: 100 }] },
-    page_break:      {},
+    global_score:    { label: 'Score global', score: 0, max: 100, show_rating: true, color: '#102A43', size: 'md', show_progress: true, suffix: '' },
+    radar_chart:     { axes: [{ label: 'Domaine 1', value: 0 }], legend: true, color: '#102A43', fill_opacity: 0.2, height: 280, show_markers: true, stroke_width: 2 },
+    bar_chart:       { series: [{ label: 'Série 1', data: [{ label: 'A', value: 0 }] }], horizontal: false, legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#C9A227', color4: '#E5484D', height: 280, bar_radius: 4, stacked: false, fill_opacity: 0.9 },
+    line_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true, color: '#102A43', color2: '#2EC4B6', color3: '#C9A227', color4: '#E5484D', height: 280, stroke_width: 2, show_markers: true, fill_area: false },
+    donut_chart:     { series: [{ label: 'A', value: 1 }], legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#486581', color4: '#C9A227', color5: '#E5484D', color6: '#7c3aed', height: 280, donut_size: '65%', stroke_width: 2, show_percent: true },
+    area_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true, color: '#102A43', color2: '#2EC4B6', height: 280, stroke_width: 2, fill_opacity_from: 0.3, fill_opacity_to: 0.05, show_markers: true },
+    gauge:           { label: 'Indicateur', value: 0, min: 0, max: 100, unit: '%', color: '#2EC4B6', height: 160, show_label: true, show_value: true, start_angle: -135, end_angle: 135, hollow_size: '62%' },
+    recommendations: { title: 'Recommandations', items: [{ text: '' }], icon: 'bi-list-check', numbered: true, font_size: '0.9rem', color: '#102A43' },
+    company_info:    { fields: [{ key: '', label: '' }], show_logo: true, layout: 'vertical', label_color: '#6b7280', value_color: '#102A43', font_size: '0.9rem' },
+    aqmi_logo:       { size: 'md', align: 'left', color: '#102A43' },
+    company_logo:    { url: '', size: 'md', align: 'left', max_height: '80px', border_radius: '0' },
+    official_stamp:  { style: 'circular', text: 'CERTIFIÉ', subtext: 'AQMI', color: '#102A43', size: 100, align: 'right', border_width: 3, font_size: '0.9rem' },
+    qr_code:         { value: '', size: 120, label: '', align: 'center', margin: 0 },
+    signature:       { label: '', role: '', show_date: true, show_stamp: false, line_color: '#102A43', font_size: '0.9rem', date_format: 'fr-FR' },
+    header:          { text: 'Titre', level: 1, align: 'left', show_report_number: false, show_date: false, show_page_number: false, color: '#102A43', font_size: '', uppercase: false, border_bottom: false },
+    footer:          { text: '', align: 'center', show_report_number: false, show_date: false, show_page_number: true, color: '#6b7280', font_size: '0.8rem', border_top: true },
+    rich_text:       { html: '', padding: '8px', font_family: 'Inter, sans-serif', font_size: '0.9rem' },
+    image:           { url: '', alt: '', width: '100%', align: 'center', border_radius: '0', max_height: '', object_fit: 'contain' },
+    cover_page:      { company_name: 'Nom de l\'entreprise', report_title: 'Rapport d\'Audit Qualité', subtitle: 'Automotive Quality Maturity Index', show_logo: true, show_stamp: true, show_date: true, show_number: true, accent_color: '#102A43', bg_color: '#ffffff', text_color: '#102A43', font_size_title: '1.5rem', font_size_subtitle: '0.9rem', padding: '40px', border_color: '#EEF2F7' },
+    kpi_card:        { label: 'Indicateur', value: 0, unit: '', icon: 'bi-check-circle', color: '#102A43', trend: '', trend_direction: 'up', bg_color: '#ffffff', border_color: '#EEF2F7', icon_bg: true, font_size: '1.1rem', show_trend: true },
+    domain_scores:   { title: 'Scores par domaine', domains: [{ label: 'Domaine 1', score: 0, max: 100 }], color: '#102A43', alternating_rows: true, show_progress_bar: true, font_size: '0.85rem', border_color: '#EEF2F7' },
+    page_break:      { label: 'Saut de page', show_label: false, spacing: '2rem' },
   };
 
   // ---- Utility ----
@@ -83,15 +83,17 @@
   function RadarPreview({ cfg }) {
     const ref = useApexChart(() => {
       const axes = cfg.axes || [];
+      const c = cfg.color || '#102A43';
       return {
-        chart: { type: 'radar', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        chart: { type: 'radar', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: [{ name: 'Radar', data: axes.map(a => +a.value || 0) }],
         xaxis: { categories: axes.map(a => a.label || '') },
         yaxis: { min: 0, max: 100 },
         legend: { show: cfg.legend !== false },
-        colors: ['#102A43'],
-        fill: { opacity: 0.2 },
-        markers: { size: 4, colors: ['#102A43'] },
+        colors: [c],
+        fill: { opacity: +cfg.fill_opacity || 0.2 },
+        stroke: { width: +cfg.stroke_width || 2 },
+        markers: { size: cfg.show_markers !== false ? 4 : 0, colors: [c] },
       };
     }, [cfg]);
     return h('div', { ref });
@@ -102,11 +104,12 @@
       const v = +cfg.value || 0, max = +cfg.max || 100, min = +cfg.min || 0;
       const range = Math.max(1, max - min);
       const pct = Math.min(100, Math.max(0, Math.round(((v - min) / range) * 100)));
+      const c = cfg.color || '#2EC4B6';
       return {
-        chart: { type: 'radialBar', height: 160, sparkline: { enabled: true } },
+        chart: { type: 'radialBar', height: +cfg.height || 160, sparkline: { enabled: true } },
         series: [pct],
-        plotOptions: { radialBar: { startAngle: -135, endAngle: 135, hollow: { size: '62%' }, dataLabels: { name: { show: false }, value: { show: false } }, track: { background: '#e2e8f0' } } },
-        fill: { colors: ['#2EC4B6'] },
+        plotOptions: { radialBar: { startAngle: +cfg.start_angle || -135, endAngle: +cfg.end_angle || 135, hollow: { size: cfg.hollow_size || '62%' }, dataLabels: { name: { show: false }, value: { show: false } }, track: { background: '#e2e8f0' } } },
+        fill: { colors: [c] },
         stroke: { lineCap: 'round' },
       };
     }, [cfg]);
@@ -117,14 +120,16 @@
     const ref = useApexChart(() => {
       const series = cfg.series || [];
       const categories = (series[0]?.data || []).map(d => d.label || '');
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#C9A227', cfg.color4 || '#E5484D'].filter(Boolean);
       return {
-        chart: { type: 'bar', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        chart: { type: 'bar', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
         xaxis: { categories },
-        plotOptions: { bar: { horizontal: !!cfg.horizontal, borderRadius: 4 } },
+        plotOptions: { bar: { horizontal: !!cfg.horizontal, borderRadius: +cfg.bar_radius || 4 } },
         legend: { show: cfg.legend !== false },
-        colors: ['#102A43', '#2EC4B6', '#486581', '#C9A227'],
-        fill: { opacity: 0.9 },
+        colors,
+        fill: { opacity: +cfg.fill_opacity || 0.9 },
+        stroke: { width: cfg.stacked ? 1 : 0 },
       };
     }, [cfg]);
     return h('div', { ref });
@@ -134,14 +139,16 @@
     const ref = useApexChart(() => {
       const series = cfg.series || [];
       const categories = (series[0]?.data || []).map(d => d.label || '');
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#C9A227', cfg.color4 || '#E5484D'].filter(Boolean);
       return {
-        chart: { type: 'line', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        chart: { type: 'line', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
         xaxis: { categories },
-        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: 2 },
+        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: +cfg.stroke_width || 2 },
         legend: { show: cfg.legend !== false },
-        colors: ['#102A43', '#2EC4B6', '#C9A227', '#E5484D'],
-        markers: { size: 3 },
+        colors,
+        markers: { size: cfg.show_markers !== false ? 3 : 0 },
+        fill: cfg.fill_area ? { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } } : undefined,
       };
     }, [cfg]);
     return h('div', { ref });
@@ -150,13 +157,16 @@
   function DonutPreview({ cfg }) {
     const ref = useApexChart(() => {
       const series = cfg.series || [];
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#486581', cfg.color4 || '#C9A227', cfg.color5 || '#E5484D', cfg.color6 || '#7c3aed'].filter(Boolean);
       return {
-        chart: { type: 'donut', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        chart: { type: 'donut', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => +s.value || 0),
         labels: series.map(s => s.label || ''),
         legend: { show: cfg.legend !== false, position: 'bottom' },
-        colors: ['#102A43', '#2EC4B6', '#486581', '#C9A227', '#E5484D', '#7c3aed'],
-        stroke: { width: 2 },
+        colors,
+        stroke: { width: +cfg.stroke_width || 2 },
+        plotOptions: { pie: { donut: { size: cfg.donut_size || '65%' } } },
+        dataLabels: { enabled: cfg.show_percent !== false },
       };
     }, [cfg]);
     return h('div', { ref });
@@ -166,15 +176,16 @@
     const ref = useApexChart(() => {
       const series = cfg.series || [];
       const categories = (series[0]?.data || []).map(d => d.label || '');
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6'].filter(Boolean);
       return {
-        chart: { type: 'area', height: 280, toolbar: { show: false }, sparkline: { enabled: true } },
+        chart: { type: 'area', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
         xaxis: { categories },
-        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: 2 },
-        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } },
+        stroke: { curve: cfg.smooth !== false ? 'smooth' : 'straight', width: +cfg.stroke_width || 2 },
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: +cfg.fill_opacity_from || 0.3, opacityTo: +cfg.fill_opacity_to || 0.05 } },
         legend: { show: cfg.legend !== false },
-        colors: ['#102A43', '#2EC4B6'],
-        markers: { size: 3 },
+        colors,
+        markers: { size: cfg.show_markers !== false ? 3 : 0 },
       };
     }, [cfg]);
     return h('div', { ref });
@@ -590,40 +601,50 @@
 
     const cfg = block.block_config || {};
     const setCfg = (key, val) => {
-      const newCfg = { ...cfg, [key]: val };
-      if (key === 'axes_raw') {
-        newCfg.axes = val.split('\n').filter(l => l.trim()).map(line => {
-          const [label, value] = line.split(',');
-          return { label: (label || '').trim(), value: parseInt(value || '0', 10) };
-        });
-        delete newCfg.axes_raw;
-      }
-      if (key === 'items_raw') {
-        newCfg.items = val.split('\n').filter(l => l.trim()).map(line => ({ text: line.trim() }));
-        delete newCfg.items_raw;
-      }
-      if (key === 'series_raw_bar' || key === 'series_raw_line' || key === 'series_raw_area') {
-        const rawKey = key;
-        newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
-          const [label, ...rest] = line.split(',');
-          const dataStr = rest.join(',');
-          const pairs = dataStr.split(';').filter(p => p.trim());
-          const data = pairs.map(p => {
-            const [dl, dv] = p.split(':');
-            return { label: (dl || '').trim(), value: parseFloat(dv || '0') || 0 };
+      onUpdate(prev => {
+        const prevCfg = prev.block_config || {};
+        const newCfg = { ...prevCfg, [key]: val };
+        if (key === 'axes_raw') {
+          newCfg.axes = val.split('\n').filter(l => l.trim()).map(line => {
+            const [label, value] = line.split(',');
+            return { label: (label || '').trim(), value: parseInt(value || '0', 10) };
           });
-          return { label: (label || '').trim(), data };
-        });
-        delete newCfg[rawKey];
-      }
-      if (key === 'series_raw_donut') {
-        newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
-          const [label, value] = line.split(',');
-          return { label: (label || '').trim(), value: parseFloat(value || '0') || 0 };
-        });
-        delete newCfg.series_raw_donut;
-      }
-      onUpdate({ ...block, block_config: newCfg });
+          delete newCfg.axes_raw;
+        }
+        if (key === 'items_raw') {
+          newCfg.items = val.split('\n').filter(l => l.trim()).map(line => ({ text: line.trim() }));
+          delete newCfg.items_raw;
+        }
+        if (key === 'series_raw_bar' || key === 'series_raw_line' || key === 'series_raw_area') {
+          const rawKey = key;
+          newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
+            const [label, ...rest] = line.split(',');
+            const dataStr = rest.join(',');
+            const pairs = dataStr.split(';').filter(p => p.trim());
+            const data = pairs.map(p => {
+              const [dl, dv] = p.split(':');
+              return { label: (dl || '').trim(), value: parseFloat(dv || '0') || 0 };
+            });
+            return { label: (label || '').trim(), data };
+          });
+          delete newCfg[rawKey];
+        }
+        if (key === 'series_raw_donut') {
+          newCfg.series = val.split('\n').filter(l => l.trim()).map(line => {
+            const [label, value] = line.split(',');
+            return { label: (label || '').trim(), value: parseFloat(value || '0') || 0 };
+          });
+          delete newCfg.series_raw_donut;
+        }
+        if (key === 'domains_raw') {
+          newCfg.domains = val.split('\n').filter(l => l.trim()).map(line => {
+            const p = line.split(',');
+            return { label: (p[0] || '').trim(), score: parseInt(p[1] || '0', 10), max: parseInt(p[2] || '100', 10) };
+          });
+          delete newCfg.domains_raw;
+        }
+        return { ...prev, block_config: newCfg };
+      });
     };
 
     function label(text) { return h('label', { className: 'form-label small fw-bold' }, text); }
@@ -642,8 +663,13 @@
         h('label', { className: 'form-check-label small' }, lbl));
     }
     function colorField(lbl, prop, def) {
+      const safeDef = (def && def.startsWith('#')) ? def : '#102A43';
+      const hasValue = def && def.startsWith('#');
       return h(React.Fragment, null, label(lbl),
-        h('input', { type: 'color', className: 'form-control form-control-color mb-2', value: def, onChange: e => setCfg(prop, e.target.value) }));
+        h('div', { className: 'input-group input-group-sm mb-2' },
+          h('input', { type: 'color', className: 'form-control form-control-color', value: safeDef, onChange: e => setCfg(prop, e.target.value) }),
+          h('input', { type: 'text', className: 'form-control', value: def || '', placeholder: 'Aucune', onChange: e => setCfg(prop, e.target.value) }),
+          hasValue && h('button', { type: 'button', className: 'btn btn-outline-secondary', title: 'Réinitialiser', onClick: () => setCfg(prop, '') }, h('i', { className: 'bi bi-x' }))));
     }
 
     const renderField = (key) => {
@@ -654,14 +680,23 @@
             field('Libellé', 'text', 'label', val('label', 'Score global')),
             field('Score', 'number', 'score', +cfg.score || 0),
             field('Score maximum', 'number', 'max', +cfg.max || 100),
-            switchField('Afficher la note', 'show_rating', cfg.show_rating !== false));
+            field('Suffixe', 'text', 'suffix', val('suffix', '')),
+            colorField('Couleur principale', 'color', val('color', '#102A43')),
+            selectField('Taille', 'size', [{ v: 'sm', l: 'Petite' }, { v: 'md', l: 'Moyenne' }, { v: 'lg', l: 'Grande' }], cfg.size || 'md'),
+            switchField('Afficher la note', 'show_rating', cfg.show_rating !== false),
+            switchField('Afficher la barre de progression', 'show_progress', cfg.show_progress !== false));
         case 'radar_chart': {
           const axes = cfg.axes || [];
           const raw = axes.map(a => (a.label || '') + ',' + (a.value || 0)).join('\n');
           return h(React.Fragment, null,
             label('Axes (Libellé, Valeur par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('axes_raw', e.target.value) }),
-            switchField('Afficher la légende', 'legend', cfg.legend !== false));
+            colorField('Couleur', 'color', val('color', '#102A43')),
+            field('Opacité du remplissage', 'number', 'fill_opacity', +cfg.fill_opacity || 0.2),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 280),
+            field('Épaisseur du trait', 'number', 'stroke_width', +cfg.stroke_width || 2),
+            switchField('Afficher la légende', 'legend', cfg.legend !== false),
+            switchField('Afficher les marqueurs', 'show_markers', cfg.show_markers !== false));
         }
         case 'bar_chart': {
           const series = cfg.series || [];
@@ -669,7 +704,15 @@
           return h(React.Fragment, null,
             label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_bar', e.target.value) }),
+            colorField('Couleur série 1', 'color', val('color', '#102A43')),
+            colorField('Couleur série 2', 'color2', val('color2', '#2EC4B6')),
+            colorField('Couleur série 3', 'color3', val('color3', '#C9A227')),
+            colorField('Couleur série 4', 'color4', val('color4', '#E5484D')),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 280),
+            field('Rayon des barres', 'number', 'bar_radius', +cfg.bar_radius || 4),
+            field('Opacité du remplissage', 'number', 'fill_opacity', +cfg.fill_opacity || 0.9),
             switchField('Horizontal', 'horizontal', !!cfg.horizontal),
+            switchField('Empilé', 'stacked', !!cfg.stacked),
             switchField('Afficher la légende', 'legend', cfg.legend !== false));
         }
         case 'line_chart': {
@@ -678,7 +721,15 @@
           return h(React.Fragment, null,
             label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_line', e.target.value) }),
+            colorField('Couleur série 1', 'color', val('color', '#102A43')),
+            colorField('Couleur série 2', 'color2', val('color2', '#2EC4B6')),
+            colorField('Couleur série 3', 'color3', val('color3', '#C9A227')),
+            colorField('Couleur série 4', 'color4', val('color4', '#E5484D')),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 280),
+            field('Épaisseur du trait', 'number', 'stroke_width', +cfg.stroke_width || 2),
             switchField('Courbe lisse', 'smooth', cfg.smooth !== false),
+            switchField('Afficher les marqueurs', 'show_markers', cfg.show_markers !== false),
+            switchField('Remplir la zone', 'fill_area', !!cfg.fill_area),
             switchField('Afficher la légende', 'legend', cfg.legend !== false));
         }
         case 'area_chart': {
@@ -687,7 +738,14 @@
           return h(React.Fragment, null,
             label('Séries (Libellé, Cat:Val;Cat:Val... par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_area', e.target.value) }),
+            colorField('Couleur série 1', 'color', val('color', '#102A43')),
+            colorField('Couleur série 2', 'color2', val('color2', '#2EC4B6')),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 280),
+            field('Épaisseur du trait', 'number', 'stroke_width', +cfg.stroke_width || 2),
+            field('Opacité début', 'number', 'fill_opacity_from', +cfg.fill_opacity_from || 0.3),
+            field('Opacité fin', 'number', 'fill_opacity_to', +cfg.fill_opacity_to || 0.05),
             switchField('Courbe lisse', 'smooth', cfg.smooth !== false),
+            switchField('Afficher les marqueurs', 'show_markers', cfg.show_markers !== false),
             switchField('Afficher la légende', 'legend', cfg.legend !== false));
         }
         case 'donut_chart': {
@@ -696,6 +754,16 @@
           return h(React.Fragment, null,
             label('Segments (Libellé, Valeur par ligne)'),
             h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_donut', e.target.value) }),
+            colorField('Couleur 1', 'color', val('color', '#102A43')),
+            colorField('Couleur 2', 'color2', val('color2', '#2EC4B6')),
+            colorField('Couleur 3', 'color3', val('color3', '#486581')),
+            colorField('Couleur 4', 'color4', val('color4', '#C9A227')),
+            colorField('Couleur 5', 'color5', val('color5', '#E5484D')),
+            colorField('Couleur 6', 'color6', val('color6', '#7c3aed')),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 280),
+            field('Taille du trou', 'text', 'donut_size', val('donut_size', '65%')),
+            field('Épaisseur du trait', 'number', 'stroke_width', +cfg.stroke_width || 2),
+            switchField('Afficher les pourcentages', 'show_percent', cfg.show_percent !== false),
             switchField('Afficher la légende', 'legend', cfg.legend !== false));
         }
         case 'gauge':
@@ -705,14 +773,29 @@
             h('div', { className: 'row g-2 mb-2' },
               h('div', { className: 'col-6' }, field('Min', 'number', 'min', +cfg.min || 0)),
               h('div', { className: 'col-6' }, field('Max', 'number', 'max', +cfg.max || 100))),
-            field('Unité', 'text', 'unit', val('unit', '%')));
+            field('Unité', 'text', 'unit', val('unit', '%')),
+            colorField('Couleur de l\'arc', 'color', val('color', '#2EC4B6')),
+            field('Hauteur (px)', 'number', 'height', +cfg.height || 160),
+            field('Angle de départ (°)', 'number', 'start_angle', +cfg.start_angle || -135),
+            field('Angle de fin (°)', 'number', 'end_angle', +cfg.end_angle || 135),
+            field('Taille du creux', 'text', 'hollow_size', val('hollow_size', '62%')),
+            switchField('Afficher le libellé', 'show_label', cfg.show_label !== false),
+            switchField('Afficher la valeur', 'show_value', cfg.show_value !== false));
         case 'recommendations': {
           const items = cfg.items || [];
           const raw = items.map(i => (typeof i === 'object' ? i.text : i) || '').join('\n');
           return h(React.Fragment, null,
             field('Titre de la section', 'text', 'title', val('title', 'Recommandations')),
             label('Recommandations (une par ligne)'),
-            h('textarea', { className: 'form-control form-control-sm', rows: 6, value: raw, onChange: e => setCfg('items_raw', e.target.value) }));
+            h('textarea', { className: 'form-control form-control-sm', rows: 6, value: raw, onChange: e => setCfg('items_raw', e.target.value) }),
+            selectField('Icône', 'icon', [
+              { v: 'bi-list-check', l: 'Liste' }, { v: 'bi-check-circle', l: 'Cercle' },
+              { v: 'bi-arrow-right-circle', l: 'Flèche' }, { v: 'bi-star', l: 'Étoile' },
+              { v: 'bi-lightbulb', l: 'Ampoule' }, { v: 'bi-shield-check', l: 'Bouclier' }
+            ], cfg.icon || 'bi-list-check'),
+            colorField('Couleur du texte', 'color', val('color', '#102A43')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.9rem')),
+            switchField('Numérotation', 'numbered', cfg.numbered !== false));
         }
         case 'company_info': {
           const fields = cfg.fields || [];
@@ -725,15 +808,22 @@
                 h('button', { type: 'button', className: 'btn btn-outline-danger', onClick: () => { const nf = fields.filter((_, j) => j !== i); setCfg('fields', nf); } }, h('i', { className: 'bi bi-x' })))),
               fields.length === 0 ? h('p', { className: 'text-muted small' }, 'Aucun champ') : null),
             h('button', { type: 'button', className: 'btn btn-sm btn-outline-primary w-100 mb-2', onClick: () => setCfg('fields', [...(cfg.fields || []), { key: '', label: '' }]) }, h('i', { className: 'bi bi-plus' }), ' Ajouter un champ'),
-            switchField('Inclure le logo entreprise', 'show_logo', cfg.show_logo !== false));
+            switchField('Inclure le logo entreprise', 'show_logo', cfg.show_logo !== false),
+            selectField('Disposition', 'layout', [{ v: 'vertical', l: 'Verticale' }, { v: 'horizontal', l: 'Horizontale' }, { v: 'grid', l: 'Grille' }], cfg.layout || 'vertical'),
+            colorField('Couleur des libellés', 'label_color', val('label_color', '#6b7280')),
+            colorField('Couleur des valeurs', 'value_color', val('value_color', '#102A43')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.9rem')));
         }
         case 'aqmi_logo':
         case 'company_logo': {
           const isCompany = key === 'company_logo';
           return h(React.Fragment, null,
             isCompany ? field('URL du logo', 'text', 'url', val('url', '')) : null,
-            selectField('Taille', 'size', [{ v: 'sm', l: 'Petite' }, { v: 'md', l: 'Moyenne' }, { v: 'lg', l: 'Grande' }], cfg.size || 'md'),
-            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'left'));
+            isCompany ? colorField('Couleur (si SVG)', 'color', val('color', '#102A43')) : null,
+            selectField('Taille', 'size', [{ v: 'sm', l: 'Petite' }, { v: 'md', l: 'Moyenne' }, { v: 'lg', l: 'Grande' }, { v: 'xl', l: 'Très grande' }], cfg.size || 'md'),
+            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'left'),
+            isCompany ? field('Hauteur max', 'text', 'max_height', val('max_height', '80px')) : null,
+            isCompany ? field('Arrondi des coins', 'text', 'border_radius', val('border_radius', '0')) : null);
         }
         case 'official_stamp':
           return h(React.Fragment, null,
@@ -742,16 +832,23 @@
             field('Sous-texte', 'text', 'subtext', val('subtext', 'AQMI')),
             colorField('Couleur', 'color', val('color', '#102A43')),
             field('Taille (px)', 'number', 'size', +cfg.size || 100),
+            field('Épaisseur de la bordure', 'number', 'border_width', +cfg.border_width || 3),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.9rem')),
             selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'right'));
         case 'qr_code':
           return h(React.Fragment, null,
             field('Donnée encodée', 'text', 'value', val('value', '')),
             field('Taille (px)', 'number', 'size', +cfg.size || 120),
-            field('Libellé sous le QR', 'text', 'label', val('label', '')));
+            field('Libellé sous le QR', 'text', 'label', val('label', '')),
+            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center'),
+            field('Marge (px)', 'number', 'margin', +cfg.margin || 0));
         case 'signature':
           return h(React.Fragment, null,
             field('Nom du signataire', 'text', 'label', val('label', '')),
             field('Fonction', 'text', 'role', val('role', '')),
+            colorField('Couleur de la ligne', 'line_color', val('line_color', '#102A43')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.9rem')),
+            selectField('Format de date', 'date_format', [{ v: 'fr-FR', l: 'FR (jj/mm/aaaa)' }, { v: 'en-US', l: 'EN (mm/dd/yyyy)' }, { v: 'de-DE', l: 'DE (dd.mm.yyyy)' }], cfg.date_format || 'fr-FR'),
             switchField('Afficher la date', 'show_date', cfg.show_date !== false),
             switchField('Afficher le tampon officiel', 'show_stamp', !!cfg.show_stamp));
         case 'header':
@@ -760,6 +857,10 @@
             h('small', { className: 'd-block text-muted mb-2' }, 'Variables: {report_number} {certification_date} {expiration_date} {current_date} {template_name} {page} {total_pages}'),
             selectField('Niveau de titre', 'level', [{ v: '1', l: 'H1' }, { v: '2', l: 'H2' }, { v: '3', l: 'H3' }], String(cfg.level || 1)),
             selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'left'),
+            colorField('Couleur du texte', 'color', val('color', '#102A43')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '')),
+            switchField('Majuscules', 'uppercase', !!cfg.uppercase),
+            switchField('Bordure inférieure', 'border_bottom', !!cfg.border_bottom),
             switchField('Afficher N° rapport', 'show_report_number', !!cfg.show_report_number),
             switchField('Afficher la date', 'show_date', !!cfg.show_date),
             switchField('Afficher la pagination', 'show_page_number', !!cfg.show_page_number));
@@ -768,17 +869,75 @@
             field('Texte', 'text', 'text', val('text', '')),
             h('small', { className: 'd-block text-muted mb-2' }, 'Variables: {report_number} {certification_date} {expiration_date} {current_date} {template_name} {page} {total_pages}'),
             selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center'),
+            colorField('Couleur du texte', 'color', val('color', '#6b7280')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.8rem')),
+            switchField('Bordure supérieure', 'border_top', cfg.border_top !== false),
             switchField('Afficher N° rapport', 'show_report_number', !!cfg.show_report_number),
             switchField('Afficher la date', 'show_date', !!cfg.show_date),
             switchField('Afficher la pagination', 'show_page_number', cfg.show_page_number !== false));
         case 'rich_text':
-          return h(RichTextEditor, { html: cfg.html || '', onChange: (html) => setCfg('html', html) });
+          return h(React.Fragment, null,
+            h(RichTextEditor, { html: cfg.html || '', onChange: (html) => setCfg('html', html) }),
+            field('Padding', 'text', 'padding', val('padding', '8px')),
+            field('Police', 'text', 'font_family', val('font_family', 'Inter, sans-serif')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.9rem')));
         case 'image':
           return h(React.Fragment, null,
             field('URL de l\'image', 'text', 'url', val('url', '')),
             field('Texte alternatif', 'text', 'alt', val('alt', '')),
             field('Largeur', 'text', 'width', val('width', '100%')),
-            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center'));
+            field('Hauteur max', 'text', 'max_height', val('max_height', '')),
+            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center'),
+            selectField('Ajustement', 'object_fit', [{ v: 'contain', l: 'Contenir' }, { v: 'cover', l: 'Couvrir' }, { v: 'fill', l: 'Remplir' }, { v: 'none', l: 'Aucun' }], cfg.object_fit || 'contain'),
+            field('Arrondi des coins', 'text', 'border_radius', val('border_radius', '0')));
+        case 'cover_page':
+          return h(React.Fragment, null,
+            field('Nom de l\'entreprise', 'text', 'company_name', val('company_name', '')),
+            field('Titre du rapport', 'text', 'report_title', val('report_title', '')),
+            field('Sous-titre', 'text', 'subtitle', val('subtitle', '')),
+            colorField('Couleur d\'accent', 'accent_color', val('accent_color', '#102A43')),
+            colorField('Couleur de fond', 'bg_color', val('bg_color', '#ffffff')),
+            colorField('Couleur du texte', 'text_color', val('text_color', '#102A43')),
+            colorField('Couleur de bordure', 'border_color', val('border_color', '#EEF2F7')),
+            field('Taille titre', 'text', 'font_size_title', val('font_size_title', '1.5rem')),
+            field('Taille sous-titre', 'text', 'font_size_subtitle', val('font_size_subtitle', '0.9rem')),
+            field('Padding', 'text', 'padding', val('padding', '40px')),
+            switchField('Afficher le logo', 'show_logo', cfg.show_logo !== false),
+            switchField('Afficher le tampon', 'show_stamp', cfg.show_stamp !== false),
+            switchField('Afficher la date', 'show_date', cfg.show_date !== false),
+            switchField('Afficher le numéro', 'show_number', cfg.show_number !== false));
+        case 'kpi_card':
+          return h(React.Fragment, null,
+            field('Libellé', 'text', 'label', val('label', '')),
+            field('Valeur', 'text', 'value', val('value', '')),
+            field('Unité', 'text', 'unit', val('unit', '')),
+            field('Icône', 'text', 'icon', val('icon', 'bi-check-circle')),
+            colorField('Couleur principale', 'color', val('color', '#102A43')),
+            colorField('Couleur de fond', 'bg_color', val('bg_color', '#ffffff')),
+            colorField('Couleur de bordure', 'border_color', val('border_color', '#EEF2F7')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '1.1rem')),
+            field('Tendance', 'text', 'trend', val('trend', '')),
+            selectField('Direction', 'trend_direction', [{ v: 'up', l: 'Hausse' }, { v: 'down', l: 'Baisse' }, { v: 'flat', l: 'Stable' }], cfg.trend_direction || 'up'),
+            switchField('Fond d\'icône', 'icon_bg', !!cfg.icon_bg),
+            switchField('Afficher la tendance', 'show_trend', cfg.show_trend !== false));
+        case 'domain_scores': {
+          const domains = cfg.domains || [];
+          const raw = domains.map(d => (d.label || '') + ',' + (d.score || 0) + ',' + (d.max || 100)).join('\n');
+          return h(React.Fragment, null,
+            field('Titre', 'text', 'title', val('title', 'Scores par domaine')),
+            label('Domaines (Libellé, Score, Max par ligne)'),
+            h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('domains_raw', e.target.value) }),
+            colorField('Couleur', 'color', val('color', '#102A43')),
+            colorField('Couleur de bordure', 'border_color', val('border_color', '#EEF2F7')),
+            field('Taille de police', 'text', 'font_size', val('font_size', '0.85rem')),
+            switchField('Lignes alternées', 'alternating_rows', cfg.alternating_rows !== false),
+            switchField('Barre de progression', 'show_progress_bar', cfg.show_progress_bar !== false));
+        }
+        case 'page_break':
+          return h(React.Fragment, null,
+            field('Libellé', 'text', 'label', val('label', 'Saut de page')),
+            switchField('Afficher le libellé', 'show_label', !!cfg.show_label),
+            field('Espacement', 'text', 'spacing', val('spacing', '2rem')));
         default:
           return h('div', { className: 'text-muted small' }, 'Aucune propriété pour ce bloc.');
       }
@@ -790,24 +949,36 @@
         h('span', { className: 'badge bg-primary' }, h('i', { className: 'bi ' + meta.icon }), ' ' + meta.label)),
       h('div', { className: 'mb-2' },
         h('label', { className: 'form-label small fw-bold' }, 'Titre du bloc'),
-        h('input', { type: 'text', className: 'form-control form-control-sm', value: block.title || '', onChange: e => onUpdate({ ...block, title: e.target.value }) })),
+        h('input', { type: 'text', className: 'form-control form-control-sm', value: block.title || '', onChange: e => onUpdate(prev => ({ ...prev, title: e.target.value })) })),
       h('div', { className: 'mb-2' },
         h('label', { className: 'form-label small fw-bold' }, 'Largeur (colonnes / 12)'),
-        h('input', { type: 'range', className: 'form-range', min: 1, max: 12, value: block.column_span || 12, onChange: e => onUpdate({ ...block, column_span: parseInt(e.target.value) }) }),
+        h('input', { type: 'range', className: 'form-range', min: 1, max: 12, value: block.column_span || 12, onChange: e => onUpdate(prev => ({ ...prev, column_span: parseInt(e.target.value) })) }),
         h('div', { className: 'small text-muted text-center' }, (block.column_span || 12) + ' / 12')),
       h('div', { className: 'mb-2' },
         h('label', { className: 'form-label small fw-bold' }, 'Visibilité'),
-        h('select', { className: 'form-select form-select-sm', value: block.visibility || 'web_pdf', onChange: e => onUpdate({ ...block, visibility: e.target.value }) },
+        h('select', { className: 'form-select form-select-sm', value: block.visibility || 'web_pdf', onChange: e => onUpdate(prev => ({ ...prev, visibility: e.target.value })) },
           h('option', { value: 'web_pdf' }, 'Web + PDF'),
           h('option', { value: 'web_only' }, 'Web uniquement'),
           h('option', { value: 'pdf_only' }, 'PDF uniquement'))),
       h('hr', { className: 'rs-prop-sep' }),
       renderField(block.block_key),
+      h('hr', { className: 'rs-prop-sep' }),
+      h('div', { className: 'rs-prop-section-title small fw-bold text-uppercase text-muted mb-2' }, h('i', { className: 'bi bi-palette' }), ' Style commun'),
+      field('Padding', 'text', '_style_padding', (cfg._style_padding !== undefined ? cfg._style_padding : '')),
+      field('Marge', 'text', '_style_margin', (cfg._style_margin !== undefined ? cfg._style_margin : '')),
+      colorField('Fond', '_style_bg', (cfg._style_bg !== undefined ? cfg._style_bg : '')),
+      colorField('Bordure', '_style_border', (cfg._style_border !== undefined ? cfg._style_border : '')),
+      field('Épaisseur bordure', 'text', '_style_border_width', (cfg._style_border_width !== undefined ? cfg._style_border_width : '')),
+      field('Arrondi', 'text', '_style_border_radius', (cfg._style_border_radius !== undefined ? cfg._style_border_radius : '')),
+      selectField('Alignement texte', '_style_text_align', [{ v: '', l: 'Défaut' }, { v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg._style_text_align || ''),
       DS_BLOCKS.includes(block.block_key) && h(DataSourcePanel, {
         cfg: block.block_config || {},
         setCfg: (prop, val) => {
-          const newCfg = prop === '__replace__' ? val : { ...block.block_config, [prop]: val };
-          onUpdate({ ...block, block_config: newCfg });
+          if (prop === '__replace__') {
+            onUpdate(prev => ({ ...prev, block_config: val }));
+          } else {
+            onUpdate(prev => ({ ...prev, block_config: { ...prev.block_config, [prop]: val } }));
+          }
         },
       }),
       h('hr', { className: 'rs-prop-sep' }),
@@ -961,64 +1132,70 @@
       setRedoStack([]);
     }, []);
 
-    const updateBlocks = (newBlocks, recordUndo = true) => {
-      if (recordUndo) pushUndo(blocks);
+    const blocksRef = useRef(blocks);
+    blocksRef.current = blocks;
+
+    const updateBlocks = useCallback((newBlocks, recordUndo = true) => {
+      if (recordUndo) pushUndo(blocksRef.current);
       setBlocks(newBlocks);
       setDirty(true);
       setStatusMsg('Modifications non enregistrées');
-    };
+    }, [pushUndo]);
 
-    const addBlock = (blockKey) => {
+    const addBlock = useCallback((blockKey) => {
       const newBlock = {
         _uid: uid(),
         block_key: blockKey,
         title: BLOCK_META[blockKey]?.label || blockKey,
         block_config: JSON.parse(JSON.stringify(DEFAULT_CONFIGS[blockKey] || {})),
-        sort_order: blocks.length,
+        sort_order: blocksRef.current.length,
         is_enabled: true,
         visibility: 'web_pdf',
         column_span: 12,
       };
-      updateBlocks([...blocks, newBlock]);
+      updateBlocks([...blocksRef.current, newBlock]);
       setSelectedUid(newBlock._uid);
-    };
+    }, [updateBlocks]);
 
-    const updateBlock = (updated) => {
-      pushUndo(blocks);
-      setBlocks(blocks.map(b => b._uid === updated._uid ? updated : b));
+    const updateBlock = useCallback((updatedOrFn) => {
+      pushUndo(blocksRef.current);
+      setBlocks(prev => prev.map(b => {
+        if (b._uid !== selectedUid) return b;
+        return typeof updatedOrFn === 'function' ? updatedOrFn(b) : updatedOrFn;
+      }));
       setDirty(true);
       setStatusMsg('Modifications non enregistrées');
-    };
+    }, [pushUndo, selectedUid]);
 
-    const deleteBlock = (block) => {
-      updateBlocks(blocks.filter(b => b._uid !== block._uid));
+    const deleteBlock = useCallback((block) => {
+      updateBlocks(blocksRef.current.filter(b => b._uid !== block._uid));
       if (selectedUid === block._uid) setSelectedUid(null);
-    };
+    }, [updateBlocks, selectedUid]);
 
-    const duplicateBlock = (block) => {
+    const duplicateBlock = useCallback((block) => {
       const copy = { ...JSON.parse(JSON.stringify(block)), _uid: uid(), title: (block.title || '') + ' (copie)' };
-      const idx = blocks.findIndex(b => b._uid === block._uid);
-      const newBlocks = [...blocks];
+      const idx = blocksRef.current.findIndex(b => b._uid === block._uid);
+      const newBlocks = [...blocksRef.current];
       newBlocks.splice(idx + 1, 0, copy);
       updateBlocks(newBlocks);
-    };
+    }, [updateBlocks]);
 
-    const toggleEnabled = (block) => {
-      updateBlocks(blocks.map(b => b._uid === block._uid ? { ...b, is_enabled: !b.is_enabled } : b));
-    };
+    const toggleEnabled = useCallback((block) => {
+      updateBlocks(blocksRef.current.map(b => b._uid === block._uid ? { ...b, is_enabled: !b.is_enabled } : b));
+    }, [updateBlocks]);
 
-    const moveBlock = (index, dir) => {
-      const newBlocks = [...blocks];
+    const moveBlock = useCallback((index, dir) => {
+      const newBlocks = [...blocksRef.current];
       const target = index + dir;
       if (target < 0 || target >= newBlocks.length) return;
       [newBlocks[index], newBlocks[target]] = [newBlocks[target], newBlocks[index]];
       updateBlocks(newBlocks);
-    };
+    }, [updateBlocks]);
 
-    const resizeBlock = (index, newSpan) => {
+    const resizeBlock = useCallback((index, newSpan) => {
       const span = Math.max(1, Math.min(12, newSpan));
-      updateBlocks(blocks.map((b, i) => i === index ? { ...b, column_span: span } : b));
-    };
+      updateBlocks(blocksRef.current.map((b, i) => i === index ? { ...b, column_span: span } : b));
+    }, [updateBlocks]);
 
     // ---- Drag & Drop reordering ----
     const handleDragStart = (e, block) => {
@@ -1039,7 +1216,7 @@
       setDragOverIndex(index);
     };
 
-    const handleDrop = (e, index) => {
+    const handleDrop = useCallback((e, index) => {
       e.preventDefault();
       e.stopPropagation();
       const blockKey = e.dataTransfer.getData('text/block-key');
@@ -1054,22 +1231,22 @@
           visibility: 'web_pdf',
           column_span: 12,
         };
-        const newBlocks = [...blocks];
+        const newBlocks = [...blocksRef.current];
         newBlocks.splice(index, 0, newBlock);
         updateBlocks(newBlocks);
         setSelectedUid(newBlock._uid);
       } else {
-        const uid = e.dataTransfer.getData('text/plain');
-        const fromIdx = blocks.findIndex(b => b._uid === uid);
+        const draggedUid = e.dataTransfer.getData('text/plain');
+        const fromIdx = blocksRef.current.findIndex(b => b._uid === draggedUid);
         if (fromIdx === -1 || fromIdx === index) return;
-        const newBlocks = [...blocks];
+        const newBlocks = [...blocksRef.current];
         const [moved] = newBlocks.splice(fromIdx, 1);
         newBlocks.splice(index, 0, moved);
         updateBlocks(newBlocks);
       }
       setDragIndex(null);
       setDragOverIndex(null);
-    };
+    }, [updateBlocks]);
 
     // Drop on empty canvas
     const handleCanvasDrop = (e) => {
@@ -1082,23 +1259,23 @@
       setDragOverIndex(null);
     };
 
-    const undo = () => {
+    const undo = useCallback(() => {
       if (undoStack.length === 0) return;
       const prev = JSON.parse(undoStack[undoStack.length - 1]);
-      setRedoStack(s => [...s, JSON.stringify(blocks)]);
+      setRedoStack(s => [...s, JSON.stringify(blocksRef.current)]);
       setUndoStack(s => s.slice(0, -1));
       setBlocks(prev.map(b => ({ ...b, block_config: typeof b.block_config === 'string' ? JSON.parse(b.block_config || '{}') : b.block_config })));
       setDirty(true);
-    };
+    }, [undoStack]);
 
-    const redo = () => {
+    const redo = useCallback(() => {
       if (redoStack.length === 0) return;
       const next = JSON.parse(redoStack[redoStack.length - 1]);
-      setUndoStack(s => [...s, JSON.stringify(blocks)]);
+      setUndoStack(s => [...s, JSON.stringify(blocksRef.current)]);
       setRedoStack(s => s.slice(0, -1));
       setBlocks(next.map(b => ({ ...b, block_config: typeof b.block_config === 'string' ? JSON.parse(b.block_config || '{}') : b.block_config })));
       setDirty(true);
-    };
+    }, [redoStack]);
 
     const save = async () => {
       setSaving(true);

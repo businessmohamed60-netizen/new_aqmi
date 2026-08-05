@@ -898,11 +898,12 @@
   text-align: center;
 }
 
-.aqmi-main-gauge-emoji {
-  font-size: 3.5rem;
+.aqmi-main-gauge-icon {
+  font-size: 2.8rem;
   line-height: 1;
+  color: var(--aqmi-accent);
   animation: aqmi-emoji-bounce 2s ease-in-out infinite;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: color 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes aqmi-emoji-bounce {

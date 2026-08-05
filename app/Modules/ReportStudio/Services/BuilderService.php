@@ -150,9 +150,23 @@ class BuilderService
         // Cast booleans for known checkbox props
         foreach (['horizontal', 'legend', 'smooth', 'show_rating', 'show_logo', 'show_stamp',
                    'show_date', 'show_number', 'show_page_number', 'show_report_number',
-                   'data_source_enabled', 'trend_direction'] as $boolKey) {
+                   'data_source_enabled', 'trend_direction',
+                   'show_progress', 'show_markers', 'fill_area', 'stacked', 'show_percent',
+                   'show_label', 'show_value', 'numbered', 'uppercase', 'border_bottom',
+                   'border_top', 'alternating_rows', 'show_progress_bar', 'show_label_page_break',
+                   'icon_bg', 'show_trend'] as $boolKey) {
             if (isset($config[$boolKey])) {
                 $config[$boolKey] = filter_var($config[$boolKey], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        // Preserve _style_* common style overrides as-is (strings)
+        foreach ($config as $k => $v) {
+            if (str_starts_with($k, '_style_') && is_string($v)) {
+                $config[$k] = trim($v);
+                if ($config[$k] === '') {
+                    unset($config[$k]);
+                }
             }
         }
 

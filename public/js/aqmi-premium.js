@@ -53,10 +53,9 @@
     mainGauge: $id('aqmiMainGauge'),
     mainGaugeCircle: $id('aqmiMainGaugeCircle'),
     mainGaugeValue: $id('aqmiMainGaugeValue'),
-    mainGaugeEmoji: $id('aqmiMainGaugeEmoji'),
+    mainGaugeIcon: $id('aqmiMainGaugeIcon'),
     mainGaugeLabel: $id('aqmiMainGaugeLabel'),
     mainGaugePulse: $id('aqmiMainGaugePulse'),
-    keyboardHint: $id('aqmiKeyboardHint'),
     timeRemaining: $id('aqmiTimeRemaining'),
     questionInner: $id('aqmiQuestionInner'),
     illustrationPanel: $id('aqmiIllustrationPanel'),
@@ -279,7 +278,8 @@
 
     // Check if all answered
     updateProgress();
-    updateGauge();
+    updateRightGauge();
+    updateMainGauge(currentIdx);
     animateAnswerEntrance();
   }
 
@@ -423,7 +423,8 @@
         if (questions[j].answered) answeredCount++;
       }
       updateProgress();
-      updateGauge();
+      updateRightGauge();
+      updateMainGauge(currentIdx);
     }
 
     // Show next button
@@ -543,16 +544,10 @@
   var MAIN_GAUGE_CIRCUMFERENCE = 2 * Math.PI * 85;
   var gaugeInitialized = false;
 
-  function updateGauge() {
+  function updateRightGauge() {
     if (answeredCount === 0) {
       el.gauge.classList.remove('show');
       gaugeInitialized = false;
-      if (el.mainGaugeCircle) {
-        el.mainGaugeCircle.style.strokeDashoffset = String(MAIN_GAUGE_CIRCUMFERENCE);
-        el.mainGaugeValue.textContent = '0%';
-        el.mainGaugeEmoji.textContent = '🎯';
-        el.mainGaugeLabel.textContent = 'Démarrage';
-      }
       return;
     }
     el.gauge.classList.add('show');
@@ -616,52 +611,60 @@
       }
     });
 
-    // ── Main gauge (left illustration area) ──
-    if (el.mainGaugeCircle) {
-      var mainOffset = MAIN_GAUGE_CIRCUMFERENCE - (pct / 100) * MAIN_GAUGE_CIRCUMFERENCE;
-      var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;
-      var mainProxy = { offset: mainStart };
-      gsap.to(mainProxy, {
-        offset: mainOffset,
-        duration: 0.8,
-        ease: 'power2.out',
-        onUpdate: function() {
-          el.mainGaugeCircle.style.strokeDashoffset = mainProxy.offset;
-        }
-      });
+  }
 
-      el.mainGaugeCircle.style.stroke = color;
+  function updateMainGauge(qIdx) {
+    var q = questions[qIdx];
+    var score = (q && q.answered && q.score != null) ? q.score : 0;
+    var pct = Math.round((score / 5) * 100);
 
-      var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
-      gsap.to(mainNumProxy, {
-        val: pct,
-        duration: 0.6,
-        ease: 'power2.out',
-        onUpdate: function() {
-          el.mainGaugeValue.textContent = Math.round(mainNumProxy.val) + '%';
-        }
-      });
+    if (!el.mainGaugeCircle) return;
 
-      // Emoji based on score range
-      var emoji = '🎯';
-      var label = 'Maturité';
-      if (pct >= 90) { emoji = '🏆'; label = 'Excellent'; }
-      else if (pct >= 75) { emoji = '🌟'; label = 'Avancé'; }
-      else if (pct >= 50) { emoji = '📈'; label = 'En progrès'; }
-      else if (pct >= 25) { emoji = '🔧'; label = 'À améliorer'; }
-      else { emoji = '🚀'; label = 'Décollage'; }
-      el.mainGaugeEmoji.textContent = emoji;
-      el.mainGaugeLabel.textContent = label;
-
-      // Pulse on main gauge
-      if (el.mainGaugePulse) {
-        el.mainGaugePulse.style.borderColor = color;
-        el.mainGaugePulse.style.display = 'block';
-        el.mainGaugePulse.style.animation = 'none';
-        void el.mainGaugePulse.offsetWidth;
-        el.mainGaugePulse.style.animation = 'aqmi-gauge-ping 1.5s ease-out';
-        setTimeout(function() { el.mainGaugePulse.style.display = 'none'; }, 1500);
+    var mainOffset = MAIN_GAUGE_CIRCUMFERENCE - (pct / 100) * MAIN_GAUGE_CIRCUMFERENCE;
+    var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;
+    var mainProxy = { offset: mainStart };
+    gsap.to(mainProxy, {
+      offset: mainOffset,
+      duration: 0.8,
+      ease: 'power2.out',
+      onUpdate: function() {
+        el.mainGaugeCircle.style.strokeDashoffset = mainProxy.offset;
       }
+    });
+
+    var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#C9A227' : score === 3 ? '#1F6FEB' : '#2EC4B6';
+    el.mainGaugeIcon.style.color = color;
+
+    var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
+    gsap.to(mainNumProxy, {
+      val: pct,
+      duration: 0.6,
+      ease: 'power2.out',
+      onUpdate: function() {
+        el.mainGaugeValue.textContent = Math.round(mainNumProxy.val) + '%';
+      }
+    });
+
+    var icon = 'fa-gauge-high';
+    var label = 'En attente';
+    if (q && q.answered) {
+      if (score === 0) { icon = 'fa-circle-xmark'; label = 'Inexistant'; }
+      else if (score === 1) { icon = 'fa-circle-dot'; label = 'Initial'; }
+      else if (score === 2) { icon = 'fa-circle-half-stroke'; label = 'Basique'; }
+      else if (score === 3) { icon = 'fa-circle-check'; label = 'Maîtrisé'; }
+      else if (score === 4) { icon = 'fa-circle-check'; label = 'Performant'; }
+      else if (score === 5) { icon = 'fa-award'; label = 'Excellence'; }
+    }
+    el.mainGaugeIcon.innerHTML = '<i class="fas ' + icon + '"></i>';
+    el.mainGaugeLabel.textContent = label;
+
+    if (el.mainGaugePulse) {
+      el.mainGaugePulse.style.borderColor = color;
+      el.mainGaugePulse.style.display = 'block';
+      el.mainGaugePulse.style.animation = 'none';
+      void el.mainGaugePulse.offsetWidth;
+      el.mainGaugePulse.style.animation = 'aqmi-gauge-ping 1.5s ease-out';
+      setTimeout(function() { el.mainGaugePulse.style.display = 'none'; }, 1500);
     }
   }
 
@@ -826,7 +829,8 @@
 
       answeredCount = questions.filter(function(q) { return q.answered; }).length;
       updateProgress();
-      updateGauge();
+      updateRightGauge();
+      updateMainGauge(currentIdx);
 
       jQuery.ajax({
         url: '/assessment/save-answer',
@@ -846,11 +850,6 @@
   if (el.prevBtn) el.prevBtn.addEventListener('click', goPrev);
   if (el.nextBtn) el.nextBtn.addEventListener('click', goNext);
 
-  // ── Show keyboard hint after 3s ──
-  setTimeout(function() {
-    if (el.keyboardHint) el.keyboardHint.classList.add('show');
-  }, 3000);
-
   // ── Init ──
   function init() {
     createParticles();
@@ -865,7 +864,8 @@
     }
     renderQuestion(currentIdx);
     updateProgress();
-    updateGauge();
+    updateRightGauge();
+    updateMainGauge(currentIdx);
     gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
   }
 

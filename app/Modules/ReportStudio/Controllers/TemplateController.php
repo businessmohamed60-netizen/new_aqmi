@@ -43,7 +43,7 @@ class TemplateController
         $themeService = new ThemeService();
         view('reportstudio/templates/form', [
             'template' => null,
-            'themes'   => $themeService->activeThemes(),
+            'themes'   => array_map(fn($t) => $t->toArray(), $themeService->activeThemes()),
         ]);
     }
 
@@ -66,7 +66,7 @@ class TemplateController
         $themeService = new ThemeService();
         view('reportstudio/templates/form', [
             'template' => $template->toArray(),
-            'themes'   => $themeService->activeThemes(),
+            'themes'   => array_map(fn($t) => $t->toArray(), $themeService->activeThemes()),
         ]);
     }
 

@@ -36,7 +36,7 @@ unset($_SESSION['error']);
       <?= csrf_field() ?>
       <input type="hidden" name="assessment_id" value="<?= $assessment['id'] ?>">
 
-      <!-- Identity -->
+      <!-- Identité -->
       <div class="aqmi-lead-section">
         <div class="aqmi-lead-section-title">
           <i class="fas fa-user-circle"></i> Identité
@@ -57,7 +57,7 @@ unset($_SESSION['error']);
         </div>
       </div>
 
-      <!-- Company -->
+      <!-- Entreprise -->
       <div class="aqmi-lead-section">
         <div class="aqmi-lead-section-title">
           <i class="fas fa-building"></i> Entreprise
@@ -107,10 +107,6 @@ unset($_SESSION['error']);
         </div>
         <div class="aqmi-lead-split">
           <div class="aqmi-lead-field">
-            <label>Site web</label>
-            <input type="url" name="website" placeholder="https://www.example.com">
-          </div>
-          <div class="aqmi-lead-field">
             <label>Taille de l'entreprise</label>
             <select name="company_size">
               <option value="">Sélectionnez...</option>
@@ -121,10 +117,53 @@ unset($_SESSION['error']);
               <option value="1000+">Plus de 1000 employés</option>
             </select>
           </div>
+          <div class="aqmi-lead-field">
+            <label>Année de création</label>
+            <input type="number" name="founded_year" placeholder="Ex: 2010" min="1900" max="2030">
+          </div>
         </div>
         <div class="aqmi-lead-field">
-          <label>Année de création</label>
-          <input type="number" name="founded_year" placeholder="Ex: 2010" min="1900" max="2030">
+          <label>Site web</label>
+          <input type="url" name="website" placeholder="https://www.example.com">
+        </div>
+      </div>
+
+      <!-- Production -->
+      <div class="aqmi-lead-section">
+        <div class="aqmi-lead-section-title">
+          <i class="fas fa-industry"></i> Production
+        </div>
+        <div class="aqmi-lead-split">
+          <div class="aqmi-lead-field">
+            <label>Type de production</label>
+            <select name="production_type">
+              <option value="">Sélectionnez...</option>
+              <option value="unitaire">Unitaire</option>
+              <option value="petite_serie">Petite série</option>
+              <option value="grande_serie">Grande série</option>
+              <option value="masse">Production de masse</option>
+              <option value="continue">Continue</option>
+              <option value="projet">Par projet</option>
+            </select>
+          </div>
+          <div class="aqmi-lead-field">
+            <label>Capacité de production</label>
+            <input type="text" name="production_capacity" placeholder="Ex: 5000 unités/mois">
+          </div>
+        </div>
+        <div class="aqmi-lead-split">
+          <div class="aqmi-lead-field">
+            <label>Nombre de machines</label>
+            <input type="number" name="machine_count" placeholder="Ex: 25" min="0" max="9999">
+          </div>
+          <div class="aqmi-lead-field">
+            <label>Type de machines</label>
+            <input type="text" name="machine_types" placeholder="Ex: CNC, injection plastique">
+          </div>
+        </div>
+        <div class="aqmi-lead-field">
+          <label>Certifications détenues</label>
+          <input type="text" name="certifications" placeholder="Ex: ISO 9001, IATF 16949, ISO 14001">
         </div>
       </div>
 

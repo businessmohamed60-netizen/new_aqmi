@@ -23,7 +23,7 @@ class ScoreLevel
     public static function findByScore(float $percent): ?array
     {
         return Database::fetch(
-            "SELECT * FROM score_levels WHERE ? >= min_percent AND ? <= max_percent AND is_active = 1 LIMIT 1",
+            "SELECT * FROM score_levels WHERE ? >= min_percent AND ? <= max_percent AND is_active = 1 ORDER BY sort_order ASC LIMIT 1",
             [$percent, $percent]
         );
     }
