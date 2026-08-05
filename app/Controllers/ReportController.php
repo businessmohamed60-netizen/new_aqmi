@@ -65,7 +65,7 @@ class ReportController
         $report = $reportNumber !== '' ? Report::findByNumber($reportNumber) : null;
         $isValid = $report !== null && $report['status'] === 'certified';
 
-        view('public.verify', compact('report', 'reportNumber', 'isValid'));
+        view('public/verify', compact('report', 'reportNumber', 'isValid'));
     }
 
     /**

@@ -5,6 +5,7 @@ use App\Helpers\Database;
 use App\Models\Assessment;
 use App\Models\Lead;
 use App\Models\EvaluationModel;
+use App\Models\Report;
 
 class StatisticsService
 {
@@ -21,6 +22,8 @@ class StatisticsService
             'recent_assessments' => Assessment::getRecent(5),
             'recent_leads' => Lead::getRecent(5),
             'models_stats' => $this->getModelsStats(),
+            'pending_certifications' => Report::pendingCertifications(),
+            'pending_certifications_count' => count(Report::pendingCertifications()),
         ];
     }
 

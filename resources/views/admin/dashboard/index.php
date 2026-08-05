@@ -143,6 +143,64 @@ ob_start();
     </div>
 </div>
 
+<!-- Pending Certification Requests -->
+<?php if (!empty($stats['pending_certifications'])): ?>
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card nova-glass-card" style="border-color:rgba(245,158,11,0.35);box-shadow:0 0 24px rgba(245,158,11,0.08);">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background:rgba(245,158,11,0.04);border-bottom:1px solid rgba(245,158,11,0.18);">
+                <span class="nova-card-title" style="margin:0;color:var(--vx-warning);">
+                    <i class="fas fa-certificate me-2"></i>Demandes de Certification en attente
+                </span>
+                <span class="nova-badge-warning"><?= $stats['pending_certifications_count'] ?> à traiter</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table nova-table">
+                    <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Score</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($stats['pending_certifications'] as $pc):
+                            $pcStatus = $pc['status'] === 'certification_requested'
+                                ? '<span class="nova-badge-warning"><i class="fas fa-hourglass me-1"></i>En attente</span>'
+                                : '<span class="nova-badge-info"><i class="fas fa-magnifying-glass me-1"></i>En examen</span>';
+                        ?>
+                            <tr>
+                                <td style="font-weight:600;color:var(--vx-text-primary);"><?= e($pc['company'] ?? 'N/A') ?></td>
+                                <td><?= e(trim(($pc['firstname'] ?? '') . ' ' . ($pc['lastname'] ?? ''))) ?></td>
+                                <td style="font-size:0.72rem;color:var(--vx-text-muted);"><?= e($pc['email'] ?? '-') ?></td>
+                                <td>
+                                    <?php if (isset($pc['total_score']) && $pc['total_score'] !== null): ?>
+                                        <span style="font-weight:700;color:var(--vx-success);"><?= round((float)$pc['total_score']) ?>%</span>
+                                    <?php else: ?>
+                                        <span style="color:var(--vx-text-muted);">—</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= $pcStatus ?></td>
+                                <td style="color:var(--vx-text-muted);font-size:0.7rem;"><?= formatDate($pc['certification_requested_at']) ?></td>
+                                <td class="text-center">
+                                    <a href="/admin/reports/<?= $pc['id'] ?>" class="btn btn-warning btn-sm" style="font-size:0.72rem;">
+                                        <i class="fas fa-folder-open me-1"></i> Ouvrir le dossier
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- Third Row: Models + Recent Leads -->
 <div class="row g-4">
     <!-- Models Overview -->
