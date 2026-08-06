@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASIN — Automotive Supplier Intelligence Network</title>
+  <meta name="description" content="ASIN - Le LinkedIn + Alibaba + ThomasNet de l'industrie automobile. Marketplace B2B mondiale, Passeport Industriel Intelligent, RFQ et mise en relation." />
+  <meta name="theme-color" content="#030712" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+
+  <meta property="og:title" content="ASIN — Automotive Supplier Intelligence Network" />
+  <meta property="og:description" content="Le réseau numérique mondial de la sous-traitance automobile." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://novaqys.com/asin" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="/assets/css/novaqys.css">
+  <link rel="stylesheet" href="/assets/css/asin.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+</head>
+<body class="asin-page">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-hero">
+    <canvas class="asin-hero-canvas"></canvas>
+    <div class="asin-hero-overlay"></div>
+    <div class="asin-hero-grid"></div>
+
+    <div class="asin-hero-content">
+      <div class="asin-hero-badge">
+        <span class="asin-hero-badge-dot"></span>
+        Automotive Supplier Intelligence Network
+      </div>
+
+      <h1 class="asin-hero-title">
+        <span class="asin-gradient-text">ASIN</span><br>
+        The Global Automotive<br>B2B Marketplace
+      </h1>
+
+      <p class="asin-hero-subtitle">Le LinkedIn + Alibaba + ThomasNet de l'industrie automobile.</p>
+      <p class="asin-hero-tagline">Le futur réseau industriel automobile est arrivé.</p>
+
+      <div class="asin-hero-actions">
+        <a href="#passport" class="asin-hero-btn asin-hero-btn-primary">
+          Créer mon Passeport Industriel <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="#marketplace" class="asin-hero-btn asin-hero-btn-secondary">
+          <i class="fas fa-play"></i> Explorer le réseau
+        </a>
+      </div>
+
+      <div class="asin-hero-stats">
+        <div class="asin-hero-stat">
+          <div class="asin-hero-stat-value">12,450+</div>
+          <div class="asin-hero-stat-label">Entreprises</div>
+        </div>
+        <div class="asin-hero-stat">
+          <div class="asin-hero-stat-value">85,000+</div>
+          <div class="asin-hero-stat-label">Produits</div>
+        </div>
+        <div class="asin-hero-stat">
+          <div class="asin-hero-stat-value">45+</div>
+          <div class="asin-hero-stat-label">Pays</div>
+        </div>
+        <div class="asin-hero-stat">
+          <div class="asin-hero-stat-value">3,200+</div>
+          <div class="asin-hero-stat-label">Constructeurs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="asin-hero-scroll">
+      <div class="asin-hero-scroll-mouse"></div>
+      <span>Défiler</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 1 — PASSEPORT INDUSTRIEL INTELLIGENT
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-passport asin-section-fade" id="passport">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-id-card"></i> Passeport Intelligent</span>
+      <h2 class="asin-section-title">Passeport Industriel<br><span class="asin-gradient-text">Intelligent</span></h2>
+      <p class="asin-section-desc">Votre carte d'identité industrielle mondiale. Photo, score AQMI, certifications, capacités et performance en temps réel.</p>
+    </div>
+
+    <div class="asin-passport-card">
+      <div class="asin-passport-card-glow"></div>
+      <div class="asin-passport-header">
+        <div class="asin-passport-avatar">IN</div>
+        <div class="asin-passport-identity">
+          <div class="asin-passport-company">INDUSTRIAL PARTS S.A.S.</div>
+          <div class="asin-passport-meta">
+            <span class="asin-passport-meta-item"><i class="fas fa-map-pin"></i> Algérie</span>
+            <span class="asin-passport-meta-item"><i class="fas fa-industry"></i> Usinage · Injection</span>
+            <span class="asin-passport-meta-item"><i class="fas fa-certificate"></i> IATF 16949</span>
+            <span class="asin-passport-meta-item"><i class="fas fa-users"></i> 250 employés</span>
+          </div>
+        </div>
+        <div class="asin-passport-score">
+          <div class="asin-passport-score-value">87%</div>
+          <div class="asin-passport-score-label">Score AQMI</div>
+        </div>
+      </div>
+
+      <div class="asin-passport-grid">
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-cogs"></i></div>
+          <div class="asin-passport-item-label">Capacité</div>
+          <div class="asin-passport-item-value">45,000 pièces/mois</div>
+        </div>
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-microchip"></i></div>
+          <div class="asin-passport-item-label">Machines</div>
+          <div class="asin-passport-item-value">24 CN · 8 Injection</div>
+        </div>
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-flask"></i></div>
+          <div class="asin-passport-item-label">Process</div>
+          <div class="asin-passport-item-value">Usinage · Injection · Assemblage</div>
+        </div>
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-star"></i></div>
+          <div class="asin-passport-item-label">Clients</div>
+          <div class="asin-passport-item-value">Stellantis · Renault · VW</div>
+        </div>
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-chart-line"></i></div>
+          <div class="asin-passport-item-label">Performance</div>
+          <div class="asin-passport-item-value">OEE 85% · PPM 120</div>
+        </div>
+        <div class="asin-passport-item">
+          <div class="asin-passport-item-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="asin-passport-item-label">Conformité</div>
+          <div class="asin-passport-item-value">IATF · ISO · TISAX</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 — MARKETPLACE MONDIALE
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-marketplace asin-section-fade" id="marketplace">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-globe"></i> Marketplace</span>
+      <h2 class="asin-section-title">Marketplace<br><span class="asin-gradient-text">Mondiale</span></h2>
+      <p class="asin-section-desc">Des milliers d'entreprises connectées. Survolez les points pour découvrir les fournisseurs du monde entier.</p>
+    </div>
+
+    <div class="asin-marketplace-visual">
+      <div class="asin-marketplace-map">
+        <svg viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 200 Q200 150 400 200 Q600 250 750 200" stroke="rgba(31,111,235,0.07)" stroke-width="0.5" fill="none"/>
+          <path d="M100 120 Q250 180 400 150 Q550 120 700 170" stroke="rgba(31,111,235,0.05)" stroke-width="0.5" fill="none"/>
+          <path d="M80 280 Q200 220 400 260 Q600 300 720 240" stroke="rgba(31,111,235,0.05)" stroke-width="0.5" fill="none"/>
+          <circle cx="400" cy="180" r="15" fill="rgba(31,111,235,0.03)" stroke="rgba(31,111,235,0.08)" stroke-width="0.5"/>
+          <circle cx="400" cy="180" r="30" fill="rgba(31,111,235,0.02)" stroke="rgba(31,111,235,0.05)" stroke-width="0.5"/>
+          <circle cx="400" cy="180" r="50" fill="rgba(31,111,235,0.01)" stroke="rgba(31,111,235,0.03)" stroke-width="0.5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 — PRODUITS INDUSTRIELS
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-products asin-section-fade" id="products">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-box"></i> Catalogue</span>
+      <h2 class="asin-section-title">Produits<br><span class="asin-gradient-text">Industriels</span></h2>
+      <p class="asin-section-desc">Des milliers de pièces et composants avec fiches techniques, tolérances, certifications et processus.</p>
+    </div>
+
+    <div class="asin-products-grid">
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-cog"></i>
+          <span class="asin-product-image-badge" style="background:rgba(31,111,235,0.15);color:var(--asin-blue)">Usinage</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Arbre de transmission</h3>
+          <p class="asin-product-desc">Acier forgé, tolérances ISO 2768-f, traitement thermique.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">Acier 42CrMo4</span>
+            <span class="asin-product-tag">IATF 16949</span>
+            <span class="asin-product-tag">MOQ 500</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-tools"></i>
+          <span class="asin-product-image-badge" style="background:rgba(46,196,182,0.15);color:var(--asin-cyan)">Injection</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Boîtier électronique</h3>
+          <p class="asin-product-desc">Polyamide renforcé, étanche IP67, clipsage intégré.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">PA66-GF30</span>
+            <span class="asin-product-tag">ISO 9001</span>
+            <span class="asin-product-tag">MOQ 2000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-car"></i>
+          <span class="asin-product-image-badge" style="background:rgba(46,196,182,0.15);color:var(--asin-green)">Assemblage</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Module de suspension</h3>
+          <p class="asin-product-desc">Ensemble complet avec bras, rotules et silentblocs.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">Acier/Alu</span>
+            <span class="asin-product-tag">IATF 16949</span>
+            <span class="asin-product-tag">MOQ 100</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-fire"></i>
+          <span class="asin-product-image-badge" style="background:rgba(201,162,39,0.15);color:var(--asin-purple)">Forge</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Bielle forgée</h3>
+          <p class="asin-product-desc">Forge à chaud, usinée, contrôlée par ultrasons.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">C70S6</span>
+            <span class="asin-product-tag">IATF 16949</span>
+            <span class="asin-product-tag">MOQ 1000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-snowflake"></i>
+          <span class="asin-product-image-badge" style="background:rgba(201,162,39,0.15);color:var(--asin-orange)">Fonderie</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Carter moteur alu</h3>
+          <p class="asin-product-desc">Fonderie sous pression, usinage 5 axes, contrôle CMM.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">EN AC-46000</span>
+            <span class="asin-product-tag">IATF 16949</span>
+            <span class="asin-product-tag">MOQ 300</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="asin-product-card">
+        <div class="asin-product-image">
+          <i class="fas fa-robot"></i>
+          <span class="asin-product-image-badge" style="background:rgba(201,162,39,0.15);color:#C9A227">Robotique</span>
+        </div>
+        <div class="asin-product-body">
+          <h3 class="asin-product-title">Bras robotisé</h3>
+          <p class="asin-product-desc">Robot 6 axes, charge 50kg, précision 0.05mm.</p>
+          <div class="asin-product-tags">
+            <span class="asin-product-tag">Servomoteur</span>
+            <span class="asin-product-tag">CE</span>
+            <span class="asin-product-tag">ISO 10218</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 4 — RFQ INTELLIGENT
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-rfq asin-section-fade" id="rfq">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-file-invoice"></i> RFQ Intelligent</span>
+      <h2 class="asin-section-title">RFQ<br><span class="asin-gradient-text">Intelligent</span></h2>
+      <p class="asin-section-desc">Publiez un appel d'offres. Le système trie automatiquement les fournisseurs par score AQMI, certification et capacité.</p>
+    </div>
+
+    <div class="asin-rfq-demo">
+      <div class="asin-rfq-header">
+        <div class="asin-rfq-header-left">
+          <span class="asin-rfq-status"></span>
+          <div>
+            <div class="asin-rfq-title">RFQ #2025-0842 — Support moteur</div>
+            <div class="asin-rfq-subtitle">Publié par Stellantis · 15 fournisseurs potentiels</div>
+          </div>
+        </div>
+        <span style="font-size:0.75rem;color:var(--asin-text-secondary);padding:0.3rem 0.6rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.06)">Classement automatique</span>
+      </div>
+      <div class="asin-rfq-body">
+        <div class="asin-rfq-supplier">
+          <div class="asin-rfq-supplier-rank" style="background:rgba(46,196,182,0.15);color:var(--asin-green)">1</div>
+          <span class="asin-rfq-supplier-name">PRECISION PARTS GmbH</span>
+          <span class="asin-rfq-supplier-cert">IATF 16949</span>
+          <span class="asin-rfq-supplier-score">AQMI 94%</span>
+        </div>
+        <div class="asin-rfq-supplier">
+          <div class="asin-rfq-supplier-rank" style="background:rgba(31,111,235,0.15);color:var(--asin-blue)">2</div>
+          <span class="asin-rfq-supplier-name">EURO FORGE S.A.S.</span>
+          <span class="asin-rfq-supplier-cert">IATF 16949</span>
+          <span class="asin-rfq-supplier-score">AQMI 91%</span>
+        </div>
+        <div class="asin-rfq-supplier">
+          <div class="asin-rfq-supplier-rank" style="background:rgba(31,111,235,0.15);color:var(--asin-blue)">3</div>
+          <span class="asin-rfq-supplier-name">MAGHREB INDUSTRIES</span>
+          <span class="asin-rfq-supplier-cert">ISO 9001</span>
+          <span class="asin-rfq-supplier-score">AQMI 87%</span>
+        </div>
+        <div class="asin-rfq-supplier">
+          <div class="asin-rfq-supplier-rank" style="background:rgba(201,162,39,0.15);color:var(--asin-orange)">4</div>
+          <span class="asin-rfq-supplier-name">TECHNO PARTS SRL</span>
+          <span class="asin-rfq-supplier-cert">IATF 16949</span>
+          <span class="asin-rfq-supplier-score">AQMI 82%</span>
+        </div>
+        <div class="asin-rfq-supplier">
+          <div class="asin-rfq-supplier-rank" style="background:rgba(201,162,39,0.15);color:var(--asin-orange)">5</div>
+          <span class="asin-rfq-supplier-name">ASIAN AUTO COMPONENTS</span>
+          <span class="asin-rfq-supplier-cert">ISO 9001</span>
+          <span class="asin-rfq-supplier-score">AQMI 76%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 5 — SUPPLY CHAIN MONDIALE
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-supplychain asin-section-fade" id="supplychain">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-arrow-trend-up"></i> Supply Chain</span>
+      <h2 class="asin-section-title">Supply Chain<br><span class="asin-gradient-text">Mondiale</span></h2>
+      <p class="asin-section-desc">Suivez le parcours d'une pièce à travers le réseau ASIN : de l'usine au constructeur, en passant par les hubs logistiques.</p>
+    </div>
+
+    <div class="asin-supplychain-visual">
+      <svg viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Nodes -->
+        <circle cx="100" cy="150" r="24" fill="rgba(31,111,235,0.1)" stroke="rgba(31,111,235,0.3)" stroke-width="1"/>
+        <circle cx="100" cy="150" r="12" fill="rgba(31,111,235,0.2)"/>
+        <text x="100" y="110" text-anchor="middle" fill="rgba(72,101,129,0.6)" font-size="9">Algérie</text>
+        <text x="100" y="185" text-anchor="middle" fill="rgba(72,101,129,0.4)" font-size="7">Usine</text>
+
+        <circle cx="250" cy="150" r="20" fill="rgba(46,196,182,0.1)" stroke="rgba(46,196,182,0.3)" stroke-width="1"/>
+        <circle cx="250" cy="150" r="10" fill="rgba(46,196,182,0.2)"/>
+        <text x="250" y="110" text-anchor="middle" fill="rgba(72,101,129,0.6)" font-size="9">France</text>
+        <text x="250" y="185" text-anchor="middle" fill="rgba(72,101,129,0.4)" font-size="7">Hub</text>
+
+        <circle cx="400" cy="150" r="20" fill="rgba(201,162,39,0.1)" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
+        <circle cx="400" cy="150" r="10" fill="rgba(201,162,39,0.2)"/>
+        <text x="400" y="110" text-anchor="middle" fill="rgba(72,101,129,0.6)" font-size="9">Allemagne</text>
+        <text x="400" y="185" text-anchor="middle" fill="rgba(72,101,129,0.4)" font-size="7">Hub</text>
+
+        <circle cx="550" cy="150" r="20" fill="rgba(46,196,182,0.1)" stroke="rgba(46,196,182,0.3)" stroke-width="1"/>
+        <circle cx="550" cy="150" r="10" fill="rgba(46,196,182,0.2)"/>
+        <text x="550" y="110" text-anchor="middle" fill="rgba(72,101,129,0.6)" font-size="9">Japon</text>
+        <text x="550" y="185" text-anchor="middle" fill="rgba(72,101,129,0.4)" font-size="7">Hub</text>
+
+        <circle cx="700" cy="150" r="24" fill="rgba(201,162,39,0.1)" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
+        <circle cx="700" cy="150" r="12" fill="rgba(201,162,39,0.2)"/>
+        <text x="700" y="110" text-anchor="middle" fill="rgba(72,101,129,0.6)" font-size="9">États-Unis</text>
+        <text x="700" y="185" text-anchor="middle" fill="rgba(72,101,129,0.4)" font-size="7">Constructeur</text>
+
+        <!-- Connections -->
+        <line x1="124" y1="150" x2="230" y2="150" class="sc-line" stroke="rgba(31,111,235,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <line x1="270" y1="150" x2="380" y2="150" class="sc-line" stroke="rgba(46,196,182,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <line x1="420" y1="150" x2="530" y2="150" class="sc-line" stroke="rgba(201,162,39,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <line x1="570" y1="150" x2="676" y2="150" class="sc-line" stroke="rgba(46,196,182,0.3)" stroke-width="1.5" stroke-dasharray="6 4"/>
+
+        <!-- Animated dots (JS) -->
+        <circle r="4" fill="#1F6FEB" opacity="0.8">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M124,150 L230,150"/>
+        </circle>
+        <circle r="4" fill="#2EC4B6" opacity="0.8">
+          <animateMotion dur="4s" repeatCount="indefinite" begin="0.5s" path="M270,150 L380,150"/>
+        </circle>
+        <circle r="4" fill="#C9A227" opacity="0.8">
+          <animateMotion dur="4s" repeatCount="indefinite" begin="1s" path="M420,150 L530,150"/>
+        </circle>
+        <circle r="4" fill="#2EC4B6" opacity="0.8">
+          <animateMotion dur="4s" repeatCount="indefinite" begin="1.5s" path="M570,150 L676,150"/>
+        </circle>
+
+        <!-- Label -->
+        <text x="400" y="250" text-anchor="middle" fill="rgba(72,101,129,0.3)" font-size="10" font-style="italic">Flux logistique ASIN — Traçabilité en temps réel</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 6 — TABLEAU DE BORD
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-dashboard asin-section-fade" id="dashboard">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-chart-pie"></i> Dashboard</span>
+      <h2 class="asin-section-title">Tableau de Bord<br><span class="asin-gradient-text">Vivant</span></h2>
+      <p class="asin-section-desc">Le réseau ASIN en temps réel. Les chiffres clés de l'écosystème.</p>
+    </div>
+
+    <div class="asin-dashboard-grid">
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-blue)"><i class="fas fa-building"></i></div>
+        <div class="asin-dashboard-card-value">12,450</div>
+        <div class="asin-dashboard-card-label">Entreprises</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-cyan)"><i class="fas fa-box"></i></div>
+        <div class="asin-dashboard-card-value">85,320</div>
+        <div class="asin-dashboard-card-label">Produits</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-purple)"><i class="fas fa-industry"></i></div>
+        <div class="asin-dashboard-card-value">12,800</div>
+        <div class="asin-dashboard-card-label">Machines</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-green)"><i class="fas fa-car"></i></div>
+        <div class="asin-dashboard-card-value">3,247</div>
+        <div class="asin-dashboard-card-label">Constructeurs</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-orange)"><i class="fas fa-file-invoice"></i></div>
+        <div class="asin-dashboard-card-value">8,560</div>
+        <div class="asin-dashboard-card-label">RFQ</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-red)"><i class="fas fa-file-signature"></i></div>
+        <div class="asin-dashboard-card-value">4,230</div>
+        <div class="asin-dashboard-card-label">Contrats</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:#C9A227"><i class="fas fa-envelope"></i></div>
+        <div class="asin-dashboard-card-value">156,800</div>
+        <div class="asin-dashboard-card-label">Messages</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-cyan)"><i class="fas fa-chart-line"></i></div>
+        <div class="asin-dashboard-card-value">82.4%</div>
+        <div class="asin-dashboard-card-label">AQMI Moyen</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-green)"><i class="fas fa-arrow-trend-up"></i></div>
+        <div class="asin-dashboard-card-value">+34%</div>
+        <div class="asin-dashboard-card-label">Croissance</div>
+      </div>
+      <div class="asin-dashboard-card">
+        <div class="asin-dashboard-card-icon" style="color:var(--asin-blue)"><i class="fas fa-handshake"></i></div>
+        <div class="asin-dashboard-card-value">$2.4B</div>
+        <div class="asin-dashboard-card-label">Transactions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 7 — POURQUOI ASIN
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-section asin-why asin-section-fade" id="why">
+    <div class="asin-section-header">
+      <span class="asin-section-label"><i class="fas fa-question-circle"></i> Pourquoi ASIN ?</span>
+      <h2 class="asin-section-title">Pourquoi rejoindre<br><span class="asin-gradient-text">ASIN</span> ?</h2>
+      <p class="asin-section-desc">La plateforme qui connecte les fabricants du monde entier aux plus grands constructeurs automobiles.</p>
+    </div>
+
+    <div class="asin-why-grid">
+      <div class="asin-why-card" style="--card-accent:var(--asin-blue)">
+        <div class="asin-why-card-icon" style="color:var(--asin-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-id-card"></i></div>
+        <h3>Passeport Industriel Intelligent</h3>
+        <p>Créez votre carte d'identité industrielle avec score AQMI, certifications, capacités et performance en temps réel.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-cyan)">
+        <div class="asin-why-card-icon" style="color:var(--asin-cyan);background:rgba(46,196,182,0.1)"><i class="fas fa-chart-line"></i></div>
+        <h3>Scoring AQMI</h3>
+        <p>Votre score de maturité qualité visible par les constructeurs. Un avantage concurrentiel décisif.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-purple)">
+        <div class="asin-why-card-icon" style="color:var(--asin-purple);background:rgba(201,162,39,0.1)"><i class="fas fa-globe"></i></div>
+        <h3>Marketplace Mondiale</h3>
+        <p>Publiez vos produits, machines et matières premières. Soyez visible par les acheteurs du monde entier.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-green)">
+        <div class="asin-why-card-icon" style="color:var(--asin-green);background:rgba(46,196,182,0.1)"><i class="fas fa-file-invoice"></i></div>
+        <h3>RFQ Intelligent</h3>
+        <p>Recevez des appels d'offres ciblés. Le système vous match automatiquement avec les besoins des constructeurs.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-orange)">
+        <div class="asin-why-card-icon" style="color:var(--asin-orange);background:rgba(201,162,39,0.1)"><i class="fas fa-eye"></i></div>
+        <h3>Visibilité Internationale</h3>
+        <p>Exposez votre savoir-faire aux donneurs d'ordre du monde entier. Développez votre réseau B2B.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-red)">
+        <div class="asin-why-card-icon" style="color:var(--asin-red);background:rgba(229,72,77,0.1)"><i class="fas fa-handshake"></i></div>
+        <h3>Connexion Directe OEM</h3>
+        <p>Échangez directement avec les acheteurs de Stellantis, Renault, Volkswagen, Toyota et BMW.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:#C9A227">
+        <div class="asin-why-card-icon" style="color:#C9A227;background:rgba(201,162,39,0.1)"><i class="fas fa-rocket"></i></div>
+        <h3>Développement Commercial</h3>
+        <p>Multipliez vos opportunités commerciales. Les acheteurs viennent à vous grâce à votre profil ASIN.</p>
+      </div>
+      <div class="asin-why-card" style="--card-accent:var(--asin-blue)">
+        <div class="asin-why-card-icon" style="color:var(--asin-blue);background:rgba(31,111,235,0.1)"><i class="fas fa-arrow-trend-up"></i></div>
+        <h3>Supply Chain Mondiale</h3>
+        <p>Intégrez la chaîne d'approvisionnement automobile mondiale. Traçabilité totale de vos expéditions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="asin-cta asin-section-fade">
+    <div class="asin-cta-content">
+      <h2>Prêt à rejoindre<br><span class="asin-gradient-text">le réseau ASIN</span> ?</h2>
+      <p>Créez votre Passeport Industriel Intelligent et connectez-vous aux plus grands constructeurs automobiles mondiaux.</p>
+      <div class="asin-cta-buttons">
+        <a href="/register" class="asin-hero-btn asin-hero-btn-primary">
+          Créer mon Passeport <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="/" class="asin-hero-btn asin-hero-btn-secondary">
+          <i class="fas fa-arrow-left"></i> Retour à NOVAQYS
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer class="asin-footer">
+    <p>ASIN — Automotive Supplier Intelligence Network &copy; 2025 NOVAQYS Ecosystem. Tous droits réservés.</p>
+  </footer>
+
+  <script src="/assets/js/asin.js"></script>
+</body>
+</html>
