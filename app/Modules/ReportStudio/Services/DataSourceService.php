@@ -214,42 +214,54 @@ final class DataSourceService
 
         $data = $this->fetchChartData($ds);
 
-        // Transform into the format each chart block expects
-        if (!empty($data['series']) && count($data['series']) > 1) {
-            // Multi-series: bar/line/area charts
-            $config['series'] = $data['series'];
-        } elseif (!empty($data['series'])) {
-            // Single series
-            $config['series'] = $data['series'];
+        if (empty($data['series'])) {
+            return $config;
         }
 
-        // For radar chart: axes format
-        if (!empty($data['labels']) && !empty($data['series'])) {
-            $axes = [];
-            foreach ($data['labels'] as $i => $label) {
-                $axes[] = [
-                    'label' => $label,
-                    'value' => $data['series'][0]['data'][$i] ?? 0,
-                ];
-            }
+        // bar / line / area charts expect series = [{label, data: [{label, value}]}]
+        $config['series'] = $data['series'];
+
+        // radar chart expects axes = [{label, value}]
+        $firstSeriesData = $data['series'][0]['data'] ?? [];
+        $axes = [];
+        foreach ($firstSeriesData as $point) {
+            $axes[] = [
+                'label' => $point['label'] ?? '',
+                'value' => $point['value'] ?? 0,
+            ];
+        }
+        if (!empty($axes)) {
             $config['axes'] = $axes;
         }
 
-        // For global_score / gauge: use first value or sum
-        if (isset($config['score']) && !empty($data['series'])) {
-            $config['score'] = $data['series'][0]['data'][0] ?? 0;
+        // donut chart expects series = [{label, value}]
+        $donutSeries = [];
+        foreach ($firstSeriesData as $point) {
+            $donutSeries[] = [
+                'label' => $point['label'] ?? '',
+                'value' => $point['value'] ?? 0,
+            ];
+        }
+        if (!empty($donutSeries)) {
+            $config['series'] = $donutSeries;
         }
 
-        // For donut chart: series format is [{label, value}]
-        if (!empty($data['labels']) && !empty($data['series'][0]['data'])) {
-            $donutSeries = [];
-            foreach ($data['labels'] as $i => $label) {
-                $donutSeries[] = [
-                    'label' => $label,
-                    'value' => $data['series'][0]['data'][$i] ?? 0,
-                ];
-            }
-            $config['series'] = $donutSeries;
+        // global_score / gauge: use first value
+        $firstValue = $firstSeriesData[0]['value'] ?? 0;
+        if (isset($config['score'])) {
+            $config['score'] = $firstValue;
+        }
+        if (isset($config['value'])) {
+            $config['value'] = $firstValue;
+        }
+
+        // domain_scores table expects domains = [{label, score, max}]
+        if (!empty($axes)) {
+            $config['domains'] = array_map(fn($a) => [
+                'label' => $a['label'],
+                'score' => $a['value'],
+                'max'   => 100,
+            ], $axes);
         }
 
         return $config;
@@ -260,17 +272,18 @@ final class DataSourceService
     private function buildSingleSeries(array $rows, string $labelCol, string $valueCol): array
     {
         $labels = [];
-        $values = [];
+        $data = [];
 
         foreach ($rows as $row) {
-            $labels[] = (string) ($row[$labelCol] ?? '');
-            $values[] = (float) ($row[$valueCol] ?? 0);
+            $label = (string) ($row[$labelCol] ?? '');
+            $labels[] = $label;
+            $data[] = ['label' => $label, 'value' => (float) ($row[$valueCol] ?? 0)];
         }
 
         return [
             'labels' => $labels,
             'series' => [
-                ['name' => $valueCol, 'data' => $values],
+                ['label' => $valueCol, 'data' => $data],
             ],
             'rows'  => $rows,
         ];
@@ -296,9 +309,9 @@ final class DataSourceService
         foreach ($seriesMap as $name => $labelValues) {
             $data = [];
             foreach ($labels as $label) {
-                $data[] = $labelValues[$label] ?? 0;
+                $data[] = ['label' => $label, 'value' => $labelValues[$label] ?? 0];
             }
-            $series[] = ['name' => $name, 'data' => $data];
+            $series[] = ['label' => $name, 'data' => $data];
         }
 
         return [

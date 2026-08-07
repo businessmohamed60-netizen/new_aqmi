@@ -131,41 +131,39 @@ ob_start();
     hiddenInput.value = code;
   }
 
-  // Timer countdown
-  const expireStr = '<?= $expire ?>';
-  if (expireStr) {
-    const expireTime = new Date(expireStr.replace(' ', 'T')).getTime();
-    const timerDisplay = document.getElementById('timerDisplay');
-    let timerActive = true;
+  // Timer countdown — uses server-computed remaining seconds to avoid
+  // timezone mismatch between MySQL/PHP and the browser.
+  const remainingSeconds = parseInt('<?= (int)($expire_seconds ?? 0) ?>', 10) || 0;
+  const timerDisplay = document.getElementById('timerDisplay');
+  let secondsLeft = remainingSeconds;
+  let timerActive = secondsLeft > 0;
 
-    function updateTimer() {
-      if (!timerActive) return;
-      const now = new Date().getTime();
-      const diff = expireTime - now;
+  function updateTimer() {
+    if (!timerActive) return;
 
-      if (diff <= 0) {
-        timerDisplay.textContent = '00:00';
-        timerDisplay.style.color = '#f43f5e';
-        timerActive = false;
-        document.querySelector('.aqmi-otp-timer i').style.color = '#f43f5e';
-        return;
-      }
-
-      const minutes = Math.floor(diff / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
-      timerDisplay.textContent =
-        String(minutes).padStart(2, '0') + ':' +
-        String(seconds).padStart(2, '0');
-
-      if (diff < 60000) {
-        timerDisplay.style.color = '#f59e0b';
-      }
-
-      setTimeout(updateTimer, 1000);
+    if (secondsLeft <= 0) {
+      timerDisplay.textContent = '00:00';
+      timerDisplay.style.color = '#f43f5e';
+      document.querySelector('.aqmi-otp-timer i').style.color = '#f43f5e';
+      timerActive = false;
+      return;
     }
 
-    updateTimer();
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = secondsLeft % 60;
+    timerDisplay.textContent =
+      String(minutes).padStart(2, '0') + ':' +
+      String(seconds).padStart(2, '0');
+
+    if (secondsLeft < 60) {
+      timerDisplay.style.color = '#f59e0b';
+    }
+
+    secondsLeft--;
+    setTimeout(updateTimer, 1000);
   }
+
+  updateTimer();
 })();
 </script>
 <?php

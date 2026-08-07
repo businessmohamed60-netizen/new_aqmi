@@ -5,9 +5,9 @@ declare(strict_types=1);
 <?php ob_start(); ?>
 <style>
 .rs-themes-page {
-    --rsd-primary: #4F46E5;
-    --rsd-primary-light: #818CF8;
-    --rsd-primary-dim: rgba(79,70,229,0.08);
+    --rsd-primary: #1F6FEB;
+    --rsd-primary-light: #5B9DFF;
+    --rsd-primary-dim: rgba(31,111,235,0.08);
     --rsd-accent: #06B6D4;
     --rsd-success: #10B981;
     --rsd-warning: #F59E0B;
@@ -62,10 +62,10 @@ declare(strict_types=1);
     color: #fff;
 }
 .rs-themes-btn-primary:hover {
-    background: #4338CA;
+    background: #1858C4;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(79,70,229,0.3);
+    box-shadow: 0 8px 24px rgba(31,111,235,0.3);
 }
 .rs-themes-grid {
     display: grid;

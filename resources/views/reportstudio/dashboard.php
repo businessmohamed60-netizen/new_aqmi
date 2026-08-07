@@ -19,9 +19,9 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
    Report Studio Dashboard — Elementor-inspired UI
    ============================================================ */
 .rs-dash {
-    --rsd-primary: #4F46E5;
-    --rsd-primary-light: #818CF8;
-    --rsd-primary-dim: rgba(79,70,229,0.08);
+    --rsd-primary: #1F6FEB;
+    --rsd-primary-light: #5B9DFF;
+    --rsd-primary-dim: rgba(31,111,235,0.08);
     --rsd-accent: #06B6D4;
     --rsd-success: #10B981;
     --rsd-warning: #F59E0B;
@@ -48,13 +48,13 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 
 /* Hero Banner */
 .rs-dash-hero {
-    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #06B6D4 100%);
+    background: linear-gradient(135deg, #1F6FEB 0%, #2EC4B6 50%, #06B6D4 100%);
     border-radius: var(--rsd-radius);
     padding: 2rem 2.5rem;
     position: relative;
     overflow: hidden;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(79,70,229,0.25);
+    box-shadow: 0 8px 32px rgba(31,111,235,0.25);
 }
 .rs-dash-hero::before {
     content: '';
@@ -229,7 +229,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 .rs-tpl-item:hover {
     transform: translateY(-3px);
     border-color: var(--rsd-primary-light);
-    box-shadow: 0 8px 24px rgba(79,70,229,0.15);
+    box-shadow: 0 8px 24px rgba(31,111,235,0.15);
 }
 .rs-tpl-thumb {
     height: 120px;
@@ -244,7 +244,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(79,70,229,0.06) 100%);
+    background: linear-gradient(135deg, transparent 40%, rgba(31,111,235,0.06) 100%);
 }
 .rs-tpl-thumb i {
     font-size: 2rem;
@@ -309,7 +309,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     border-color: var(--rsd-primary);
 }
 .rs-tpl-btn-primary:hover {
-    background: #4338CA;
+    background: #1858C4;
     color: #fff;
     transform: translateY(-1px);
 }
@@ -366,7 +366,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: rgba(79,70,229,0.1);
+    background: rgba(31,111,235,0.1);
     color: var(--rsd-primary-light);
     font-size: 0.8rem;
 }
@@ -393,7 +393,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 .rs-qa-item:hover {
     transform: translateY(-3px);
     border-color: var(--rsd-primary-light);
-    box-shadow: 0 8px 24px rgba(79,70,229,0.12);
+    box-shadow: 0 8px 24px rgba(31,111,235,0.12);
     color: var(--rsd-text);
 }
 .rs-qa-icon {
@@ -465,12 +465,12 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     <!-- KPI Cards -->
     <div class="rs-dash-kpis">
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(79,70,229,0.12);color:var(--rsd-primary-light);">
+            <div class="rs-dash-kpi-icon" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
                 <i class="fas fa-file-lines"></i>
             </div>
             <div class="rs-dash-kpi-value"><?= $template_count ?? 0 ?></div>
             <div class="rs-dash-kpi-label">Modèles</div>
-            <div class="rs-dash-kpi-trend" style="background:rgba(79,70,229,0.12);color:var(--rsd-primary-light);">
+            <div class="rs-dash-kpi-trend" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
                 <?= $published ?? 0 ?> publiés
             </div>
         </div>
@@ -508,7 +508,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
         <div class="rs-dash-card-body">
             <div class="rs-quick-actions">
                 <a href="<?= route('reportstudio.templates.create') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(79,70,229,0.12);color:var(--rsd-primary-light);">
+                    <div class="rs-qa-icon" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
                         <i class="fas fa-file-circle-plus"></i>
                     </div>
                     <div class="rs-qa-label">Nouveau rapport</div>
@@ -522,7 +522,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
                     <div class="rs-qa-sub"><?= $template_count ?? 0 ?> au total</div>
                 </a>
                 <a href="<?= route('reportstudio.themes.index') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(139,92,246,0.12);color:#A78BFA;">
+                    <div class="rs-qa-icon" style="background:rgba(6,182,212,0.12);color:#06B6D4;">
                         <i class="fas fa-palette"></i>
                     </div>
                     <div class="rs-qa-label">Thèmes</div>

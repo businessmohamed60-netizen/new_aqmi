@@ -109,10 +109,21 @@ class AuthController
         if (!Session::has('otp_user_id')) {
             redirect('/login');
         }
+        $expireAt = Session::get('otp_expire');
+        $remaining = 0;
+        if ($expireAt) {
+            $row = Database::fetch(
+                "SELECT TIMESTAMPDIFF(SECOND, NOW(), ?) AS remaining",
+                [$expireAt]
+            );
+            $remaining = max(0, (int)($row['remaining'] ?? 0));
+        }
+
         view('auth.aqmi-otp', [
             'email' => Session::get('otp_email'),
             'device' => Session::get('otp_device'),
-            'expire' => Session::get('otp_expire'),
+            'expire' => $expireAt,
+            'expire_seconds' => $remaining,
         ]);
     }
 

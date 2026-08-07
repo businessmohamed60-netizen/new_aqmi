@@ -6,9 +6,9 @@ $th = $theme ?? [];
 <?php ob_start(); ?>
 <style>
 .rs-form-page {
-    --rsd-primary: #4F46E5;
-    --rsd-primary-light: #818CF8;
-    --rsd-primary-dim: rgba(79,70,229,0.08);
+    --rsd-primary: #1F6FEB;
+    --rsd-primary-light: #5B9DFF;
+    --rsd-primary-dim: rgba(31,111,235,0.08);
     --rsd-surface: #1E293B;
     --rsd-surface-2: #334155;
     --rsd-border: rgba(148,163,184,0.12);
@@ -142,10 +142,10 @@ $th = $theme ?? [];
     color: #fff;
 }
 .rs-form-btn-primary:hover {
-    background: #4338CA;
+    background: #1858C4;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(79,70,229,0.3);
+    box-shadow: 0 8px 24px rgba(31,111,235,0.3);
 }
 .rs-form-btn-ghost {
     background: transparent;

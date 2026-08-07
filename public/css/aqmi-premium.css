@@ -2470,3 +2470,112 @@
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   LEAD FORM — Two-step wizard (modernized)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.aqmi-lead-card-wide {
+  max-width: 640px;
+}
+
+/* Step panels */
+.aqmi-lead-step-panel {
+  display: none;
+  animation: aqmi-lead-fade-in 0.4s ease;
+}
+.aqmi-lead-step-panel.active {
+  display: block;
+}
+
+@keyframes aqmi-lead-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Step labels under dots */
+.aqmi-lead-step-labels {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.aqmi-lead-step-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--aqmi-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: color var(--aqmi-transition);
+}
+
+.aqmi-lead-step-label.active {
+  color: var(--aqmi-accent);
+}
+
+@media (max-width: 520px) {
+  .aqmi-lead-step-labels {
+    gap: 1.5rem;
+  }
+  .aqmi-lead-step-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Navigation buttons */
+.aqmi-lead-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.aqmi-lead-btn-next,
+.aqmi-lead-btn-back {
+  flex: 1;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--aqmi-radius-sm);
+  font-family: var(--aqmi-font);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--aqmi-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.aqmi-lead-btn-next {
+  background: linear-gradient(135deg, var(--aqmi-accent), var(--aqmi-purple));
+  color: #fff;
+  box-shadow: 0 4px 20px var(--aqmi-accent-glow);
+}
+
+.aqmi-lead-btn-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--aqmi-accent-glow);
+}
+
+.aqmi-lead-btn-back {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--aqmi-text-secondary);
+  border: 1px solid var(--aqmi-border);
+  flex: 0 0 auto;
+  padding: 0.85rem 1.25rem;
+}
+
+.aqmi-lead-btn-back:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: var(--aqmi-border-hover);
+}
+
+.aqmi-lead-submit {
+  flex: 1;
+}
+
+/* Step indicator done state with check icon */
+.aqmi-lead-step.done i {
+  font-size: 0.7rem;
+}

@@ -5,9 +5,9 @@ declare(strict_types=1);
 <?php ob_start(); ?>
 <style>
 .rs-tpl-page {
-    --rsd-primary: #4F46E5;
-    --rsd-primary-light: #818CF8;
-    --rsd-primary-dim: rgba(79,70,229,0.08);
+    --rsd-primary: #1F6FEB;
+    --rsd-primary-light: #5B9DFF;
+    --rsd-primary-dim: rgba(31,111,235,0.08);
     --rsd-accent: #06B6D4;
     --rsd-success: #10B981;
     --rsd-warning: #F59E0B;
@@ -62,10 +62,10 @@ declare(strict_types=1);
     color: #fff;
 }
 .rs-tpl-btn-primary:hover {
-    background: #4338CA;
+    background: #1858C4;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(79,70,229,0.3);
+    box-shadow: 0 8px 24px rgba(31,111,235,0.3);
 }
 .rs-tpl-grid {
     display: grid;
@@ -98,7 +98,7 @@ declare(strict_types=1);
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(79,70,229,0.06) 100%);
+    background: linear-gradient(135deg, transparent 40%, rgba(31,111,235,0.06) 100%);
 }
 .rs-tpl-card-thumb i {
     font-size: 2.2rem;
@@ -172,7 +172,7 @@ declare(strict_types=1);
     border-color: var(--rsd-primary);
 }
 .rs-tpl-card-btn-primary:hover {
-    background: #4338CA;
+    background: #1858C4;
     color: #fff;
 }
 .rs-tpl-card-btn-danger:hover {
