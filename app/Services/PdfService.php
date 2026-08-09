@@ -75,7 +75,7 @@ class PdfService
      * et l'entoure d'une page de couverture + une page de certification
      * (observations, plan d'action, signature, QR code de vérification).
      */
-    public function generateCertificate(int $reportId): string
+    public function generateCertificate(int $reportId, ?int $templateId = null): string
     {
         $report = Report::find($reportId);
         if (!$report) throw new \RuntimeException('Report not found');
@@ -91,9 +91,10 @@ class PdfService
         $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
         $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
 
-        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
-        $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user);
-        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
+        $theme = $this->loadCertificateTheme($templateId ?? (int)($report['template_id'] ?? 0));
+        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
+        $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
+        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
 
         // buildHtml() renvoie un DOCUMENT COMPLET (<!DOCTYPE>, <html>, <head><style>,
         // <body>). On ne peut pas le coller tel quel entre deux fragments — ça
@@ -180,9 +181,48 @@ class PdfService
     }
 
     /**
+     * Charge un thème de certificat depuis Report Studio.
+     * Retourne un tableau de couleurs/polices, ou les valeurs par
+     * défaut si aucun thème n'est trouvé ou si le module est absent.
+     */
+    private function loadCertificateTheme(?int $templateId): array
+    {
+        $defaults = [
+            'navy'       => '#0b1f4d',
+            'gold'       => '#b8860b',
+            'font'       => 'sans-serif',
+            'background' => '#ffffff',
+        ];
+
+        if (!$templateId || $templateId <= 0) {
+            return $defaults;
+        }
+
+        if (!class_exists(\App\Modules\ReportStudio\Models\ReportTheme::class)) {
+            return $defaults;
+        }
+
+        try {
+            $theme = \App\Modules\ReportStudio\Models\ReportTheme::find($templateId);
+            if (!$theme) {
+                return $defaults;
+            }
+            return [
+                'navy'       => $theme->primary_color   ?: $defaults['navy'],
+                'gold'       => $theme->accent_color    ?: $defaults['gold'],
+                'font'       => $theme->font_family     ?: $defaults['font'],
+                'background' => $theme->background_color ?: $defaults['background'],
+            ];
+        } catch (\Throwable $e) {
+            error_log('loadCertificateTheme error: ' . $e->getMessage());
+            return $defaults;
+        }
+    }
+
+    /**
      * Page de couverture du certificat officiel.
      */
-    private function buildCoverPageHtml(array $assessment, array $analysis, ?array $lead, array $report, string $reportNumber): string
+    private function buildCoverPageHtml(array $assessment, array $analysis, ?array $lead, array $report, string $reportNumber, array $theme = []): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
         $sector = $lead['sector'] ?? '—';
@@ -194,8 +234,8 @@ class PdfService
         $certDate = $report['certified_at'] ? date('d/m/Y', strtotime($report['certified_at'])) : date('d/m/Y');
         $domainScores = $analysis['domain_scores'];
 
-        $navy = '#0b1f4d';
-        $gold = '#b8860b';
+        $navy = $theme['navy'] ?? '#0b1f4d';
+        $gold = $theme['gold'] ?? '#b8860b';
 
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
         $radarSvg = $this->buildRadarSvg($domainScores, $levelColor);
@@ -444,10 +484,10 @@ class PdfService
      * Dernière page : observations, plan d'action, déclaration officielle,
      * signature électronique de l'administrateur et QR code de vérification.
      */
-    private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri): string
+    private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri, array $theme = []): string
     {
-        $navy = '#0b1f4d';
-        $gold = '#b8860b';
+        $navy = $theme['navy'] ?? '#0b1f4d';
+        $gold = $theme['gold'] ?? '#b8860b';
 
         $qrImg = $qrDataUri
             ? '<img src="' . $qrDataUri . '" style="width:110px;height:110px;" />'
@@ -600,7 +640,7 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 </body></html>';
     }
 
-    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null): string
+    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null, array $theme = []): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
         $leadFullName = ($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? '');
@@ -620,12 +660,10 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $email = $lead['email'] ?? ($user['email'] ?? 'Non spécifié');
         $domainCount = count($analysis['domain_scores']);
 
-        // Palette alignée sur le thème clair du rapport en ligne
-        // (teal/or) — voir aqmi-results-print.css. On garde les noms de
-        // variables $navy/$gold pour un diff minimal ; seules leurs
-        // valeurs changent.
-        $navy = '#0d9488';
-        $gold = '#9c7a1f';
+        // Palette: utilise le thème transmis (certificat) ou la palette
+        // par défaut alignée sur le rapport en ligne (teal/or).
+        $navy = $theme['navy'] ?? '#0d9488';
+        $gold = $theme['gold'] ?? '#9c7a1f';
 
         // Domain score rows — NO nested tables, use div-based bars instead
         $domainRows = '';

@@ -31,7 +31,7 @@ class ReportController
 
         $pdfService = new PdfService();
         try {
-            $filename = $pdfService->generateCertificate($report['id']);
+            $filename = $pdfService->generateCertificate($report['id'], (int)($report['template_id'] ?? 0));
             $filePath = BASE_PATH . '/storage/reports/' . $filename;
 
             if (file_exists($filePath)) {

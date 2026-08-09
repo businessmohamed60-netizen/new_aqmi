@@ -184,6 +184,22 @@ $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), 
       <label>Niveau AQMI attribué</label>
       <input type="text" name="aqmi_level_assigned" value="<?= e($report['aqmi_level_assigned'] ?? ($level['name_fr'] ?? '')) ?>" placeholder="ex: Niveau Or, Argent, Bronze...">
 
+      <?php if ($status === 'approved'): ?>
+        <?php
+        $themes = [];
+        try { $themes = \App\Modules\ReportStudio\Models\ReportTheme::activeList(); } catch (\Throwable $e) {}
+        ?>
+        <label>Thème du certificat (Report Studio)</label>
+        <select name="template_id" class="cert-form">
+          <option value="">— Thème par défaut —</option>
+          <?php foreach ($themes as $theme): ?>
+            <option value="<?= (int)$theme->id ?>" <?= ((int)($report['template_id'] ?? 0) === (int)$theme->id) ? 'selected' : '' ?>>
+              <?= e($theme->name ?? 'Thème #' . $theme->id) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      <?php endif; ?>
+
       <div class="cert-actions">
         <?php if ($status === 'certification_requested'): ?>
           <button type="submit" formaction="/admin/reports/<?= $report['id'] ?>/review" class="cert-btn" style="background:rgba(34,211,238,0.12);color:#22d3ee;">
