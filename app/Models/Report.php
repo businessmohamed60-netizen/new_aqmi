@@ -107,6 +107,14 @@ class Report
             if ($validatedBy !== null) { $sets[] = "validated_by = ?"; $params[] = $validatedBy; }
         }
 
+        // Renvoi d'une demande après rejet (ou remise en file d'attente) :
+        // on réinitialise la date de demande pour qu'elle réapparaisse
+        // correctement dans Report::pendingCertifications(), qui trie par
+        // certification_requested_at ASC.
+        if ($status === 'certification_requested') {
+            $sets[] = "certification_requested_at = NOW()";
+        }
+
         if ($filePath !== null) {
             $sets[] = "file_path = ?";
             $params[] = $filePath;

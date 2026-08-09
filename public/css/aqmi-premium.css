@@ -1509,6 +1509,7 @@
   border: 1px solid var(--aqmi-border);
   border-radius: var(--aqmi-radius-xl);
   padding: 2.5rem;
+  box-sizing: border-box;
   backdrop-filter: var(--aqmi-blur);
   -webkit-backdrop-filter: var(--aqmi-blur);
   box-shadow: 0 24px 60px rgba(31, 111, 235, 0.12), 0 8px 24px rgba(15, 23, 42, 0.06);
@@ -1546,6 +1547,7 @@
 .aqmi-lead-field {
   margin-bottom: 1.25rem;
   position: relative;
+  min-width: 0;
 }
 
 .aqmi-lead-field label {
@@ -1562,6 +1564,7 @@
 .aqmi-lead-field select,
 .aqmi-lead-field textarea {
   width: 100%;
+  box-sizing: border-box;
   padding: 0.75rem 1rem;
   background: rgba(31, 111, 235, 0.03);
   border: 1px solid var(--aqmi-border);
@@ -1623,6 +1626,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .aqmi-lead-split {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 /* ── Lead Form: modernized sections & consent ── */
@@ -2479,6 +2489,13 @@
   max-width: 640px;
 }
 
+@media (max-width: 600px) {
+  .aqmi-lead-card,
+  .aqmi-lead-card-wide {
+    padding: 1.5rem;
+  }
+}
+
 /* Step panels */
 .aqmi-lead-step-panel {
   display: none;
@@ -2496,8 +2513,9 @@
 /* Step labels under dots */
 .aqmi-lead-step-labels {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 3rem;
+  gap: 1rem 3rem;
   margin-bottom: 2rem;
 }
 
@@ -2526,6 +2544,7 @@
 /* Navigation buttons */
 .aqmi-lead-nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
 }

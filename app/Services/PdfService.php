@@ -620,8 +620,12 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $email = $lead['email'] ?? ($user['email'] ?? 'Non spécifié');
         $domainCount = count($analysis['domain_scores']);
 
-        $navy = '#0b1f4d';
-        $gold = '#b8860b';
+        // Palette alignée sur le thème clair du rapport en ligne
+        // (teal/or) — voir aqmi-results-print.css. On garde les noms de
+        // variables $navy/$gold pour un diff minimal ; seules leurs
+        // valeurs changent.
+        $navy = '#0d9488';
+        $gold = '#9c7a1f';
 
         // Domain score rows — NO nested tables, use div-based bars instead
         $domainRows = '';
@@ -685,17 +689,23 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 <html><head><meta charset="utf-8">
 <style>
 @page { margin: 0; }
-body { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; color: #1f2937; line-height: 1.5; margin: 0; padding: 0; }
+body { font-family: "DejaVu Sans", sans-serif; font-size: 10pt; color: #1f2937; line-height: 1.5; margin: 0; padding: 0; background: #ffffff; }
 .page { padding: 35px 40px 30px; }
 .page-break { page-break-before: always; }
 table { border-collapse: collapse; }
 </style>
 </head><body>
 
+<!-- Cadre de page professionnel : DomPDF répète automatiquement tout
+     élément en position:fixed sur CHAQUE page générée (à la différence
+     d\'un navigateur, c\'est un mécanisme natif et fiable de DomPDF). Un
+     simple filet fin dans la couleur d\'accent du rapport en ligne. -->
+<div style="position:fixed;top:6mm;left:6mm;right:6mm;bottom:6mm;border:1.2pt solid ' . $navy . ';"></div>
+
 <!-- ===== PAGE 1: COVER + IDENTITÉ ===== -->
 <div style="width:100%;background:' . $navy . ';padding:35px 40px 30px;text-align:center;">
     <div style="font-size:42pt;font-weight:900;color:#ffffff;letter-spacing:6px;">AQMI</div>
-    <div style="font-size:9pt;color:#c7d2fe;letter-spacing:3px;margin-top:3px;">AUTOMOTIVE QUALITY MATURITY INDEX</div>
+    <div style="font-size:9pt;color:#e0f2f1;letter-spacing:3px;margin-top:3px;">AUTOMOTIVE QUALITY MATURITY INDEX</div>
     <div style="width:50px;height:3px;background:' . $gold . ';margin:18px auto;"></div>
     <div style="font-size:18pt;color:#ffffff;font-weight:700;line-height:1.3;">Rapport d\'Évaluation de Maturité Qualité</div>
 </div>

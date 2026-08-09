@@ -569,21 +569,31 @@ $extraScripts = <<<SCRIPT
     });
   }
 
-  // Les canvases Chart.js sont dimensionnés pour l'écran au chargement et
-  // ne se redimensionnent pas seuls pour le format papier — sans ça, les
-  // graphiques radar/bar sont coupés ou déformés à l'impression.
-  // On redessine directement toutes les instances Chart.js (plus fiable
-  // qu'un simple événement "resize" générique, qui ne se déclenche pas
-  // de façon homogène selon les navigateurs lors de l'impression).
-  function resizeChartsForPrint() {
-    if (window.Chart && Chart.instances) {
-      Object.values(Chart.instances).forEach(function(c) { c.resize(); });
-    }
+  // Le redimensionnement d'un <canvas> Chart.js est asynchrone
+  // (requestAnimationFrame) : selon le navigateur, l'impression peut se
+  // déclencher avant que le graphique ait fini de se redessiner. Comme le
+  // CSS d'impression ne modifie plus la taille des graphiques (on garde
+  // exactement les mêmes dimensions qu'à l'écran), un simple redessin
+  // immédiat (sans animation) suffit : pas besoin de remplacer le canvas
+  // par une image, ce qui évitera aussi tout souci d'icône "image cassée"
+  // si le navigateur bloque les data-URI en impression.
+  function prepareChartsForPrint() {
+    if (!window.Chart || !Chart.instances) return;
+    Object.values(Chart.instances).forEach(function(c) {
+      try {
+        c.resize();
+        c.update('none');
+      } catch (e) {
+        // On ignore silencieusement : au pire le graphique garde son
+        // rendu actuel, jamais d'icône cassée.
+      }
+    });
   }
-  window.addEventListener('beforeprint', resizeChartsForPrint);
+
+  window.addEventListener('beforeprint', prepareChartsForPrint);
   if (window.matchMedia) {
     window.matchMedia('print').addEventListener('change', function(e) {
-      if (e.matches) resizeChartsForPrint();
+      if (e.matches) prepareChartsForPrint();
     });
   }
 })();

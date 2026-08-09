@@ -110,7 +110,15 @@ class Database
         if ($pdo !== null) {
             self::$lastInsertId = (int) $pdo->lastInsertId();
         }
-        return $stmt->rowCount();
+        // On doit retourner l'ID auto-incrémenté généré par l'INSERT, pas
+        // le nombre de lignes affectées (rowCount() vaut toujours 1 pour un
+        // INSERT réussi). Sans ce correctif, tout appelant qui capture le
+        // résultat de Database::insert() comme un ID (ex: Lead::create(),
+        // LeadCustomField::create()) recevait systématiquement 1 au lieu du
+        // vrai ID — ce qui provoquait ensuite des violations de contrainte
+        // de clé étrangère dès que l'ID réel n'était pas 1 (ex: Report::
+        // create() avec lead_id=1 alors que le lead réel a un autre id).
+        return self::$lastInsertId;
     }
 
     public static function execute(string $sql, array $params = []): int
