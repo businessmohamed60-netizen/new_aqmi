@@ -1,0 +1,17 @@
+DirectoryIndex index.php index.html
+
+RewriteEngine On
+Options -Indexes
+
+# Serve real static files directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.(css|js|png|jpe?g|gif|ico|svg|woff2?|ttf|eot|webp|pdf)$ - [L]
+
+# Serve standalone HTML pages directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.html$ - [L]
+
+# Route everything else through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
