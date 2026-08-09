@@ -147,10 +147,16 @@ ob_start();
                   </td>
                   <td data-label="Niveau"><?= e($a['maturity_level'] ?? '—') ?></td>
                   <td data-label="Rapport">
-                    <?php if ($a['report_id'] && $a['report_status'] === 'validated'): ?>
-                      <a href="/report/<?= $a['report_id'] ?>/download" class="aqmi-link">
-                        <i class="fas fa-file-pdf"></i> Télécharger
+                    <?php if ($a['report_id'] && $a['report_status'] === 'certified'): ?>
+                      <a href="/report/<?= $a['id'] ?>/download" class="aqmi-link">
+                        <i class="fas fa-file-pdf"></i> Télécharger mon certificat
                       </a>
+                    <?php elseif ($a['report_id'] && $a['report_status'] === 'approved'): ?>
+                      <span class="aqmi-text-muted">Approuvé — certification en cours</span>
+                    <?php elseif ($a['report_id'] && in_array($a['report_status'], ['certification_requested', 'under_review'], true)): ?>
+                      <span class="aqmi-text-muted">En validation</span>
+                    <?php elseif ($a['report_id'] && $a['report_status'] === 'rejected'): ?>
+                      <span class="aqmi-text-muted" style="color:#ef4444">Rejeté</span>
                     <?php elseif ($a['report_id']): ?>
                       <span class="aqmi-text-muted">En validation</span>
                     <?php else: ?>

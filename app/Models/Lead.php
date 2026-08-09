@@ -57,6 +57,38 @@ class Lead
         );
     }
 
+    public static function update(int $id, array $data): int
+    {
+        $allowed = [
+            'company_size', 'website', 'certifications', 'founded_year',
+            'production_type', 'notes', 'sector', 'activity_category',
+            'oem_tier', 'product_category', 'main_clients', 'annual_revenue',
+            'export_percentage', 'production_sites', 'workforce_production',
+            'workforce_engineering', 'job_title', 'phone', 'country',
+            'production_capacity', 'machine_count', 'machine_types',
+            'main_materials', 'process_technologies', 'ppm_target', 'otd_rate',
+            'fta_rate', 'scrap_rate', 'traceability_system', 'logistics_system',
+            'rd_budget_percent', 'current_erp', 'consent_contact',
+            'consent_share_industry',
+        ];
+        $sets = [];
+        $params = [];
+        foreach ($allowed as $col) {
+            if (array_key_exists($col, $data)) {
+                $sets[] = "`$col` = ?";
+                $params[] = $data[$col];
+            }
+        }
+        if (empty($sets)) return 0;
+        $params[] = $id;
+        return Database::execute("UPDATE leads SET " . implode(', ', $sets) . " WHERE id = ?", $params);
+    }
+
+    public static function delete(int $id): int
+    {
+        return Database::execute("DELETE FROM leads WHERE id = ?", [$id]);
+    }
+
     public static function all(): array
     {
         return Database::fetchAll("SELECT l.*, a.total_score, a.maturity_level FROM leads l LEFT JOIN assessments a ON l.assessment_id = a.id ORDER BY l.created_at DESC");
