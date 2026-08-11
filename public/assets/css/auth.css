@@ -539,7 +539,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(10,10,15,0.85);
+  background: var(--nova-dash-header-bg, rgba(10,10,15,0.85));
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--nova-border);
@@ -919,6 +919,71 @@ body:has(.aqmi-auth-wrap) {
 .aqmi-alert-error { color: #c13d49; }
 .aqmi-alert-info { color: #1f6feb; }
 .aqmi-logo { background: linear-gradient(135deg, #173b57, #1f6feb); }
+
+/* ─── 12. LIGHT DASHBOARD THEME ────────────────────────────────── */
+html:has(.aqmi-dash-wrap),
+body:has(.aqmi-dash-wrap) {
+  --nova-bg: #f5f3ed;
+  --nova-bg-secondary: #ede9e1;
+  --nova-bg-card: #fffdf8;
+  --nova-bg-elevated: #f9f6f0;
+  --nova-border: #e5ded3;
+  --nova-border-light: #d7cec1;
+  --nova-border-hover: #bdb1a1;
+  --nova-text-primary: #17212b;
+  --nova-text-secondary: #475569;
+  --nova-text-tertiary: #7d8794;
+  --nova-text-muted: #9aa3ad;
+  background: #f5f3ed;
+  color: #17212b;
+}
+.aqmi-dash-wrap {
+  --nova-bg: #f5f3ed;
+  --nova-bg-secondary: #ede9e1;
+  --nova-bg-card: #fffdf8;
+  --nova-bg-elevated: #f9f6f0;
+  --nova-border: #e5ded3;
+  --nova-border-light: #d7cec1;
+  --nova-border-hover: #bdb1a1;
+  --nova-text-primary: #17212b;
+  --nova-text-secondary: #475569;
+  --nova-text-tertiary: #7d8794;
+  --nova-text-muted: #9aa3ad;
+  background: #f5f3ed;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(59,130,246,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  color: #17212b;
+}
+.aqmi-dash-header {
+  background: rgba(255,253,248,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid #e5ded3;
+}
+.aqmi-dash-table th {
+  background: #f9f6f0;
+}
+.aqmi-dash-table tr:hover td { background: rgba(59,130,246,0.04); }
+.aqmi-dash-stat {
+  box-shadow: 0 2px 12px rgba(80,64,42,0.06);
+}
+.aqmi-dash-stat:hover {
+  box-shadow: 0 8px 28px rgba(80,64,42,0.1);
+}
+.aqmi-dash-table-wrap {
+  box-shadow: 0 2px 12px rgba(80,64,42,0.06);
+}
+.aqmi-dash-empty {
+  box-shadow: 0 2px 12px rgba(80,64,42,0.06);
+}
+.aqmi-dash-lastlogin {
+  box-shadow: 0 1px 6px rgba(80,64,42,0.05);
+}
+.aqmi-badge-success { color: #16805d; }
+.aqmi-badge-warning { color: #b07809; }
+.aqmi-badge-error { color: #c13d49; }
 
 /* ─── 11. RESPONSIVE ──────────────────────────────────────────── */
 

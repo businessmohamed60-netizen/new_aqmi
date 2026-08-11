@@ -45,11 +45,142 @@ $config = [
     'answers' => $answers,
     'currentQuestion' => 0,
     'completionPercent' => $completionPercent,
+    'lang' => $_SESSION['lang'] ?? 'fr',
+];
+
+// i18n labels for the questionnaire UI
+$i18n = [
+    'fr' => [
+        'choose_lang' => 'Choisissez votre langue',
+        'choose_lang_desc' => 'Sélectionnez la langue dans laquelle vous souhaitez répondre au questionnaire',
+        'start' => 'Commencer le questionnaire',
+        'time_remaining' => 'Temps restant',
+        'question' => 'Question',
+        'domain' => 'Domaine',
+        'maturity' => 'Maturité',
+        'learn_more' => 'En savoir plus',
+        'prev' => 'Précédent',
+        'next' => 'Suivant',
+        'saved' => 'Sauvegardé',
+        'score_label' => 'Score Global',
+        'rating_labels' => ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence'],
+        'gauge_labels' => ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence'],
+        'gauge_waiting' => 'En attente',
+        'yes_label' => 'Oui',
+        'partial_label' => 'Partiellement',
+        'no_label' => 'Non',
+        'na_label' => 'Non concerné',
+        'yes_sub' => 'Bonne pratique totalement appliquée',
+        'partial_sub' => 'Bonne pratique partiellement appliquée',
+        'no_sub' => 'Bonne pratique non appliquée',
+        'na_sub' => 'Cette question ne s\'applique pas',
+        'text_placeholder' => 'Saisissez votre réponse...',
+        'numeric_placeholder' => 'Saisissez une valeur',
+        'no_options' => 'Aucune option disponible',
+        'completion_title' => 'Questionnaire terminé !',
+        'completion_desc' => 'Merci d\'avoir répondu à toutes les questions. Nous préparons votre diagnostic personnalisé.',
+        'completion_btn' => 'Voir mes résultats',
+        'domain_transition_label' => 'DOMAINE',
+    ],
+    'en' => [
+        'choose_lang' => 'Choose your language',
+        'choose_lang_desc' => 'Select the language in which you want to answer the questionnaire',
+        'start' => 'Start questionnaire',
+        'time_remaining' => 'Time remaining',
+        'question' => 'Question',
+        'domain' => 'Domain',
+        'maturity' => 'Maturity',
+        'learn_more' => 'Learn more',
+        'prev' => 'Previous',
+        'next' => 'Next',
+        'saved' => 'Saved',
+        'score_label' => 'Global Score',
+        'rating_labels' => ['Non-Existent', 'Initial', 'Basic', 'Controlled', 'Performing', 'Excellence'],
+        'gauge_labels' => ['Non-Existent', 'Initial', 'Basic', 'Controlled', 'Performing', 'Excellence'],
+        'gauge_waiting' => 'Pending',
+        'yes_label' => 'Yes',
+        'partial_label' => 'Partially',
+        'no_label' => 'No',
+        'na_label' => 'Not applicable',
+        'yes_sub' => 'Best practice fully applied',
+        'partial_sub' => 'Best practice partially applied',
+        'no_sub' => 'Best practice not applied',
+        'na_sub' => 'This question does not apply',
+        'text_placeholder' => 'Enter your answer...',
+        'numeric_placeholder' => 'Enter a value',
+        'no_options' => 'No options available',
+        'completion_title' => 'Questionnaire completed!',
+        'completion_desc' => 'Thank you for answering all the questions. We are preparing your personalized diagnostic.',
+        'completion_btn' => 'See my results',
+        'domain_transition_label' => 'DOMAIN',
+    ],
+    'ar' => [
+        'choose_lang' => 'اختر لغتك',
+        'choose_lang_desc' => 'اختر اللغة التي تريد الإجابة بها على الاستبيان',
+        'start' => 'بدء الاستبيان',
+        'time_remaining' => 'الوقت المتبقي',
+        'question' => 'سؤال',
+        'domain' => 'المجال',
+        'maturity' => 'النضج',
+        'learn_more' => 'اعرف المزيد',
+        'prev' => 'السابق',
+        'next' => 'التالي',
+        'saved' => 'تم الحفظ',
+        'score_label' => 'النتيجة الإجمالية',
+        'rating_labels' => ['غير موجود', 'أولي', 'أساسي', 'مسيطر عليه', 'متميز', 'امتياز'],
+        'gauge_labels' => ['غير موجود', 'أولي', 'أساسي', 'مسيطر عليه', 'متميز', 'امتياز'],
+        'gauge_waiting' => 'في الانتظار',
+        'yes_label' => 'نعم',
+        'partial_label' => 'جزئياً',
+        'no_label' => 'لا',
+        'na_label' => 'غير مطبق',
+        'yes_sub' => 'الممارسة الجيدة مطبقة بالكامل',
+        'partial_sub' => 'الممارسة الجيدة مطبقة جزئياً',
+        'no_sub' => 'الممارسة الجيدة غير مطبقة',
+        'na_sub' => 'هذا السؤال غير مطبق',
+        'text_placeholder' => 'أدخل إجابتك...',
+        'numeric_placeholder' => 'أدخل قيمة',
+        'no_options' => 'لا توجد خيارات متاحة',
+        'completion_title' => 'اكتمل الاستبيان!',
+        'completion_desc' => 'شكراً لإجابتك على جميع الأسئلة. نحن نجهز تشخيصك المخصص.',
+        'completion_btn' => 'عرض نتائجي',
+        'domain_transition_label' => 'المجال',
+    ],
 ];
 
 ob_start();
 ?>
 <div class="aqmi-premium" id="aqmiApp">
+
+  <!-- Language Selection Screen -->
+  <div class="aqmi-lang-screen" id="aqmiLangScreen">
+    <div class="aqmi-lang-screen-inner">
+      <div class="aqmi-lang-screen-icon">
+        <i class="fas fa-globe"></i>
+      </div>
+      <h1 class="aqmi-lang-screen-title" id="aqmiLangTitle">Choisissez votre langue</h1>
+      <p class="aqmi-lang-screen-desc" id="aqmiLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre au questionnaire</p>
+      <div class="aqmi-lang-choices">
+        <button class="aqmi-lang-choice" data-lang="fr" type="button">
+          <span class="aqmi-lang-choice-flag">FR</span>
+          <span class="aqmi-lang-choice-name">Français</span>
+        </button>
+        <button class="aqmi-lang-choice" data-lang="en" type="button">
+          <span class="aqmi-lang-choice-flag">EN</span>
+          <span class="aqmi-lang-choice-name">English</span>
+        </button>
+        <button class="aqmi-lang-choice" data-lang="ar" type="button">
+          <span class="aqmi-lang-choice-flag">AR</span>
+          <span class="aqmi-lang-choice-name">العربية</span>
+        </button>
+      </div>
+      <button class="aqmi-lang-start-btn" id="aqmiLangStartBtn" type="button" disabled>
+        <span id="aqmiLangStartText">Commencer le questionnaire</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
   <!-- Top Bar -->
   <div class="aqmi-topbar">
     <div class="aqmi-topbar-brand">
@@ -62,7 +193,7 @@ ob_start();
     <div class="aqmi-topbar-right">
       <div class="aqmi-topbar-estimate">
         <i class="far fa-clock" style="font-size:0.65rem;"></i>
-        Temps restant : <strong id="aqmiTimeRemaining">~<?= ceil($totalQuestions * 0.35) ?> min</strong>
+        <span data-i18n="time_remaining">Temps restant</span> : <strong id="aqmiTimeRemaining">~<?= ceil($totalQuestions * 0.35) ?> min</strong>
       </div>
     </div>
   </div>
@@ -71,7 +202,7 @@ ob_start();
   <div class="aqmi-progress-wrap">
     <div class="aqmi-progress-header">
       <div class="aqmi-progress-question">
-        Question <span class="num" id="aqmiCurrentNum">1</span>
+        <span data-i18n="question">Question</span> <span class="num" id="aqmiCurrentNum">1</span>
         <span style="color:var(--aqmi-text-tertiary);font-weight:400;">/ <?= $totalQuestions ?></span>
         <span class="aqmi-progress-domain" id="aqmiDomainLabel"><?= e($domainsFlat[0]['name'] ?? '') ?></span>
       </div>
@@ -108,7 +239,7 @@ ob_start();
           <div class="aqmi-main-gauge-center">
             <div class="aqmi-main-gauge-icon" id="aqmiMainGaugeIcon"><i class="fas fa-gauge-high"></i></div>
             <div class="aqmi-main-gauge-value" id="aqmiMainGaugeValue">0%</div>
-            <div class="aqmi-main-gauge-label" id="aqmiMainGaugeLabel">Maturité</div>
+            <div class="aqmi-main-gauge-label" id="aqmiMainGaugeLabel" data-i18n="maturity">Maturité</div>
           </div>
           <div class="aqmi-main-gauge-pulse" id="aqmiMainGaugePulse" style="display:none;"></div>
         </div>
@@ -136,7 +267,7 @@ ob_start();
             <div class="aqmi-learn-more" id="aqmiLearnMore" style="display:none;">
               <button class="aqmi-learn-more-btn" id="aqmiLearnMoreBtn" type="button">
                 <i class="fas fa-info-circle" style="font-size:0.7rem;"></i>
-                En savoir plus
+                <span data-i18n="learn_more">En savoir plus</span>
                 <span class="icon"><i class="fas fa-chevron-down" style="font-size:0.55rem;"></i></span>
               </button>
               <div class="aqmi-learn-more-content" id="aqmiLearnMoreContent">
@@ -154,14 +285,14 @@ ob_start();
             <div class="aqmi-nav">
               <button class="aqmi-nav-btn" id="aqmiPrevBtn">
                 <i class="fas fa-arrow-left"></i>
-                <span class="aqmi-nav-btn-text">Précédent</span>
+                <span class="aqmi-nav-btn-text" data-i18n="prev">Précédent</span>
               </button>
               <div class="aqmi-nav-spacer"></div>
               <span class="aqmi-nav-save-indicator" id="aqmiSaveIndicator">
-                <i class="fas fa-check-circle"></i> Sauvegardé
+                <i class="fas fa-check-circle"></i> <span data-i18n="saved">Sauvegardé</span>
               </span>
               <button class="aqmi-nav-btn primary" id="aqmiNextBtn">
-                <span class="aqmi-nav-btn-text">Suivant</span>
+                <span class="aqmi-nav-btn-text" data-i18n="next">Suivant</span>
                 <i class="fas fa-arrow-right"></i>
               </button>
             </div>
@@ -181,7 +312,7 @@ ob_start();
       <div class="aqmi-gauge-value" id="aqmiGaugeValue">0%</div>
       <div class="aqmi-gauge-pulse" id="aqmiGaugePulse" style="display:none;"></div>
     </div>
-    <div class="aqmi-gauge-label">Score Global</div>
+    <div class="aqmi-gauge-label" data-i18n="score_label">Score Global</div>
   </div>
 
   <!-- Domain Transition Banner -->
@@ -191,12 +322,14 @@ ob_start();
 
 <?php
 $configJson = json_encode($config);
+$i18nJson = json_encode($i18n);
 $jsPath = BASE_PATH . '/public/js/aqmi-premium.js';
 $jsVersion = is_file($jsPath) ? filemtime($jsPath) : time();
 
 $extraScripts = <<<SCRIPT
 <script>
 var AQMI_CONFIG = {$configJson};
+var AQMI_I18N = {$i18nJson};
 </script>
 <script src="/js/aqmi-premium.js?v={$jsVersion}"></script>
 SCRIPT;

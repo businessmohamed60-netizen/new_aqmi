@@ -2620,3 +2620,165 @@
 .aqmi-lead-step.done i {
   font-size: 0.7rem;
 }
+
+/* ── Language Selection Screen ── */
+.aqmi-lang-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 9000;
+  background: linear-gradient(160deg, #f4f7fb 0%, #e8eef6 50%, #dde7f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.aqmi-lang-screen-inner {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.aqmi-lang-screen-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--aqmi-accent), #173b57);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(31, 111, 235, 0.25);
+  animation: aqmi-pulse-glow 3s ease-in-out infinite;
+}
+
+.aqmi-lang-screen-icon i {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.aqmi-lang-screen-title {
+  font-family: var(--aqmi-font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--aqmi-text);
+  margin: 0;
+}
+
+.aqmi-lang-screen-desc {
+  font-size: 0.95rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.5;
+  max-width: 420px;
+  margin: 0;
+}
+
+.aqmi-lang-choices {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.aqmi-lang-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 1.75rem;
+  min-width: 130px;
+  background: #fff;
+  border: 2px solid var(--aqmi-border);
+  border-radius: var(--aqmi-radius-lg);
+  cursor: pointer;
+  transition: all var(--aqmi-transition);
+  font-family: var(--aqmi-font);
+  color: var(--aqmi-text);
+}
+
+.aqmi-lang-choice:hover {
+  border-color: var(--aqmi-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(31, 111, 235, 0.12);
+}
+
+.aqmi-lang-choice.selected {
+  border-color: var(--aqmi-accent);
+  background: var(--aqmi-accent-soft);
+  box-shadow: 0 8px 24px var(--aqmi-accent-glow);
+}
+
+.aqmi-lang-choice-flag {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--aqmi-accent);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--aqmi-accent-soft);
+  transition: all var(--aqmi-transition);
+}
+
+.aqmi-lang-choice.selected .aqmi-lang-choice-flag {
+  background: var(--aqmi-accent);
+  color: #fff;
+}
+
+.aqmi-lang-choice-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.aqmi-lang-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(135deg, var(--aqmi-accent), #173b57);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-family: var(--aqmi-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--aqmi-transition);
+  box-shadow: 0 8px 24px var(--aqmi-accent-glow);
+  margin-top: 0.5rem;
+}
+
+.aqmi-lang-start-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--aqmi-accent-glow);
+}
+
+.aqmi-lang-start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.aqmi-lang-start-btn i {
+  font-size: 0.85rem;
+}
+
+/* RTL support for Arabic */
+[dir="rtl"] .aqmi-lang-start-btn i {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 640px) {
+  .aqmi-lang-screen-title { font-size: 1.4rem; }
+  .aqmi-lang-choices { gap: 0.75rem; }
+  .aqmi-lang-choice { min-width: 100px; padding: 1.2rem 1rem; }
+}

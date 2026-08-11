@@ -10,6 +10,11 @@
   var cfg = window.AQMI_CONFIG;
   if (!cfg) return;
 
+  var i18nData = window.AQMI_I18N || {};
+  var currentLang = cfg.lang || 'fr';
+  var t = i18nData[currentLang] || i18nData['fr'] || {};
+  function tr(key) { return t[key] !== undefined ? t[key] : key; }
+
   var questions = cfg.questions || [];
   for (var _i = 0; _i < questions.length; _i++) {
     if (questions[_i].weight != null) questions[_i].weight = parseFloat(questions[_i].weight) || 1;
@@ -175,7 +180,7 @@
     el.domainTransition.innerHTML = [
       '<div class="aqmi-domain-transition-content">',
       '  <div class="aqmi-domain-transition-icon"><i class="fas ' + icon + '"></i></div>',
-      '  <div class="aqmi-domain-transition-label">DOMAINE</div>',
+      '  <div class="aqmi-domain-transition-label">' + tr('domain_transition_label') + '</div>',
       '  <div class="aqmi-domain-transition-name">' + domainName + '</div>',
       '</div>'
     ].join('');
@@ -296,10 +301,10 @@
     el.answers.style.display = '';
 
     var options = [
-      { value: 5, label: 'Oui', sublabel: 'Bonne pratique totalement appliquée', icon: 'fa-check-circle', cls: 'yes' },
-      { value: 3, label: 'Partiellement', sublabel: 'Bonne pratique partiellement appliquée', icon: 'fa-minus-circle', cls: 'partial' },
-      { value: 0, label: 'Non', sublabel: 'Bonne pratique non appliquée', icon: 'fa-times-circle', cls: 'no' },
-      { value: 0, label: 'Non concerné', sublabel: 'Cette question ne s\'applique pas', icon: 'fa-ban', cls: 'na' },
+      { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check-circle', cls: 'yes' },
+      { value: 3, label: tr('partial_label'), sublabel: tr('partial_sub'), icon: 'fa-minus-circle', cls: 'partial' },
+      { value: 0, label: tr('no_label'), sublabel: tr('no_sub'), icon: 'fa-times-circle', cls: 'no' },
+      { value: 0, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-ban', cls: 'na' },
     ];
 
     var html = '';
@@ -339,7 +344,7 @@
       html += '</div>';
     }
     if (opts.length === 0) {
-      html += '<div style="color:var(--aqmi-text-tertiary);font-size:0.85rem;">Aucune option disponible</div>';
+      html += '<div style="color:var(--aqmi-text-tertiary);font-size:0.85rem;">' + tr('no_options') + '</div>';
     }
     el.answers.innerHTML = html;
   }
@@ -348,14 +353,14 @@
     el.ratingGrid.style.display = 'none';
     el.answers.style.display = '';
     var val = q.answered && q.answer_text ? q.answer_text : '';
-    el.answers.innerHTML = '<textarea class="aqmi-text-input" data-qid="' + q.id + '" data-idx="' + index + '" rows="3" placeholder="Saisissez votre réponse..." style="width:100%;padding:0.85rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;resize:vertical;transition:border-color 0.3s;">' + val + '</textarea>';
+    el.answers.innerHTML = '<textarea class="aqmi-text-input" data-qid="' + q.id + '" data-idx="' + index + '" rows="3" placeholder="' + tr('text_placeholder') + '" style="width:100%;padding:0.85rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;resize:vertical;transition:border-color 0.3s;">' + val + '</textarea>';
   }
 
   function renderNumericInput(q, index) {
     el.ratingGrid.style.display = 'none';
     el.answers.style.display = '';
     var val = q.answered && q.answer_value ? q.answer_value : '';
-    el.answers.innerHTML = '<input type="number" class="aqmi-numeric-input" data-qid="' + q.id + '" data-idx="' + index + '" placeholder="Saisissez une valeur" style="width:200px;max-width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;transition:border-color 0.3s;" value="' + val + '">';
+    el.answers.innerHTML = '<input type="number" class="aqmi-numeric-input" data-qid="' + q.id + '" data-idx="' + index + '" placeholder="' + tr('numeric_placeholder') + '" style="width:200px;max-width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;transition:border-color 0.3s;" value="' + val + '">';
   }
 
   function renderRatingScale(q, index) {
@@ -363,7 +368,7 @@
     el.ratingGrid.style.display = '';
 
     var colors = ['#E5484D', '#C9A227', '#C9A227', '#2EC4B6', '#1F6FEB', '#1F6FEB'];
-    var labels = ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence'];
+    var labels = (t.rating_labels || ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence']).slice();
 
     var html = '';
     for (var s = 0; s <= 5; s++) {
@@ -646,14 +651,15 @@
     });
 
     var icon = 'fa-gauge-high';
-    var label = 'En attente';
+    var label = tr('gauge_waiting');
     if (q && q.answered) {
-      if (score === 0) { icon = 'fa-circle-xmark'; label = 'Inexistant'; }
-      else if (score === 1) { icon = 'fa-circle-dot'; label = 'Initial'; }
-      else if (score === 2) { icon = 'fa-circle-half-stroke'; label = 'Basique'; }
-      else if (score === 3) { icon = 'fa-circle-check'; label = 'Maîtrisé'; }
-      else if (score === 4) { icon = 'fa-circle-check'; label = 'Performant'; }
-      else if (score === 5) { icon = 'fa-award'; label = 'Excellence'; }
+      var gaugeLabels = t.gauge_labels || ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence'];
+      if (score === 0) { icon = 'fa-circle-xmark'; label = gaugeLabels[0]; }
+      else if (score === 1) { icon = 'fa-circle-dot'; label = gaugeLabels[1]; }
+      else if (score === 2) { icon = 'fa-circle-half-stroke'; label = gaugeLabels[2]; }
+      else if (score === 3) { icon = 'fa-circle-check'; label = gaugeLabels[3]; }
+      else if (score === 4) { icon = 'fa-circle-check'; label = gaugeLabels[4]; }
+      else if (score === 5) { icon = 'fa-award'; label = gaugeLabels[5]; }
     }
     el.mainGaugeIcon.innerHTML = '<i class="fas ' + icon + '"></i>';
     el.mainGaugeLabel.textContent = label;
@@ -732,10 +738,10 @@
     overlay.innerHTML = [
       '<div class="aqmi-completion-content">',
       '  <div class="aqmi-completion-check"><i class="fas fa-check"></i></div>',
-      '  <h2 class="aqmi-completion-title">Questionnaire terminé !</h2>',
-      '  <p class="aqmi-completion-desc">Merci d\'avoir répondu à toutes les questions. Nous préparons votre diagnostic personnalisé.</p>',
+      '  <h2 class="aqmi-completion-title">' + tr('completion_title') + '</h2>',
+      '  <p class="aqmi-completion-desc">' + tr('completion_desc') + '</p>',
       '  <a href="/assessment/' + assessmentId + '/complete" class="aqmi-completion-btn">',
-      '    Voir mes résultats <i class="fas fa-arrow-right"></i>',
+      '    ' + tr('completion_btn') + ' <i class="fas fa-arrow-right"></i>',
       '  </a>',
       '</div>'
     ].join('');
@@ -869,6 +875,75 @@
     gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
   }
 
-  init();
+  // ── Language Selection Screen ──
+  var langScreen = document.getElementById('aqmiLangScreen');
+  var langChoices = document.querySelectorAll('.aqmi-lang-choice');
+  var langStartBtn = document.getElementById('aqmiLangStartBtn');
+  var langStartText = document.getElementById('aqmiLangStartText');
+  var langTitle = document.getElementById('aqmiLangTitle');
+  var langDesc = document.getElementById('aqmiLangDesc');
+  var selectedLang = currentLang;
+  var langScreenVisible = !!langScreen;
+
+  function applyI18nLabels(lang) {
+    var labels = i18nData[lang] || i18nData['fr'] || {};
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      var key = el.getAttribute('data-i18n');
+      if (labels[key] !== undefined) el.textContent = labels[key];
+    });
+    if (langTitle && labels.choose_lang) langTitle.textContent = labels.choose_lang;
+    if (langDesc && labels.choose_lang_desc) langDesc.textContent = labels.choose_lang_desc;
+    if (langStartText && labels.start) langStartText.textContent = labels.start;
+  }
+
+  function dismissLangScreen() {
+    if (!langScreen) return;
+    gsap.to(langScreen, {
+      opacity: 0, duration: 0.5, ease: 'power2.inOut',
+      onComplete: function() {
+        langScreen.style.display = 'none';
+        langScreenVisible = false;
+        init();
+      }
+    });
+  }
+
+  if (langScreen) {
+    // Pre-select current lang
+    langChoices.forEach(function(btn) {
+      if (btn.getAttribute('data-lang') === selectedLang) btn.classList.add('selected');
+      btn.addEventListener('click', function() {
+        langChoices.forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        selectedLang = btn.getAttribute('data-lang');
+        langStartBtn.disabled = false;
+        applyI18nLabels(selectedLang);
+        // Set RTL for Arabic
+        document.documentElement.setAttribute('dir', selectedLang === 'ar' ? 'rtl' : 'ltr');
+      });
+    });
+
+    if (langStartBtn) {
+      langStartBtn.addEventListener('click', function() {
+        if (langStartBtn.disabled) return;
+        // Save language to session via AJAX
+        fetch('/lang/' + selectedLang, { method: 'GET', redirect: 'manual' })
+          .catch(function() {}) // ignore errors, session is set server-side
+          .finally(function() {
+            currentLang = selectedLang;
+            t = i18nData[currentLang] || i18nData['fr'] || {};
+            dismissLangScreen();
+          });
+      });
+    }
+
+    // Apply initial labels
+    applyI18nLabels(selectedLang);
+  }
+
+  // If no language screen, init directly
+  if (!langScreenVisible) {
+    init();
+  }
 
 })();
