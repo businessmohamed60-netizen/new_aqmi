@@ -107,6 +107,28 @@
   font-weight: 600;
 }
 
+/* ── Modern AQMI Brand ── */
+.aqmi-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 9px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #173b57, #1f6feb);
+  box-shadow: 0 8px 18px rgba(31,111,235,.2);
+}
+.aqmi-brand-mark span {
+  color: #fff;
+  font-size: .8rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.aqmi-brand-mark span:first-child { color: #f2c94c; }
+.aqmi-brand-copy { display: flex; flex-direction: column; gap: 1px; line-height: 1.05; }
+.aqmi-brand-copy strong { color: var(--aqmi-text); font-size: .82rem; font-weight: 800; letter-spacing: -.02em; }
+.aqmi-brand-copy small { color: var(--aqmi-text-tertiary); font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+
 /* ── Progress Bar (Premium) ── */
 .aqmi-progress-wrap {
   padding: 0 2rem 0.5rem;

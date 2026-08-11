@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="<?= asset('css/nova-admin.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/automotive.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/effects.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/admin-light.css') ?>">
     <?= $extraStyles ?? '' ?>
 </head>
 <body class="nova-admin-body">

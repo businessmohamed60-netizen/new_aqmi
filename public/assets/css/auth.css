@@ -885,6 +885,41 @@
 .aqmi-mb-2 { margin-bottom: 1rem; }
 .aqmi-gap-1 { gap: 0.5rem; }
 
+/* ─── 11. LIGHT AUTH THEME ─────────────────────────────────────── */
+html:has(.aqmi-auth-wrap),
+body:has(.aqmi-auth-wrap) {
+  --nova-bg: #f5f3ed;
+  --nova-bg-secondary: #ede9e1;
+  --nova-bg-card: #fffdf8;
+  --nova-bg-elevated: #ffffff;
+  --nova-border: #e5ded3;
+  --nova-text-primary: #17212b;
+  --nova-text-secondary: #475569;
+  --nova-text-tertiary: #7d8794;
+  background: #f5f3ed;
+  color: #17212b;
+}
+.aqmi-auth-wrap {
+  --nova-bg: #f5f3ed;
+  --nova-bg-secondary: #ede9e1;
+  --nova-bg-card: #fffdf8;
+  --nova-bg-elevated: #ffffff;
+  --nova-border: #e5ded3;
+  --nova-border-light: #d7cec1;
+  --nova-border-hover: #bdb1a1;
+  --nova-text-primary: #17212b;
+  --nova-text-secondary: #475569;
+  --nova-text-tertiary: #7d8794;
+  --nova-text-muted: #9aa3ad;
+  background: #f5f3ed;
+  background-image: radial-gradient(ellipse at 50% 20%, rgba(31,111,235,.08), transparent 58%), linear-gradient(145deg, #f8f6f1, #eeeae2);
+}
+.aqmi-auth-card { background: rgba(255,253,248,.96); border-color: #e5ded3; box-shadow: 0 24px 70px rgba(80,64,42,.12); }
+.aqmi-alert-success { color: #16805d; }
+.aqmi-alert-error { color: #c13d49; }
+.aqmi-alert-info { color: #1f6feb; }
+.aqmi-logo { background: linear-gradient(135deg, #173b57, #1f6feb); }
+
 /* ─── 11. RESPONSIVE ──────────────────────────────────────────── */
 
 @media (max-width: 640px) {

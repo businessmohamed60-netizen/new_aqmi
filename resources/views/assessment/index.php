@@ -53,8 +53,11 @@ ob_start();
   <!-- Top Bar -->
   <div class="aqmi-topbar">
     <div class="aqmi-topbar-brand">
-      <span>A</span>QMI
-      <span style="font-weight:400;font-size:0.7rem;color:var(--aqmi-text-tertiary);">Automotive Quality Maturity Index</span>
+      <div class="aqmi-brand-mark"><span>A</span><span>Q</span><span>M</span><span>I</span></div>
+      <div class="aqmi-brand-copy">
+        <strong>Automotive Quality</strong>
+        <small>Maturity Index</small>
+      </div>
     </div>
     <div class="aqmi-topbar-right">
       <div class="aqmi-topbar-estimate">

@@ -18,20 +18,20 @@
   --vx-info: #06b6d4;
   --vx-info-light: rgba(6,182,212,0.12);
   --vx-info-gradient: linear-gradient(135deg, #06b6d4, #22d3ee);
-  --vx-body-bg: #0f1525;
-  --vx-card-bg: rgba(30,38,59,0.7);
-  --vx-card-border: rgba(99,102,241,0.08);
-  --vx-card-border-hover: rgba(99,102,241,0.15);
-  --vx-divider: rgba(99,102,241,0.06);
-  --vx-text-primary: #EEF2F7;
-  --vx-text-secondary: #cbd5e1;
-  --vx-text-muted: #486581;
+  --vx-body-bg: #f5f3ed;
+  --vx-card-bg: #fffdf8;
+  --vx-card-border: #e7e1d7;
+  --vx-card-border-hover: #cfc3b3;
+  --vx-divider: #eee9e1;
+  --vx-text-primary: #17212b;
+  --vx-text-secondary: #475569;
+  --vx-text-muted: #7d8794;
   --vx-radius-sm: 0.375rem;
   --vx-radius-md: 0.625rem;
   --vx-radius-lg: 0.875rem;
   --vx-radius-xl: 1.25rem;
-  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.3);
-  --vx-shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+  --vx-shadow-md: 0 4px 24px rgba(80,64,42,0.07);
+  --vx-shadow-lg: 0 12px 48px rgba(80,64,42,0.11);
   --vx-transition: 0.25s ease;
 }
 .nova-btn {
@@ -117,7 +117,7 @@
   padding-bottom: 5rem;
 }
 .user-topbar {
-  background: rgba(15,21,37,0.75);
+  background: rgba(255,253,248,0.94);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--vx-card-border);
@@ -161,7 +161,7 @@
   padding: 2rem;
 }
 .user-welcome {
-  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(30,38,59,0.8) 40%, rgba(30,38,59,0.9) 100%);
+  background: linear-gradient(135deg, rgba(31,111,235,0.08) 0%, rgba(255,253,248,0.94) 45%, #fffdf8 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--vx-card-border);
@@ -455,7 +455,7 @@
   </div>
 
   <!-- Mobile Bottom Navigation -->
-  <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(15,21,37,0.9);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
+  <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(255,253,248,0.96);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/dashboard">
       <i class="fas fa-home" style="font-size:0.9rem;"></i><span>Accueil</span>
     </a>

@@ -417,6 +417,9 @@ ob_start();
       <a href="/" class="btn">
         <i class="fas fa-home"></i> Accueil
       </a>
+      <a href="/logout" class="btn" style="border-color:var(--aqmi-danger);color:var(--aqmi-danger);">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+      </a>
     </div>
 
     <div style="text-align:center;padding:1.5rem 0 0;margin-top:2rem;border-top:1px solid var(--aqmi-border);">

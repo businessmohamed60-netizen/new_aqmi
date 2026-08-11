@@ -1,0 +1,35 @@
+.nova-admin-body {
+  --vx-body-bg: #f5f3ed;
+  --vx-card-bg: #fffdf8;
+  --vx-card-bg-solid: #fffdf8;
+  --vx-card-border: #e7e1d7;
+  --vx-card-border-hover: #d2c7b8;
+  --vx-input-bg: #ffffff;
+  --vx-input-border: #d8d0c4;
+  --vx-divider: #eee9e1;
+  --auto-bg-dark: #f5f3ed;
+  --auto-bg-card: #fffdf8;
+  --auto-bg-card-solid: #fffdf8;
+  --auto-bg-card-hover: #ffffff;
+  --auto-glass: rgba(255,253,248,.88);
+  --auto-glass-border: #e7e1d7;
+  --auto-text-primary: #17212b;
+  --auto-text-secondary: #475569;
+  --auto-text-muted: #7d8794;
+  --auto-border: #e7e1d7;
+  background: var(--vx-body-bg);
+  color: var(--vx-text-secondary);
+}
+.nova-admin-body .card,
+.nova-admin-body .nova-glass-card,
+.nova-admin-body .nova-kpi-card,
+.nova-admin-body .nova-metric-card {
+  background: #fffdf8;
+  box-shadow: 0 8px 24px rgba(80, 64, 42, .07);
+}
+.nova-admin-body .card-header { background: #fffdf8 !important; }
+.nova-admin-body .table { --bs-table-bg: transparent; --bs-table-color: var(--vx-text-secondary); }
+.nova-admin-body .table-striped tbody tr:nth-of-type(odd) { background: #faf7f1; }
+.nova-admin-body .nova-topbar { background: rgba(255,253,248,.94); }
+.nova-admin-body .nova-content-area { background: transparent; }
+.nova-admin-body .modal-content { background: #fffdf8; }
