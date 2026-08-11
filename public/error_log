@@ -57,3 +57,4 @@
 #3 /home/xewuqywt/public_html/public/index.php(98): App\Helpers\Router->dispatch()
 #4 {main}
 [09-Aug-2026 17:21:49 UTC] Database query failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`xewuqywt_AQMI`.`reports`, CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`lead_id`) REFERENCES `leads` (`id`) ON DELETE SET NULL) | SQL: INSERT INTO reports (assessment_id, lead_id, file_path, status, certification_requested_at) VALUES (?, ?, ?, ?, NOW())
+[11-Aug-2026 19:03:09 UTC] Database query failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'q.model_id' in 'ON' | SQL: SELECT q.*, d.name_fr as domain_name_fr, d.name as domain_name, em.name_fr as model_name_fr, em.name as model_name FROM questions q JOIN domains d ON q.domain_id = d.id LEFT JOIN evaluation_models em ON q.model_id = em.id ORDER BY d.sort_order, q.sort_order

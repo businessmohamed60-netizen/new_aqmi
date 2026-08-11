@@ -5,38 +5,42 @@
 
 /* ─── 1. ROOT VARIABLES ───────────────────────────────────────── */
 :root {
-  --vx-primary: #1F6FEB;
-  --vx-primary-dark: #1858C4;
-  --vx-primary-light: rgba(31,111,235,0.12);
-  --vx-primary-glow: rgba(31,111,235,0.25);
-  --vx-primary-gradient: linear-gradient(135deg, #1F6FEB, #2EC4B6);
-  --vx-success: #2EC4B6;
-  --vx-success-light: rgba(16,185,129,0.12);
-  --vx-success-gradient: linear-gradient(135deg, #2EC4B6, #34d399);
-  --vx-danger: #E5484D;
-  --vx-danger-light: rgba(239,68,68,0.12);
-  --vx-danger-gradient: linear-gradient(135deg, #E5484D, #f87171);
-  --vx-warning: #C9A227;
-  --vx-warning-light: rgba(245,158,11,0.12);
-  --vx-warning-gradient: linear-gradient(135deg, #C9A227, #fbbf24);
-  --vx-info: #06b6d4;
-  --vx-info-light: rgba(6,182,212,0.12);
-  --vx-info-gradient: linear-gradient(135deg, #06b6d4, #22d3ee);
+  --vx-primary: #173B57;
+  --vx-primary-dark: #0F2A3F;
+  --vx-primary-light: rgba(23,59,87,0.10);
+  --vx-primary-glow: rgba(23,59,87,0.20);
+  --vx-primary-gradient: linear-gradient(135deg, #173B57, #3B82B8);
+  --vx-accent: #3B82B8;
+  --vx-accent-light: rgba(59,130,184,0.12);
+  --vx-accent-glow: rgba(59,130,184,0.25);
+  --vx-accent-gradient: linear-gradient(135deg, #3B82B8, #5BA3D0);
+  --vx-success: #22A06B;
+  --vx-success-light: rgba(34,160,107,0.12);
+  --vx-success-gradient: linear-gradient(135deg, #22A06B, #34c98a);
+  --vx-danger: #E35D6A;
+  --vx-danger-light: rgba(227,93,106,0.12);
+  --vx-danger-gradient: linear-gradient(135deg, #E35D6A, #f08591);
+  --vx-warning: #F2B84B;
+  --vx-warning-light: rgba(242,184,75,0.12);
+  --vx-warning-gradient: linear-gradient(135deg, #F2B84B, #f5cf7a);
+  --vx-info: #3B82B8;
+  --vx-info-light: rgba(59,130,184,0.12);
+  --vx-info-gradient: linear-gradient(135deg, #3B82B8, #5BA3D0);
 
-  --vx-body-bg: #102A43;
-  --vx-card-bg: rgba(30,38,59,0.7);
-  --vx-card-bg-solid: #1e263b;
-  --vx-card-border: rgba(31,111,235,0.10);
-  --vx-card-border-hover: rgba(31,111,235,0.20);
-  --vx-input-bg: rgba(15,21,37,0.6);
-  --vx-input-border: rgba(31,111,235,0.10);
-  --vx-divider: rgba(31,111,235,0.08);
+  --vx-body-bg: #F4F6F8;
+  --vx-card-bg: #ffffff;
+  --vx-card-bg-solid: #ffffff;
+  --vx-card-border: #E5E9ED;
+  --vx-card-border-hover: #c7d0e0;
+  --vx-input-bg: #ffffff;
+  --vx-input-border: #d8dee9;
+  --vx-divider: #eef1f6;
 
-  --vx-text-primary: #f1f5f9;
-  --vx-text-secondary: #cbd5e1;
-  --vx-text-muted: #8a9bb4;
+  --vx-text-primary: #17212B;
+  --vx-text-secondary: #475569;
+  --vx-text-muted: #94a3b8;
 
-  --vx-sidebar-bg: rgba(15,21,37,0.85);
+  --vx-sidebar-bg: #173B57;
   --vx-sidebar-width: 260px;
   --vx-sidebar-collapsed: 80px;
   --vx-topbar-height: 64px;
@@ -46,10 +50,10 @@
   --vx-radius-lg: 0.875rem;
   --vx-radius-xl: 1.25rem;
 
-  --vx-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.3);
-  --vx-shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
-  --vx-shadow-glow: 0 0 24px rgba(31,111,235,0.15);
+  --vx-shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
+  --vx-shadow-md: 0 4px 24px rgba(15,23,42,0.08);
+  --vx-shadow-lg: 0 12px 48px rgba(15,23,42,0.12);
+  --vx-shadow-glow: 0 0 24px rgba(59,130,184,0.12);
   --vx-transition: 0.25s ease;
   --vx-transition-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   --vx-glass-blur: blur(20px);
@@ -59,8 +63,8 @@
 .nova-admin-body {
   background: var(--vx-body-bg);
   background-image:
-    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(31,111,235,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(59,130,184,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(23,59,87,0.03) 0%, transparent 60%);
   background-attachment: fixed;
   color: var(--vx-text-secondary);
   font-family: 'Inter', -apple-system, sans-serif;
@@ -104,7 +108,7 @@
   gap: 0.75rem;
   padding: 1rem 1.25rem;
   height: var(--vx-topbar-height);
-  border-bottom: 1px solid var(--vx-card-border);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -132,7 +136,7 @@
 .nova-sidebar-brand-text {
   font-size: 1rem;
   font-weight: 800;
-  color: var(--vx-text-primary);
+  color: #ffffff;
   white-space: nowrap;
   letter-spacing: -0.02em;
   transition: opacity var(--vx-transition);
@@ -145,9 +149,9 @@
 .nova-sidebar-brand-badge {
   font-size: 0.5rem;
   font-weight: 700;
-  color: var(--vx-info);
-  background: rgba(0,207,232,0.1);
-  border: 1px solid rgba(0,207,232,0.15);
+  color: #5BA3D0;
+  background: rgba(91,163,208,0.15);
+  border: 1px solid rgba(91,163,208,0.25);
   padding: 0.1rem 0.35rem;
   border-radius: 0.25rem;
   text-transform: uppercase;
@@ -169,14 +173,14 @@
 }
 
 .nova-sidebar-nav::-webkit-scrollbar { width: 4px; }
-.nova-sidebar-nav::-webkit-scrollbar-thumb { background: var(--vx-card-border); border-radius: 4px; }
+.nova-sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
 .nova-sidebar-section {
   font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--vx-text-muted);
+  color: rgba(255,255,255,0.45);
   padding: 0.75rem 0.75rem 0.5rem;
   white-space: nowrap;
   transition: opacity var(--vx-transition);
@@ -195,7 +199,7 @@
   gap: 0.75rem;
   padding: 0.625rem 0.75rem;
   border-radius: var(--vx-radius-md);
-  color: var(--vx-text-secondary);
+  color: rgba(255,255,255,0.65);
   text-decoration: none;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -206,14 +210,14 @@
 }
 
 .nova-sidebar-link:hover {
-  background: var(--vx-primary-light);
-  color: var(--vx-text-primary);
+  background: rgba(59,130,184,0.15);
+  color: #ffffff;
   transform: translateX(2px);
 }
 
 .nova-sidebar-link.active {
-  background: var(--vx-primary-light);
-  color: var(--vx-primary);
+  background: rgba(59,130,184,0.12);
+  color: #3B82B8;
   font-weight: 600;
 }
 
@@ -225,9 +229,9 @@
   transform: translateY(-50%);
   width: 3px;
   height: 1.5rem;
-  background: var(--vx-primary-gradient);
+  background: var(--vx-accent-gradient);
   border-radius: 0 4px 4px 0;
-  box-shadow: 2px 0 8px var(--vx-primary-glow);
+  box-shadow: 2px 0 8px var(--vx-accent-glow);
 }
 
 .nova-sidebar-link i {
@@ -249,7 +253,7 @@
 
 /* Sidebar Footer */
 .nova-sidebar-footer {
-  border-top: 1px solid var(--vx-card-border);
+  border-top: 1px solid rgba(255,255,255,0.08);
   padding: 0.5rem 0.75rem;
   flex-shrink: 0;
 }
@@ -274,7 +278,7 @@
   top: 0;
   z-index: 500;
   height: var(--vx-topbar-height);
-  background: rgba(15,21,37,0.75);
+  background: rgba(255,255,255,0.9);
   backdrop-filter: var(--vx-glass-blur);
   -webkit-backdrop-filter: var(--vx-glass-blur);
   border-bottom: 1px solid var(--vx-card-border);
@@ -306,9 +310,9 @@
 }
 
 .nova-topbar-toggle:hover {
-  background: var(--vx-primary-light);
-  color: var(--vx-primary);
-  border-color: rgba(115,103,240,0.2);
+  background: var(--vx-accent-light);
+  color: var(--vx-accent);
+  border-color: rgba(59,130,184,0.2);
 }
 
 .nova-topbar-title {
@@ -350,15 +354,15 @@
 }
 
 .nova-user-btn:hover {
-  background: var(--vx-primary-light);
-  border-color: rgba(115,103,240,0.2);
+  background: var(--vx-accent-light);
+  border-color: rgba(59,130,184,0.2);
 }
 
 .nova-user-avatar {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--vx-primary), #9b8cf7);
+  background: linear-gradient(135deg, #3B82B8, #5BA3D0);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -393,7 +397,7 @@
   background: var(--vx-card-bg);
   border: 1px solid var(--vx-card-border);
   border-radius: var(--vx-radius-lg);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.15);
   padding: 0.5rem;
   opacity: 0;
   visibility: hidden;
@@ -463,8 +467,8 @@
 }
 
 .nova-dropdown-item:hover {
-  background: var(--vx-primary-light);
-  color: var(--vx-primary);
+  background: var(--vx-accent-light);
+  color: var(--vx-accent);
 }
 
 .nova-dropdown-item i {
@@ -522,21 +526,21 @@
 .nova-alert i { font-size: 0.8125rem; flex-shrink: 0; }
 
 .nova-alert-success {
-  background: rgba(40,199,111,0.08);
-  border: 1px solid rgba(40,199,111,0.15);
-  color: #28c76f;
+  background: rgba(40,199,111,0.10);
+  border: 1px solid rgba(40,199,111,0.25);
+  color: #1a9d57;
 }
 
 .nova-alert-error {
-  background: rgba(234,84,85,0.08);
-  border: 1px solid rgba(234,84,85,0.15);
-  color: #ea5455;
+  background: rgba(234,84,85,0.10);
+  border: 1px solid rgba(234,84,85,0.25);
+  color: #c93a3e;
 }
 
 .nova-alert-info {
-  background: rgba(0,207,232,0.08);
-  border: 1px solid rgba(0,207,232,0.15);
-  color: #00cfe8;
+  background: rgba(0,207,232,0.10);
+  border: 1px solid rgba(0,207,232,0.25);
+  color: #0891b2;
 }
 
 /* ─── 9. RESPONSIVE ───────────────────────────────────────────── */
@@ -634,11 +638,11 @@
 }
 
 .nova-admin-body .table tr:hover td {
-  background: rgba(115,103,240,0.02);
+  background: rgba(59,130,184,0.04);
 }
 
 .nova-admin-body .table-striped tbody tr:nth-of-type(odd) {
-  background: rgba(30,38,59,0.3);
+  background: rgba(244,246,251,0.6);
 }
 
 .nova-admin-body .btn {
@@ -650,9 +654,9 @@
 }
 
 .nova-admin-body .btn-primary {
-  background: var(--vx-primary-gradient);
+  background: var(--vx-accent-gradient);
   border: none;
-  box-shadow: 0 4px 16px var(--vx-primary-glow);
+  box-shadow: 0 4px 16px var(--vx-accent-glow);
 }
 
 .nova-admin-body .btn-primary:hover {
@@ -678,13 +682,13 @@
 }
 
 .nova-admin-body .btn-outline-primary {
-  color: var(--vx-primary);
-  border-color: var(--vx-primary);
+  color: var(--vx-accent);
+  border-color: var(--vx-accent);
 }
 
 .nova-admin-body .btn-outline-primary:hover {
-  background: var(--vx-primary);
-  border-color: var(--vx-primary);
+  background: var(--vx-accent);
+  border-color: var(--vx-accent);
   color: #fff;
 }
 
@@ -723,8 +727,8 @@
 
 .nova-admin-body .form-control:focus,
 .nova-admin-body .form-select:focus {
-  border-color: var(--vx-primary);
-  box-shadow: 0 0 0 3px var(--vx-primary-light);
+  border-color: var(--vx-accent);
+  box-shadow: 0 0 0 3px var(--vx-accent-light);
   background: var(--vx-input-bg);
   color: var(--vx-text-primary);
 }
@@ -763,7 +767,7 @@
 }
 
 .nova-admin-body .modal-header .btn-close {
-  filter: invert(0.7);
+  filter: none;
 }
 
 .nova-admin-body .pagination {
@@ -780,14 +784,14 @@
 }
 
 .nova-admin-body .page-link:hover {
-  background: var(--vx-primary-light);
-  color: var(--vx-primary);
-  border-color: rgba(115,103,240,0.2);
+  background: var(--vx-accent-light);
+  color: var(--vx-accent);
+  border-color: rgba(59,130,184,0.2);
 }
 
 .nova-admin-body .page-item.active .page-link {
-  background: var(--vx-primary);
-  border-color: var(--vx-primary);
+  background: var(--vx-accent);
+  border-color: var(--vx-accent);
   color: #fff;
 }
 
@@ -804,7 +808,7 @@
 }
 
 .nova-admin-body .breadcrumb-item a:hover {
-  color: var(--vx-primary);
+  color: var(--vx-accent);
 }
 
 .nova-admin-body .breadcrumb-item.active {
@@ -881,7 +885,7 @@
 
 /* Welcome card */
 .nova-welcome-card {
-  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(30,38,59,0.8) 40%, rgba(30,38,59,0.9) 100%);
+  background: linear-gradient(135deg, rgba(59,130,184,0.06) 0%, rgba(255,255,255,0.9) 40%, #ffffff 100%);
   backdrop-filter: var(--vx-glass-blur);
   -webkit-backdrop-filter: var(--vx-glass-blur);
   border: 1px solid var(--vx-card-border);
@@ -956,7 +960,7 @@
 }
 
 .nova-assessment-item:hover {
-  background: rgba(115,103,240,0.02);
+  background: rgba(59,130,184,0.04);
 }
 
 .nova-assessment-company {
@@ -985,8 +989,8 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--vx-primary-light);
-  border: 1px solid rgba(115,103,240,0.15);
+  background: var(--vx-accent-light);
+  border: 1px solid rgba(59,130,184,0.15);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -334,16 +334,16 @@ document.addEventListener('DOMContentLoaded', function() {
             plotOptions: {
                 radialBar: {
                     startAngle: -135, endAngle: 135,
-                    hollow: { size: '65%', background: 'transparent', margin: 0, dropShadow: { blur: 8, opacity: 0.2, color: '#6366f1' } },
-                    track: { background: 'rgba(99,102,241,0.06)', strokeWidth: '100%', margin: 4 },
+                    hollow: { size: '65%', background: 'transparent', margin: 0, dropShadow: { blur: 8, opacity: 0.15, color: '#3B82B8' } },
+                    track: { background: '#E5E9ED', strokeWidth: '100%', margin: 4 },
                     dataLabels: {
-                        name: { offsetY: -10, color: '#486581', fontSize: '0.7rem', fontWeight: 600 },
-                        value: { offsetY: 20, color: '#EEF2F7', fontSize: '2.2rem', fontWeight: 800, formatter: function(v) { return v + '%'; } }
+                        name: { offsetY: -10, color: '#64748b', fontSize: '0.7rem', fontWeight: 600 },
+                        value: { offsetY: 20, color: '#17212B', fontSize: '2.2rem', fontWeight: 800, formatter: function(v) { return v + '%'; } }
                     },
                     barLabels: { enabled: false }
                 }
             },
-            fill: { type: 'gradient', gradient: { shade: 'dark', type: 'horizontal', shadeIntensity: 0.5, gradientToColors: ['#06b6d4'], stops: [0, 100] } },
+            fill: { type: 'gradient', gradient: { shade: 'light', type: 'horizontal', shadeIntensity: 0.4, gradientToColors: ['#5BA3D0'], stops: [0, 100] } },
             stroke: { lineCap: 'round' },
             labels: ['Score AQMI']
         }).render();
@@ -352,16 +352,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Radar Chart - Domain Performance
     if (document.getElementById('radarChart')) {
         new ApexCharts(document.getElementById('radarChart'), {
-            chart: { type: 'radar', height: 280, background: 'transparent', foreColor: '#486581', animations: { enabled: true, speed: 1000 } },
+            chart: { type: 'radar', height: 280, background: 'transparent', foreColor: '#64748b', animations: { enabled: true, speed: 1000 } },
             series: [{ name: 'Score %', data: {$domainAvgs} }],
             labels: {$domainNames},
-            colors: ['#06b6d4'],
-            fill: { type: 'gradient', gradient: { shade: 'dark', type: 'vertical', shadeIntensity: 0.4, opacityFrom: 0.5, opacityTo: 0.1, stops: [0, 100] } },
+            colors: ['#3B82B8'],
+            fill: { type: 'gradient', gradient: { shade: 'light', type: 'vertical', shadeIntensity: 0.4, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
             stroke: { curve: 'smooth', width: 2 },
-            markers: { size: 4, colors: ['#06b6d4'], strokeColors: '#0f1525', strokeWidth: 2 },
-            xaxis: { labels: { style: { colors: '#486581', fontSize: '9px' } } },
+            markers: { size: 4, colors: ['#3B82B8'], strokeColors: '#ffffff', strokeWidth: 2 },
+            xaxis: { labels: { style: { colors: '#64748b', fontSize: '9px' } } },
             yaxis: { show: false, min: 0, max: 100 },
-            tooltip: { theme: 'dark', y: { formatter: function(v) { return v + '%'; } } }
+            tooltip: { theme: 'light', y: { formatter: function(v) { return v + '%'; } } }
         }).render();
     }
 
@@ -379,37 +379,37 @@ document.addEventListener('DOMContentLoaded', function() {
                         size: '72%',
                         labels: {
                             show: true,
-                            name: { color: '#486581', fontSize: '0.7rem', fontWeight: 600 },
-                            value: { color: '#EEF2F7', fontSize: '1.5rem', fontWeight: 800 },
-                            total: { show: true, label: 'Total', color: '#486581', fontSize: '0.65rem', fontWeight: 600 }
+                            name: { color: '#64748b', fontSize: '0.7rem', fontWeight: 600 },
+                            value: { color: '#17212B', fontSize: '1.5rem', fontWeight: 800 },
+                            total: { show: true, label: 'Total', color: '#64748b', fontSize: '0.65rem', fontWeight: 600 }
                         }
                     }
                 }
             },
-            legend: { position: 'bottom', labels: { colors: '#cbd5e1' }, fontSize: '11px', markers: { width: 8, height: 8 } },
-            tooltip: { theme: 'dark' }
+            legend: { position: 'bottom', labels: { colors: '#475569' }, fontSize: '11px', markers: { width: 8, height: 8 } },
+            tooltip: { theme: 'light' }
         }).render();
     }
 
     // Monthly Area Chart
     if (document.getElementById('monthlyChart')) {
         new ApexCharts(document.getElementById('monthlyChart'), {
-            chart: { type: 'area', height: 300, toolbar: { show: false }, background: 'transparent', foreColor: '#486581', animations: { enabled: true, speed: 1000 } },
+            chart: { type: 'area', height: 300, toolbar: { show: false }, background: 'transparent', foreColor: '#64748b', animations: { enabled: true, speed: 1000 } },
             series: [
                 { name: 'Évaluations', data: {$monthlyData} },
                 { name: 'Prospects', data: {$monthlyLeadsData} }
             ],
-            xaxis: { categories: {$monthlyLabels}, labels: { style: { fontSize: '11px', colors: '#486581' } } },
-            yaxis: { labels: { style: { colors: '#486581' } } },
-            colors: ['#6366f1', '#06b6d4'],
+            xaxis: { categories: {$monthlyLabels}, labels: { style: { fontSize: '11px', colors: '#64748b' } } },
+            yaxis: { labels: { style: { colors: '#64748b' } } },
+            colors: ['#3B82B8', '#22A06B'],
             fill: {
                 type: 'gradient',
-                gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 100] }
+                gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.03, stops: [0, 100] }
             },
             stroke: { curve: 'smooth', width: [3, 2] },
             dataLabels: { enabled: false },
-            grid: { borderColor: 'rgba(99,102,241,0.06)', strokeDashArray: 4 },
-            tooltip: { theme: 'dark', shared: true },
+            grid: { borderColor: '#E5E9ED', strokeDashArray: 4 },
+            tooltip: { theme: 'light', shared: true },
             legend: { show: false },
             markers: { size: 0, hover: { size: 5 } }
         }).render();
@@ -418,16 +418,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Domain Bars - Horizontal
     if (document.getElementById('domainBars')) {
         new ApexCharts(document.getElementById('domainBars'), {
-            chart: { type: 'bar', height: 320, background: 'transparent', foreColor: '#486581', animations: { enabled: true, speed: 800, dynamicAnimation: { enabled: true } } },
+            chart: { type: 'bar', height: 320, background: 'transparent', foreColor: '#64748b', animations: { enabled: true, speed: 800, dynamicAnimation: { enabled: true } } },
             series: [{ name: 'Moyenne %', data: {$domainAvgs} }],
-            xaxis: { categories: {$domainNames}, labels: { style: { colors: '#486581', fontSize: '10px' } } },
-            yaxis: { max: 100, labels: { style: { colors: '#486581' }, formatter: function(v) { return v + '%'; } } },
-            colors: ['#10b981'],
+            xaxis: { categories: {$domainNames}, labels: { style: { colors: '#64748b', fontSize: '10px' } } },
+            yaxis: { max: 100, labels: { style: { colors: '#64748b' }, formatter: function(v) { return v + '%'; } } },
+            colors: ['#22A06B'],
             plotOptions: { bar: { borderRadius: 6, columnWidth: '60%', distributed: true } },
-            fill: { type: 'gradient', gradient: { shade: 'dark', type: 'horizontal', shadeIntensity: 0.4, gradientToColors: ['#34d399'], stops: [0, 100] } },
-            dataLabels: { enabled: true, textAnchor: 'middle', formatter: function(v) { return v > 0 ? v + '%' : ''; }, style: { colors: ['#EEF2F7'], fontSize: '9px', fontWeight: 600 } },
-            grid: { borderColor: 'rgba(99,102,241,0.04)', strokeDashArray: 4 },
-            tooltip: { theme: 'dark', y: { formatter: function(v) { return v + '%'; } } }
+            fill: { type: 'gradient', gradient: { shade: 'light', type: 'horizontal', shadeIntensity: 0.3, gradientToColors: ['#34c98a'], stops: [0, 100] } },
+            dataLabels: { enabled: true, textAnchor: 'middle', formatter: function(v) { return v > 0 ? v + '%' : ''; }, style: { colors: ['#17212B'], fontSize: '9px', fontWeight: 600 } },
+            grid: { borderColor: '#E5E9ED', strokeDashArray: 4 },
+            tooltip: { theme: 'light', y: { formatter: function(v) { return v + '%'; } } }
         }).render();
     }
 });
@@ -460,7 +460,7 @@ $extraStyles = <<<STYLES
 .nova-kpi-card:hover {
     transform: translateY(-3px);
     border-color: var(--kpi-color);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 16px color-mix(in srgb, var(--kpi-color) 12%, transparent);
+    box-shadow: 0 8px 24px rgba(15,23,42,0.10), 0 0 16px color-mix(in srgb, var(--kpi-color) 12%, transparent);
 }
 .nova-kpi-card:hover::before { opacity: 1; }
 .nova-kpi-top {
@@ -525,18 +525,18 @@ $extraStyles = <<<STYLES
 
 .nova-badge-primary {
     font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--vx-primary-light); color: var(--vx-primary);
-    border: 1px solid rgba(99,102,241,0.15); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
+    background: var(--vx-accent-light); color: var(--vx-accent);
+    border: 1px solid rgba(59,130,184,0.20); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
 }
 .nova-badge-info {
     font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
     background: var(--vx-info-light); color: var(--vx-info);
-    border: 1px solid rgba(6,182,212,0.15); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
+    border: 1px solid rgba(59,130,184,0.20); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
 }
 .nova-badge-warning {
     font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-    background: var(--vx-warning-light); color: var(--vx-warning);
-    border: 1px solid rgba(245,158,11,0.15); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
+    background: var(--vx-warning-light); color: #C9951F;
+    border: 1px solid rgba(242,184,75,0.25); padding: 0.15rem 0.5rem; border-radius: 0.3rem;
 }
 
 .nova-legend-dot {
@@ -629,7 +629,7 @@ $extraStyles = <<<STYLES
     font-size: 0.6rem;
     font-weight: 700;
     color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 </style>
 STYLES;

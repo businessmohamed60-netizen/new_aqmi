@@ -5,30 +5,33 @@
 
 /* ─── 1. DESIGN TOKENS ────────────────────────────────────────── */
 :root {
-  --vx-primary: #1F6FEB;
-  --vx-primary-dark: #102A43;
-  --vx-primary-light: rgba(31,111,235,0.12);
-  --vx-primary-glow: rgba(31,111,235,0.25);
+  --vx-primary: #173B57;
+  --vx-primary-dark: #0F2A3F;
+  --vx-primary-light: rgba(23,59,87,0.10);
+  --vx-primary-glow: rgba(23,59,87,0.20);
+  --vx-accent: #3B82B8;
+  --vx-accent-light: rgba(59,130,184,0.12);
+  --vx-accent-glow: rgba(59,130,184,0.25);
   --vx-secondary: #82868b;
-  --vx-success: #2EC4B6;
-  --vx-success-light: rgba(46,196,182,0.12);
-  --vx-success-glow: rgba(46,196,182,0.25);
-  --vx-warning: #C9A227;
-  --vx-warning-light: rgba(201,162,39,0.12);
-  --vx-danger: #E5484D;
-  --vx-danger-light: rgba(229,72,77,0.12);
-  --vx-info: #2EC4B6;
-  --vx-info-light: rgba(46,196,182,0.12);
+  --vx-success: #22A06B;
+  --vx-success-light: #E9F7F1;
+  --vx-success-glow: rgba(34,160,107,0.25);
+  --vx-warning: #F2B84B;
+  --vx-warning-light: #FFF7E5;
+  --vx-danger: #E35D6A;
+  --vx-danger-light: #FDECEE;
+  --vx-info: #3B82B8;
+  --vx-info-light: rgba(59,130,184,0.12);
 
-  --vx-body-bg: #102A43;
-  --vx-card-bg: #1a3a5c;
-  --vx-card-border: rgba(238,242,247,0.12);
-  --vx-input-bg: #0d2137;
-  --vx-input-border: rgba(238,242,247,0.1);
-  --vx-text-primary: #EEF2F7;
-  --vx-text-secondary: rgba(238,242,247,0.7);
-  --vx-text-muted: rgba(238,242,247,0.45);
-  --vx-divider: rgba(238,242,247,0.08);
+  --vx-body-bg: #F4F6F8;
+  --vx-card-bg: #ffffff;
+  --vx-card-border: #E5E9ED;
+  --vx-input-bg: #ffffff;
+  --vx-input-border: #d8dee9;
+  --vx-text-primary: #17212B;
+  --vx-text-secondary: #475569;
+  --vx-text-muted: #94a3b8;
+  --vx-divider: #eef1f6;
 
   --vx-radius-sm: 0.375rem;
   --vx-radius-md: 0.5rem;
@@ -36,10 +39,10 @@
   --vx-radius-xl: 0.75rem;
   --vx-radius-2xl: 1rem;
 
-  --vx-shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-  --vx-shadow-md: 0 4px 24px rgba(0,0,0,0.25);
-  --vx-shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
-  --vx-shadow-card: 0 4px 24px 0 rgba(0,0,0,0.25);
+  --vx-shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
+  --vx-shadow-md: 0 4px 24px rgba(15,23,42,0.08);
+  --vx-shadow-lg: 0 8px 40px rgba(15,23,42,0.12);
+  --vx-shadow-card: 0 4px 24px 0 rgba(15,23,42,0.08);
 
   --vx-transition: 0.2s ease;
   --vx-transition-slow: 0.35s ease;
@@ -128,7 +131,7 @@
 .nova-progress-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, var(--vx-primary), #2EC4B6);
+  background: linear-gradient(90deg, var(--vx-accent), #5BA3D0);
   transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -222,8 +225,8 @@
 }
 
 .nova-domain-item.active {
-  background: var(--vx-primary-light);
-  border: 1px solid rgba(31,111,235,0.2);
+  background: var(--vx-accent-light);
+  border: 1px solid rgba(59,130,184,0.2);
 }
 
 .nova-domain-item.complete {
@@ -246,16 +249,16 @@
 }
 
 .nova-domain-item.active .nova-domain-num {
-  background: var(--vx-primary);
+  background: var(--vx-accent);
   color: #fff;
-  border-color: var(--vx-primary);
-  box-shadow: 0 0 12px var(--vx-primary-glow);
+  border-color: var(--vx-accent);
+  box-shadow: 0 0 12px var(--vx-accent-glow);
 }
 
 .nova-domain-item.complete .nova-domain-num {
   background: var(--vx-success-light);
   color: var(--vx-success);
-  border-color: rgba(46,196,182,0.2);
+  border-color: rgba(34,160,107,0.2);
 }
 
 .nova-domain-info {
@@ -282,9 +285,9 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--vx-primary);
+  background: var(--vx-accent);
   flex-shrink: 0;
-  box-shadow: 0 0 6px var(--vx-primary-glow);
+  box-shadow: 0 0 6px var(--vx-accent-glow);
 }
 
 /* ─── 6. DOMAIN SECTION ───────────────────────────────────────── */
@@ -316,7 +319,7 @@
   height: 48px;
   border-radius: var(--vx-radius-md);
   background: var(--vx-primary-light);
-  border: 1px solid rgba(31,111,235,0.15);
+  border: 1px solid rgba(59,130,184,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,7 +353,7 @@
 }
 
 .nova-question-card:hover {
-  border-color: rgba(31,111,235,0.15);
+  border-color: rgba(59,130,184,0.15);
 }
 
 .nova-question-card.completed {
@@ -450,7 +453,7 @@
 }
 
 .nova-score-pill:hover {
-  border-color: rgba(31,111,235,0.2);
+  border-color: rgba(59,130,184,0.2);
   background: var(--vx-primary-light);
   transform: translateY(-2px);
 }
@@ -634,7 +637,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--vx-success-light);
-  border: 1px solid rgba(46,196,182,0.2);
+  border: 1px solid rgba(34,160,107,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -719,7 +722,7 @@
 }
 
 .nova-btn-success:hover {
-  background: #2EC4B6;
+  background: #22A06B;
   box-shadow: 0 8px 24px var(--vx-success-glow);
 }
 
@@ -754,7 +757,7 @@
   right: 2rem;
   background: var(--vx-card-bg);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(46,196,182,0.2);
+  border: 1px solid rgba(34,160,107,0.2);
   color: var(--vx-success);
   padding: 0.75rem 1.25rem;
   border-radius: var(--vx-radius-lg);
@@ -814,7 +817,7 @@
   width: 64px;
   height: 64px;
   background: var(--vx-primary-light);
-  border: 1px solid rgba(31,111,235,0.15);
+  border: 1px solid rgba(59,130,184,0.15);
   border-radius: var(--vx-radius-lg);
   display: flex;
   align-items: center;
@@ -879,7 +882,7 @@
 .nova-step-dot.completed {
   background: var(--vx-success-light);
   color: var(--vx-success);
-  border: 1px solid rgba(46,196,182,0.2);
+  border: 1px solid rgba(34,160,107,0.2);
 }
 
 .nova-step-dot.active {
