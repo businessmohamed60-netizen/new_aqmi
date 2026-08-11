@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['lang'] ?? 'fr' ?>" data-bs-theme="dark">
+<html lang="<?= $_SESSION['lang'] ?? 'fr' ?>" dir="<?= ($_SESSION['lang'] ?? 'fr') === 'ar' ? 'rtl' : 'ltr' ?>" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

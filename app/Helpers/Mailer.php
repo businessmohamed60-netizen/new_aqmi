@@ -185,6 +185,61 @@ HTML;
     }
 
     /**
+     * Génère le template HTML pour une demande de compte
+     */
+    public static function accountRequestTemplate(array $data, string $platformsList): string
+    {
+        $rows = [
+            ['Entreprise', $data['company']],
+            ['Contact', $data['fullname']],
+            ['Fonction', $data['job_title']],
+            ['Email', $data['email']],
+            ['Téléphone', $data['phone']],
+            ['Pays', $data['country']],
+            ['Taille entreprise', $data['company_size']],
+            ['Activité', $data['activity']],
+            ['Plateformes intéressées', $platformsList ?: 'Non précisé'],
+            ['Message', $data['message'] ?: 'Aucun message'],
+        ];
+
+        $rowsHtml = '';
+        foreach ($rows as [$label, $value]) {
+            $safeValue = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+            $rowsHtml .= "<tr><td style=\"padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#94a3b8;font-size:13px;white-space:nowrap\">{$label}</td><td style=\"padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#f1f5f9;font-size:13px;font-weight:500\">{$safeValue}</td></tr>";
+        }
+
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;padding:0;background-color:#0a0a0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrapper{width:100%;max-width:600px;margin:0 auto;padding:40px 20px}
+  .card{background:#14141f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:40px}
+  .logo{width:52px;height:52px;background:linear-gradient(135deg,#00cfe8,#ff9f43);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
+  h1{font-size:20px;font-weight:700;color:#f1f5f9;margin:0 0 8px;text-align:center}
+  .subtitle{font-size:13px;color:#94a3b8;text-align:center;margin:0 0 28px}
+  table{width:100%;border-collapse:collapse}
+  .footer-text{font-size:12px;color:#64748b;line-height:1.5;margin:0;text-align:center}
+  .divider{height:1px;background:rgba(255,255,255,0.06);margin:24px 0}
+</style></head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="logo">N</div>
+      <h1>Nouvelle demande de compte</h1>
+      <p class="subtitle">Un nouveau prospect souhaite rejoindre l'écosystème NOVAQYS</p>
+      <table>{$rowsHtml}</table>
+      <div class="divider"></div>
+      <p class="footer-text">NOVAQYS · Automotive Quality & Manufacturing Index<br>Email généré automatiquement depuis le formulaire de demande de compte</p>
+    </div>
+  </div>
+</body>
+</html>
+HTML;
+    }
+
+    /**
      * Détecte les infos navigateur et OS
      */
     public static function detectUserAgent(): array

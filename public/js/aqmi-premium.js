@@ -15,6 +15,8 @@
   var t = i18nData[currentLang] || i18nData['fr'] || {};
   function tr(key) { return t[key] !== undefined ? t[key] : key; }
 
+  updateBrandMark(currentLang);
+
   var questions = cfg.questions || [];
   for (var _i = 0; _i < questions.length; _i++) {
     if (questions[_i].weight != null) questions[_i].weight = parseFloat(questions[_i].weight) || 1;
@@ -216,12 +218,18 @@
   }
 
   // ── Render question ──
+  function localized(obj, base) {
+    if (currentLang === 'ar' && obj[base + '_ar']) return obj[base + '_ar'];
+    if (currentLang === 'en' && obj[base + '_en']) return obj[base + '_en'];
+    return obj[base];
+  }
+
   function renderQuestion(index) {
     var q = questions[index];
     if (!q) return;
 
     var domain = getDomain(q.domain_id);
-    var domainName = domain ? domain.name : '';
+    var domainName = domain ? localized(domain, 'name') : '';
 
     // Check for domain change
     if (domain && domain.id !== lastDomainId && lastDomainId !== null) {
@@ -233,26 +241,29 @@
     el.currentNum.textContent = index + 1;
     el.domainLabel.textContent = domainName;
     el.domainBadgeText.textContent = domainName;
+    el.domainLabel.textContent = domainName;
     if (domain && domain.icon) {
       el.domainIcon.className = 'fas ' + domain.icon;
     }
 
     // Question header
     el.questionNumber.textContent = 'QUESTION ' + (index + 1);
-    el.questionTitle.textContent = q.title;
+    el.questionTitle.textContent = localized(q, 'title');
 
     // Description
-    if (q.description) {
-      el.questionDesc.textContent = q.description;
+    var qDesc = localized(q, 'description');
+    if (qDesc) {
+      el.questionDesc.textContent = qDesc;
       el.questionDesc.style.display = '';
     } else {
       el.questionDesc.style.display = 'none';
     }
 
     // Learn more
-    if (q.help_text) {
+    var qHelp = localized(q, 'help_text');
+    if (qHelp) {
       el.learnMore.style.display = '';
-      el.learnMoreBody.innerHTML = '<p>' + q.help_text.replace(/\n/g, '</p><p>') + '</p>';
+      el.learnMoreBody.innerHTML = '<p>' + qHelp.replace(/\n/g, '</p><p>') + '</p>';
       el.learnMoreContent.classList.remove('open');
       el.learnMoreBtn.classList.remove('open');
     } else {
@@ -920,8 +931,17 @@
         applyI18nLabels(selectedLang);
         // Set RTL for Arabic
         document.documentElement.setAttribute('dir', selectedLang === 'ar' ? 'rtl' : 'ltr');
+        updateBrandMark(selectedLang);
       });
     });
+
+  function updateBrandMark(lang) {
+    var mark = document.getElementById('aqmiBrandMark');
+    if (!mark) return;
+    var letters = ['A','Q','M','I'];
+    mark.innerHTML = '';
+    letters.forEach(function(l) { var s = document.createElement('span'); s.textContent = l; mark.appendChild(s); });
+  }
 
     if (langStartBtn) {
       langStartBtn.addEventListener('click', function() {
@@ -932,6 +952,7 @@
           .finally(function() {
             currentLang = selectedLang;
             t = i18nData[currentLang] || i18nData['fr'] || {};
+            updateBrandMark(currentLang);
             dismissLangScreen();
           });
       });

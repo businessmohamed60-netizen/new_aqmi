@@ -9,8 +9,10 @@ foreach ($domainQuestions as $dq) {
         'id' => $dq['domain']['id'],
         'name' => $dq['domain']['name_fr'] ?: $dq['domain']['name'],
         'name_en' => $dq['domain']['name'],
+        'name_ar' => $dq['domain']['name_ar'] ?? null,
         'icon' => ($dq['domain']['icon'] ?? null) ?: 'fa-industry',
         'description' => ($dq['domain']['description_fr'] ?? null) ?: ($dq['domain']['description'] ?? ''),
+        'description_ar' => $dq['domain']['description_ar'] ?? null,
     ];
     foreach ($dq['questions'] as $q) {
         $answered = false;
@@ -23,8 +25,11 @@ foreach ($domainQuestions as $dq) {
             'domain_id' => $q['domain_id'],
             'title' => $q['title_fr'] ?: $q['title'],
             'title_en' => $q['title'],
+            'title_ar' => $q['title_ar'] ?? null,
             'description' => $q['description_fr'] ?: $q['description'],
+            'description_ar' => $q['description_ar'] ?? null,
             'help_text' => $q['help_text_fr'] ?? $q['help_text'] ?? null,
+            'help_text_ar' => $q['help_text_ar'] ?? null,
             'question_type' => $q['question_type'] ?? 'rating_scale',
             'options' => $q['options'] ?? null,
             'weight' => (float)($q['weight'] ?? 1),
@@ -184,7 +189,7 @@ ob_start();
   <!-- Top Bar -->
   <div class="aqmi-topbar">
     <div class="aqmi-topbar-brand">
-      <div class="aqmi-brand-mark"><span>A</span><span>Q</span><span>M</span><span>I</span></div>
+      <div class="aqmi-brand-mark" id="aqmiBrandMark"><span>A</span><span>Q</span><span>M</span><span>I</span></div>
       <div class="aqmi-brand-copy">
         <strong>Automotive Quality</strong>
         <small>Maturity Index</small>

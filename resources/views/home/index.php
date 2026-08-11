@@ -900,6 +900,119 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════
+     ACCOUNT REQUEST FORM
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="account-request-section" id="account-request">
+  <div class="account-request-grid-bg"></div>
+  <div class="account-request-glow"></div>
+  <div class="max-w-7xl px-6">
+    <div class="account-request-wrapper">
+      <div class="account-request-info fade-up">
+        <span class="section-label"><i class="fas fa-user-plus"></i> Demande de compte</span>
+        <h2 class="section-title">Rejoignez l'écosystème<br><span class="gradient-text">NOVAQYS</span></h2>
+        <p class="section-desc">Demandez votre accès à l'écosystème NOVAQYS. Notre équipe vous recontactera sous 48h pour activer votre compte et vous accompagner.</p>
+        <div class="account-request-features">
+          <div class="account-request-feature"><i class="fas fa-check-circle" style="color:#28c76f"></i> Accès à AQMI — évaluation de maturité</div>
+          <div class="account-request-feature"><i class="fas fa-check-circle" style="color:#28c76f"></i> Plateforme LMS — formations automobiles</div>
+          <div class="account-request-feature"><i class="fas fa-check-circle" style="color:#28c76f"></i> Rapports détaillés & scoring par domaine</div>
+          <div class="account-request-feature"><i class="fas fa-check-circle" style="color:#28c76f"></i> Mise en relation réseau de sous-traitance</div>
+        </div>
+      </div>
+
+      <div class="account-request-form-wrap fade-up">
+        <?php
+        $reqError = \App\Helpers\Session::getFlash('account_request_error');
+        $reqSuccess = \App\Helpers\Session::getFlash('account_request_success');
+        $oldInput = \App\Helpers\Session::getFlash('old_input.account', []);
+        ?>
+        <?php if ($reqSuccess): ?>
+          <div class="account-request-success">
+            <i class="fas fa-check-circle"></i>
+            <h3>Demande envoyée avec succès</h3>
+            <p>Votre demande a bien été transmise à notre équipe. Nous vous contacterons sous 48h.</p>
+          </div>
+        <?php else: ?>
+          <?php if ($reqError): ?>
+            <div class="account-request-error-msg">
+              <i class="fas fa-exclamation-circle"></i> <?= e($reqError) ?>
+            </div>
+          <?php endif; ?>
+          <form action="/account-request" method="POST" class="account-request-form">
+            <?= csrf_field() ?>
+            <div class="arf-row">
+              <div class="arf-field">
+                <label for="arf-company">Entreprise <span class="arf-required">*</span></label>
+                <input type="text" id="arf-company" name="company" required placeholder="Nom de votre entreprise" value="<?= e($oldInput['company'] ?? '') ?>">
+              </div>
+              <div class="arf-field">
+                <label for="arf-fullname">Nom complet <span class="arf-required">*</span></label>
+                <input type="text" id="arf-fullname" name="fullname" required placeholder="Prénom et nom" value="<?= e($oldInput['fullname'] ?? '') ?>">
+              </div>
+            </div>
+            <div class="arf-row">
+              <div class="arf-field">
+                <label for="arf-jobtitle">Fonction <span class="arf-required">*</span></label>
+                <input type="text" id="arf-jobtitle" name="job_title" required placeholder="Ex: Directeur Qualité" value="<?= e($oldInput['job_title'] ?? '') ?>">
+              </div>
+              <div class="arf-field">
+                <label for="arf-country">Pays <span class="arf-required">*</span></label>
+                <input type="text" id="arf-country" name="country" required placeholder="Ex: France" value="<?= e($oldInput['country'] ?? '') ?>">
+              </div>
+            </div>
+            <div class="arf-row">
+              <div class="arf-field">
+                <label for="arf-email">Email professionnel <span class="arf-required">*</span></label>
+                <input type="email" id="arf-email" name="email" required placeholder="vous@entreprise.com" value="<?= e($oldInput['email'] ?? '') ?>">
+              </div>
+              <div class="arf-field">
+                <label for="arf-phone">Téléphone <span class="arf-required">*</span></label>
+                <input type="tel" id="arf-phone" name="phone" required placeholder="+33 6 12 34 56 78" value="<?= e($oldInput['phone'] ?? '') ?>">
+              </div>
+            </div>
+            <div class="arf-row">
+              <div class="arf-field">
+                <label for="arf-size">Taille entreprise <span class="arf-required">*</span></label>
+                <select id="arf-size" name="company_size" required>
+                  <option value="">Sélectionner...</option>
+                  <option value="1-10" <?= ($oldInput['company_size'] ?? '') === '1-10' ? 'selected' : '' ?>>1-10 employés</option>
+                  <option value="11-50" <?= ($oldInput['company_size'] ?? '') === '11-50' ? 'selected' : '' ?>>11-50 employés</option>
+                  <option value="51-200" <?= ($oldInput['company_size'] ?? '') === '51-200' ? 'selected' : '' ?>>51-200 employés</option>
+                  <option value="201-500" <?= ($oldInput['company_size'] ?? '') === '201-500' ? 'selected' : '' ?>>201-500 employés</option>
+                  <option value="500+" <?= ($oldInput['company_size'] ?? '') === '500+' ? 'selected' : '' ?>>500+ employés</option>
+                </select>
+              </div>
+              <div class="arf-field">
+                <label for="arf-activity">Secteur d'activité <span class="arf-required">*</span></label>
+                <input type="text" id="arf-activity" name="activity" required placeholder="Ex: Fabrication de pièces automobiles" value="<?= e($oldInput['activity'] ?? '') ?>">
+              </div>
+            </div>
+            <div class="arf-field arf-full">
+              <label>Plateformes qui vous intéressent</label>
+              <div class="arf-checkboxes">
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="AQMI Starter" <?= in_array('AQMI Starter', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>AQMI Starter</span></label>
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="AQMI Professional" <?= in_array('AQMI Professional', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>AQMI Professional</span></label>
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="NARA" <?= in_array('NARA', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>NARA</span></label>
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="LMS" <?= in_array('LMS', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>NOVAQYS LMS</span></label>
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="QMS" <?= in_array('QMS', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>NOVAQYS QMS</span></label>
+                <label class="arf-check"><input type="checkbox" name="platforms[]" value="ASIN" <?= in_array('ASIN', $oldInput['platforms'] ?? []) ? 'checked' : '' ?>><span>ASIN</span></label>
+              </div>
+            </div>
+            <div class="arf-field arf-full">
+              <label for="arf-message">Message (optionnel)</label>
+              <textarea id="arf-message" name="message" rows="3" placeholder="Précisez votre demande..."><?= e($oldInput['message'] ?? '') ?></textarea>
+            </div>
+            <button type="submit" class="btn-primary arf-submit">
+              <i class="fas fa-paper-plane"></i>
+              Envoyer ma demande
+            </button>
+          </form>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
      FOOTER
      ═══════════════════════════════════════════════════════════════════ -->
 <footer class="footer">

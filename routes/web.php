@@ -6,6 +6,7 @@ use App\Helpers\Router;
 // Home
 $router->get('/', 'HomeController@index');
 $router->post('/contact', 'HomeController@contact');
+$router->post('/account-request', 'HomeController@accountRequest');
 $router->get('/lang/{lang}', 'HomeController@switchLang');
 
 // Assessment (auth required)
