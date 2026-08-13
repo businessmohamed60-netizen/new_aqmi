@@ -48,159 +48,126 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     HERO SECTION — 360° Ecosystem
+     HERO SECTION — Modern Slider Carousel
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="hero" id="top">
+<section class="hero hero-slider" id="top">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow-1"></div>
   <div class="hero-glow-2"></div>
-  <div class="hero-scanline"></div>
 
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      <span>Industry 4.0 · Automotive Manufacturing Ecosystem</span>
-    </div>
-
-    <h1 class="hero-title">
-      NOVAQYS<br>
-      <span class="hero-gradient">Building the Future of Automotive<br>Manufacturing Excellence</span>
-    </h1>
-
-    <p class="hero-subtitle">
-      Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.
-    </p>
-
-    <div class="hero-ctas">
-      <a href="#ecosystem">
-        <button class="btn-primary">
-          Découvrir l'écosystème
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </a>
-      <a href="#account-request">
-        <button class="btn-outline">
-          <i class="fas fa-play"></i>
-          Demander une démonstration
-        </button>
-      </a>
-      <a href="/user/login">
-        <button class="btn-ghost">
-          <i class="fas fa-lock"></i>
-          Connexion AQMI
-        </button>
-      </a>
-    </div>
-  </div>
-
-  <!-- 360° Ecosystem Image -->
-  <div class="hero-360-wrap">
-    <div class="hero-360-container">
-      <img src="/assets/img/novaqys-ecosystem-360.webp"
-           alt="NOVAQYS Ecosystem 360°"
-           class="hero-360-image"
-           loading="eager">
-
-      <!-- Clickable overlay links — positioned directly on image modules -->
-      <a href="#nara" class="hero-360-link hero-360-link-nara"
-         data-platform="NARA"
-         data-desc="Outil professionnel d'audit fournisseur. Réalisez des évaluations directement chez vos fournisseurs avec collecte de preuves et scoring automatique."
-         data-color="#00cfe8">
-        <i class="fas fa-search"></i>
-        <span>NARA</span>
-      </a>
-      <a href="/aqmi-starter.html" class="hero-360-link hero-360-link-aqmi"
-         data-platform="AQMI"
-         data-desc="Évaluez gratuitement le niveau de maturité de votre entreprise. Détectez vos points forts et identifiez vos axes de progrès en quelques minutes."
-         data-color="#7367f0">
-        <i class="fas fa-clipboard-check"></i>
-        <span>AQMI</span>
-      </a>
-      <a href="/lms.html" class="hero-360-link hero-360-link-lms"
-         data-platform="NOVAQYS LMS"
-         data-desc="Plateforme de formation dédiée aux normes et méthodes automobiles. Formez vos équipes aux standards IATF, Core Tools et Lean Manufacturing."
-         data-color="#28c76f">
-        <i class="fas fa-graduation-cap"></i>
-        <span>LMS</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-qms"
-         data-platform="NOVAQYS QMS"
-         data-desc="Plateforme centrale de gestion de la production, qualité, maintenance et supply chain. Solution complète avec IA intégrée et BI temps réel."
-         data-color="#9b8cf7">
-        <i class="fas fa-industry"></i>
-        <span>QMS</span>
-      </a>
-      <a href="#asin" class="hero-360-link hero-360-link-asin"
-         data-platform="ASIN"
-         data-desc="Marketplace B2B mondiale dédiée à la chaîne d'approvisionnement automobile. Connectez-vous aux constructeurs et développez votre réseau."
-         data-color="#ea5455">
-        <i class="fas fa-globe"></i>
-        <span>ASIN</span>
-      </a>
-      <a href="#ecosystem" class="hero-360-link hero-360-link-label"
-         data-platform="Supplier Excellence Label"
-         data-desc="Certification de excellence fournisseur reconnue par les grands constructeurs automobiles. Valorisez votre niveau de maturité et votre conformité."
-         data-color="#ff9f43">
-        <i class="fas fa-certificate"></i>
-        <span>Label</span>
-      </a>
-      <!-- Bottom row: 6 data modules -->
-      <a href="#qms" class="hero-360-link hero-360-link-d1"
-         data-platform="Données Centralisées"
-         data-desc="Plateforme unique de centralisation de toutes vos données de production, qualité et supply chain. Vue à 360° de votre entreprise."
-         data-color="#7367f0">
-        <i class="fas fa-database"></i>
-        <span>Données</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-d2"
-         data-platform="Analytique Avancée"
-         data-desc="Tableaux de bord interactifs et reporting automatisé. Pilotez votre performance avec des indicateurs temps réel et des analyses prédictives."
-         data-color="#7367f0">
-        <i class="fas fa-chart-line"></i>
-        <span>Analytics</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-d3"
-         data-platform="IA & Insights"
-         data-desc="Intelligence artificielle embarquée pour la détection d'anomalies, l'analyse prédictive et les recommandations intelligentes."
-         data-color="#7367f0">
-        <i class="fas fa-brain"></i>
-        <span>IA</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-d4"
-         data-platform="Sécurité & Conformité"
-         data-desc="Respect des normes IATF 16949, ISO 27001 et RGPD. Contrôle d'accès, chiffrement des données et audit de conformité automatisé."
-         data-color="#7367f0">
-        <i class="fas fa-shield-halved"></i>
-        <span>Sécurité</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-d5"
-         data-platform="Traçabilité Complète"
-         data-desc="Traçabilité batch de la matière première au produit fini. QR Code, RFID et blockchain pour une transparence totale de votre supply chain."
-         data-color="#7367f0">
-        <i class="fas fa-qrcode"></i>
-        <span>Traçabilité</span>
-      </a>
-      <a href="#qms" class="hero-360-link hero-360-link-d6"
-         data-platform="Amélioration Continue"
-         data-desc="Cycle PDCA intégré. CAPA, 8D, QRQC et Kaizen pour une amélioration continue pilotée par la data et l'intelligence collective."
-         data-color="#7367f0">
-        <i class="fas fa-arrows-rotate"></i>
-        <span>Progrès</span>
-      </a>
-
-      <!-- Info panel (shown on hover) -->
-      <div class="hero-360-panel" id="hero360Panel">
-        <div class="hero-360-panel-icon" id="hero360PanelIcon">
-          <i class="fas fa-cube"></i>
-        </div>
-        <div class="hero-360-panel-body">
-          <div class="hero-360-panel-title" id="hero360PanelTitle">Plateforme</div>
-          <div class="hero-360-panel-desc" id="hero360PanelDesc">Description</div>
-        </div>
-        <div class="hero-360-panel-arrow">
-          <i class="fas fa-arrow-right"></i>
+  <!-- Slides -->
+  <div class="hero-slides" id="heroSlides">
+    <?php
+    $slides = [
+      [
+        'img' => '/assets/img/slider/1.png',
+        'badge' => 'Industry 4.0 · Automotive Manufacturing Ecosystem',
+        'title_top' => 'NOVAQYS',
+        'title_grad' => "Building the Future of Automotive<br>Manufacturing Excellence",
+        'subtitle' => "Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.",
+        'cta1_text' => "Découvrir l'écosystème",
+        'cta1_link' => '#ecosystem',
+        'cta2_text' => "Demander une démonstration",
+        'cta2_link' => '#account-request',
+        'cta3_text' => 'Connexion AQMI',
+        'cta3_link' => '/user/login',
+      ],
+      [
+        'img' => '/assets/img/slider/2.png',
+        'badge' => 'AQMI · Auto-évaluation de Maturité Qualité',
+        'title_top' => 'AQMI Starter',
+        'title_grad' => "Évaluez gratuitement<br>votre niveau de maturité",
+        'subtitle' => "Détectez vos points forts et identifiez vos axes de progrès en quelques minutes. Rapport détaillé avec scoring par domaine et recommandations actionnables.",
+        'cta1_text' => "Commencer l'évaluation",
+        'cta1_link' => '/assessment/start',
+        'cta2_text' => "Voir un exemple de rapport",
+        'cta2_link' => '#report',
+        'cta3_text' => 'Connexion AQMI',
+        'cta3_link' => '/user/login',
+      ],
+      [
+        'img' => '/assets/img/slider/3.png',
+        'badge' => 'Formation · Normes & Méthodes Automobiles',
+        'title_top' => 'NOVAQYS LMS',
+        'title_grad' => "Formez vos équipes aux<br>standards automobiles",
+        'subtitle' => "Plateforme de formation dédiée aux normes IATF 16949, Core Tools et Lean Manufacturing. Vidéos interactives, quiz et certifications reconnues.",
+        'cta1_text' => 'Découvrir la plateforme LMS',
+        'cta1_link' => '/lms.html',
+        'cta2_text' => "Demander une démonstration",
+        'cta2_link' => '#account-request',
+        'cta3_text' => 'Connexion AQMI',
+        'cta3_link' => '/user/login',
+      ],
+      [
+        'img' => '/assets/img/slider/4.png',
+        'badge' => 'ASIN · Automotive Supplier Intelligence Network',
+        'title_top' => 'ASIN',
+        'title_grad' => "Rejoignez la marketplace B2B<br>de l'industrie automobile",
+        'subtitle' => "Connectez-vous aux constructeurs, publiez votre passeport industriel et développez votre réseau de sous-traitance international. Le LinkedIn + Alibaba de l'industrie auto.",
+        'cta1_text' => "Découvrir ASIN",
+        'cta1_link' => '#asin',
+        'cta2_text' => "Demander une démonstration",
+        'cta2_link' => '#account-request',
+        'cta3_text' => 'Connexion AQMI',
+        'cta3_link' => '/user/login',
+      ],
+    ];
+    foreach ($slides as $idx => $s): ?>
+      <div class="hero-slide<?= $idx === 0 ? ' active' : '' ?>" data-index="<?= $idx ?>">
+        <div class="hero-slide-bg" style="background-image:url('<?= $s['img'] ?>')"></div>
+        <div class="hero-slide-overlay"></div>
+        <div class="hero-slide-content">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            <span><?= $s['badge'] ?></span>
+          </div>
+          <h1 class="hero-title">
+            <?= $s['title_top'] ?><br>
+            <span class="hero-gradient"><?= $s['title_grad'] ?></span>
+          </h1>
+          <p class="hero-subtitle"><?= $s['subtitle'] ?></p>
+          <div class="hero-ctas">
+            <a href="<?= $s['cta1_link'] ?>">
+              <button class="btn-primary">
+                <?= $s['cta1_text'] ?>
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </a>
+            <a href="<?= $s['cta2_link'] ?>">
+              <button class="btn-outline">
+                <i class="fas fa-play"></i>
+                <?= $s['cta2_text'] ?>
+              </button>
+            </a>
+            <a href="<?= $s['cta3_link'] ?>">
+              <button class="btn-ghost">
+                <i class="fas fa-lock"></i>
+                <?= $s['cta3_text'] ?>
+              </button>
+            </a>
+          </div>
         </div>
       </div>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Navigation arrows -->
+  <button class="hero-slider-arrow hero-slider-prev" id="heroSlidePrev" aria-label="Slide précédent">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <button class="hero-slider-arrow hero-slider-next" id="heroSlideNext" aria-label="Slide suivant">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+  <!-- Dots + progress -->
+  <div class="hero-slider-controls">
+    <div class="hero-slider-dots" id="heroSliderDots">
+      <?php foreach ($slides as $idx => $s): ?>
+        <button class="hero-slider-dot<?= $idx === 0 ? ' active' : '' ?>" data-index="<?= $idx ?>" aria-label="Aller au slide <?= $idx + 1 ?>"></button>
+      <?php endforeach; ?>
+    </div>
+    <div class="hero-slider-progress-track">
+      <div class="hero-slider-progress" id="heroSliderProgress"></div>
     </div>
   </div>
 

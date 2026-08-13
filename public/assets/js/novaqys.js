@@ -124,93 +124,67 @@
       }, { passive: true });
     }
 
-    /* ─── 360° Interactive Ecosystem ───────────────────────────────── */
-    const container = document.querySelector('.hero-360-container');
-    const image = container ? container.querySelector('.hero-360-image') : null;
-    const panel = document.getElementById('hero360Panel');
-    const panelIcon = document.getElementById('hero360PanelIcon');
-    const panelTitle = document.getElementById('hero360PanelTitle');
-    const panelDesc = document.getElementById('hero360PanelDesc');
-    const links = container ? container.querySelectorAll('.hero-360-link') : [];
+    /* ─── Hero Slider Carousel ─────────────────────────────────────── */
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('.hero-slider-dot');
+    var prevBtn = document.getElementById('heroSlidePrev');
+    var nextBtn = document.getElementById('heroSlideNext');
+    var progress = document.getElementById('heroSliderProgress');
 
-    if (container && image && panel) {
-      let mouseX = 0, mouseY = 0;
-      let currentX = 0, currentY = 0;
+    if (slides.length > 0) {
+      var current = 0;
+      var autoTimer = null;
+      var SLIDE_DURATION = 7000;
 
-      // ── Mouse parallax ──
-      container.addEventListener('mousemove', function(e) {
-        const rect = container.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        mouseX = (x - 0.5) * 2;
-        mouseY = (y - 0.5) * 2;
-      });
-
-      container.addEventListener('mouseleave', function() {
-        mouseX = 0;
-        mouseY = 0;
-      });
-
-      // Smooth parallax animation loop
-      function animateParallax() {
-        currentX += (mouseX - currentX) * 0.08;
-        currentY += (mouseY - currentY) * 0.08;
-        image.style.transform = 'translate(' + (currentX * 1.2) + '%, ' + (currentY * 0.8) + '%) scale(1.03)';
-        requestAnimationFrame(animateParallax);
+      function goTo(index) {
+        slides.forEach(function(s, i) { s.classList.toggle('active', i === index); });
+        dots.forEach(function(d, i) { d.classList.toggle('active', i === index); });
+        current = index;
+        resetProgress();
+        restartAuto();
       }
-      animateParallax();
+      function next() { goTo((current + 1) % slides.length); }
+      function prev() { goTo((current - 1 + slides.length) % slides.length); }
 
-      // ── Info panel on hover ──
-      links.forEach(function(link) {
-        link.addEventListener('mouseenter', function() {
-          var platform = link.dataset.platform || 'Plateforme';
-          var desc = link.dataset.desc || '';
-          var color = link.dataset.color || '#7367f0';
-          var iconEl = link.querySelector('i');
+      function resetProgress() {
+        if (progress) {
+          progress.style.transition = 'none';
+          progress.style.width = '0%';
+          void progress.offsetWidth;
+          progress.style.transition = 'width ' + (SLIDE_DURATION / 1000) + 's linear';
+          progress.style.width = '100%';
+        }
+      }
+      function restartAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(next, SLIDE_DURATION);
+      }
 
-          panelTitle.textContent = platform;
-          panelDesc.textContent = desc;
-
-          if (iconEl) {
-            panelIcon.innerHTML = iconEl.outerHTML;
-          }
-          panelIcon.style.background = color + '20';
-          panelIcon.style.color = color;
-
-          var arrow = panel.querySelector('.hero-360-panel-arrow');
-          if (arrow) {
-            arrow.style.background = color + '20';
-            arrow.style.borderColor = color + '40';
-            arrow.style.color = color;
-          }
-
-          link.style.borderColor = color;
-          link.style.boxShadow = '0 0 40px ' + color + '66, 0 8px 30px rgba(0,0,0,0.5)';
-          panel.classList.add('active');
-        });
-
-        link.addEventListener('mouseleave', function() {
-          link.style.borderColor = '';
-          link.style.boxShadow = '';
-          panel.classList.remove('active');
-        });
-
-        // ── Smooth scroll on click ──
-        link.addEventListener('click', function(e) {
-          var href = link.getAttribute('href');
-          if (href && href.charAt(0) === '#') {
-            e.preventDefault();
-            var target = document.querySelector(href);
-            if (target) {
-              panel.classList.remove('active');
-              var header = document.querySelector('.nav-header');
-              var offset = header ? header.offsetHeight : 0;
-              var targetPos = target.getBoundingClientRect().top + window.scrollY - offset - 20;
-              window.scrollTo({ top: targetPos, behavior: 'smooth' });
-            }
-          }
-        });
+      if (nextBtn) nextBtn.addEventListener('click', next);
+      if (prevBtn) prevBtn.addEventListener('click', prev);
+      dots.forEach(function(dot) {
+        dot.addEventListener('click', function() { goTo(parseInt(dot.dataset.index, 10)); });
       });
+
+      var heroSection = document.querySelector('.hero-slider');
+      if (heroSection) {
+        heroSection.addEventListener('mouseenter', function() { clearInterval(autoTimer); });
+        heroSection.addEventListener('mouseleave', function() { restartAuto(); });
+        var touchStartX = 0;
+        heroSection.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+        heroSection.addEventListener('touchend', function(e) {
+          var dx = e.changedTouches[0].clientX - touchStartX;
+          if (Math.abs(dx) > 50) { if (dx > 0) prev(); else next(); }
+        }, { passive: true });
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
+      });
+
+      resetProgress();
+      restartAuto();
     }
   });
 
