@@ -7,6 +7,7 @@ use App\Models\Assessment;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Domain;
+use App\Models\EvaluationModel;
 use App\Services\ScoringService;
 use App\Services\EmailService;
 use App\Models\Lead;
@@ -23,11 +24,16 @@ class AssessmentController
 
         // Check if there's an existing in-progress assessment
         $existing = Database::fetch(
-            "SELECT id FROM assessments WHERE session_id = ? AND status = 'in_progress' ORDER BY id DESC LIMIT 1",
+            "SELECT id, model_id FROM assessments WHERE session_id = ? AND status = 'in_progress' ORDER BY id DESC LIMIT 1",
             [$sessionId]
         );
 
-        if ($existing) {
+        if ($existing && $existing['model_id']) {
+            redirect('/assessment/' . $existing['id']);
+            return;
+        }
+
+        if ($existing && !$existing['model_id']) {
             redirect('/assessment/' . $existing['id']);
             return;
         }
@@ -39,6 +45,28 @@ class AssessmentController
         redirect('/assessment/' . $assessmentId);
     }
 
+    public function selectModel(): void
+    {
+        Auth::requireAuth();
+        $assessmentId = (int)($_POST['assessment_id'] ?? 0);
+        $modelId = (int)($_POST['model_id'] ?? 0);
+
+        $assessment = Assessment::find($assessmentId);
+        if (!$assessment || $assessment['status'] !== 'in_progress') {
+            jsonResponse(['success' => false, 'error' => 'Invalid assessment'], 400);
+            return;
+        }
+
+        $model = EvaluationModel::find($modelId);
+        if (!$model || !$model['is_active']) {
+            jsonResponse(['success' => false, 'error' => 'Invalid model'], 400);
+            return;
+        }
+
+        Assessment::setModel($assessmentId, $modelId);
+        jsonResponse(['success' => true, 'redirect' => '/assessment/' . $assessmentId]);
+    }
+
     public function show(array $params): void
     {
         Auth::requireAuth();
@@ -46,7 +74,27 @@ class AssessmentController
         $assessment = Assessment::find($assessmentId);
         if (!$assessment) { redirect('/'); return; }
 
-        $domains = Domain::allActive();
+        // If no model selected yet, show model selection screen
+        if (!$assessment['model_id']) {
+            $models = EvaluationModel::allActive();
+            view('assessment.index', compact('assessment', 'models'));
+            return;
+        }
+
+        $modelId = (int)$assessment['model_id'];
+        $modelDomains = EvaluationModel::getDomains($modelId);
+        $domainIds = array_column($modelDomains, 'id');
+
+        if (empty($domainIds)) {
+            $domains = Domain::allActive();
+        } else {
+            $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+            $domains = Database::fetchAll(
+                "SELECT * FROM domains WHERE id IN ($placeholders) AND is_active = 1 ORDER BY sort_order",
+                $domainIds
+            );
+        }
+
         $answers = Answer::findByAssessment($assessmentId);
         $answeredQuestionIds = array_column($answers, 'question_id');
 

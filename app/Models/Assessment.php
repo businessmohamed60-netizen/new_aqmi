@@ -18,15 +18,20 @@ class Assessment
     public static function create(array $data): int
     {
         return Database::insert(
-            "INSERT INTO assessments (user_id, session_id, status, current_step) VALUES (?, ?, ?, ?)",
-            [$data['user_id'] ?? null, $data['session_id'], $data['status'] ?? 'in_progress', $data['current_step'] ?? 0]
+            "INSERT INTO assessments (user_id, session_id, model_id, status, current_step) VALUES (?, ?, ?, ?, ?)",
+            [$data['user_id'] ?? null, $data['session_id'], $data['model_id'] ?? null, $data['status'] ?? 'in_progress', $data['current_step'] ?? 0]
         );
+    }
+
+    public static function setModel(int $id, int $modelId): int
+    {
+        return Database::execute("UPDATE assessments SET model_id = ? WHERE id = ?", [$modelId, $id]);
     }
 
     public static function update(int $id, array $data): int
     {
         $sets = []; $params = [];
-        foreach (['status', 'current_step', 'total_score', 'maturity_level', 'completed_at'] as $key) {
+        foreach (['status', 'current_step', 'total_score', 'maturity_level', 'completed_at', 'model_id'] as $key) {
             if (array_key_exists($key, $data)) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
         }
         if (empty($sets)) return 0;

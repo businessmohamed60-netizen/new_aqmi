@@ -18,7 +18,7 @@
     <a href="#aqmi" class="nav-link">AQMI</a>
     <a href="#asin" class="nav-link">ASIN</a>
     <a href="/lms.html" class="nav-link">Learning</a>
-    <a href="#contact" class="nav-link">Contact</a>
+    <a href="#account-request" class="nav-link">Contact</a>
   </div>
 
   <div class="nav-actions">
@@ -40,7 +40,7 @@
   <a href="#aqmi" onclick="closeMobile()"><i class="fas fa-chart-line"></i> AQMI</a>
   <a href="#asin" onclick="closeMobile()"><i class="fas fa-globe"></i> ASIN</a>
   <a href="/lms.html" onclick="closeMobile()"><i class="fas fa-graduation-cap"></i> Automotive Learning</a>
-  <a href="#contact" onclick="closeMobile()"><i class="fas fa-envelope"></i> Contact</a>
+  <a href="#account-request" onclick="closeMobile()"><i class="fas fa-envelope"></i> Contact</a>
   <div class="nav-mobile-divider"></div>
   <a href="/user/login" class="btn-access" onclick="closeMobile()">
     <i class="fas fa-lock"></i> Connexion AQMI
@@ -78,7 +78,7 @@
           <i class="fas fa-arrow-right"></i>
         </button>
       </a>
-      <a href="#contact">
+      <a href="#account-request">
         <button class="btn-outline">
           <i class="fas fa-play"></i>
           Demander une démonstration
@@ -858,7 +858,7 @@
           <i class="fas fa-lock"></i> Connexion AQMI
         </button>
       </a>
-      <a href="#contact">
+      <a href="#account-request">
         <button class="btn-ghost">
           <i class="fas fa-play"></i> Demander une démonstration
         </button>
@@ -902,7 +902,7 @@
 <!-- ═══════════════════════════════════════════════════════════════════
      ACCOUNT REQUEST FORM
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="account-request-section" id="account-request">
+<section class="account-request-section scroll-mt-24" id="account-request">
   <div class="account-request-grid-bg"></div>
   <div class="account-request-glow"></div>
   <div class="max-w-7xl px-6">
@@ -1057,7 +1057,7 @@
     <div>
       <p class="footer-col-title">Liens</p>
       <div class="footer-links">
-        <a href="#contact">Contact</a>
+        <a href="#account-request">Contact</a>
         <a href="/admin/login">Admin</a>
       </div>
     </div>

@@ -1,9 +1,11 @@
 <?php
 $title = 'AQMI - Questionnaire Premium';
+$isModelSelection = isset($models) && !isset($domainQuestions);
 $totalQuestions = 0;
 $questionsFlat = [];
 $domainsFlat = [];
 
+if (!$isModelSelection) {
 foreach ($domainQuestions as $dq) {
     $domainsFlat[] = [
         'id' => $dq['domain']['id'],
@@ -40,6 +42,7 @@ foreach ($domainQuestions as $dq) {
         $totalQuestions++;
     }
 }
+}
 
 // Build the data for the JS engine
 $config = [
@@ -47,10 +50,12 @@ $config = [
     'totalQuestions' => $totalQuestions,
     'questions' => $questionsFlat,
     'domains' => $domainsFlat,
-    'answers' => $answers,
+    'answers' => $answers ?? [],
     'currentQuestion' => 0,
-    'completionPercent' => $completionPercent,
+    'completionPercent' => $completionPercent ?? 0,
     'lang' => $_SESSION['lang'] ?? 'fr',
+    'isModelSelection' => $isModelSelection,
+    'models' => $models ?? [],
 ];
 
 // i18n labels for the questionnaire UI
@@ -86,6 +91,9 @@ $i18n = [
         'completion_desc' => 'Merci d\'avoir répondu à toutes les questions. Nous préparons votre diagnostic personnalisé.',
         'completion_btn' => 'Voir mes résultats',
         'domain_transition_label' => 'DOMAINE',
+        'choose_model' => 'Choisissez votre modèle d\'évaluation',
+        'choose_model_desc' => 'Sélectionnez le modèle qui correspond à votre contexte',
+        'start_assessment' => 'Commencer l\'évaluation',
     ],
     'en' => [
         'choose_lang' => 'Choose your language',
@@ -118,6 +126,9 @@ $i18n = [
         'completion_desc' => 'Thank you for answering all the questions. We are preparing your personalized diagnostic.',
         'completion_btn' => 'See my results',
         'domain_transition_label' => 'DOMAIN',
+        'choose_model' => 'Choose your evaluation model',
+        'choose_model_desc' => 'Select the model that matches your context',
+        'start_assessment' => 'Start assessment',
     ],
     'ar' => [
         'choose_lang' => 'اختر لغتك',
@@ -150,6 +161,9 @@ $i18n = [
         'completion_desc' => 'شكراً لإجابتك على جميع الأسئلة. نحن نجهز تشخيصك المخصص.',
         'completion_btn' => 'عرض نتائجي',
         'domain_transition_label' => 'المجال',
+        'choose_model' => 'اختر نموذج التقييم الخاص بك',
+        'choose_model_desc' => 'اختر النموذج الذي يناسب سياقك',
+        'start_assessment' => 'بدء التقييم',
     ],
 ];
 
@@ -181,6 +195,34 @@ ob_start();
       </div>
       <button class="aqmi-lang-start-btn" id="aqmiLangStartBtn" type="button" disabled>
         <span id="aqmiLangStartText">Commencer le questionnaire</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Model Selection Screen -->
+  <div class="aqmi-model-screen" id="aqmiModelScreen" style="display:none;">
+    <div class="aqmi-model-screen-inner">
+      <div class="aqmi-model-screen-icon">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <h1 class="aqmi-model-screen-title" id="aqmiModelTitle">Choisissez votre modèle d'évaluation</h1>
+      <p class="aqmi-model-screen-desc" id="aqmiModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
+      <div class="aqmi-model-choices" id="aqmiModelChoices">
+        <?php foreach (($config['models'] ?? []) as $m): ?>
+          <button class="aqmi-model-choice" data-model="<?= (int)$m['id'] ?>" type="button">
+            <span class="aqmi-model-choice-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
+              <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
+            </span>
+            <span class="aqmi-model-choice-name"><?= e($m['name_fr'] ?: $m['name']) ?></span>
+            <?php if (!empty($m['description_fr']) || !empty($m['description'])): ?>
+              <span class="aqmi-model-choice-desc"><?= e($m['description_fr'] ?: $m['description']) ?></span>
+            <?php endif; ?>
+          </button>
+        <?php endforeach; ?>
+      </div>
+      <button class="aqmi-model-start-btn" id="aqmiModelStartBtn" type="button" disabled>
+        <span id="aqmiModelStartText">Commencer l'évaluation</span>
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>

@@ -914,9 +914,79 @@
       onComplete: function() {
         langScreen.style.display = 'none';
         langScreenVisible = false;
-        init();
+        // If model selection is needed, show model screen instead of init
+        if (cfg.isModelSelection) {
+          showModelScreen();
+        } else {
+          init();
+        }
       }
     });
+  }
+
+  // ── Model Selection Screen ──
+  var modelScreen = document.getElementById('aqmiModelScreen');
+  var modelChoices = document.querySelectorAll('.aqmi-model-choice');
+  var modelStartBtn = document.getElementById('aqmiModelStartBtn');
+  var modelStartText = document.getElementById('aqmiModelStartText');
+  var modelTitle = document.getElementById('aqmiModelTitle');
+  var modelDesc = document.getElementById('aqmiModelDesc');
+  var selectedModelId = null;
+
+  function applyModelLabels(lang) {
+    var labels = i18nData[lang] || i18nData['fr'] || {};
+    if (modelTitle && labels.choose_model) modelTitle.textContent = labels.choose_model;
+    if (modelDesc && labels.choose_model_desc) modelDesc.textContent = labels.choose_model_desc;
+    if (modelStartText && labels.start_assessment) modelStartText.textContent = labels.start_assessment;
+  }
+
+  function showModelScreen() {
+    if (!modelScreen) { init(); return; }
+    modelScreen.style.display = '';
+    applyModelLabels(currentLang);
+    gsap.fromTo(modelScreen, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+  }
+
+  function dismissModelScreen() {
+    if (!modelScreen) return;
+    gsap.to(modelScreen, {
+      opacity: 0, duration: 0.4, ease: 'power2.inOut',
+      onComplete: function() {
+        modelScreen.style.display = 'none';
+        // Submit model selection then reload to get model-filtered questions
+        var formData = new FormData();
+        formData.append('assessment_id', assessmentId);
+        formData.append('model_id', selectedModelId);
+        fetch('/assessment/select-model', { method: 'POST', body: formData })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.success && data.redirect) {
+              window.location.href = data.redirect;
+            } else {
+              window.location.reload();
+            }
+          })
+          .catch(function() { window.location.reload(); });
+      }
+    });
+  }
+
+  if (modelScreen) {
+    modelChoices.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        modelChoices.forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        selectedModelId = btn.getAttribute('data-model');
+        modelStartBtn.disabled = false;
+      });
+    });
+
+    if (modelStartBtn) {
+      modelStartBtn.addEventListener('click', function() {
+        if (modelStartBtn.disabled || !selectedModelId) return;
+        dismissModelScreen();
+      });
+    }
   }
 
   if (langScreen) {

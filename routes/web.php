@@ -12,6 +12,7 @@ $router->get('/lang/{lang}', 'HomeController@switchLang');
 // Assessment (auth required)
 $auth = [\App\Middleware\AuthMiddleware::class];
 $router->get('/assessment/start', 'AssessmentController@start', $auth);
+$router->post('/assessment/select-model', 'AssessmentController@selectModel', $auth);
 $router->get('/assessment/save-answer', 'AssessmentController@saveAnswer', $auth);
 $router->get('/assessment/{id}', 'AssessmentController@show', $auth);
 $router->get('/assessment/{id}/complete', 'AssessmentController@complete', $auth);
