@@ -27,15 +27,6 @@ if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot|webp|html)$/'
     exit;
 }
 
-// Serve the immersive 360° hero for the homepage
-if ($requestUri === '/' || $requestUri === '') {
-    $heroFile = __DIR__ . '/hero360.html';
-    if (file_exists($heroFile)) {
-        readfile($heroFile);
-        exit;
-    }
-}
-
 define('BASE_PATH', dirname(__DIR__));
 
 // Load Composer autoloader, or fall back to simple PSR-4 loader

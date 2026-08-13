@@ -1,33 +1,33 @@
 /* ============================================================
    AQMI Report Studio — Professional Report Designer UI
-   Dark theme inspired by Figma, Power BI, DevExpress, Telerik
+   Light theme inspired by Figma, Power BI, DevExpress, Telerik
    ============================================================ */
 
 :root {
-  /* Dark theme palette */
-  --rs-bg:           #1a1d23;
-  --rs-bg-elevated:   #21252d;
-  --rs-bg-panel:      #252932;
-  --rs-bg-input:      #2a2e38;
-  --rs-border:        #353a45;
-  --rs-border-light: #2d313c;
-  --rs-text:          #e4e7ec;
-  --rs-text-muted:    #9ca3af;
-  --rs-text-dim:      #9ca3af;
-  --rs-primary:       #1F6FEB;
-  --rs-primary-dim:   #1858C4;
-  --rs-primary-glow:  rgba(31, 130, 235, 0.15);
-  --rs-success:       #10b981;
-  --rs-danger:        #ef4444;
-  --rs-warning:       #f59e0b;
-  --rs-accent:        #2EC4B6;
-  --rs-selection:    #3b82f6;
-  --rs-selection-bg: rgba(59, 130, 246, 0.08);
-  --rs-hover-bg:      rgba(255, 255, 255, 0.04);
+  /* Light theme palette */
+  --rs-bg:           #f1f5f9;
+  --rs-bg-elevated:   #ffffff;
+  --rs-bg-panel:      #ffffff;
+  --rs-bg-input:      #f8fafc;
+  --rs-border:        #e2e8f0;
+  --rs-border-light: #edf2f7;
+  --rs-text:          #1e293b;
+  --rs-text-muted:    #64748b;
+  --rs-text-dim:      #94a3b8;
+  --rs-primary:       #2563eb;
+  --rs-primary-dim:   #1d4ed8;
+  --rs-primary-glow:  rgba(37, 99, 235, 0.10);
+  --rs-success:       #059669;
+  --rs-danger:        #dc2626;
+  --rs-warning:       #d97706;
+  --rs-accent:        #0d9488;
+  --rs-selection:    #2563eb;
+  --rs-selection-bg: rgba(37, 99, 235, 0.08);
+  --rs-hover-bg:      rgba(0, 0, 0, 0.03);
   --rs-radius:        6px;
   --rs-radius-sm:     4px;
-  --rs-shadow:       0 2px 8px rgba(0,0,0,0.3);
-  --rs-shadow-lg:    0 8px 24px rgba(0,0,0,0.4);
+  --rs-shadow:       0 1px 3px rgba(0,0,0,0.08);
+  --rs-shadow-lg:    0 8px 24px rgba(0,0,0,0.10);
   --rs-font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --rs-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
   --rs-transition:   150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -173,15 +173,15 @@
   flex-shrink: 0;
 }
 .rs-align-toolbar .btn-outline-light {
-  color: rgba(255,255,255,0.85);
-  border-color: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
   font-size: 12px;
   padding: 2px 8px;
 }
 .rs-align-toolbar .btn-outline-light:hover {
   color: #fff;
-  background: rgba(255,255,255,0.15);
-  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
 }
 
 /* ============================================================
@@ -303,7 +303,7 @@
 }
 .rs-palette-item:hover {
   background: var(--rs-primary-glow);
-  color: #fff;
+  color: var(--rs-primary);
   padding-left: 28px;
 }
 .rs-palette-item:active { cursor: grabbing; transform: scale(0.97); }
@@ -454,8 +454,8 @@
 
 .rs-canvas-wrap.rs-show-grid {
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
   background-size: 8px 8px;
   background-position: 0 0;
 }
@@ -758,7 +758,7 @@
   font-size: 12px;
 }
 
-/* Form controls in dark theme */
+/* Form controls in light theme */
 .rs-properties .form-label {
   font-size: 11px;
   font-weight: 600;
