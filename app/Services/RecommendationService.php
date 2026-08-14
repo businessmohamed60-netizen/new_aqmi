@@ -16,7 +16,9 @@ class RecommendationService
         $lang = $_SESSION['lang'] ?? 'fr';
 
         foreach ($rules as $rule) {
-            $score = $this->getFieldValue($rule['condition_field'], $analysis);
+            $field = $rule['condition_field'];
+            if ($field === null || $field === '') continue;
+            $score = $this->getFieldValue($field, $analysis);
             if ($score !== null && $this->compare($score, $rule['condition_operator'], (float)$rule['condition_value'])) {
                 $textKey = "recommendation_text_" . ($lang === 'fr' ? 'fr' : ($lang === 'ar' ? 'ar' : ''));
                 $text = $rule[$textKey] ?: $rule['recommendation_text'];
