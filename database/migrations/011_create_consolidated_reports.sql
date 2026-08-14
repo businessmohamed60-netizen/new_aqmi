@@ -40,6 +40,24 @@ CREATE TABLE IF NOT EXISTS `consolidated_report_items` (
     UNIQUE KEY `uq_consolidated_assessment` (`consolidated_report_id`, `assessment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX IF NOT EXISTS idx_consolidated_user ON consolidated_reports(user_id);
-CREATE INDEX IF NOT EXISTS idx_consolidated_status ON consolidated_reports(status);
-CREATE INDEX IF NOT EXISTS idx_consolidated_items_report ON consolidated_report_items(consolidated_report_id);
+-- Indexes (wrapped in DO blocks for idempotency on MariaDB/MySQL)
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM information_schema.STATISTICS WHERE table_schema = DATABASE() AND table_name = 'consolidated_reports' AND index_name = 'idx_consolidated_user') = 0,
+    'CREATE INDEX idx_consolidated_user ON consolidated_reports(user_id)',
+    'SELECT 1'
+));
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM information_schema.STATISTICS WHERE table_schema = DATABASE() AND table_name = 'consolidated_reports' AND index_name = 'idx_consolidated_status') = 0,
+    'CREATE INDEX idx_consolidated_status ON consolidated_reports(status)',
+    'SELECT 1'
+));
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @sql = (SELECT IF(
+    (SELECT COUNT(*) FROM information_schema.STATISTICS WHERE table_schema = DATABASE() AND table_name = 'consolidated_report_items' AND index_name = 'idx_consolidated_items_report') = 0,
+    'CREATE INDEX idx_consolidated_items_report ON consolidated_report_items(consolidated_report_id)',
+    'SELECT 1'
+));
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
