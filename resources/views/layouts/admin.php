@@ -63,6 +63,9 @@
             <a class="nova-sidebar-link <?= isActive('/admin/reports') ?>" href="/admin/reports">
                 <i class="fas fa-file-alt"></i><span>Rapports</span>
             </a>
+            <a class="nova-sidebar-link <?= isActive('/admin/consolidated') ?>" href="/admin/consolidated">
+                <i class="fas fa-layer-group"></i><span>Rapports Consolidés</span>
+            </a>
 
             <div class="nova-sidebar-section">Studio</div>
             <a class="nova-sidebar-link <?= isActive('/admin/reportstudio') ?>" href="/admin/reportstudio">

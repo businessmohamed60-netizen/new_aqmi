@@ -798,4 +798,93 @@ class AdminController
         $_SESSION['success'] = 'Paramètres enregistrés.';
         redirect('/admin/settings');
     }
+
+    // === CONSOLIDATED REPORTS ===
+    public function consolidatedReports(): void
+    {
+        Auth::requireAuth();
+        $reports = \App\Models\ConsolidatedReport::pendingCertifications();
+        $certified = Database::fetchAll(
+            "SELECT cr.*, u.firstname, u.lastname, u.email
+             FROM consolidated_reports cr
+             JOIN users u ON cr.user_id = u.id
+             WHERE cr.status = 'certified'
+             ORDER BY cr.certified_at DESC"
+        );
+        view('admin.consolidated.index', compact('reports', 'certified'));
+    }
+
+    public function consolidatedDetail(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        if (!$report) { $_SESSION['error'] = 'Rapport introuvable.'; redirect('/admin/consolidated'); return; }
+
+        \App\Models\ConsolidatedReport::markUnderReviewIfNeeded($id);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        $items = \App\Models\ConsolidatedReport::getItems($id);
+        $user = Database::fetch("SELECT * FROM users WHERE id = ?", [$report['user_id']]);
+
+        view('admin.consolidated.detail', compact('report', 'items', 'user'));
+    }
+
+    public function consolidatedReview(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        if (!$report) { redirect('/admin/consolidated'); return; }
+
+        \App\Models\ConsolidatedReport::saveAdminReview($id, [
+            'admin_comment' => $_POST['admin_comment'] ?? null,
+            'observations' => $_POST['observations'] ?? null,
+            'action_plan' => $_POST['action_plan'] ?? null,
+            'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? null,
+        ]);
+        $_SESSION['success'] = 'Analyse enregistrée.';
+        redirect('/admin/consolidated/' . $id);
+    }
+
+    public function consolidatedApprove(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        if (!$report) { redirect('/admin/consolidated'); return; }
+
+        \App\Models\ConsolidatedReport::updateStatus($id, 'approved');
+        $_SESSION['success'] = 'Rapport consolidé approuvé.';
+        redirect('/admin/consolidated/' . $id);
+    }
+
+    public function consolidatedCertify(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        if (!$report) { redirect('/admin/consolidated'); return; }
+
+        $admin = Auth::user();
+        \App\Models\ConsolidatedReport::updateStatus($id, 'certified', $admin['firstname'] . ' ' . $admin['lastname']);
+        \App\Models\ConsolidatedReport::assignReportNumber($id);
+
+        $_SESSION['success'] = 'Rapport consolidé certifié. Numéro: ' . \App\Models\ConsolidatedReport::assignReportNumber($id);
+        redirect('/admin/consolidated/' . $id);
+    }
+
+    public function consolidatedReject(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = \App\Models\ConsolidatedReport::find($id);
+        if (!$report) { redirect('/admin/consolidated'); return; }
+
+        \App\Models\ConsolidatedReport::saveAdminReview($id, [
+            'admin_comment' => $_POST['admin_comment'] ?? 'Demande rejetée.',
+        ]);
+        \App\Models\ConsolidatedReport::updateStatus($id, 'rejected');
+        $_SESSION['success'] = 'Demande rejetée.';
+        redirect('/admin/consolidated/' . $id);
+    }
 }

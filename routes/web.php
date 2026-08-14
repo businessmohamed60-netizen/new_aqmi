@@ -22,6 +22,13 @@ $router->get('/assessment/{id}/results', 'AssessmentController@results', $auth);
 $router->get('/assessment/{id}/download-summary', 'ReportController@downloadSummary', $auth);
 $router->get('/assessment/{id}/request-report', 'AssessmentController@requestReport', $auth);
 
+// Consolidated reports (auth required)
+$router->get('/user/consolidated', 'UserController@consolidatedView', $auth);
+$router->post('/user/consolidated/create', 'UserController@consolidatedCreate', $auth);
+$router->get('/user/consolidated/{id}', 'UserController@consolidatedDetail', $auth);
+$router->post('/user/consolidated/{id}/request', 'UserController@consolidatedRequest', $auth);
+$router->post('/user/consolidated/{id}/delete', 'UserController@consolidatedDelete', $auth);
+
 // Report
 $router->get('/report/{id}/download', 'ReportController@download');
 $router->get('/verify/{report_number}', 'ReportController@verify');

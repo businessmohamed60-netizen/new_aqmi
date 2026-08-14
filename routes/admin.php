@@ -76,6 +76,14 @@ $router->post('/admin/reports/{id}/review', 'AdminController@reportStartReview',
 $router->post('/admin/reports/{id}/approve', 'AdminController@reportApprove', $adminMiddleware);
 $router->post('/admin/reports/{id}/certify', 'AdminController@reportCertify', $adminMiddleware);
 
+// Consolidated reports certification
+$router->get('/admin/consolidated', 'AdminController@consolidatedReports', $adminMiddleware);
+$router->get('/admin/consolidated/{id}', 'AdminController@consolidatedDetail', $adminMiddleware);
+$router->post('/admin/consolidated/{id}/review', 'AdminController@consolidatedReview', $adminMiddleware);
+$router->post('/admin/consolidated/{id}/approve', 'AdminController@consolidatedApprove', $adminMiddleware);
+$router->post('/admin/consolidated/{id}/certify', 'AdminController@consolidatedCertify', $adminMiddleware);
+$router->post('/admin/consolidated/{id}/reject', 'AdminController@consolidatedReject', $adminMiddleware);
+
 // Users
 $router->get('/admin/users', 'AdminController@users', $adminMiddleware);
 $router->get('/admin/users/create', 'AdminController@userForm', $adminMiddleware);

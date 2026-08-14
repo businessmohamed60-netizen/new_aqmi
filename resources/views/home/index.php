@@ -48,126 +48,42 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     HERO SECTION — Modern Slider Carousel
+     HERO SECTION
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="hero hero-slider" id="top">
+<section class="hero" id="top">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow-1"></div>
   <div class="hero-glow-2"></div>
 
-  <!-- Slides -->
-  <div class="hero-slides" id="heroSlides">
-    <?php
-    $slides = [
-      [
-        'img' => '/assets/img/slider/1.png',
-        'badge' => 'Industry 4.0 · Automotive Manufacturing Ecosystem',
-        'title_top' => 'NOVAQYS',
-        'title_grad' => "Building the Future of Automotive<br>Manufacturing Excellence",
-        'subtitle' => "Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.",
-        'cta1_text' => "Découvrir l'écosystème",
-        'cta1_link' => '#ecosystem',
-        'cta2_text' => "Demander une démonstration",
-        'cta2_link' => '#account-request',
-        'cta3_text' => 'Connexion AQMI',
-        'cta3_link' => '/user/login',
-      ],
-      [
-        'img' => '/assets/img/slider/2.png',
-        'badge' => 'AQMI · Auto-évaluation de Maturité Qualité',
-        'title_top' => 'AQMI Starter',
-        'title_grad' => "Évaluez gratuitement<br>votre niveau de maturité",
-        'subtitle' => "Détectez vos points forts et identifiez vos axes de progrès en quelques minutes. Rapport détaillé avec scoring par domaine et recommandations actionnables.",
-        'cta1_text' => "Commencer l'évaluation",
-        'cta1_link' => '/assessment/start',
-        'cta2_text' => "Voir un exemple de rapport",
-        'cta2_link' => '#report',
-        'cta3_text' => 'Connexion AQMI',
-        'cta3_link' => '/user/login',
-      ],
-      [
-        'img' => '/assets/img/slider/3.png',
-        'badge' => 'Formation · Normes & Méthodes Automobiles',
-        'title_top' => 'NOVAQYS LMS',
-        'title_grad' => "Formez vos équipes aux<br>standards automobiles",
-        'subtitle' => "Plateforme de formation dédiée aux normes IATF 16949, Core Tools et Lean Manufacturing. Vidéos interactives, quiz et certifications reconnues.",
-        'cta1_text' => 'Découvrir la plateforme LMS',
-        'cta1_link' => '/lms.html',
-        'cta2_text' => "Demander une démonstration",
-        'cta2_link' => '#account-request',
-        'cta3_text' => 'Connexion AQMI',
-        'cta3_link' => '/user/login',
-      ],
-      [
-        'img' => '/assets/img/slider/4.png',
-        'badge' => 'ASIN · Automotive Supplier Intelligence Network',
-        'title_top' => 'ASIN',
-        'title_grad' => "Rejoignez la marketplace B2B<br>de l'industrie automobile",
-        'subtitle' => "Connectez-vous aux constructeurs, publiez votre passeport industriel et développez votre réseau de sous-traitance international. Le LinkedIn + Alibaba de l'industrie auto.",
-        'cta1_text' => "Découvrir ASIN",
-        'cta1_link' => '#asin',
-        'cta2_text' => "Demander une démonstration",
-        'cta2_link' => '#account-request',
-        'cta3_text' => 'Connexion AQMI',
-        'cta3_link' => '/user/login',
-      ],
-    ];
-    foreach ($slides as $idx => $s): ?>
-      <div class="hero-slide<?= $idx === 0 ? ' active' : '' ?>" data-index="<?= $idx ?>">
-        <div class="hero-slide-bg" style="background-image:url('<?= $s['img'] ?>')"></div>
-        <div class="hero-slide-overlay"></div>
-        <div class="hero-slide-content">
-          <div class="hero-badge">
-            <span class="hero-badge-dot"></span>
-            <span><?= $s['badge'] ?></span>
-          </div>
-          <h1 class="hero-title">
-            <?= $s['title_top'] ?><br>
-            <span class="hero-gradient"><?= $s['title_grad'] ?></span>
-          </h1>
-          <p class="hero-subtitle"><?= $s['subtitle'] ?></p>
-          <div class="hero-ctas">
-            <a href="<?= $s['cta1_link'] ?>">
-              <button class="btn-primary">
-                <?= $s['cta1_text'] ?>
-                <i class="fas fa-arrow-right"></i>
-              </button>
-            </a>
-            <a href="<?= $s['cta2_link'] ?>">
-              <button class="btn-outline">
-                <i class="fas fa-play"></i>
-                <?= $s['cta2_text'] ?>
-              </button>
-            </a>
-            <a href="<?= $s['cta3_link'] ?>">
-              <button class="btn-ghost">
-                <i class="fas fa-lock"></i>
-                <?= $s['cta3_text'] ?>
-              </button>
-            </a>
-          </div>
-        </div>
-      </div>
-    <?php endforeach; ?>
-  </div>
-
-  <!-- Navigation arrows -->
-  <button class="hero-slider-arrow hero-slider-prev" id="heroSlidePrev" aria-label="Slide précédent">
-    <i class="fas fa-chevron-left"></i>
-  </button>
-  <button class="hero-slider-arrow hero-slider-next" id="heroSlideNext" aria-label="Slide suivant">
-    <i class="fas fa-chevron-right"></i>
-  </button>
-
-  <!-- Dots + progress -->
-  <div class="hero-slider-controls">
-    <div class="hero-slider-dots" id="heroSliderDots">
-      <?php foreach ($slides as $idx => $s): ?>
-        <button class="hero-slider-dot<?= $idx === 0 ? ' active' : '' ?>" data-index="<?= $idx ?>" aria-label="Aller au slide <?= $idx + 1 ?>"></button>
-      <?php endforeach; ?>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span>Industry 4.0 · Automotive Manufacturing Ecosystem</span>
     </div>
-    <div class="hero-slider-progress-track">
-      <div class="hero-slider-progress" id="heroSliderProgress"></div>
+    <h1 class="hero-title">
+      NOVAQYS<br>
+      <span class="hero-gradient">Building the Future of Automotive Manufacturing Excellence</span>
+    </h1>
+    <p class="hero-subtitle">Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.</p>
+    <div class="hero-ctas">
+      <a href="#ecosystem">
+        <button class="btn-primary">
+          Découvrir l'écosystème
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </a>
+      <a href="#account-request">
+        <button class="btn-outline">
+          <i class="fas fa-play"></i>
+          Demander une démonstration
+        </button>
+      </a>
+      <a href="/user/login">
+        <button class="btn-ghost">
+          <i class="fas fa-lock"></i>
+          Connexion AQMI
+        </button>
+      </a>
     </div>
   </div>
 

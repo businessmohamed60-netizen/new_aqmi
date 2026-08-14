@@ -399,9 +399,14 @@
     <div class="user-assessment-card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-file-alt me-2" style="color:var(--vx-primary);"></i>Mes évaluations</span>
-        <a href="/assessment/start" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-          <i class="fas fa-plus me-1"></i>Nouvelle
-        </a>
+        <div style="display:flex;gap:0.5rem;">
+          <a href="/user/consolidated" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
+            <i class="fas fa-layer-group me-1"></i>Consolider
+          </a>
+          <a href="/assessment/start" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
+            <i class="fas fa-plus me-1"></i>Nouvelle
+          </a>
+        </div>
       </div>
 
       <?php if (!empty($assessments)): ?>

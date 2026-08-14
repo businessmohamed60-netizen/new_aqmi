@@ -338,7 +338,7 @@ input,button,textarea,select{font:inherit}
 
 .hero-badge{
   display:inline-flex;align-items:center;gap:0.625rem;
-  padding:0.5rem 1.25rem;border-radius:9999px;margin-bottom:2.5rem;
+  padding:0.5rem 1.25rem;border-radius:9999px;margin-bottom:3rem;
   background:linear-gradient(135deg,rgba(0,207,232,0.1),rgba(0,207,232,0.05));
   border:1px solid rgba(0,207,232,0.25);
   font-size:0.75rem;font-weight:600;color:var(--nova-cyan);
@@ -358,8 +358,8 @@ input,button,textarea,select{font:inherit}
 
 .hero-title{
   font-family:var(--font-display);font-weight:900;color:#fff;
-  letter-spacing:-0.035em;line-height:1.05;margin-bottom:1.75rem;
-  font-size:clamp(2.25rem,5.5vw,4.25rem);
+  letter-spacing:-0.035em;line-height:1.15;margin-bottom:2.5rem;
+  font-size:clamp(2rem,5vw,3.75rem);
   animation:fadeInUp 0.8s 0.15s ease both;
   text-shadow:0 4px 30px rgba(0,0,0,0.3);
 }
@@ -374,12 +374,12 @@ input,button,textarea,select{font:inherit}
 .hero-subtitle{
   font-size:clamp(0.95rem,1.5vw,1.125rem);
   color:rgba(200,215,230,0.7);line-height:1.8;
-  margin-bottom:2.5rem;max-width:42rem;font-weight:400;
+  margin-bottom:3rem;max-width:42rem;font-weight:400;
   animation:fadeInUp 0.8s 0.3s ease both;
 }
 
 .hero-ctas{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:0.875rem;margin-bottom:3rem;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-bottom:3rem;
   animation:fadeInUp 0.8s 0.45s ease both;
 }
 .hero-ctas .btn-primary{
@@ -449,15 +449,15 @@ input,button,textarea,select{font:inherit}
   inset: 0;
   background-size: cover;
   background-position: center;
-  transform: scale(1.08);
+  transform: scale(1.02);
   filter: brightness(0.45);
 }
 .hero-slide.active .hero-slide-bg {
   animation: kenBurns 8s ease-out forwards;
 }
 @keyframes kenBurns {
-  from { transform: scale(1.08); }
-  to   { transform: scale(1.18); }
+  from { transform: scale(1.02); }
+  to   { transform: scale(1.06); }
 }
 .hero-slide-overlay {
   position: absolute;
