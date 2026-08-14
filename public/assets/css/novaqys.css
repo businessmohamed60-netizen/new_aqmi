@@ -260,7 +260,7 @@ input,button,textarea,select{font:inherit}
    ═══════════════════════════════════════════════════════════════════ */
 .hero{
   position:relative;min-height:100vh;display:flex;align-items:center;
-  overflow:hidden;
+  overflow:hidden;padding-top:4.5rem;padding-bottom:5rem;
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,207,232,0.04) 0%, transparent 60%),
     radial-gradient(ellipse 60% 50% at 20% 50%, rgba(115,103,240,0.03) 0%, transparent 50%),
@@ -374,8 +374,36 @@ input,button,textarea,select{font:inherit}
 .hero-subtitle{
   font-size:clamp(0.95rem,1.5vw,1.125rem);
   color:rgba(200,215,230,0.7);line-height:1.8;
-  margin-bottom:3rem;max-width:42rem;font-weight:400;
+  margin-bottom:2rem;max-width:42rem;font-weight:400;
   animation:fadeInUp 0.8s 0.3s ease both;
+}
+
+/* Rotating slogans */
+.hero-slogans{
+  position:relative;height:2.5rem;width:100%;max-width:42rem;
+  margin-bottom:2.5rem;overflow:hidden;
+  animation:fadeInUp 0.8s 0.4s ease both;
+}
+.hero-slogan{
+  position:absolute;left:0;right:0;top:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(0.875rem,1.6vw,1.0625rem);
+  text-align:center;letter-spacing:0.01em;
+  color:var(--nova-cyan);
+  opacity:0;transform:translateY(100%) scale(0.95);
+  transition:opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  white-space:nowrap;
+}
+.hero-slogan.active{
+  opacity:1;transform:translateY(0) scale(1);
+}
+.hero-slogan.exit{
+  opacity:0;transform:translateY(-100%) scale(0.95);
+}
+@media(max-width:640px){
+  .hero-slogans{height:2rem}
+  .hero-slogan{white-space:normal;line-height:1.4}
 }
 
 .hero-ctas{

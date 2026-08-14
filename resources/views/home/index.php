@@ -22,7 +22,7 @@
   </div>
 
   <div class="nav-actions">
-    <a href="/user/login" class="btn-access">
+    <a href="/login" class="btn-access">
       <i class="fas fa-lock"></i>
       Connexion AQMI
     </a>
@@ -42,7 +42,7 @@
   <a href="/lms.html" onclick="closeMobile()"><i class="fas fa-graduation-cap"></i> Automotive Learning</a>
   <a href="#account-request" onclick="closeMobile()"><i class="fas fa-envelope"></i> Contact</a>
   <div class="nav-mobile-divider"></div>
-  <a href="/user/login" class="btn-access" onclick="closeMobile()">
+  <a href="/login" class="btn-access" onclick="closeMobile()">
     <i class="fas fa-lock"></i> Connexion AQMI
   </a>
 </div>
@@ -65,6 +65,13 @@
       <span class="hero-gradient">Building the Future of Automotive Manufacturing Excellence</span>
     </h1>
     <p class="hero-subtitle">Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.</p>
+    <div class="hero-slogans" id="heroSlogans">
+      <span class="hero-slogan active">Créer un nouveau réseau de sous-traitance automobile</span>
+      <span class="hero-slogan">Maîtriser les coûts sans compromis sur la qualité</span>
+      <span class="hero-slogan">Accélérer votre transition vers l'industrie 4.0</span>
+      <span class="hero-slogan">Construire la compétitivité et la notoriété des fabricants</span>
+      <span class="hero-slogan">Évaluer · Former · Digitaliser · Connecter</span>
+    </div>
     <div class="hero-ctas">
       <a href="#ecosystem">
         <button class="btn-primary">
@@ -78,7 +85,7 @@
           Demander une démonstration
         </button>
       </a>
-      <a href="/user/login">
+      <a href="/login">
         <button class="btn-ghost">
           <i class="fas fa-lock"></i>
           Connexion AQMI
@@ -231,7 +238,7 @@
           <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Feuille de route personnalisée vers la conformité</div>
           <div class="platform-list-item"><div class="pl-icon" style="background:rgba(115,103,240,0.15);color:#7367f0"><i class="fas fa-check"></i></div>Recommandations actionnables immédiatement</div>
         </div>
-        <a href="/user/login" class="btn-primary">
+        <a href="/login" class="btn-primary">
           <i class="fas fa-lock"></i> Connexion AQMI
           <i class="fas fa-arrow-right"></i>
         </a>
@@ -476,7 +483,7 @@
         'color' => '#7367f0', 'icon' => 'fa-compass',
         'title' => 'Découverte',
         'desc' => 'L\'entreprise découvre l\'écosystème NOVAQYS et évalue sa maturité avec AQMI Starter. Une première vision claire de son potentiel.',
-        'btn' => 'Découvrir AQMI', 'url' => '/user/register',
+        'btn' => 'Découvrir AQMI', 'url' => '/register',
         'extra' => ''
       ],
       [
@@ -736,7 +743,7 @@
           <i class="fas fa-arrow-right"></i>
         </button>
       </a>
-      <a href="/user/login">
+      <a href="/login">
         <button class="btn-outline">
           <i class="fas fa-lock"></i> Connexion AQMI
         </button>
@@ -919,7 +926,7 @@
       <p class="footer-col-title">Écosystème</p>
       <div class="footer-links">
         <a href="/">NOVAQYS</a>
-        <a href="/user/login">AQMI</a>
+        <a href="/login">AQMI</a>
         <a href="#nara">NARA</a>
         <a href="/lms.html">Automotive Learning</a>
         <a href="#asin">ASIN</a>
@@ -961,6 +968,23 @@ function closeMobile(){
   const icon = document.querySelector('#navToggle i');
   if(icon) icon.className = 'fas fa-bars';
 }
+
+// Rotating slogans in hero
+(function(){
+  var slogans = document.querySelectorAll('#heroSlogans .hero-slogan');
+  if(slogans.length < 2) return;
+  var idx = 0;
+  setInterval(function(){
+    slogans[idx].classList.remove('active');
+    slogans[idx].classList.add('exit');
+    var prev = idx;
+    idx = (idx + 1) % slogans.length;
+    setTimeout(function(){
+      slogans[prev].classList.remove('exit');
+      slogans[idx].classList.add('active');
+    }, 600);
+  }, 3500);
+})();
 </script>
 
 <?php

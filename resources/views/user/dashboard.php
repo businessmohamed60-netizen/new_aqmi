@@ -461,7 +461,7 @@
 
   <!-- Mobile Bottom Navigation -->
   <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(255,253,248,0.96);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
-    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/dashboard">
+    <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/user/dashboard">
       <i class="fas fa-home" style="font-size:0.9rem;"></i><span>Accueil</span>
     </a>
     <a class="d-flex flex-column align-items-center text-decoration-none" style="font-size:0.55rem;color:var(--vx-text-muted);padding:0.25rem 0.5rem;gap:0.15rem;" href="/assessment/start">

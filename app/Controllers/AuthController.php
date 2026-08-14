@@ -27,7 +27,11 @@ class AuthController
     {
         // Rediriger si déjà connecté
         if (Auth::check()) {
-            redirect('/dashboard');
+            $user = Auth::user();
+            if ($user && in_array($user['role_slug'], ['admin', 'super_admin', 'manager'], true)) {
+                redirect('/admin');
+            }
+            redirect('/user/dashboard');
         }
         view('auth.aqmi-login');
     }
@@ -185,7 +189,7 @@ class AuthController
         if (in_array($user['role_slug'], ['admin', 'super_admin', 'manager'], true)) {
             redirect('/admin');
         } else {
-            redirect('/dashboard');
+            redirect('/user/dashboard');
         }
     }
 
@@ -332,41 +336,19 @@ class AuthController
     }
 
     /**
-     * Affiche le tableau de bord utilisateur
+     * Redirige /dashboard (legacy) vers /user/dashboard
+     */
+    public function dashboardRedirect(): void
+    {
+        redirect('/user/dashboard');
+    }
+
+    /**
+     * Affiche le tableau de bord utilisateur (legacy — redirige)
      */
     public function dashboard(): void
     {
-        Auth::requireAuth();
-
-        $user = Auth::user();
-        if (!$user || $user['role_slug'] !== 'client') {
-            Session::setFlash('error', 'Accès non autorisé.');
-            redirect('/');
-        }
-
-        // Statistiques
-        $userId = Auth::id();
-        $assessments = Database::fetchAll(
-            "SELECT a.*, l.company, l.firstname as lead_firstname, l.lastname as lead_lastname,
-                    r.status as report_status, r.id as report_id
-             FROM assessments a
-             LEFT JOIN leads l ON a.id = l.assessment_id
-             LEFT JOIN reports r ON r.assessment_id = a.id
-             WHERE a.user_id = ?
-             ORDER BY a.created_at DESC",
-            [$userId]
-        );
-
-        $totalAssessments = count($assessments);
-        $completedCount = 0;
-        foreach ($assessments as $a) {
-            if ($a['status'] === 'completed') $completedCount++;
-        }
-
-        // Dernière connexion
-        $lastLogin = LoginHistory::getLastSuccess($userId);
-
-        view('auth.aqmi-dashboard', compact('user', 'assessments', 'totalAssessments', 'completedCount', 'lastLogin'));
+        redirect('/user/dashboard');
     }
 
     /**
@@ -403,7 +385,7 @@ class AuthController
     public function register(): void
     {
         if (Auth::check()) {
-            redirect('/dashboard');
+            redirect('/user/dashboard');
         }
         view('auth.aqmi-register');
     }
@@ -486,6 +468,6 @@ class AuthController
         Auth::attempt($email, $password);
 
         Session::setFlash('success', 'Bienvenue ' . $firstname . ' ! Votre compte a été créé avec succès.');
-        redirect('/dashboard');
+        redirect('/user/dashboard');
     }
 }

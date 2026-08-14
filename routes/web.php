@@ -37,12 +37,15 @@ $router->get('/verify/{report_number}', 'ReportController@verify');
 $router->get('/admin/login', 'AdminController@login');
 $router->get('/admin/logout', 'AdminController@logout');
 
-// Client Auth
-$router->get('/user/login', 'UserController@login');
-$router->get('/user/dashboard', 'UserController@dashboard');
+// Client Auth — single login at /login, dashboard at /user/dashboard
+$router->get('/user/dashboard', 'UserController@dashboard', $auth);
 $router->get('/user/logout', 'UserController@logout');
 
-// AQMI Auth System (Secure with OTP)
+// Legacy redirects (keep old links working)
+$router->get('/user/login', 'AuthController@login');
+$router->get('/dashboard', 'AuthController@dashboardRedirect');
+
+// AQMI Auth System (Secure with OTP) — single login page
 $router->get('/login', 'AuthController@login');
 $router->post('/login', 'AuthController@doLogin');
 $router->get('/otp', 'AuthController@otp');
@@ -54,6 +57,5 @@ $router->get('/reset', 'AuthController@reset');
 $router->post('/reset', 'AuthController@doReset');
 $router->get('/register', 'AuthController@register');
 $router->post('/register', 'AuthController@doRegister');
-$router->get('/dashboard', 'AuthController@dashboard');
 $router->get('/history', 'AuthController@history');
 $router->get('/logout', 'AuthController@logout');
