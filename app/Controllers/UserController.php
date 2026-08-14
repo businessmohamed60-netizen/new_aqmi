@@ -43,13 +43,46 @@ class UserController
 
         $totalAssessments = count($assessments);
         $completedCount = 0;
+        $completedScores = [];
+        $scoreHistory = [];
         foreach ($assessments as $a) {
-            if ($a['status'] === 'completed') $completedCount++;
+            if ($a['status'] === 'completed') {
+                $completedCount++;
+                if ($a['total_score'] !== null) {
+                    $completedScores[] = (float)$a['total_score'];
+                    $scoreHistory[] = [
+                        'date' => date('Y-m-d', strtotime($a['completed_at'] ?? $a['created_at'])),
+                        'score' => round((float)$a['total_score'], 1),
+                        'company' => $a['company'] ?? ($a['lead_firstname'] ?? '') . ' ' . ($a['lead_lastname'] ?? ''),
+                    ];
+                }
+            }
         }
+
+        usort($scoreHistory, fn($x, $y) => $x['date'] <=> $y['date']);
+
+        $bestScore = !empty($completedScores) ? round(max($completedScores), 1) : null;
+        $avgScore = !empty($completedScores) ? round(array_sum($completedScores) / count($completedScores), 1) : null;
+        $latestScore = !empty($scoreHistory) ? end($scoreHistory)['score'] : null;
+        $firstScore = !empty($scoreHistory) ? reset($scoreHistory)['score'] : null;
+        $progressDelta = ($bestScore !== null && $firstScore !== null) ? round($latestScore - $firstScore, 1) : 0;
+
+        $maturityLevel = null;
+        if ($latestScore !== null) {
+            $maturityLevel = \App\Models\ScoreLevel::findByScore($latestScore);
+        }
+
+        $completionRate = $totalAssessments > 0 ? round(($completedCount / $totalAssessments) * 100) : 0;
+
+        $scoreLevels = \App\Models\ScoreLevel::all();
 
         $consolidatedReports = \App\Models\ConsolidatedReport::findByUser($userId);
 
-        view('user.dashboard', compact('assessments', 'totalAssessments', 'completedCount', 'user', 'consolidatedReports'));
+        view('user.dashboard', compact(
+            'assessments', 'totalAssessments', 'completedCount', 'user', 'consolidatedReports',
+            'bestScore', 'avgScore', 'latestScore', 'progressDelta', 'maturityLevel',
+            'completionRate', 'scoreHistory', 'scoreLevels'
+        ));
     }
 
     public function consolidatedView(): void
