@@ -1,4 +1,7 @@
-<?php $title = 'Tableau de bord - Espace Client'; ob_start(); ?>
+<?php $title = __('dashboard.title'); ob_start();
+$langCode = $_SESSION['lang'] ?? 'fr';
+$levelNameField = $langCode === 'ar' ? 'name_ar' : ($langCode === 'fr' ? 'name_fr' : 'name');
+$chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-FR'); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -663,14 +666,14 @@
   <div class="user-topbar">
     <div class="brand">
       <span class="brand-icon">N</span>
-      <span>NOVAQYS</span>
+      <span><?= __('dashboard.brand') ?></span>
     </div>
     <div class="d-flex align-items-center" style="gap:1rem;">
       <span class="d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
         <i class="fas fa-user" style="color:var(--vx-primary);margin-right:0.25rem;"></i><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?>
       </span>
       <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-        <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i>Déconnexion
+        <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i><?= __('dashboard.logout') ?>
       </a>
     </div>
   </div>
@@ -679,33 +682,34 @@
   <div class="user-content">
     <!-- Welcome -->
     <div class="user-welcome">
-      <h2>Bonjour, <?= e($user['firstname'] ?? '') ?></h2>
-      <p>Bienvenue dans votre espace client NOVAQYS. Suivez votre parcours d'excellence qualité en temps réel.</p>
+      <h2><?= __('dashboard.welcome', ['name' => e($user['firstname'] ?? '')]) ?></h2>
+      <p><?= __('dashboard.welcome_sub') ?></p>
     </div>
 
     <?php
       // Motivation message based on latest score
       $motClass = 'ud-mot--start';
       $motIcon = 'fa-rocket';
-      $motTitle = 'Lancez votre premier audit';
-      $motText = "Vous n'avez pas encore d'évaluation terminée. Commencez votre parcours d'auto-évaluation pour mesurer votre maturité qualité.";
+      $motTitle = __('dashboard.mot.start.title');
+      $motText = __('dashboard.mot.start.text');
       if ($latestScore !== null) {
+          $levelName = $maturityLevel[$levelNameField] ?? $maturityLevel['name'] ?? 'N/A';
           if ($latestScore >= 71) {
               $motClass = 'ud-mot--excellent'; $motIcon = 'fa-trophy';
-              $motTitle = 'Excellente performance !';
-              $motText = "Votre score de {$latestScore}/100 vous place au niveau « {$maturityLevel['name_fr']} ». Continuez sur cette lancée pour atteindre l'excellence.";
+              $motTitle = __('dashboard.mot.excellent.title');
+              $motText = __('dashboard.mot.excellent.text', ['score' => $latestScore, 'level' => $levelName]);
           } elseif ($latestScore >= 51) {
               $motClass = 'ud-mot--good'; $motIcon = 'fa-chart-line';
-              $motTitle = 'Bonne progression';
-              $motText = "Votre score de {$latestScore}/100 montre une structure qualité solide. Quelques efforts ciblés vous mèneront au niveau supérieur.";
+              $motTitle = __('dashboard.mot.good.title');
+              $motText = __('dashboard.mot.good.text', ['score' => $latestScore]);
           } elseif ($latestScore >= 31) {
               $motClass = 'ud-mot--progress'; $motIcon = 'fa-seedling';
-              $motTitle = 'En plein développement';
-              $motText = "Votre score de {$latestScore}/100 indique des fondations en construction. Identifiez vos axes prioritaires pour accélérer votre progression.";
+              $motTitle = __('dashboard.mot.progress.title');
+              $motText = __('dashboard.mot.progress.text', ['score' => $latestScore]);
           } else {
               $motClass = 'ud-mot--progress'; $motIcon = 'fa-flag';
-              $motTitle = 'Premier pas accompli';
-              $motText = "Votre score de {$latestScore}/100 marque le début de votre parcours. Chaque évaluation vous rapproche de l'excellence qualité.";
+              $motTitle = __('dashboard.mot.first.title');
+              $motText = __('dashboard.mot.first.text', ['score' => $latestScore]);
           }
       }
     ?>
@@ -725,7 +729,7 @@
         </div>
         <div>
           <div class="user-stat-value"><?= $totalAssessments ?></div>
-          <div class="user-stat-label">Évaluations totales</div>
+          <div class="user-stat-label"><?= __('dashboard.stat.total') ?></div>
         </div>
       </div>
       <div class="user-stat-card">
@@ -734,7 +738,7 @@
         </div>
         <div>
           <div class="user-stat-value" style="color:var(--vx-success);"><?= $completedCount ?></div>
-          <div class="user-stat-label">Terminées</div>
+          <div class="user-stat-label"><?= __('dashboard.stat.completed') ?></div>
           <?php if ($totalAssessments > 0): ?>
             <span class="ud-stat-trend ud-stat-trend--neutral"><?= $completionRate ?>%</span>
           <?php endif; ?>
@@ -748,7 +752,7 @@
           <div class="user-stat-value" style="color:var(--vx-info);">
             <?= $bestScore !== null ? $bestScore : '—' ?>
           </div>
-          <div class="user-stat-label">Meilleur score</div>
+          <div class="user-stat-label"><?= __('dashboard.stat.best') ?></div>
         </div>
       </div>
       <div class="user-stat-card">
@@ -757,7 +761,7 @@
         </div>
         <div>
           <div class="user-stat-value" style="color:var(--vx-warning);"><?= $totalAssessments - $completedCount ?></div>
-          <div class="user-stat-label">En cours</div>
+          <div class="user-stat-label"><?= __('dashboard.stat.inprogress') ?></div>
         </div>
       </div>
     </div>
@@ -766,7 +770,7 @@
     <div class="ud-two-col">
       <!-- Score Gauge -->
       <div class="ud-gauge-card">
-        <h3>Score global</h3>
+        <h3><?= __('dashboard.gauge.title') ?></h3>
         <?php if ($latestScore !== null): ?>
           <?php
             $gaugeColor = $maturityLevel['color'] ?? '#6366f1';
@@ -792,7 +796,7 @@
               <div class="ud-gauge-score"><?= round($latestScore) ?><small>/100</small></div>
               <div class="ud-gauge-level-badge" style="background:<?= htmlspecialchars($gaugeColor) ?>20;color:<?= htmlspecialchars($gaugeColor) ?>;">
                 <i class="fas <?= htmlspecialchars($maturityLevel['icon'] ?? 'fa-chart-bar') ?>"></i>
-                <?= htmlspecialchars($maturityLevel['name_fr'] ?? $maturityLevel['name'] ?? 'N/A') ?>
+                <?= htmlspecialchars($maturityLevel[$levelNameField] ?? $maturityLevel['name'] ?? 'N/A') ?>
               </div>
             </div>
           </div>
@@ -800,31 +804,31 @@
             <div style="font-size:0.72rem;color:var(--vx-text-muted);">
               <?php if ($progressDelta > 0): ?>
                 <i class="fas fa-arrow-trend-up" style="color:var(--vx-success);"></i>
-                <span style="color:var(--vx-success);font-weight:700;">+<?= $progressDelta ?></span> depuis votre première évaluation
+                <span style="color:var(--vx-success);font-weight:700;">+<?= $progressDelta ?></span> <?= __('dashboard.gauge.progress_since') ?>
               <?php else: ?>
                 <i class="fas fa-arrow-trend-down" style="color:var(--vx-danger);"></i>
-                <span style="color:var(--vx-danger);font-weight:700;"><?= $progressDelta ?></span> depuis votre première évaluation
+                <span style="color:var(--vx-danger);font-weight:700;"><?= $progressDelta ?></span> <?= __('dashboard.gauge.progress_since') ?>
               <?php endif; ?>
             </div>
           <?php else: ?>
             <div style="font-size:0.72rem;color:var(--vx-text-muted);">
-              <i class="fas fa-minus" style="color:var(--vx-text-muted);"></i> Score stable
+              <i class="fas fa-minus" style="color:var(--vx-text-muted);"></i> <?= __('dashboard.gauge.stable') ?>
             </div>
           <?php endif; ?>
         <?php else: ?>
           <div class="ud-gauge-wrap" style="display:flex;align-items:center;justify-content:center;">
             <div class="ud-gauge-center">
               <div class="ud-gauge-score" style="color:var(--vx-text-muted);">—</div>
-              <div style="font-size:0.7rem;color:var(--vx-text-muted);margin-top:0.5rem;">Aucun score</div>
+              <div style="font-size:0.7rem;color:var(--vx-text-muted);margin-top:0.5rem;"><?= __('dashboard.gauge.no_score') ?></div>
             </div>
           </div>
-          <div style="font-size:0.72rem;color:var(--vx-text-muted);">Terminez une évaluation pour voir votre score</div>
+          <div style="font-size:0.72rem;color:var(--vx-text-muted);"><?= __('dashboard.gauge.no_score_hint') ?></div>
         <?php endif; ?>
       </div>
 
       <!-- Maturity Ladder -->
       <div class="ud-maturity-card">
-        <h3>Niveaux de maturité</h3>
+        <h3><?= __('dashboard.maturity.title') ?></h3>
         <div class="ud-maturity-ladder">
           <?php
             $currentLevelId = $maturityLevel['id'] ?? null;
@@ -838,7 +842,7 @@
               <div class="ud-maturity-dot" style="background:<?= htmlspecialchars($sl['color']) ?>;opacity:<?= $isPast ? '1' : ($isCurrent ? '1' : '0.3') ?>;"></div>
               <div class="ud-maturity-info">
                 <span class="ud-maturity-name" style="opacity:<?= $isPast || $isCurrent ? '1' : '0.5' ?>;">
-                  <?= htmlspecialchars($sl['name_fr'] ?: $sl['name']) ?>
+                  <?= htmlspecialchars($sl[$levelNameField] ?: $sl['name']) ?>
                 </span>
                 <span class="ud-maturity-range"><?= round($sl['min_percent']) ?>–<?= round($sl['max_percent']) ?>%</span>
               </div>
@@ -857,8 +861,8 @@
     <?php if (!empty($scoreHistory) && count($scoreHistory) >= 1): ?>
       <div class="ud-chart-card">
         <div class="ud-chart-header">
-          <h3><i class="fas fa-chart-line" style="color:var(--vx-primary);margin-right:0.5rem;"></i>Évolution de vos scores</h3>
-          <span class="ud-chart-sub"><?= count($scoreHistory) ?> évaluation(s) terminée(s)</span>
+          <h3><i class="fas fa-chart-line" style="color:var(--vx-primary);margin-right:0.5rem;"></i><?= __('dashboard.chart.title') ?></h3>
+          <span class="ud-chart-sub"><?= __('dashboard.chart.subtitle', ['count' => count($scoreHistory)]) ?></span>
         </div>
         <div class="ud-chart-container">
           <canvas id="udScoreChart"></canvas>
@@ -869,13 +873,13 @@
     <!-- Assessment List -->
     <div class="user-assessment-card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <span><i class="fas fa-file-alt" style="color:var(--vx-primary);margin-right:0.5rem;"></i>Mes évaluations</span>
+        <span><i class="fas fa-file-alt" style="color:var(--vx-primary);margin-right:0.5rem;"></i><?= __('dashboard.assessments.title') ?></span>
         <div style="display:flex;gap:0.5rem;">
           <a href="/user/consolidated" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-            <i class="fas fa-layer-group" style="margin-right:0.25rem;"></i>Consolider
+            <i class="fas fa-layer-group" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.consolidate') ?>
           </a>
           <a href="/assessment/start" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-            <i class="fas fa-plus" style="margin-right:0.25rem;"></i>Nouvelle
+            <i class="fas fa-plus" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.new') ?>
           </a>
         </div>
       </div>
@@ -884,13 +888,13 @@
         <?php foreach ($assessments as $a):
           $statusBadge = $a['status'] === 'completed' ? 'var(--vx-success)' : 'var(--vx-warning)';
           $statusBg = $a['status'] === 'completed' ? 'var(--vx-success-light)' : 'var(--vx-warning-light)';
-          $statusLabel = $a['status'] === 'completed' ? 'Terminée' : 'En cours';
+          $statusLabel = $a['status'] === 'completed' ? __('dashboard.assessments.completed') : __('dashboard.assessments.in_progress');
           $reportBadge = '';
-          if ($a['report_status'] === 'certified') $reportBadge = '<span class="badge" style="background:var(--vx-success-light);color:var(--vx-success);"><i class="fas fa-certificate" style="margin-right:0.25rem;"></i>Certifié</span>';
-          elseif ($a['report_status'] === 'approved') $reportBadge = '<span class="badge" style="background:var(--vx-info-light);color:var(--vx-info);"><i class="fas fa-thumbs-up" style="margin-right:0.25rem;"></i>Approuvé</span>';
-          elseif ($a['report_status'] === 'under_review') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-magnifying-glass" style="margin-right:0.25rem;"></i>En examen</span>';
-          elseif ($a['report_status'] === 'certification_requested') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-hourglass" style="margin-right:0.25rem;"></i>En attente de validation</span>';
-          elseif ($a['report_status'] === 'rejected') $reportBadge = '<span class="badge" style="background:var(--vx-danger-light);color:var(--vx-danger);"><i class="fas fa-times-circle" style="margin-right:0.25rem;"></i>Rejeté</span>';
+          if ($a['report_status'] === 'certified') $reportBadge = '<span class="badge" style="background:var(--vx-success-light);color:var(--vx-success);"><i class="fas fa-certificate" style="margin-right:0.25rem;"></i>' . __('dashboard.report.certified') . '</span>';
+          elseif ($a['report_status'] === 'approved') $reportBadge = '<span class="badge" style="background:var(--vx-info-light);color:var(--vx-info);"><i class="fas fa-thumbs-up" style="margin-right:0.25rem;"></i>' . __('dashboard.report.approved') . '</span>';
+          elseif ($a['report_status'] === 'under_review') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-magnifying-glass" style="margin-right:0.25rem;"></i>' . __('dashboard.report.under_review') . '</span>';
+          elseif ($a['report_status'] === 'certification_requested') $reportBadge = '<span class="badge" style="background:var(--vx-warning-light);color:var(--vx-warning);"><i class="fas fa-hourglass" style="margin-right:0.25rem;"></i>' . __('dashboard.report.certification_requested') . '</span>';
+          elseif ($a['report_status'] === 'rejected') $reportBadge = '<span class="badge" style="background:var(--vx-danger-light);color:var(--vx-danger);"><i class="fas fa-times-circle" style="margin-right:0.25rem;"></i>' . __('dashboard.report.rejected') . '</span>';
           $scoreVal = $a['total_score'] !== null ? round((float)$a['total_score']) : null;
           $scoreColor = '#6366f1';
           if ($scoreVal !== null) {
@@ -907,7 +911,7 @@
               <div class="user-assessment-meta">
                 <span class="badge" style="background:<?= $statusBg ?>;color:<?= $statusBadge ?>;"><?= $statusLabel ?></span>
                 <?php if ($a['total_score'] !== null): ?>
-                  <span>Score: <strong style="color:<?= $scoreColor ?>;"><?= $scoreVal ?>/100</strong></span>
+                  <span><?= __('dashboard.assessments.score') ?>: <strong style="color:<?= $scoreColor ?>;"><?= $scoreVal ?>/100</strong></span>
                   <div class="ud-mini-bar">
                     <div class="ud-mini-bar-fill" style="width:<?= $scoreVal ?>%;background:<?= $scoreColor ?>;"></div>
                   </div>
@@ -919,16 +923,16 @@
             <div style="display:flex;gap:0.5rem;">
               <?php if ($a['status'] === 'completed'): ?>
                 <a href="/assessment/<?= $a['id'] ?>/results" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-                  <i class="fas fa-file-alt" style="margin-right:0.25rem;"></i>Résultats
+                  <i class="fas fa-file-alt" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.results') ?>
                 </a>
                 <?php if ($a['report_status'] === 'certified'): ?>
                   <a href="/report/<?= $a['id'] ?>/download" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-                    <i class="fas fa-certificate" style="margin-right:0.25rem;"></i>Télécharger mon certificat AQMI
+                    <i class="fas fa-certificate" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.download_cert') ?>
                   </a>
                 <?php endif; ?>
               <?php else: ?>
                 <a href="/assessment/<?= $a['id'] ?>" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-                  <i class="fas fa-arrow-right" style="margin-right:0.25rem;"></i>Continuer
+                  <i class="fas fa-arrow-right" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.continue') ?>
                 </a>
               <?php endif; ?>
             </div>
@@ -937,8 +941,8 @@
       <?php else: ?>
         <div class="user-empty-state">
           <div class="user-empty-icon"><i class="fas fa-clipboard-list"></i></div>
-          <p>Vous n'avez pas encore d'évaluation.</p>
-          <a href="/assessment/start" class="nova-btn nova-btn-primary"><i class="fas fa-plus" style="margin-right:0.25rem;"></i>Commencer</a>
+          <p><?= __('dashboard.assessments.empty') ?></p>
+          <a href="/assessment/start" class="nova-btn nova-btn-primary"><i class="fas fa-plus" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.start') ?></a>
         </div>
       <?php endif; ?>
     </div>
@@ -947,16 +951,16 @@
   <!-- Mobile Bottom Navigation -->
   <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(255,253,248,0.96);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
     <a class="d-flex" style="flex-direction:column;align-items:center;text-decoration:none;font-size:0.55rem;color:var(--vx-primary);padding:0.25rem 0.5rem;gap:0.15rem;" href="/user/dashboard">
-      <i class="fas fa-home" style="font-size:0.9rem;"></i><span>Accueil</span>
+      <i class="fas fa-home" style="font-size:0.9rem;"></i><span><?= __('dashboard.nav.home') ?></span>
     </a>
     <a class="d-flex" style="flex-direction:column;align-items:center;text-decoration:none;font-size:0.55rem;color:var(--vx-text-muted);padding:0.25rem 0.5rem;gap:0.15rem;" href="/assessment/start">
-      <i class="fas fa-plus-circle" style="font-size:0.9rem;"></i><span>Nouveau</span>
+      <i class="fas fa-plus-circle" style="font-size:0.9rem;"></i><span><?= __('dashboard.nav.new') ?></span>
     </a>
     <a class="d-flex" style="flex-direction:column;align-items:center;text-decoration:none;font-size:0.55rem;color:var(--vx-text-muted);padding:0.25rem 0.5rem;gap:0.15rem;" href="/">
-      <i class="fas fa-globe" style="font-size:0.9rem;"></i><span>Site</span>
+      <i class="fas fa-globe" style="font-size:0.9rem;"></i><span><?= __('dashboard.nav.site') ?></span>
     </a>
     <a class="d-flex" style="flex-direction:column;align-items:center;text-decoration:none;font-size:0.55rem;color:var(--vx-danger);padding:0.25rem 0.5rem;gap:0.15rem;" href="/logout">
-      <i class="fas fa-sign-out-alt" style="font-size:0.9rem;"></i><span>Quitter</span>
+      <i class="fas fa-sign-out-alt" style="font-size:0.9rem;"></i><span><?= __('dashboard.nav.quit') ?></span>
     </a>
   </nav>
 </div>
@@ -970,7 +974,7 @@
   const history = <?= json_encode($scoreHistory) ?>;
   const labels = history.map(function(h) {
     const d = new Date(h.date);
-    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    return d.toLocaleDateString('<?= $chartLocale ?>', { day: '2-digit', month: 'short' });
   });
   const scores = history.map(function(h) { return h.score; });
 
