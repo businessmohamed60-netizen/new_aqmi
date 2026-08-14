@@ -15,6 +15,14 @@
   var t = i18nData[currentLang] || i18nData['fr'] || {};
   function tr(key) { return t[key] !== undefined ? t[key] : key; }
 
+  function updateBrandMark(lang) {
+    var mark = document.getElementById('aqmiBrandMark');
+    if (!mark) return;
+    var letters = ['A','Q','M','I'];
+    mark.innerHTML = '';
+    letters.forEach(function(l) { var s = document.createElement('span'); s.textContent = l; mark.appendChild(s); });
+  }
+
   updateBrandMark(currentLang);
 
   var questions = cfg.questions || [];
@@ -1004,14 +1012,6 @@
         updateBrandMark(selectedLang);
       });
     });
-
-  function updateBrandMark(lang) {
-    var mark = document.getElementById('aqmiBrandMark');
-    if (!mark) return;
-    var letters = ['A','Q','M','I'];
-    mark.innerHTML = '';
-    letters.forEach(function(l) { var s = document.createElement('span'); s.textContent = l; mark.appendChild(s); });
-  }
 
     if (langStartBtn) {
       langStartBtn.addEventListener('click', function() {
