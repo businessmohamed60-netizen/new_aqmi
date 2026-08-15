@@ -75,7 +75,12 @@ class AdminController
         $id = (int)($params['id'] ?? 0);
         $question = $id ? Question::find($id) : null;
         $domains = Domain::all();
-        view('admin.questions.form', compact('question', 'domains'));
+        $evaluationModels = EvaluationModel::allActive();
+        $modelDomains = [];
+        foreach ($evaluationModels as $em) {
+            $modelDomains[$em['id']] = array_column(EvaluationModel::getDomains($em['id']), 'id');
+        }
+        view('admin.questions.form', compact('question', 'domains', 'evaluationModels', 'modelDomains'));
     }
 
     public function questionSave(): void

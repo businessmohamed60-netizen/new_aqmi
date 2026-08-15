@@ -1,9 +1,10 @@
 <?php
 $title = $question ? 'Modifier la question' : 'Nouvelle question';
 ob_start();
-$evaluationModels = \App\Models\EvaluationModel::allActive();
+$evaluationModels = $evaluationModels ?? \App\Models\EvaluationModel::allActive();
 $questionType = $question['question_type'] ?? 'rating_scale';
 $options = $question ? json_decode($question['options'] ?? '[]', true) : [];
+$modelDomainsJson = json_encode($modelDomains ?? []);
 ?>
 <style>
 .auto-form-wrap { max-width: 1000px; }
@@ -81,7 +82,7 @@ $options = $question ? json_decode($question['options'] ?? '[]', true) : [];
 
           <div class="mb-3">
             <label class="auto-label">Domaine *</label>
-            <select name="domain_id" class="auto-select" required>
+            <select name="domain_id" class="auto-select" id="domainSelect" required>
               <option value="">Sélectionnez un domaine</option>
               <?php foreach ($domains as $d): ?>
                 <option value="<?= $d['id'] ?>" <?= ($question['domain_id'] ?? '') == $d['id'] ? 'selected' : '' ?>>
@@ -89,6 +90,7 @@ $options = $question ? json_decode($question['options'] ?? '[]', true) : [];
                 </option>
               <?php endforeach; ?>
             </select>
+            <small style="color:var(--auto-text-muted);font-size:0.65rem;" id="domainHint">La liste se filtre selon le modèle choisi</small>
           </div>
 
           <div class="mb-3">
@@ -260,6 +262,33 @@ $extraScripts = <<<SCRIPTS
 $(document).ready(function() {
     var optIndex = <?= json_encode(count($options)) ?>;
     if (typeof optIndex !== 'number' || isNaN(optIndex)) optIndex = 3;
+
+    var modelDomains = {$modelDomainsJson};
+    var allDomainOptions = $('#domainSelect').children('option').clone();
+    var currentDomainId = '<?= e($question['domain_id'] ?? '') ?>';
+
+    function filterDomains() {
+        var modelId = $('select[name="model_id"]').val();
+        var allowed = modelId && modelDomains[modelId] ? modelDomains[modelId] : null;
+        var select = $('#domainSelect');
+        var prev = select.val();
+        select.empty().append('<option value="">Sélectionnez un domaine</option>');
+        allDomainOptions.each(function() {
+            var val = $(this).val();
+            if (!val) return;
+            if (!allowed || allowed.indexOf(parseInt(val)) !== -1) {
+                select.append($(this).clone());
+            }
+        });
+        if (prev && select.find('option[value="' + prev + '"]').length) {
+            select.val(prev);
+        } else {
+            select.val('');
+        }
+    }
+
+    $('select[name="model_id"]').on('change', filterDomains);
+    filterDomains();
 
     $('#questionType').on('change', function() {
         var type = $(this).val();
