@@ -19,24 +19,24 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
    Report Studio Dashboard — Elementor-inspired UI
    ============================================================ */
 .rs-dash {
-    --rsd-primary: #1F6FEB;
-    --rsd-primary-light: #5B9DFF;
-    --rsd-primary-dim: rgba(31,111,235,0.08);
-    --rsd-accent: #06B6D4;
-    --rsd-success: #10B981;
-    --rsd-warning: #F59E0B;
-    --rsd-danger: #EF4444;
-    --rsd-bg: #0F172A;
-    --rsd-surface: #1E293B;
-    --rsd-surface-2: #334155;
-    --rsd-border: rgba(148,163,184,0.12);
-    --rsd-text: #F1F5F9;
-    --rsd-text-muted: #94A3B8;
-    --rsd-text-dim: #64748B;
+    --rsd-primary: #2563eb;
+    --rsd-primary-light: #60a5fa;
+    --rsd-primary-dim: rgba(37,99,235,0.08);
+    --rsd-accent: #0d9488;
+    --rsd-success: #059669;
+    --rsd-warning: #d97706;
+    --rsd-danger: #dc2626;
+    --rsd-bg: #f1f5f9;
+    --rsd-surface: #ffffff;
+    --rsd-surface-2: #f8fafc;
+    --rsd-border: #e2e8f0;
+    --rsd-text: #1e293b;
+    --rsd-text-muted: #64748b;
+    --rsd-text-dim: #94a3b8;
     --rsd-radius: 14px;
     --rsd-radius-sm: 10px;
-    --rsd-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    --rsd-shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+    --rsd-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --rsd-shadow-lg: 0 8px 24px rgba(0,0,0,0.10);
     --rsd-transition: 200ms cubic-bezier(0.4,0,0.2,1);
 }
 
@@ -54,7 +54,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     position: relative;
     overflow: hidden;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(31,111,235,0.25);
+    box-shadow: 0 8px 32px rgba(37,99,235,0.20);
 }
 .rs-dash-hero::before {
     content: '';
@@ -70,7 +70,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     position: absolute;
     bottom: -30%; left: 20%;
     width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
 }
@@ -109,7 +109,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 }
 .rs-dash-btn-light:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255,255,255,0.25);
+    box-shadow: 0 8px 24px rgba(255,255,255,0.4);
 }
 .rs-dash-btn-ghost {
     background: rgba(255,255,255,0.12);
@@ -141,7 +141,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 .rs-dash-kpi:hover {
     transform: translateY(-3px);
     box-shadow: var(--rsd-shadow-lg);
-    border-color: rgba(148,163,184,0.2);
+    border-color: rgba(37,99,235,0.2);
 }
 .rs-dash-kpi-icon {
     width: 44px; height: 44px;
@@ -209,7 +209,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     gap: 0.5rem;
     margin: 0;
 }
-.rs-dash-card-title i { color: var(--rsd-primary-light); }
+.rs-dash-card-title i { color: var(--rsd-primary); }
 .rs-dash-card-body { padding: 1.25rem 1.5rem; }
 
 /* Template Cards */
@@ -228,12 +228,12 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 }
 .rs-tpl-item:hover {
     transform: translateY(-3px);
-    border-color: var(--rsd-primary-light);
-    box-shadow: 0 8px 24px rgba(31,111,235,0.15);
+    border-color: var(--rsd-primary);
+    box-shadow: 0 8px 24px rgba(37,99,235,0.12);
 }
 .rs-tpl-thumb {
     height: 120px;
-    background: linear-gradient(135deg, var(--rsd-surface-2), var(--rsd-surface));
+    background: linear-gradient(135deg, var(--rsd-surface-2), #eef2f7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,11 +244,11 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(31,111,235,0.06) 100%);
+    background: linear-gradient(135deg, transparent 40%, rgba(37,99,235,0.05) 100%);
 }
 .rs-tpl-thumb i {
     font-size: 2rem;
-    color: var(--rsd-text-dim);
+    color: #94a3b8;
     z-index: 1;
 }
 .rs-tpl-status {
@@ -260,9 +260,9 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     border-radius: 20px;
     z-index: 2;
 }
-.rs-tpl-status-published { background: rgba(16,185,129,0.15); color: var(--rsd-success); }
-.rs-tpl-status-draft { background: rgba(148,163,184,0.12); color: var(--rsd-text-muted); }
-.rs-tpl-status-archived { background: rgba(245,158,11,0.12); color: var(--rsd-warning); }
+.rs-tpl-status-published { background: rgba(5,150,105,0.10); color: var(--rsd-success); }
+.rs-tpl-status-draft { background: rgba(100,116,139,0.10); color: var(--rsd-text-muted); }
+.rs-tpl-status-archived { background: rgba(217,119,6,0.10); color: var(--rsd-warning); }
 .rs-tpl-info { padding: 0.85rem 1rem; }
 .rs-tpl-name {
     font-size: 0.82rem;
@@ -300,8 +300,8 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 }
 .rs-tpl-btn:hover {
     background: var(--rsd-primary-dim);
-    color: var(--rsd-primary-light);
-    border-color: var(--rsd-primary-light);
+    color: var(--rsd-primary);
+    border-color: var(--rsd-primary);
 }
 .rs-tpl-btn-primary {
     background: var(--rsd-primary);
@@ -357,7 +357,7 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     transition: all var(--rsd-transition);
 }
 .rs-block-chip:hover {
-    border-color: var(--rsd-primary-light);
+    border-color: var(--rsd-primary);
     background: var(--rsd-primary-dim);
 }
 .rs-block-chip i {
@@ -366,8 +366,8 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: rgba(31,111,235,0.1);
-    color: var(--rsd-primary-light);
+    background: rgba(37,99,235,0.08);
+    color: var(--rsd-primary);
     font-size: 0.8rem;
 }
 
@@ -392,8 +392,8 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
 }
 .rs-qa-item:hover {
     transform: translateY(-3px);
-    border-color: var(--rsd-primary-light);
-    box-shadow: 0 8px 24px rgba(31,111,235,0.12);
+    border-color: var(--rsd-primary);
+    box-shadow: 0 8px 24px rgba(37,99,235,0.10);
     color: var(--rsd-text);
 }
 .rs-qa-icon {
@@ -421,8 +421,8 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    background: rgba(245,158,11,0.08);
-    border: 1px solid rgba(245,158,11,0.25);
+    background: rgba(217,119,6,0.06);
+    border: 1px solid rgba(217,119,6,0.25);
     border-radius: var(--rsd-radius);
     margin-bottom: 1.5rem;
     color: var(--rsd-warning);
@@ -465,34 +465,34 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     <!-- KPI Cards -->
     <div class="rs-dash-kpis">
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
+            <div class="rs-dash-kpi-icon" style="background:rgba(37,99,235,0.08);color:var(--rsd-primary);">
                 <i class="fas fa-file-lines"></i>
             </div>
             <div class="rs-dash-kpi-value"><?= $template_count ?? 0 ?></div>
             <div class="rs-dash-kpi-label">Modèles</div>
-            <div class="rs-dash-kpi-trend" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
+            <div class="rs-dash-kpi-trend" style="background:rgba(37,99,235,0.08);color:var(--rsd-primary);">
                 <?= $published ?? 0 ?> publiés
             </div>
         </div>
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(16,185,129,0.12);color:var(--rsd-success);">
+            <div class="rs-dash-kpi-icon" style="background:rgba(5,150,105,0.08);color:var(--rsd-success);">
                 <i class="fas fa-cubes"></i>
             </div>
             <div class="rs-dash-kpi-value"><?= $block_count ?? count($totalBlocks) ?></div>
             <div class="rs-dash-kpi-label">Blocs disponibles</div>
-            <div class="rs-dash-kpi-trend" style="background:rgba(16,185,129,0.12);color:var(--rsd-success);">
+            <div class="rs-dash-kpi-trend" style="background:rgba(5,150,105,0.08);color:var(--rsd-success);">
                 <?= count($blockGroups) ?> catégories
             </div>
         </div>
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(6,182,212,0.12);color:var(--rsd-accent);">
+            <div class="rs-dash-kpi-icon" style="background:rgba(13,148,136,0.08);color:var(--rsd-accent);">
                 <i class="fas fa-paintbrush"></i>
             </div>
             <div class="rs-dash-kpi-value"><?= $theme_count ?? 0 ?></div>
             <div class="rs-dash-kpi-label">Thèmes</div>
         </div>
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(245,158,11,0.12);color:var(--rsd-warning);">
+            <div class="rs-dash-kpi-icon" style="background:rgba(217,119,6,0.08);color:var(--rsd-warning);">
                 <i class="fas fa-file-circle-plus"></i>
             </div>
             <div class="rs-dash-kpi-value"><?= max(0, $draftCount) ?></div>
@@ -508,35 +508,35 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
         <div class="rs-dash-card-body">
             <div class="rs-quick-actions">
                 <a href="<?= route('reportstudio.templates.create') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(31,111,235,0.12);color:var(--rsd-primary-light);">
+                    <div class="rs-qa-icon" style="background:rgba(37,99,235,0.08);color:var(--rsd-primary);">
                         <i class="fas fa-file-circle-plus"></i>
                     </div>
                     <div class="rs-qa-label">Nouveau rapport</div>
                     <div class="rs-qa-sub">Partir de zéro</div>
                 </a>
                 <a href="<?= route('reportstudio.templates.index') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(6,182,212,0.12);color:var(--rsd-accent);">
+                    <div class="rs-qa-icon" style="background:rgba(13,148,136,0.08);color:var(--rsd-accent);">
                         <i class="fas fa-folder-open"></i>
                     </div>
                     <div class="rs-qa-label">Mes modèles</div>
                     <div class="rs-qa-sub"><?= $template_count ?? 0 ?> au total</div>
                 </a>
                 <a href="<?= route('reportstudio.themes.index') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(6,182,212,0.12);color:#06B6D4;">
+                    <div class="rs-qa-icon" style="background:rgba(13,148,136,0.08);color:var(--rsd-accent);">
                         <i class="fas fa-palette"></i>
                     </div>
                     <div class="rs-qa-label">Thèmes</div>
                     <div class="rs-qa-sub"><?= $theme_count ?? 0 ?> disponibles</div>
                 </a>
                 <a href="/admin/reports" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(16,185,129,0.12);color:var(--rsd-success);">
+                    <div class="rs-qa-icon" style="background:rgba(5,150,105,0.08);color:var(--rsd-success);">
                         <i class="fas fa-certificate"></i>
                     </div>
                     <div class="rs-qa-label">Certifications</div>
                     <div class="rs-qa-sub">Demandes en attente</div>
                 </a>
                 <a href="/admin/dashboard" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(245,158,11,0.12);color:var(--rsd-warning);">
+                    <div class="rs-qa-icon" style="background:rgba(217,119,6,0.08);color:var(--rsd-warning);">
                         <i class="fas fa-chart-pie"></i>
                     </div>
                     <div class="rs-qa-label">Dashboard</div>

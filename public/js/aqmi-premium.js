@@ -280,13 +280,18 @@
 
     // Render answers
     var qt = q.question_type || 'rating_scale';
+    el.answers.removeAttribute('data-qtype');
     if (qt === 'yes_no') {
+      el.answers.setAttribute('data-qtype', 'yes_no');
       renderYesNo(q, index);
     } else if (qt === 'multiple_choice') {
+      el.answers.setAttribute('data-qtype', 'multiple_choice');
       renderMultipleChoice(q, index);
     } else if (qt === 'text_input') {
+      el.answers.setAttribute('data-qtype', 'text_input');
       renderTextInput(q, index);
     } else if (qt === 'numeric') {
+      el.answers.setAttribute('data-qtype', 'numeric');
       renderNumericInput(q, index);
     } else {
       renderRatingScale(q, index);
@@ -320,20 +325,20 @@
     el.answers.style.display = '';
 
     var options = [
-      { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check-circle', cls: 'yes' },
-      { value: 3, label: tr('partial_label'), sublabel: tr('partial_sub'), icon: 'fa-minus-circle', cls: 'partial' },
-      { value: 0, label: tr('no_label'), sublabel: tr('no_sub'), icon: 'fa-times-circle', cls: 'no' },
-      { value: 0, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-ban', cls: 'na' },
+      { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check', cls: 'yes' },
+      { value: 3, label: tr('partial_label'), sublabel: tr('partial_sub'), icon: 'fa-circle-half-stroke', cls: 'partial' },
+      { value: 0, label: tr('no_label'), sublabel: tr('no_sub'), icon: 'fa-xmark', cls: 'no' },
+      { value: 0, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-dash', cls: 'na' },
     ];
 
     var html = '';
     for (var i = 0; i < options.length; i++) {
       var opt = options[i];
-      var selected = q.answered && q.score === opt.value;
+      var selected = q.answered && q.score === opt.value && opt.cls !== 'na';
+      var selectedNA = q.answered && q.score === 0 && opt.cls === 'na' && q.answer_text === 'N/A';
       var selClass = '';
-      if (selected) {
-        selClass = 'selected-' + opt.cls;
-      }
+      if (selected) selClass = 'selected-' + opt.cls;
+      if (selectedNA) selClass = 'selected-na';
       html += '<div class="aqmi-answer-card ' + selClass + '" data-score="' + opt.value + '" data-cls="' + opt.cls + '" data-qid="' + q.id + '" data-idx="' + index + '">';
       html += '  <div class="aqmi-answer-icon"><i class="fas ' + opt.icon + '"></i></div>';
       html += '  <div class="aqmi-answer-label">' + opt.label + '<div class="aqmi-answer-sublabel">' + opt.sublabel + '</div></div>';
@@ -352,13 +357,15 @@
       try { opts = JSON.parse(q.options); } catch(e) { opts = []; }
     }
 
+    var letters = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     var html = '';
     for (var i = 0; i < opts.length; i++) {
       var opt = opts[i];
       var label = opt.label || opt.value || 'Option ' + (i + 1);
       var selected = q.answered && q.score === i;
+      var letter = letters[i] || (i + 1);
       html += '<div class="aqmi-answer-card ' + (selected ? 'selected' : '') + '" data-score="' + i + '" data-cls="mc" data-qid="' + q.id + '" data-idx="' + index + '">';
-      html += '  <div class="aqmi-answer-icon"><i class="fas ' + (selected ? 'fa-check-circle' : 'fa-circle') + '"></i></div>';
+      html += '  <div class="aqmi-answer-icon">' + letter + '</div>';
       html += '  <div class="aqmi-answer-label">' + label + '</div>';
       html += '</div>';
     }
@@ -372,14 +379,100 @@
     el.ratingGrid.style.display = 'none';
     el.answers.style.display = '';
     var val = q.answered && q.answer_text ? q.answer_text : '';
-    el.answers.innerHTML = '<textarea class="aqmi-text-input" data-qid="' + q.id + '" data-idx="' + index + '" rows="3" placeholder="' + tr('text_placeholder') + '" style="width:100%;padding:0.85rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;resize:vertical;transition:border-color 0.3s;">' + val + '</textarea>';
+    var maxLen = 1000;
+    var html = '<div class="aqmi-text-input-wrap">';
+    html += '<textarea class="aqmi-text-input" data-qid="' + q.id + '" data-idx="' + index + '" rows="4" maxlength="' + maxLen + '" placeholder="' + tr('text_placeholder') + '">' + val + '</textarea>';
+    html += '<div class="aqmi-text-input-meta">';
+    html += '  <span class="aqmi-text-input-hint"><i class="fas fa-keyboard"></i> ' + (currentLang === 'ar' ? 'اكتب إجابتك' : currentLang === 'en' ? 'Type your answer' : 'Saisissez votre réponse') + '</span>';
+    html += '  <span class="aqmi-text-input-counter" data-max="' + maxLen + '">' + val.length + ' / ' + maxLen + '</span>';
+    html += '</div></div>';
+    el.answers.innerHTML = html;
+
+    var ta = el.answers.querySelector('.aqmi-text-input');
+    var counter = el.answers.querySelector('.aqmi-text-input-counter');
+    if (ta && counter) {
+      ta.addEventListener('input', function() {
+        var len = ta.value.length;
+        counter.textContent = len + ' / ' + maxLen;
+        counter.classList.toggle('near-limit', len > maxLen * 0.8 && len < maxLen);
+        counter.classList.toggle('at-limit', len >= maxLen);
+      });
+    }
   }
 
   function renderNumericInput(q, index) {
     el.ratingGrid.style.display = 'none';
     el.answers.style.display = '';
     var val = q.answered && q.answer_value ? q.answer_value : '';
-    el.answers.innerHTML = '<input type="number" class="aqmi-numeric-input" data-qid="' + q.id + '" data-idx="' + index + '" placeholder="' + tr('numeric_placeholder') + '" style="width:200px;max-width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-sm);color:var(--aqmi-text);font-family:var(--aqmi-font);font-size:0.9rem;outline:none;transition:border-color 0.3s;" value="' + val + '">';
+    var unit = '';
+    var minVal = null, maxVal = null, step = 1;
+    try {
+      var parsed = JSON.parse(q.options_json || q.options || '{}');
+      unit = parsed.unit || '';
+      minVal = parsed.min !== undefined ? parseFloat(parsed.min) : null;
+      maxVal = parsed.max !== undefined ? parseFloat(parsed.max) : null;
+      step = parsed.step !== undefined ? parseFloat(parsed.step) : 1;
+    } catch(e) {}
+
+    var html = '';
+    html += '<div class="aqmi-numeric-display">';
+    html += '  <span class="aqmi-numeric-value ' + (val === '' ? 'empty' : '') + '" id="aqmiNumericDisplay">' + (val !== '' ? val : tr('numeric_placeholder')) + '</span>';
+    if (unit) html += '  <span class="aqmi-numeric-unit">' + unit + '</span>';
+    html += '</div>';
+
+    html += '<div class="aqmi-numeric-controls">';
+    html += '  <button class="aqmi-numeric-btn" data-action="decrease" type="button"><i class="fas fa-minus"></i></button>';
+    html += '  <input type="number" class="aqmi-numeric-input" data-qid="' + q.id + '" data-idx="' + index + '" placeholder="' + tr('numeric_placeholder') + '" value="' + val + '"';
+    if (minVal !== null) html += ' min="' + minVal + '"';
+    if (maxVal !== null) html += ' max="' + maxVal + '"';
+    html += ' step="' + step + '">';
+    html += '  <button class="aqmi-numeric-btn" data-action="increase" type="button"><i class="fas fa-plus"></i></button>';
+    html += '</div>';
+
+    if (minVal !== null && maxVal !== null) {
+      html += '<div class="aqmi-numeric-range-hint"><span>' + minVal + '</span><span>' + maxVal + '</span></div>';
+    }
+
+    el.answers.innerHTML = html;
+
+    var input = el.answers.querySelector('.aqmi-numeric-input');
+    var display = el.answers.querySelector('#aqmiNumericDisplay');
+    var decBtn = el.answers.querySelector('.aqmi-numeric-btn[data-action="decrease"]');
+    var incBtn = el.answers.querySelector('.aqmi-numeric-btn[data-action="increase"]');
+
+    function updateDisplay(v) {
+      if (v === '' || v === null || isNaN(v)) {
+        display.textContent = tr('numeric_placeholder');
+        display.classList.add('empty');
+      } else {
+        display.textContent = v;
+        display.classList.remove('empty');
+      }
+    }
+
+    if (input) {
+      input.addEventListener('input', function() { updateDisplay(input.value); });
+    }
+    if (decBtn) {
+      decBtn.addEventListener('click', function() {
+        var cur = parseFloat(input.value) || 0;
+        var newVal = cur - step;
+        if (minVal !== null && newVal < minVal) newVal = minVal;
+        input.value = newVal;
+        updateDisplay(newVal);
+        input.dispatchEvent(new Event('blur'));
+      });
+    }
+    if (incBtn) {
+      incBtn.addEventListener('click', function() {
+        var cur = parseFloat(input.value) || 0;
+        var newVal = cur + step;
+        if (maxVal !== null && newVal > maxVal) newVal = maxVal;
+        input.value = newVal;
+        updateDisplay(newVal);
+        input.dispatchEvent(new Event('blur'));
+      });
+    }
   }
 
   function renderRatingScale(q, index) {
@@ -782,6 +875,9 @@
   // ── Keyboard Navigation ──
   document.addEventListener('keydown', function(e) {
     if (isTransitioning) return;
+    var activeEl = document.activeElement;
+    var isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT');
+    if (isTyping) return;
     if (e.key === 'ArrowRight' || e.key === ' ') {
       e.preventDefault();
       if (el.nextBtn.style.display !== 'none') {
@@ -790,7 +886,7 @@
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
       goPrev();
-    } else if (e.key >= '1' && e.key <= '4') {
+    } else if (e.key >= '1' && e.key <= '6') {
       var idx = parseInt(e.key, 10) - 1;
       var activeAnswers = document.querySelectorAll('.aqmi-answer-card, .aqmi-rating-card');
       if (activeAnswers[idx]) {
@@ -856,6 +952,8 @@
       updateProgress();
       updateRightGauge();
       updateMainGauge(currentIdx);
+
+      el.nextBtn.style.display = '';
 
       jQuery.ajax({
         url: '/assessment/save-answer',
