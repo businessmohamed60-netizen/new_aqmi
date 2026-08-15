@@ -19,8 +19,16 @@ foreach ($domainQuestions as $dq) {
     foreach ($dq['questions'] as $q) {
         $answered = false;
         $answeredScore = null;
+        $answerText = null;
+        $answerValue = null;
         foreach ($answers as $a) {
-            if ($a['question_id'] == $q['id']) { $answered = true; $answeredScore = $a['score']; break; }
+            if ($a['question_id'] == $q['id']) {
+                $answered = true;
+                $answeredScore = $a['score'];
+                $answerText = $a['answer_text'] ?? null;
+                $answerValue = $a['answer_value'] ?? null;
+                break;
+            }
         }
         $questionsFlat[] = [
             'id' => $q['id'],
@@ -34,10 +42,13 @@ foreach ($domainQuestions as $dq) {
             'help_text_ar' => $q['help_text_ar'] ?? null,
             'question_type' => $q['question_type'] ?? 'rating_scale',
             'options' => $q['options'] ?? null,
+            'options_json' => $q['options'] ?? null,
             'weight' => (float)($q['weight'] ?? 1),
             'sort_order' => $q['sort_order'] ?? 0,
             'answered' => $answered,
             'score' => $answeredScore !== null ? (int)$answeredScore : null,
+            'answer_text' => $answerText,
+            'answer_value' => $answerValue,
         ];
         $totalQuestions++;
     }

@@ -94,7 +94,8 @@ class ScoringService
                 SELECT q.domain_id, AVG(aa.score) / 5 * 100 as avg_percent
                 FROM assessment_answers aa JOIN questions q ON aa.question_id = q.id
                 JOIN assessments a ON aa.assessment_id = a.id
-                WHERE a.status = 'completed' GROUP BY q.domain_id, aa.assessment_id
+                WHERE a.status = 'completed' AND aa.score IS NOT NULL AND q.question_type IN ('rating_scale', 'yes_no')
+                GROUP BY q.domain_id, aa.assessment_id
             ) ds JOIN domains d ON ds.domain_id = d.id GROUP BY d.id"
         );
         $domainBenchmark = [];

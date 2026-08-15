@@ -155,14 +155,16 @@ class AssessmentController
         Auth::requireAuth();
         $assessmentId = (int)($_GET['assessment_id'] ?? 0);
         $questionId = (int)($_GET['question_id'] ?? 0);
-        $score = (int)($_GET['score'] ?? -1);
+        $score = isset($_GET['score']) && $_GET['score'] !== '' ? (int)$_GET['score'] : null;
+        $answerText = $_GET['answer_text'] ?? '';
+        $answerValue = $_GET['answer_value'] ?? '';
 
-        if ($score < 0 || $score > 5) {
+        if ($score !== null && ($score < 0 || $score > 5)) {
             jsonResponse(['success' => false, 'error' => 'Invalid score'], 400);
             return;
         }
 
-        Answer::save($assessmentId, $questionId, $score);
+        Answer::save($assessmentId, $questionId, $score, $answerText, $answerValue);
         jsonResponse(['success' => true]);
     }
 
