@@ -499,7 +499,7 @@
         'color' => '#28c76f', 'icon' => 'fa-graduation-cap',
         'title' => 'Formation LMS',
         'desc' => 'Les équipes sont formées aux normes IATF 16949, aux méthodes Lean et aux standards qualité automobile via notre plateforme LMS.',
-        'btn' => 'Découvrir LMS', 'url' => '/lms',
+        'btn' => 'Découvrir LMS', 'url' => '/lms.html',
         'extra' => ''
       ],
       [
@@ -507,7 +507,7 @@
         'color' => '#ff9f43', 'icon' => 'fa-industry',
         'title' => 'Digitalisation QMS',
         'desc' => 'L\'entreprise déploie NOVAQYS QMS pour structurer et digitaliser ses processus qualité, production et supply chain.',
-        'btn' => 'Découvrir NOVAQYS', 'url' => '/novaqys-qms',
+        'btn' => 'Découvrir NOVAQYS', 'url' => '#qms',
         'extra' => ''
       ],
       [
@@ -523,7 +523,7 @@
         'color' => '#ea5455', 'icon' => 'fa-search',
         'title' => 'Évaluation NARA',
         'desc' => 'Audit professionnel par un constructeur ou un équipementier via NARA. Validation officielle et rapport détaillé.',
-        'btn' => 'Découvrir NARA', 'url' => '/nara',
+        'btn' => 'Découvrir NARA', 'url' => '#nara',
         'extra' => ''
       ],
       [
@@ -531,7 +531,7 @@
         'color' => '#7367f0', 'icon' => 'fa-globe',
         'title' => 'Visibilité ASIN',
         'desc' => 'L\'entreprise rejoint ASIN et publie son passeport industriel international. Visibilité mondiale auprès des donneurs d\'ordre.',
-        'btn' => 'Découvrir ASIN', 'url' => '/asin',
+        'btn' => 'Découvrir ASIN', 'url' => '/asin.html',
         'extra' => ''
       ],
       [
@@ -547,7 +547,7 @@
         'color' => '#28c76f', 'icon' => 'fa-rocket',
         'title' => 'Développement',
         'desc' => 'Nouveaux contrats, croissance internationale, développement commercial accéléré. L\'entreprise devient un fournisseur de rang mondial.',
-        'btn' => 'Commencer maintenant', 'url' => '/contact',
+        'btn' => 'Commencer maintenant', 'url' => '#account-request',
         'extra' => '<div class="journey-step-anim"><div class="journey-final-scene"><svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="140" y="50" width="120" height="60" rx="4" fill="rgba(40,199,111,0.08)" stroke="rgba(40,199,111,0.2)" stroke-width="0.5"/><rect x="155" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><rect x="180" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><rect x="205" y="60" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><rect x="155" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><rect x="180" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><rect x="205" y="80" width="20" height="15" rx="2" fill="rgba(40,199,111,0.15)"/><circle cx="80" cy="80" r="18" fill="rgba(115,103,240,0.08)" stroke="rgba(115,103,240,0.2)" stroke-width="0.5"/><circle cx="80" cy="80" r="8" fill="rgba(115,103,240,0.15)"/><circle cx="320" cy="80" r="18" fill="rgba(0,207,232,0.08)" stroke="rgba(0,207,232,0.2)" stroke-width="0.5"/><circle cx="320" cy="80" r="8" fill="rgba(0,207,232,0.15)"/><line x1="98" y1="80" x2="140" y2="80" stroke="rgba(115,103,240,0.2)" stroke-width="0.5" stroke-dasharray="3 3"/><line x1="260" y1="80" x2="302" y2="80" stroke="rgba(0,207,232,0.2)" stroke-width="0.5" stroke-dasharray="3 3"/><rect x="130" y="20" width="140" height="25" rx="4" fill="rgba(255,159,67,0.06)" stroke="rgba(255,159,67,0.15)" stroke-width="0.5"/><rect x="140" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="156" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="172" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="192" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="208" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="224" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><rect x="240" y="27" width="12" height="4" rx="1" fill="rgba(255,159,67,0.2)"/><text x="200" y="16" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="6">Usine moderne</text><line x1="200" y1="45" x2="200" y2="50" stroke="rgba(255,159,67,0.15)" stroke-width="0.5"/></svg></div></div>'
       ],
     ];

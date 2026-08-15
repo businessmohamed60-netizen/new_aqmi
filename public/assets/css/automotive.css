@@ -30,8 +30,8 @@
 
   /* Surfaces */
   --auto-text-primary: var(--nova-text-primary, #EEF2F7);
-  --auto-text-secondary: var(--nova-text-secondary, #486581);
-  --auto-text-muted: var(--nova-text-tertiary, #486581);
+  --auto-text-secondary: var(--nova-text-secondary, #a3b0c6);
+  --auto-text-muted: var(--nova-text-tertiary, #7a8a9e);
   --auto-border: var(--nova-border, rgba(255,255,255,0.06));
   --auto-border-glow: rgba(59, 130, 246, 0.2);
 
