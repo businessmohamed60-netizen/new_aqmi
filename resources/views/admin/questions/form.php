@@ -5,6 +5,8 @@ $evaluationModels = $evaluationModels ?? \App\Models\EvaluationModel::allActive(
 $questionType = $question['question_type'] ?? 'rating_scale';
 $options = $question ? json_decode($question['options'] ?? '[]', true) : [];
 $modelDomainsJson = json_encode($modelDomains ?? []);
+$currentDomainId = e($question['domain_id'] ?? '');
+$optIndex = count($options);
 ?>
 <style>
 .auto-form-wrap { max-width: 1000px; }
@@ -260,12 +262,12 @@ $modelDomainsJson = json_encode($modelDomains ?? []);
 $extraScripts = <<<SCRIPTS
 <script>
 $(document).ready(function() {
-    var optIndex = <?= json_encode(count($options)) ?>;
+    var optIndex = {$optIndex};
     if (typeof optIndex !== 'number' || isNaN(optIndex)) optIndex = 3;
 
     var modelDomains = {$modelDomainsJson};
     var allDomainOptions = $('#domainSelect').children('option').clone();
-    var currentDomainId = '<?= e($question['domain_id'] ?? '') ?>';
+    var currentDomainId = '{$currentDomainId}';
 
     function filterDomains() {
         var modelId = $('select[name="model_id"]').val();
