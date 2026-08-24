@@ -1,4 +1,9 @@
-<?php $title = 'NOVAQYS - Building the Future of Automotive Manufacturing Excellence'; ob_start(); ?>
+<?php $title = 'NOVAQYS - Building the Future of Automotive Manufacturing Excellence';
+$extraStyles = '<link rel="stylesheet" href="' . asset('css/journey.css') . '">';
+$extraScripts = '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>'
+    . '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>'
+    . '<script src="' . asset('js/journey.js') . '" defer></script>';
+ob_start(); ?>
 
 <!-- ═══════════════════════════════════════════════════════════════════
      HEADER / NAVIGATION
@@ -48,49 +53,137 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
-     HERO SECTION
+     HERO SECTION — Modern split layout with AQMI score dashboard
      ═══════════════════════════════════════════════════════════════════ -->
-<section class="hero" id="top">
+<section class="hero hero-modern" id="top">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow-1"></div>
   <div class="hero-glow-2"></div>
 
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      <span>Industry 4.0 · Automotive Manufacturing Ecosystem</span>
+  <div class="hero-modern-wrap">
+    <!-- LEFT: headline + CTAs -->
+    <div class="hero-content hero-content-left">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span>Industry 4.0 · Automotive Manufacturing Ecosystem</span>
+      </div>
+      <h1 class="hero-title">
+        NOVAQYS<br>
+        <span class="hero-gradient">Building the Future of Automotive Manufacturing Excellence</span>
+      </h1>
+      <p class="hero-subtitle">Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.</p>
+      <div class="hero-slogans" id="heroSlogans">
+        <span class="hero-slogan active">Créer un nouveau réseau de sous-traitance automobile</span>
+        <span class="hero-slogan">Maîtriser les coûts sans compromis sur la qualité</span>
+        <span class="hero-slogan">Accélérer votre transition vers l'industrie 4.0</span>
+        <span class="hero-slogan">Construire la compétitivité et la notoriété des fabricants</span>
+        <span class="hero-slogan">Évaluer · Former · Digitaliser · Connecter</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#ecosystem">
+          <button class="btn-primary">
+            Découvrir l'écosystème
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </a>
+        <a href="#account-request">
+          <button class="btn-outline">
+            <i class="fas fa-play"></i>
+            Demander une démonstration
+          </button>
+        </a>
+        <a href="/login">
+          <button class="btn-ghost">
+            <i class="fas fa-lock"></i>
+            Connexion AQMI
+          </button>
+        </a>
+      </div>
     </div>
-    <h1 class="hero-title">
-      NOVAQYS<br>
-      <span class="hero-gradient">Building the Future of Automotive Manufacturing Excellence</span>
-    </h1>
-    <p class="hero-subtitle">Développez un nouveau réseau de sous-traitance automobile performant grâce à un écosystème complet d'évaluation, de formation, de digitalisation et de mise en relation industrielle.</p>
-    <div class="hero-slogans" id="heroSlogans">
-      <span class="hero-slogan active">Créer un nouveau réseau de sous-traitance automobile</span>
-      <span class="hero-slogan">Maîtriser les coûts sans compromis sur la qualité</span>
-      <span class="hero-slogan">Accélérer votre transition vers l'industrie 4.0</span>
-      <span class="hero-slogan">Construire la compétitivité et la notoriété des fabricants</span>
-      <span class="hero-slogan">Évaluer · Former · Digitaliser · Connecter</span>
-    </div>
-    <div class="hero-ctas">
-      <a href="#ecosystem">
-        <button class="btn-primary">
-          Découvrir l'écosystème
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </a>
-      <a href="#account-request">
-        <button class="btn-outline">
-          <i class="fas fa-play"></i>
-          Demander une démonstration
-        </button>
-      </a>
-      <a href="/login">
-        <button class="btn-ghost">
-          <i class="fas fa-lock"></i>
-          Connexion AQMI
-        </button>
-      </a>
+
+    <!-- RIGHT: AQMI score dashboard -->
+    <div class="hero-dashboard" id="heroDashboard">
+      <div class="hero-dash-header">
+        <div class="hero-dash-title">
+          <i class="fas fa-chart-pie"></i>
+          <span>AQMI Score</span>
+        </div>
+        <span class="hero-dash-badge">IATF 16949</span>
+      </div>
+
+      <!-- Radar chart (SVG) -->
+      <div class="hero-radar-wrap">
+        <svg class="hero-radar" viewBox="0 0 300 300" aria-hidden="true">
+          <!-- grid rings -->
+          <g class="hero-radar-grid" fill="none" stroke="rgba(0,207,232,0.12)" stroke-width="1">
+            <polygon points="150,30 257,90 257,210 150,270 43,210 43,90" />
+            <polygon points="150,60 231,105 231,195 150,240 69,195 69,105" />
+            <polygon points="150,90 205,120 205,180 150,210 95,180 95,120" />
+            <polygon points="150,120 179,135 179,165 150,180 121,165 121,135" />
+          </g>
+          <!-- axes -->
+          <g class="hero-radar-axes" stroke="rgba(255,255,255,0.08)" stroke-width="1">
+            <line x1="150" y1="150" x2="150" y2="30" />
+            <line x1="150" y1="150" x2="257" y2="90" />
+            <line x1="150" y1="150" x2="257" y2="210" />
+            <line x1="150" y1="150" x2="150" y2="270" />
+            <line x1="150" y1="150" x2="43" y2="210" />
+            <line x1="150" y1="150" x2="43" y2="90" />
+          </g>
+          <!-- data polygon (animated via stroke-dashoffset) -->
+          <polygon
+            class="hero-radar-data"
+            points="150,150 150,150 150,150 150,150 150,150 150,150"
+            data-target="150,52 238,103 226,198 150,246 58,200 53,97"
+            fill="rgba(0,207,232,0.15)"
+            stroke="#00cfe8"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          <!-- data points -->
+          <g class="hero-radar-points" fill="#00cfe8">
+            <circle cx="150" cy="52" r="0" data-r="4" class="hero-radar-pt" />
+            <circle cx="238" cy="103" r="0" data-r="4" class="hero-radar-pt" />
+            <circle cx="226" cy="198" r="0" data-r="4" class="hero-radar-pt" />
+            <circle cx="150" cy="246" r="0" data-r="4" class="hero-radar-pt" />
+            <circle cx="58" cy="200" r="0" data-r="4" class="hero-radar-pt" />
+            <circle cx="53" cy="97" r="0" data-r="4" class="hero-radar-pt" />
+          </g>
+          <!-- labels -->
+          <g class="hero-radar-labels" fill="rgba(200,215,230,0.75)" font-size="10" font-family="Manrope,Inter,sans-serif" font-weight="600" text-anchor="middle">
+            <text x="150" y="18">Management</text>
+            <text x="272" y="88">Core Tools</text>
+            <text x="272" y="222">Production</text>
+            <text x="150" y="288">Supply Chain</text>
+            <text x="28" y="222">Qualité</text>
+            <text x="28" y="88">Maintenance</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- KPI score cards -->
+      <div class="hero-kpis">
+        <div class="hero-kpi">
+          <div class="hero-kpi-label">Score Global</div>
+          <div class="hero-kpi-value" data-target="78">0</div>
+          <div class="hero-kpi-bar"><span data-target="78"></span></div>
+        </div>
+        <div class="hero-kpi">
+          <div class="hero-kpi-label">Conformité IATF</div>
+          <div class="hero-kpi-value" data-target="84">0</div>
+          <div class="hero-kpi-bar"><span data-target="84"></span></div>
+        </div>
+        <div class="hero-kpi">
+          <div class="hero-kpi-label">Maturité 4.0</div>
+          <div class="hero-kpi-value" data-target="65">0</div>
+          <div class="hero-kpi-bar"><span data-target="65"></span></div>
+        </div>
+        <div class="hero-kpi">
+          <div class="hero-kpi-label">OEE Moyen</div>
+          <div class="hero-kpi-value" data-target="72">0</div>
+          <div class="hero-kpi-bar"><span data-target="72"></span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -984,6 +1077,59 @@ function closeMobile(){
       slogans[idx].classList.add('active');
     }, 600);
   }, 3500);
+})();
+
+// AQMI hero dashboard — animate radar + KPI counters when visible
+(function(){
+  var dash = document.getElementById('heroDashboard');
+  if(!dash) return;
+
+  function animateRadar(){
+    var poly = dash.querySelector('.hero-radar-data');
+    var pts = dash.querySelectorAll('.hero-radar-pt');
+    if(poly && poly.getAttribute('data-target')){
+      poly.setAttribute('points', poly.getAttribute('data-target'));
+      poly.classList.add('is-animated');
+    }
+    pts.forEach(function(pt, i){
+      setTimeout(function(){ pt.classList.add('is-animated'); }, 1200 + i * 120);
+    });
+  }
+
+  function animateCounters(){
+    dash.querySelectorAll('.hero-kpi-value').forEach(function(el){
+      var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+      var start = 0, dur = 1400, t0 = null;
+      function step(ts){
+        if(!t0) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target);
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+    dash.querySelectorAll('.hero-kpi-bar span').forEach(function(el){
+      var target = el.getAttribute('data-target') || '0';
+      el.style.width = target + '%';
+    });
+  }
+
+  function run(){
+    animateRadar();
+    animateCounters();
+  }
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ run(); io.disconnect(); }
+      });
+    }, { threshold: 0.25 });
+    io.observe(dash);
+  } else {
+    run();
+  }
 })();
 </script>
 

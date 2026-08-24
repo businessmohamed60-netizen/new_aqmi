@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="<?= asset('css/novaqys.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/auth.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/mobile.css') ?>">
+    <?= $extraStyles ?? '' ?>
 </head>
 <body>
     <?= $content ?? '' ?>
@@ -72,5 +73,6 @@
 
     <script src="<?= asset('js/mobile.js') ?>"></script>
     <script src="<?= asset('js/novaqys.js') ?>"></script>
+    <?= $extraScripts ?? '' ?>
 </body>
 </html>
