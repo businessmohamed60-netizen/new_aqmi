@@ -5,22 +5,22 @@ declare(strict_types=1);
 <?php ob_start(); ?>
 <style>
 .rs-tpl-page {
-    --rsd-primary: #1F6FEB;
-    --rsd-primary-light: #5B9DFF;
-    --rsd-primary-dim: rgba(31,111,235,0.08);
-    --rsd-accent: #06B6D4;
-    --rsd-success: #10B981;
-    --rsd-warning: #F59E0B;
-    --rsd-danger: #EF4444;
-    --rsd-surface: #1E293B;
-    --rsd-surface-2: #334155;
-    --rsd-border: rgba(148,163,184,0.12);
-    --rsd-text: #F1F5F9;
-    --rsd-text-muted: #94A3B8;
-    --rsd-text-dim: #64748B;
+    --rsd-primary: #2563eb;
+    --rsd-primary-light: #60a5fa;
+    --rsd-primary-dim: rgba(37,99,235,0.08);
+    --rsd-accent: #0d9488;
+    --rsd-success: #059669;
+    --rsd-warning: #d97706;
+    --rsd-danger: #dc2626;
+    --rsd-surface: #ffffff;
+    --rsd-surface-2: #f8fafc;
+    --rsd-border: #e2e8f0;
+    --rsd-text: #1e293b;
+    --rsd-text-muted: #64748b;
+    --rsd-text-dim: #94a3b8;
     --rsd-radius: 14px;
     --rsd-radius-sm: 10px;
-    --rsd-shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+    --rsd-shadow-lg: 0 8px 24px rgba(0,0,0,0.10);
     --rsd-transition: 200ms cubic-bezier(0.4,0,0.2,1);
     font-family: 'Inter', sans-serif;
     color: var(--rsd-text);
@@ -114,9 +114,9 @@ declare(strict_types=1);
     border-radius: 20px;
     z-index: 2;
 }
-.rs-tpl-card-status-published { background: rgba(16,185,129,0.15); color: var(--rsd-success); }
-.rs-tpl-card-status-draft { background: rgba(148,163,184,0.12); color: var(--rsd-text-muted); }
-.rs-tpl-card-status-archived { background: rgba(245,158,11,0.12); color: var(--rsd-warning); }
+.rs-tpl-card-status-published { background: rgba(5,150,105,0.10); color: var(--rsd-success); }
+.rs-tpl-card-status-draft { background: rgba(100,116,139,0.10); color: var(--rsd-text-muted); }
+.rs-tpl-card-status-archived { background: rgba(217,119,6,0.10); color: var(--rsd-warning); }
 .rs-tpl-card-body { padding: 1rem 1.25rem; }
 .rs-tpl-card-name {
     font-size: 0.88rem;
@@ -163,8 +163,8 @@ declare(strict_types=1);
 }
 .rs-tpl-card-btn:hover {
     background: var(--rsd-primary-dim);
-    color: var(--rsd-primary-light);
-    border-color: var(--rsd-primary-light);
+    color: var(--rsd-primary);
+    border-color: var(--rsd-primary);
 }
 .rs-tpl-card-btn-primary {
     background: var(--rsd-primary);
@@ -176,7 +176,7 @@ declare(strict_types=1);
     color: #fff;
 }
 .rs-tpl-card-btn-danger:hover {
-    background: rgba(239,68,68,0.1);
+    background: rgba(220,38,38,0.08);
     color: var(--rsd-danger);
     border-color: var(--rsd-danger);
 }
@@ -224,7 +224,7 @@ declare(strict_types=1);
                         <i class="fas fa-file-lines"></i>
                         <span class="rs-tpl-card-status <?= $statusClass ?>"><?= $statusLabel ?></span>
                         <?php if (!empty($t['is_system'])): ?>
-                            <span style="position:absolute;top:0.6rem;left:0.6rem;font-size:0.6rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;background:rgba(6,182,212,0.12);color:var(--rsd-accent);z-index:2;">
+                            <span style="position:absolute;top:0.6rem;left:0.6rem;font-size:0.6rem;font-weight:700;padding:0.15rem 0.55rem;border-radius:20px;background:rgba(13,148,136,0.10);color:var(--rsd-accent);z-index:2;">
                                 <i class="fas fa-lock me-1"></i>Système
                             </span>
                         <?php endif; ?>
@@ -248,7 +248,7 @@ declare(strict_types=1);
                             <i class="fas fa-eye"></i>
                         </a>
                         <?php if (empty($t['is_system'])): ?>
-                            <form action="<?= route('reportstudio.templates.destroy', ['id' => $t['id'] ?? 0]) ?>" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce modèle ?')">
+                            <form action="<?= route('reportstudio.templates.destroy', ['id' => $t['id'] ?? 0]) ?>" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ce modèle de rapport ? Cette action est irréversible.')">
                                 <button class="rs-tpl-card-btn rs-tpl-card-btn-danger" title="Supprimer">
                                     <i class="fas fa-trash"></i>
                                 </button>

@@ -19,6 +19,7 @@ $router->get('/assessment/{id}/complete', 'AssessmentController@complete', $auth
 $router->get('/assessment/{id}/lead', 'AssessmentController@showLeadForm', $auth);
 $router->post('/assessment/save-lead', 'AssessmentController@saveLead', $auth);
 $router->get('/assessment/{id}/results', 'AssessmentController@results', $auth);
+$router->get('/assessment/{id}/report', 'AssessmentController@finalReport', $auth);
 $router->get('/assessment/{id}/download-summary', 'ReportController@downloadSummary', $auth);
 $router->get('/assessment/{id}/request-report', 'AssessmentController@requestReport', $auth);
 

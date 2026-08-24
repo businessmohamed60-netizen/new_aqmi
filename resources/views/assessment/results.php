@@ -380,6 +380,9 @@ ob_start();
 
     <!-- Actions -->
     <div class="aqmi-results-actions">
+      <a href="/assessment/<?= $assessment['id'] ?>/report" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-warning));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
+        <i class="fas fa-file-contract"></i> Rapport Complet AQMI
+      </a>
       <a href="/assessment/<?= $assessment['id'] ?>/download-summary" class="btn" style="border-color:var(--aqmi-accent);color:var(--aqmi-accent);">
         <i class="fas fa-file-arrow-down"></i> Télécharger le résumé gratuit
       </a>

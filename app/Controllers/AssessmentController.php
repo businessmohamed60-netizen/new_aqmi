@@ -265,6 +265,25 @@ class AssessmentController
         view('assessment.results', compact('assessment', 'analysis', 'recommendations', 'report'));
     }
 
+    /**
+     * Rapport AQMI final complet — généré automatiquement à partir
+     * des données réelles de l'évaluation sélectionnée.
+     * Accessible dès que l'évaluation est terminée (statut 'completed').
+     */
+    public function finalReport(array $params): void
+    {
+        Auth::requireAuth();
+        $assessmentId = (int)($params['id'] ?? 0);
+        $assessment = Assessment::find($assessmentId);
+        if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }
+
+        $reportService = new \App\Services\AqmiReportService();
+        $reportData = $reportService->build($assessmentId);
+        if (!$reportData) { redirect('/assessment/' . $assessmentId . '/results'); return; }
+
+        view('reportstudio.final_report', ['reportData' => $reportData, 'assessmentId' => $assessmentId]);
+    }
+
     public function requestReport(array $params): void
     {
         Auth::requireAuth();

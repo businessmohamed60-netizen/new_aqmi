@@ -313,6 +313,23 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
     color: #fff;
     transform: translateY(-1px);
 }
+.rs-tpl-btn-danger {
+    color: var(--rsd-danger);
+    border-color: var(--rsd-border);
+}
+.rs-tpl-btn-danger:hover {
+    background: rgba(220,38,38,0.08);
+    color: var(--rsd-danger);
+    border-color: var(--rsd-danger);
+}
+.rs-tpl-delete-form {
+    flex: 0 0 auto;
+    display: inline-flex;
+}
+.rs-tpl-delete-form .rs-tpl-btn {
+    flex: none;
+    padding: 0.4rem 0.55rem;
+}
 
 /* Empty state */
 .rs-dash-empty {
@@ -591,6 +608,13 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
                                            target="_blank" class="rs-tpl-btn" title="Aperçu">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        <?php if (empty($tpl['is_system'])): ?>
+                                        <form action="<?= route('reportstudio.templates.destroy', ['id' => $tpl['id'] ?? 0]) ?>" method="POST" class="rs-tpl-delete-form" onsubmit="return confirm('Supprimer ce modèle de rapport ? Cette action est irréversible.')">
+                                            <button type="submit" class="rs-tpl-btn rs-tpl-btn-danger" title="Supprimer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
