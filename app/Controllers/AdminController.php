@@ -658,7 +658,13 @@ class AdminController
             [$assessment['id']]
         ) : [];
 
-        view('admin.reports.detail', compact('report', 'assessment', 'lead', 'customFields', 'analysis', 'recommendations', 'answers'));
+        $publishedTemplates = [];
+        if (class_exists(\App\Modules\ReportStudio\Models\ReportTemplate::class)) {
+            $allTemplates = \App\Modules\ReportStudio\Models\ReportTemplate::all();
+            $publishedTemplates = array_filter($allTemplates, fn($t) => $t->status === 'published');
+        }
+
+        view('admin.reports.detail', compact('report', 'assessment', 'lead', 'customFields', 'analysis', 'recommendations', 'answers', 'publishedTemplates'));
     }
 
     public function reportStartReview(array $params): void
@@ -700,6 +706,20 @@ class AdminController
             return;
         }
 
+        $templateId = (int)($_POST['template_id'] ?? 0);
+        if ($templateId <= 0) {
+            $_SESSION['error'] = 'Vous devez sélectionner un modèle de rapport avant de certifier.';
+            redirect('/admin/reports/' . $id);
+            return;
+        }
+
+        $template = \App\Modules\ReportStudio\Models\ReportTemplate::find($templateId);
+        if (!$template || $template->status !== 'published') {
+            $_SESSION['error'] = 'Le modèle de rapport sélectionné est introuvable ou n\'est pas publié.';
+            redirect('/admin/reports/' . $id);
+            return;
+        }
+
         Report::saveAdminReview($id, [
             'admin_comment' => $_POST['admin_comment'] ?? $report['admin_comment'],
             'observations' => $_POST['observations'] ?? $report['observations'],
@@ -707,13 +727,15 @@ class AdminController
             'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? $report['aqmi_level_assigned'],
         ]);
 
+        Report::setTemplateId($id, $templateId);
+
         $reportNumber = Report::assignReportNumber($id);
         $adminName = trim((Auth::user()['firstname'] ?? '') . ' ' . (Auth::user()['lastname'] ?? 'Admin'));
         Report::setSignature($id, $adminName);
 
         try {
             $pdfService = new \App\Services\PdfService();
-            $filename = $pdfService->generateCertificate($id);
+            $filename = $pdfService->generateCertificate($id, $templateId);
             Report::updateStatus($id, 'certified', $adminName, $filename);
             $_SESSION['success'] = "Rapport certifié sous le numéro {$reportNumber}.";
         } catch (\Exception $e) {

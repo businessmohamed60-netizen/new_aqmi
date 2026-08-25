@@ -185,6 +185,20 @@ $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), 
       <input type="text" name="aqmi_level_assigned" value="<?= e($report['aqmi_level_assigned'] ?? ($level['name_fr'] ?? '')) ?>" placeholder="ex: Niveau Or, Argent, Bronze...">
 
       <?php if ($status === 'approved'): ?>
+        <label>Modèle de rapport <span style="color:#ef4444;">*</span></label>
+        <select name="template_id" required>
+          <option value="">— Sélectionnez un modèle —</option>
+          <?php foreach ($publishedTemplates as $tpl): ?>
+            <option value="<?= (int)$tpl->id ?>" <?= ((int)($report['template_id'] ?? 0) === (int)$tpl->id) ? 'selected' : '' ?>>
+              <?= e($tpl->name ?? 'Modèle #' . $tpl->id) ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+        <?php if (empty($publishedTemplates)): ?>
+          <p style="color:#f59e0b;font-size:0.75rem;margin-top:-0.5rem;margin-bottom:1rem;">
+            <i class="fas fa-triangle-exclamation"></i> Aucun modèle publié. Publiez un modèle dans Report Studio avant de certifier.
+          </p>
+        <?php endif; ?>
       <?php endif; ?>
 
       <div class="cert-actions">
@@ -195,7 +209,7 @@ $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), 
         <?php endif; ?>
 
         <?php if ($status === 'approved'): ?>
-          <button type="submit" class="cert-btn" style="background:#22c55e;color:#fff;">
+          <button type="submit" class="cert-btn" style="background:#22c55e;color:#fff;" <?= empty($publishedTemplates) ? 'disabled title="Aucun modèle publié disponible"' : '' ?>>
             <i class="fas fa-certificate"></i> Certifier
           </button>
         <?php else: ?>

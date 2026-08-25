@@ -75,7 +75,7 @@ class PdfService
      * et l'entoure d'une page de couverture + une page de certification
      * (observations, plan d'action, signature, QR code de vérification).
      */
-    public function generateCertificate(int $reportId): string
+    public function generateCertificate(int $reportId, ?int $templateId = null): string
     {
         $report = Report::find($reportId);
         if (!$report) throw new \RuntimeException('Report not found');
@@ -91,7 +91,16 @@ class PdfService
         $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
         $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
 
-        $template = $this->resolveStudioTemplate();
+        $template = null;
+        if ($templateId !== null && $templateId > 0) {
+            $template = \App\Modules\ReportStudio\Models\ReportTemplate::find($templateId);
+        }
+        if (!$template && !empty($report['template_id'])) {
+            $template = \App\Modules\ReportStudio\Models\ReportTemplate::find((int) $report['template_id']);
+        }
+        if (!$template) {
+            $template = $this->resolveStudioTemplate();
+        }
         if ($template) {
             $html = $this->renderCertificateWithStudioTemplate(
                 $template, $assessment, $analysis, $recommendations, $lead, $user,

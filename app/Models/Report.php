@@ -166,6 +166,15 @@ class Report
     }
 
     /**
+     * Enregistre le modèle Report Studio choisi par l'administrateur
+     * au moment de la certification.
+     */
+    public static function setTemplateId(int $id, ?int $templateId): int
+    {
+        return Database::execute("UPDATE reports SET template_id = ? WHERE id = ?", [$templateId, $id]);
+    }
+
+    /**
      * Génère un numéro de rapport unique du type AQMI-2026-000123
      * et le persiste sur la ligne.
      */
