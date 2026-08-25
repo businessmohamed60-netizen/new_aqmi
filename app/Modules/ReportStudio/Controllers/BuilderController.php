@@ -111,4 +111,55 @@ class BuilderController
 
         jsonResponse(['ok' => true, 'data' => $data]);
     }
+
+    /**
+     * AJAX: handle image file upload (jpg, png, gif, webp, svg).
+     * Returns the public URL of the stored file.
+     */
+    public function uploadImage(): void
+    {
+        if (empty($_FILES['file'])) {
+            jsonResponse(['ok' => false, 'error' => 'Aucun fichier reçu'], 400);
+        }
+
+        $file = $_FILES['file'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            jsonResponse(['ok' => false, 'error' => 'Erreur lors du téléchargement'], 400);
+        }
+
+        $maxSize = 5 * 1024 * 1024;
+        if ($file['size'] > $maxSize) {
+            jsonResponse(['ok' => false, 'error' => 'Fichier trop volumineux (max 5 Mo)'], 400);
+        }
+
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
+        if (!in_array($mime, $allowedMimes, true)) {
+            jsonResponse(['ok' => false, 'error' => 'Format non autorisé. Utilisez JPG, PNG, GIF, WebP ou SVG.'], 400);
+        }
+
+        $extMap = [
+            'image/jpeg'    => 'jpg',
+            'image/png'     => 'png',
+            'image/gif'     => 'gif',
+            'image/webp'    => 'webp',
+            'image/svg+xml' => 'svg',
+        ];
+        $ext = $extMap[$mime];
+        $fileName = 'rs_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+
+        $uploadDir = BASE_PATH . '/public/uploads/reportstudio';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+
+        $destPath = $uploadDir . '/' . $fileName;
+        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+            jsonResponse(['ok' => false, 'error' => 'Échec de l\'enregistrement du fichier'], 500);
+        }
+
+        $url = '/uploads/reportstudio/' . $fileName;
+        jsonResponse(['ok' => true, 'url' => $url]);
+    }
 }

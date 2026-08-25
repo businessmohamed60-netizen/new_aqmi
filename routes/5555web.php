@@ -15,8 +15,9 @@ $router->get('/assessment/save-answer', 'AssessmentController@saveAnswer');
 $router->get('/assessment/{id}/complete', 'AssessmentController@complete');
 $router->get('/assessment/save-lead', 'AssessmentController@saveLead');
 $router->get('/assessment/{id}/results', 'AssessmentController@results');
+$router->get('/assessment/{id}/report', 'AssessmentController@finalReport');
 $router->get('/assessment/{id}/download-summary', 'ReportController@downloadSummary');
-$router->get('/assessment/{id}/request-report', 'AssessmentController@requestCertification');
+$router->get('/assessment/{id}/request-report', 'AssessmentController@requestReport');
 
 // Report
 $router->get('/report/{id}/download', 'ReportController@download');

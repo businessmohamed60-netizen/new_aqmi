@@ -9,9 +9,15 @@ $subtext = $config['subtext'] ?? 'AQMI';
 $color   = $config['color']   ?? '#102A43';
 $size    = (int) ($config['size'] ?? 110);
 $align   = $config['align']   ?? 'right';
+$useCustomImage = $config['use_custom_image'] ?? false;
+$imageUrl = $config['image_url'] ?? '';
+$imageHeight = $config['image_height'] ?? '100px';
 ?>
 <div class="rs-block-stamp text-<?= e($align) ?> py-2">
-    <?php if ($style === 'circular'): ?>
+    <?php if ($useCustomImage && $imageUrl): ?>
+        <img src="<?= e($imageUrl) ?>" alt="Official Stamp"
+             style="height: <?= e($imageHeight) ?>;">
+    <?php elseif ($style === 'circular'): ?>
         <div class="rs-stamp rs-stamp-circular"
              style="width:<?= $size ?>px;height:<?= $size ?>px;border-color:<?= e($color) ?>;color:<?= e($color) ?>">
             <div class="rs-stamp-inner">

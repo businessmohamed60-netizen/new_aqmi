@@ -383,10 +383,6 @@ ob_start();
       <a href="/assessment/<?= $assessment['id'] ?>/report" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-warning));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
         <i class="fas fa-file-contract"></i> Rapport Complet AQMI
       </a>
-      <a href="/assessment/<?= $assessment['id'] ?>/download-summary" class="btn" style="border-color:var(--aqmi-accent);color:var(--aqmi-accent);">
-        <i class="fas fa-file-arrow-down"></i> Télécharger le résumé gratuit
-      </a>
-
       <?php if ($hasNoRequest): ?>
         <a href="/assessment/<?= $assessment['id'] ?>/lead" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-warning));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
           <i class="fas fa-certificate"></i> Demander un Rapport AQMI Certifié
@@ -411,8 +407,8 @@ ob_start();
         </a>
       <?php endif; ?>
 
-      <button onclick="window.print()" class="btn">
-        <i class="fas fa-print"></i> Imprimer
+      <button onclick="window.print()" class="btn" style="border-color:var(--aqmi-accent);color:var(--aqmi-accent);">
+        <i class="fas fa-print"></i> Imprimer le résumé gratuit
       </button>
       <a href="/assessment/start" class="btn">
         <i class="fas fa-redo"></i> Nouvelle évaluation

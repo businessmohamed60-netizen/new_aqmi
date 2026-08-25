@@ -15,8 +15,25 @@ $showNumber   = $config['show_number']  ?? true;
 $accentColor  = $config['accent_color'] ?? '#102A43';
 $rptNumber    = $reportNumber ?? 'AQMI-RPT-000';
 $certDate     = !empty($template['certification_date']) ? date('d/m/Y', strtotime($template['certification_date'])) : date('d/m/Y');
+$bgImageUrl     = $config['bg_image_url'] ?? '';
+$bgImageOpacity = $config['bg_image_opacity'] ?? 1;
+$bgImageSize    = $config['bg_image_size'] ?? 'cover';
+$bgImagePosition= $config['bg_image_position'] ?? 'center';
+$bgImageRepeat  = $config['bg_image_repeat'] ?? 'no-repeat';
+$bgColor        = $config['bg_color'] ?? '#ffffff';
+
+$coverStyle = 'min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0;';
+$coverBgDiv = '';
+if ($bgImageUrl) {
+    $coverBgDiv = '<div style="position:absolute;inset:0;background-image:url(' . e($bgImageUrl) . ');background-size:' . e($bgImageSize) . ';background-position:' . e($bgImagePosition) . ';background-repeat:' . e($bgImageRepeat) . ';opacity:' . e((string)$bgImageOpacity) . ';z-index:0;"></div>';
+    $coverStyle .= ' position: relative;';
+} else {
+    $coverStyle .= ' background-color: ' . e($bgColor) . ';';
+}
 ?>
-<div class="rs-block-cover-page" style="min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0;">
+<div class="rs-block-cover-page" style="<?= $coverStyle ?>">
+    <?php if ($bgImageUrl): echo $coverBgDiv; endif; ?>
+    <div style="position: relative; z-index: 1;">
     <div class="text-center" style="border-bottom: 3px solid <?= e($accentColor) ?>; padding-bottom: 20px; margin-bottom: 20px;">
         <?php if ($showLogo): ?>
             <div class="mb-3">
@@ -49,5 +66,6 @@ $certDate     = !empty($template['certification_date']) ? date('d/m/Y', strtotim
         <div class="text-end">
             <?php if ($showDate): ?><p class="small text-muted mb-0"><i class="bi bi-calendar3"></i> <?= e($certDate) ?></p><?php endif; ?>
         </div>
+    </div>
     </div>
 </div>

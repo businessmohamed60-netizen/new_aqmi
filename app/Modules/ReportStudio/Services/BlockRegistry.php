@@ -32,6 +32,7 @@ final class BlockRegistry
         'footer'          => ['structure', 'Footer',               'bi-text-right'],
         'rich_text'       => ['content',   'Rich Text',            'bi-fonts'],
         'image'           => ['media',     'Image',                'bi-card-image'],
+        'background'      => ['media',     'Background',           'bi-image-alt'],
         'cover_page'      => ['structure', 'Cover Page',           'bi-bookmark-star'],
         'kpi_card'        => ['metrics',   'KPI Card',             'bi-calendar2-check'],
         'domain_scores'   => ['metrics',   'Domain Scores Table',  'bi-table'],

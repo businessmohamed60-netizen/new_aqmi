@@ -124,6 +124,7 @@ function route(string $name, array $params = []): string
         'reportstudio.datasources'      => '/admin/reportstudio/datasources',
         'reportstudio.table-info'       => '/admin/reportstudio/table-info/{table}',
         'reportstudio.data-preview'     => '/admin/reportstudio/data-preview',
+        'reportstudio.upload-image'     => '/admin/reportstudio/upload-image',
         'reportstudio.themes.index'     => '/admin/reportstudio/themes',
         'reportstudio.themes.create'    => '/admin/reportstudio/themes/create',
         'reportstudio.themes.edit'      => '/admin/reportstudio/themes/{id}/edit',

@@ -33,6 +33,7 @@
     footer:          { category: 'structure', label: 'Footer',             icon: 'bi-text-right' },
     rich_text:       { category: 'content',   label: 'Rich Text',           icon: 'bi-fonts' },
     image:           { category: 'media',     label: 'Image',               icon: 'bi-card-image' },
+    background:      { category: 'media',     label: 'Background',          icon: 'bi-image-alt' },
     cover_page:      { category: 'structure', label: 'Cover Page',          icon: 'bi-bookmark-star' },
     kpi_card:        { category: 'metrics',   label: 'KPI Card',            icon: 'bi-calendar2-check' },
     domain_scores:   { category: 'metrics',   label: 'Domain Scores Table', icon: 'bi-table' },
@@ -49,16 +50,17 @@
     gauge:           { label: 'Indicateur', value: 0, min: 0, max: 100, unit: '%', color: '#2EC4B6', height: 160, show_label: true, show_value: true, start_angle: -135, end_angle: 135, hollow_size: '62%' },
     recommendations: { title: 'Recommandations', items: [{ text: '' }], icon: 'bi-list-check', numbered: true, font_size: '0.9rem', color: '#102A43' },
     company_info:    { fields: [{ key: '', label: '' }], show_logo: true, layout: 'vertical', label_color: '#6b7280', value_color: '#102A43', font_size: '0.9rem' },
-    aqmi_logo:       { size: 'md', align: 'left', color: '#102A43' },
+    aqmi_logo:       { size: 'md', align: 'left', color: '#102A43', use_custom_image: false, image_url: '', image_height: '60px', image_border_radius: '0' },
     company_logo:    { url: '', size: 'md', align: 'left', max_height: '80px', border_radius: '0' },
-    official_stamp:  { style: 'circular', text: 'CERTIFIÉ', subtext: 'AQMI', color: '#102A43', size: 100, align: 'right', border_width: 3, font_size: '0.9rem' },
+    official_stamp:  { style: 'circular', text: 'CERTIFIÉ', subtext: 'AQMI', color: '#102A43', size: 100, align: 'right', border_width: 3, font_size: '0.9rem', use_custom_image: false, image_url: '', image_height: '100px' },
     qr_code:         { value: '', size: 120, label: '', align: 'center', margin: 0 },
     signature:       { label: '', role: '', show_date: true, show_stamp: false, line_color: '#102A43', font_size: '0.9rem', date_format: 'fr-FR' },
     header:          { text: 'Titre', level: 1, align: 'left', show_report_number: false, show_date: false, show_page_number: false, color: '#102A43', font_size: '', uppercase: false, border_bottom: false },
     footer:          { text: '', align: 'center', show_report_number: false, show_date: false, show_page_number: true, color: '#6b7280', font_size: '0.8rem', border_top: true },
     rich_text:       { html: '', padding: '8px', font_family: 'Inter, sans-serif', font_size: '0.9rem' },
     image:           { url: '', alt: '', width: '100%', align: 'center', border_radius: '0', max_height: '', object_fit: 'contain' },
-    cover_page:      { company_name: 'Nom de l\'entreprise', report_title: 'Rapport d\'Audit Qualité', subtitle: 'Automotive Quality Maturity Index', show_logo: true, show_stamp: true, show_date: true, show_number: true, accent_color: '#102A43', bg_color: '#ffffff', text_color: '#102A43', font_size_title: '1.5rem', font_size_subtitle: '0.9rem', padding: '40px', border_color: '#EEF2F7' },
+    background:      { image_url: '', bg_color: '#ffffff', opacity: 1, size: 'cover', position: 'center', repeat: 'no-repeat', min_height: '300px', padding: '24px' },
+    cover_page:      { company_name: 'Nom de l\'entreprise', report_title: 'Rapport d\'Audit Qualité', subtitle: 'Automotive Quality Maturity Index', show_logo: true, show_stamp: true, show_date: true, show_number: true, accent_color: '#102A43', bg_color: '#ffffff', text_color: '#102A43', font_size_title: '1.5rem', font_size_subtitle: '0.9rem', padding: '40px', border_color: '#EEF2F7', bg_image_url: '', bg_image_opacity: 1, bg_image_size: 'cover', bg_image_position: 'center', bg_image_repeat: 'no-repeat' },
     kpi_card:        { label: 'Indicateur', value: 0, unit: '', icon: 'bi-check-circle', color: '#102A43', trend: '', trend_direction: 'up', bg_color: '#ffffff', border_color: '#EEF2F7', icon_bg: true, font_size: '1.1rem', show_trend: true },
     domain_scores:   { title: 'Scores par domaine', domains: [{ label: 'Domaine 1', score: 0, max: 100 }], color: '#102A43', alternating_rows: true, show_progress_bar: true, font_size: '0.85rem', border_color: '#EEF2F7' },
     page_break:      { label: 'Saut de page', show_label: false, spacing: '2rem' },
@@ -305,6 +307,10 @@
       }
       case 'aqmi_logo': {
         const sizes = { sm: '1.1rem', md: '1.6rem', lg: '2.4rem' };
+        if (cfg.use_custom_image && cfg.image_url) {
+          return h('div', { className: 'text-' + (cfg.align || 'left') + ' py-1' },
+            h('img', { src: cfg.image_url, alt: 'AQMI Logo', style: { height: cfg.image_height || '60px', borderRadius: cfg.image_border_radius || '0' } }));
+        }
         return h('div', { className: 'text-' + (cfg.align || 'left') + ' py-1' },
           h('span', { className: 'rs-aqmi-mark', style: { fontSize: sizes[cfg.size || 'md'] } }, 'AQMI'));
       }
@@ -314,6 +320,10 @@
           : h('div', { className: 'text-' + (cfg.align || 'left') + ' py-1' }, h('i', { className: 'bi bi-image fs-2 text-muted' }));
       case 'official_stamp': {
         const text = esc(cfg.text || 'CERTIFIÉ'), sub = esc(cfg.subtext || 'AQMI'), color = esc(cfg.color || '#102A43'), size = +cfg.size || 100;
+        if (cfg.use_custom_image && cfg.image_url) {
+          return h('div', { className: 'text-' + (cfg.align || 'right') + ' py-2' },
+            h('img', { src: cfg.image_url, alt: 'Official Stamp', style: { height: cfg.image_height || '100px' } }));
+        }
         if (cfg.style === 'badge') {
           return h('div', { className: 'text-' + (cfg.align || 'right') + ' py-2' },
             h('div', { className: 'rs-stamp rs-stamp-badge', style: { color } },
@@ -356,10 +366,27 @@
         return h('div', { className: 'py-1 rs-richtext-content', dangerouslySetInnerHTML: { __html: cfg.html || '<em class="text-muted small">Texte riche...</em>' } });
       case 'image':
         return cfg.url
-          ? h('div', { className: 'text-' + (cfg.align || 'center') + ' py-1' }, h('img', { src: cfg.url, alt: cfg.alt || '', style: { width: cfg.width || '100%' } }))
+          ? h('div', { className: 'text-' + (cfg.align || 'center') + ' py-1' }, h('img', { src: cfg.url, alt: cfg.alt || '', style: { width: cfg.width || '100%', maxHeight: cfg.max_height || undefined, borderRadius: cfg.border_radius || '0', objectFit: cfg.object_fit || 'contain' } }))
           : h('div', { className: 'text-' + (cfg.align || 'center') + ' py-1' }, h('i', { className: 'bi bi-card-image fs-1 text-muted' }));
-      case 'cover_page':
-        return h('div', { className: 'py-2 text-center', style: { border: '2px solid #EEF2F7', borderRadius: '10px', padding: '16px' } },
+      case 'background': {
+        const bgStyle = { backgroundColor: cfg.bg_color || '#ffffff', padding: cfg.padding || '24px', minHeight: cfg.min_height || '300px' };
+        if (cfg.image_url) {
+          bgStyle.backgroundImage = 'url(' + cfg.image_url + ')';
+          bgStyle.backgroundSize = cfg.size || 'cover';
+          bgStyle.backgroundPosition = cfg.position || 'center';
+          bgStyle.backgroundRepeat = cfg.repeat || 'no-repeat';
+        }
+        return h('div', { className: 'py-1', style: bgStyle });
+      }
+      case 'cover_page': {
+        const cpBgStyle = { border: '2px solid #EEF2F7', borderRadius: '10px', padding: '16px' };
+        if (cfg.bg_image_url) {
+          cpBgStyle.backgroundImage = 'url(' + cfg.bg_image_url + ')';
+          cpBgStyle.backgroundSize = cfg.bg_image_size || 'cover';
+          cpBgStyle.backgroundPosition = cfg.bg_image_position || 'center';
+          cpBgStyle.backgroundRepeat = cfg.bg_image_repeat || 'no-repeat';
+        }
+        return h('div', { className: 'py-2 text-center', style: cpBgStyle },
           h('span', { className: 'rs-aqmi-mark', style: { fontSize: '1.6rem', color: cfg.accent_color || '#102A43' } }, 'AQMI'),
           h('h5', { className: 'mt-2 mb-0', style: { color: cfg.accent_color || '#102A43' } }, esc(cfg.report_title || 'Rapport')),
           h('small', { className: 'text-muted' }, esc(cfg.subtitle || '')),
@@ -367,6 +394,7 @@
           h('p', { className: 'small text-muted mb-0' }, 'Préparé pour '),
           h('span', { className: 'fw-bold' }, esc(cfg.company_name || '')),
           cfg.show_stamp ? h('div', { className: 'mt-2' }, h('span', { className: 'badge bg-primary' }, 'CERTIFIÉ')) : null);
+      }
       case 'kpi_card':
         return h('div', { className: 'd-flex align-items-center gap-2 p-2', style: { border: '1px solid #EEF2F7', borderRadius: '8px' } },
           h('div', { style: { width: '36px', height: '36px', borderRadius: '8px', background: (cfg.color || '#102A43') + '15', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
@@ -511,6 +539,45 @@
       h('div', { ref, className: 'rt-content', contentEditable: true, suppressContentEditableWarning: true,
         onInput: () => { if (ref.current) onChange(ref.current.innerHTML); }, onKeyUp: syncState, onMouseUp: syncState,
         onKeyDown: e => { if (e.ctrlKey || e.metaKey) { if (e.key === 'b') { e.preventDefault(); exec('bold'); } if (e.key === 'i') { e.preventDefault(); exec('italic'); } if (e.key === 'u') { e.preventDefault(); exec('underline'); } } } }));
+  }
+
+  // ============================================================
+  // IMAGE UPLOAD COMPONENT
+  // ============================================================
+  function ImageUpload({ label: lbl, url, onUpload }) {
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleFile = (file) => {
+      if (!file) return;
+      setUploading(true);
+      setError('');
+      const fd = new FormData();
+      fd.append('file', file);
+      fetch('/admin/reportstudio/upload-image', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+          if (data.ok) onUpload(data.url);
+          else setError(data.error || 'Erreur');
+        })
+        .catch(() => setError('Erreur réseau'))
+        .finally(() => setUploading(false));
+    };
+
+    return h('div', { className: 'rs-img-upload mb-2' },
+      h('label', { className: 'form-label small fw-bold' }, lbl || 'Télécharger une image'),
+      h('div', { className: 'rs-img-upload-zone', onDragOver: e => e.preventDefault(), onDrop: e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); } },
+        uploading
+          ? h('div', { className: 'text-center py-2' }, h('div', { className: 'spinner-border spinner-border-sm text-primary' }), ' Téléchargement...')
+          : h(React.Fragment, null,
+              h('input', { type: 'file', accept: 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml', className: 'd-none', id: 'rs-upload-' + (lbl || '').replace(/[^a-z0-9]/gi, ''), onChange: e => handleFile(e.target.files[0]) }),
+              h('label', { className: 'btn btn-sm btn-outline-primary w-100', htmlFor: 'rs-upload-' + (lbl || '').replace(/[^a-z0-9]/gi, '') },
+                h('i', { className: 'bi bi-upload' }), ' Choisir un fichier'),
+              h('p', { className: 'text-muted small text-center mt-1 mb-0' }, 'ou glissez-déposez ici'))),
+      url ? h('div', { className: 'rs-img-preview mt-1' },
+        h('img', { src: url, alt: 'Aperçu', style: { maxHeight: '60px', borderRadius: '4px' } }),
+        h('button', { type: 'button', className: 'btn btn-sm btn-outline-danger ms-2', onClick: () => onUpload('') }, h('i', { className: 'bi bi-x' }), ' Retirer')) : null,
+      error ? h('p', { className: 'text-danger small mt-1 mb-0' }, error) : null);
   }
 
   // ============================================================
@@ -683,24 +750,38 @@
       case 'aqmi_logo':
       case 'company_logo': {
         const isCompany = blockKey === 'company_logo';
+        const isAqmi = blockKey === 'aqmi_logo';
         return h(React.Fragment, null,
+          isAqmi && switchField('Utiliser une image personnalisée', 'use_custom_image', !!cfg.use_custom_image, setCfg),
+          isAqmi && cfg.use_custom_image ? h(React.Fragment, null,
+            h(ImageUpload, { label: 'Télécharger le logo (JPG, PNG, SVG...)', url: cfg.image_url || '', onUpload: (url) => setCfg('image_url', url) }),
+            field('Hauteur de l\'image', 'text', 'image_height', val('image_height', '60px'), setCfg),
+            field('Arrondi coins', 'text', 'image_border_radius', val('image_border_radius', '0'), setCfg))
+          : null,
           isCompany ? field('URL du logo', 'text', 'url', val('url', ''), setCfg) : null,
           isCompany ? colorField('Couleur (si SVG)', 'color', val('color', '#102A43'), setCfg) : null,
-          selectField('Taille', 'size', [{ v: 'sm', l: 'Petite' }, { v: 'md', l: 'Moyenne' }, { v: 'lg', l: 'Grande' }, { v: 'xl', l: 'Très grande' }], cfg.size || 'md', setCfg),
+          !isAqmi || !cfg.use_custom_image ? selectField('Taille', 'size', [{ v: 'sm', l: 'Petite' }, { v: 'md', l: 'Moyenne' }, { v: 'lg', l: 'Grande' }, { v: 'xl', l: 'Très grande' }], cfg.size || 'md', setCfg) : null,
           selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'left', setCfg),
           isCompany ? field('Hauteur max', 'text', 'max_height', val('max_height', '80px'), setCfg) : null,
           isCompany ? field('Arrondi coins', 'text', 'border_radius', val('border_radius', '0'), setCfg) : null);
       }
       case 'official_stamp':
         return h(React.Fragment, null,
-          selectField('Style', 'style', [{ v: 'circular', l: 'Circulaire' }, { v: 'rectangular', l: 'Rectangulaire' }, { v: 'badge', l: 'Badge' }], cfg.style || 'circular', setCfg),
-          field('Texte principal', 'text', 'text', val('text', 'CERTIFIÉ'), setCfg),
-          field('Sous-texte', 'text', 'subtext', val('subtext', 'AQMI'), setCfg),
-          colorField('Couleur', 'color', val('color', '#102A43'), setCfg),
-          field('Taille (px)', 'number', 'size', +cfg.size || 100, setCfg),
-          field('Épaisseur bordure', 'number', 'border_width', +cfg.border_width || 3, setCfg),
-          field('Taille police', 'text', 'font_size', val('font_size', '0.9rem'), setCfg),
-          selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'right', setCfg));
+          switchField('Utiliser une image personnalisée', 'use_custom_image', !!cfg.use_custom_image, setCfg),
+          cfg.use_custom_image ? h(React.Fragment, null,
+            h(ImageUpload, { label: 'Télécharger le tampon (JPG, PNG, SVG...)', url: cfg.image_url || '', onUpload: (url) => setCfg('image_url', url) }),
+            field('Hauteur de l\'image', 'text', 'image_height', val('image_height', '100px'), setCfg),
+            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'right', setCfg))
+          : h(React.Fragment, null,
+            selectField('Style', 'style', [{ v: 'circular', l: 'Circulaire' }, { v: 'rectangular', l: 'Rectangulaire' }, { v: 'badge', l: 'Badge' }], cfg.style || 'circular', setCfg),
+            field('Texte principal', 'text', 'text', val('text', 'CERTIFIÉ'), setCfg),
+            field('Sous-texte', 'text', 'subtext', val('subtext', 'AQMI'), setCfg),
+            colorField('Couleur', 'color', val('color', '#102A43'), setCfg),
+            field('Taille (px)', 'number', 'size', +cfg.size || 100, setCfg),
+            field('Épaisseur bordure', 'number', 'border_width', +cfg.border_width || 3, setCfg),
+            field('Taille police', 'text', 'font_size', val('font_size', '0.9rem'), setCfg),
+            selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'right', setCfg)));
+      
       case 'qr_code':
         return h(React.Fragment, null,
           field('Donnée encodée', 'text', 'value', val('value', ''), setCfg),
@@ -749,13 +830,26 @@
           field('Taille police', 'text', 'font_size', val('font_size', '0.9rem'), setCfg));
       case 'image':
         return h(React.Fragment, null,
-          field('URL image', 'text', 'url', val('url', ''), setCfg),
+          h(ImageUpload, { label: 'Télécharger une image (JPG, PNG, GIF, WebP, SVG)', url: cfg.url || '', onUpload: (url) => setCfg('url', url) }),
+          field('Ou URL image', 'text', 'url', val('url', ''), setCfg),
           field('Texte alternatif', 'text', 'alt', val('alt', ''), setCfg),
           field('Largeur', 'text', 'width', val('width', '100%'), setCfg),
           field('Hauteur max', 'text', 'max_height', val('max_height', ''), setCfg),
           selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center', setCfg),
           selectField('Ajustement', 'object_fit', [{ v: 'contain', l: 'Contenir' }, { v: 'cover', l: 'Couvrir' }, { v: 'fill', l: 'Remplir' }, { v: 'none', l: 'Aucun' }], cfg.object_fit || 'contain', setCfg),
           field('Arrondi coins', 'text', 'border_radius', val('border_radius', '0'), setCfg));
+      case 'background':
+        return h(React.Fragment, null,
+          h(ImageUpload, { label: 'Télécharger l\'image de fond (JPG, PNG, SVG...)', url: cfg.image_url || '', onUpload: (url) => setCfg('image_url', url) }),
+          field('Ou URL de l\'image de fond', 'text', 'image_url', val('image_url', ''), setCfg),
+          colorField('Couleur de fond', 'bg_color', val('bg_color', '#ffffff'), setCfg),
+          field('Opacité', 'number', 'opacity', +cfg.opacity ?? 1, setCfg),
+          selectField('Taille', 'size', [{ v: 'cover', l: 'Couvrir' }, { v: 'contain', l: 'Contenir' }, { v: '100% 100%', l: 'Étirer' }, { v: 'auto', l: 'Auto' }], cfg.size || 'cover', setCfg),
+          selectField('Position', 'position', [{ v: 'center', l: 'Centré' }, { v: 'top', l: 'Haut' }, { v: 'bottom', l: 'Bas' }, { v: 'left', l: 'Gauche' }, { v: 'right', l: 'Droite' }], cfg.position || 'center', setCfg),
+          selectField('Répétition', 'repeat', [{ v: 'no-repeat', l: 'Aucune' }, { v: 'repeat', l: 'Répéter' }, { v: 'repeat-x', l: 'Horizontale' }, { v: 'repeat-y', l: 'Verticale' }], cfg.repeat || 'no-repeat', setCfg),
+          field('Hauteur min', 'text', 'min_height', val('min_height', '300px'), setCfg),
+          field('Padding', 'text', 'padding', val('padding', '24px'), setCfg));
+      
       case 'cover_page':
         return h(React.Fragment, null,
           field('Nom entreprise', 'text', 'company_name', val('company_name', ''), setCfg),
@@ -763,6 +857,11 @@
           field('Sous-titre', 'text', 'subtitle', val('subtitle', ''), setCfg),
           colorField('Couleur accent', 'accent_color', val('accent_color', '#102A43'), setCfg),
           colorField('Couleur fond', 'bg_color', val('bg_color', '#ffffff'), setCfg),
+          h(ImageUpload, { label: 'Image de fond (optionnel)', url: cfg.bg_image_url || '', onUpload: (url) => setCfg('bg_image_url', url) }),
+          field('Opacité image de fond', 'number', 'bg_image_opacity', +cfg.bg_image_opacity ?? 1, setCfg),
+          selectField('Taille image de fond', 'bg_image_size', [{ v: 'cover', l: 'Couvrir' }, { v: 'contain', l: 'Contenir' }, { v: '100% 100%', l: 'Étirer' }, { v: 'auto', l: 'Auto' }], cfg.bg_image_size || 'cover', setCfg),
+          selectField('Position image de fond', 'bg_image_position', [{ v: 'center', l: 'Centré' }, { v: 'top', l: 'Haut' }, { v: 'bottom', l: 'Bas' }, { v: 'left', l: 'Gauche' }, { v: 'right', l: 'Droite' }], cfg.bg_image_position || 'center', setCfg),
+          selectField('Répétition image de fond', 'bg_image_repeat', [{ v: 'no-repeat', l: 'Aucune' }, { v: 'repeat', l: 'Répéter' }], cfg.bg_image_repeat || 'no-repeat', setCfg),
           colorField('Couleur texte', 'text_color', val('text_color', '#102A43'), setCfg),
           colorField('Couleur bordure', 'border_color', val('border_color', '#EEF2F7'), setCfg),
           field('Taille titre', 'text', 'font_size_title', val('font_size_title', '1.5rem'), setCfg),

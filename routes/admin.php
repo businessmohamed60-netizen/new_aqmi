@@ -111,6 +111,7 @@ $router->post('/admin/reportstudio/builder/{id}', 'BuilderController@update', $a
 $router->get('/admin/reportstudio/datasources', 'BuilderController@dataSources', $adminMiddleware);
 $router->get('/admin/reportstudio/table-info/{table}', 'BuilderController@tableInfo', $adminMiddleware);
 $router->post('/admin/reportstudio/data-preview', 'BuilderController@dataPreview', $adminMiddleware);
+$router->post('/admin/reportstudio/upload-image', 'BuilderController@uploadImage', $adminMiddleware);
 $router->get('/admin/reportstudio/preview/{id}', 'PreviewController@show', $adminMiddleware);
 $router->get('/admin/reportstudio/themes', 'ThemeController@index', $adminMiddleware);
 $router->get('/admin/reportstudio/themes/create', 'ThemeController@create', $adminMiddleware);
