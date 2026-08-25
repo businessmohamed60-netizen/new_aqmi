@@ -92,29 +92,38 @@ class PdfService
         $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
 
         $theme = $this->loadCertificateTheme($themeId ?? (int)($report['theme_id'] ?? 0));
-        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
-        $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
-        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
 
-        // buildHtml() renvoie un DOCUMENT COMPLET (<!DOCTYPE>, <html>, <head><style>,
-        // <body>). On ne peut pas le coller tel quel entre deux fragments — ça
-        // produirait un <html> imbriqué au milieu du document, et le cover/cert
-        // se retrouveraient hors de tout <body>, ce qui casse l'encodage UTF-8
-        // (c'était le bug des accents illisibles dans le PDF précédent).
-        // On extrait donc son <style> et son <body>, et on fusionne le tout dans
-        // un unique document bien formé avec un seul <meta charset="UTF-8">.
-        $bodyStyle = $this->extractHtmlPart($rawBodyHtml, 'style');
-        $bodyInner = $this->extractHtmlPart($rawBodyHtml, 'body');
+        $template = $this->resolveStudioTemplate();
+        if ($template) {
+            $html = $this->renderCertificateWithStudioTemplate(
+                $template, $assessment, $analysis, $recommendations, $lead, $user,
+                $report, $reportNumber, $qrDataUri, $theme
+            );
+        } else {
+            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
+            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
+            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
 
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-            . '<style>' . $bodyStyle . '</style>'
-            . '</head><body>'
-            . $coverHtml
-            . '<div style="page-break-before:always;"></div>'
-            . $bodyInner
-            . '<div style="page-break-before:always;"></div>'
-            . $certPageHtml
-            . '</body></html>';
+            // buildHtml() renvoie un DOCUMENT COMPLET (<!DOCTYPE>, <html>, <head><style>,
+            // <body>). On ne peut pas le coller tel quel entre deux fragments — ça
+            // produirait un <html> imbriqué au milieu du document, et le cover/cert
+            // se retrouveraient hors de tout <body>, ce qui casse l'encodage UTF-8
+            // (c'était le bug des accents illisibles dans le PDF précédent).
+            // On extrait donc son <style> et son <body>, et on fusionne le tout dans
+            // un unique document bien formé avec un seul <meta charset="UTF-8">.
+            $bodyStyle = $this->extractHtmlPart($rawBodyHtml, 'style');
+            $bodyInner = $this->extractHtmlPart($rawBodyHtml, 'body');
+
+            $html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+                . '<style>' . $bodyStyle . '</style>'
+                . '</head><body>'
+                . $coverHtml
+                . '<div style="page-break-before:always;"></div>'
+                . $bodyInner
+                . '<div style="page-break-before:always;"></div>'
+                . $certPageHtml
+                . '</body></html>';
+        }
 
         $fileName = 'certificat_AQMI_' . $reportNumber . '_' . date('Ymd_His');
         $reportsDir = BASE_PATH . '/storage/reports';
@@ -647,6 +656,117 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 ' . $blocksHtml . '
 </div>
 </body></html>';
+    }
+
+    /**
+     * Retrouve le modèle Report Studio publié à utiliser pour le certificat.
+     * Retourne l'instance ReportTemplate ou null si aucun n'existe.
+     */
+    private function resolveStudioTemplate(): ?\App\Modules\ReportStudio\Models\ReportTemplate
+    {
+        if (!class_exists(\App\Modules\ReportStudio\Models\ReportTemplate::class)) {
+            return null;
+        }
+        try {
+            if (\App\Modules\ReportStudio\Models\ReportTemplate::publishedCount() === 0) {
+                return null;
+            }
+            $templates = \App\Modules\ReportStudio\Models\ReportTemplate::all();
+            foreach ($templates as $t) {
+                if ($t->status === 'published') {
+                    return $t;
+                }
+            }
+            return $templates[0] ?? null;
+        } catch (\Throwable $e) {
+            error_log('resolveStudioTemplate error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Construit le PDF du certificat en utilisant les blocs et le thème
+     * du modèle Report Studio, encadrés par la page de couverture et la
+     * page de certification (QR code, signature, cachet).
+     */
+    private function renderCertificateWithStudioTemplate(
+        \App\Modules\ReportStudio\Models\ReportTemplate $template,
+        array $assessment, array $analysis, array $recommendations,
+        ?array $lead, ?array $user, array $report,
+        string $reportNumber, ?string $qrDataUri, array $theme
+    ): string {
+        $previewService = new \App\Modules\ReportStudio\Services\PreviewService();
+        $renderer = new \App\Modules\ReportStudio\Services\TemplateRenderer();
+
+        $data = $previewService->loadForPreview((int) $template->id);
+        if (!$data) {
+            // Fallback : construction hardcoded
+            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
+            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
+            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
+            $bodyStyle = $this->extractHtmlPart($rawBodyHtml, 'style');
+            $bodyInner = $this->extractHtmlPart($rawBodyHtml, 'body');
+            return '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+                . '<style>' . $bodyStyle . '</style>'
+                . '</head><body>'
+                . $coverHtml
+                . '<div style="page-break-before:always;"></div>'
+                . $bodyInner
+                . '<div style="page-break-before:always;"></div>'
+                . $certPageHtml
+                . '</body></html>';
+        }
+
+        $blocksHtml = $renderer->renderAll($data['blocks'], $data['template'], $reportNumber, 'pdf');
+
+        $globalScore = $analysis['global_score'];
+        $level = $analysis['maturity_level'];
+        $levelName = $level['name_fr'] ?? $level['name'] ?? 'Non défini';
+        $levelColor = $level['color'] ?? '#102A43';
+
+        $radarSvg = $this->buildRadarSvg($analysis['domain_scores'], $levelColor);
+        $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
+
+        $recoHtml = '';
+        foreach ($recommendations as $rec) {
+            $recoHtml .= '<li style="font-size:10pt;margin-bottom:6px;">' . htmlspecialchars($rec['text'] ?? '') . '</li>';
+        }
+
+        $companyName = $lead['company'] ?? 'Entreprise';
+        $sector = $lead['sector'] ?? '—';
+        $country = $lead['country'] ?? '—';
+
+        $blocksHtml = str_replace(
+            ['{{GLOBAL_SCORE}}', '{{LEVEL_NAME}}', '{{LEVEL_COLOR}}', '{{RADAR_SVG}}', '{{GAUGE_SVG}}', '{{RECOMMENDATIONS}}', '{{COMPANY_NAME}}', '{{SECTOR}}', '{{COUNTRY}}', '{{REPORT_NUMBER}}', '{{DATE}}'],
+            [(string) $globalScore, $levelName, $levelColor, $radarSvg, $gaugeSvg, $recoHtml, htmlspecialchars($companyName), htmlspecialchars($sector), htmlspecialchars($country), htmlspecialchars($reportNumber), date('d/m/Y')],
+            $blocksHtml
+        );
+
+        $themeCss = $data['themeCss'] ?? '';
+        $themeStyle = $data['themeStyle'] ?? '';
+
+        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
+        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
+
+        return '<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+' . $themeCss . '
+body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-body, #102A43); margin:0; padding:0; }
+.rs-report { max-width: 210mm; margin: 0 auto; padding: 20mm 15mm; background: var(--rs-background, #fff); }
+.rs-report-block { margin-bottom: 16px; page-break-inside: avoid; }
+.rs-block-title { font-size: 12pt; font-weight: 700; color: var(--rs-heading, #102A43); margin-bottom: 8px; }
+.rs-score-ring { width: 120px; height: 120px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 8px solid var(--rs-primary, #102A43); }
+.rs-score-value { font-size: 28pt; font-weight: 800; color: var(--rs-primary, #102A43); }
+.rs-stamp { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 3px solid var(--rs-primary, #102A43); color: var(--rs-primary, #102A43); font-weight: 800; }
+.rs-sig-line { border-top: 1px solid #999; margin-bottom: 6px; }
+</style>
+</head><body>'
+            . $coverHtml
+            . '<div style="page-break-before:always;"></div>'
+            . '<div class="rs-report" style="' . $themeStyle . '">' . $blocksHtml . '</div>'
+            . '<div style="page-break-before:always;"></div>'
+            . $certPageHtml
+            . '</body></html>';
     }
 
     private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null, array $theme = []): string
