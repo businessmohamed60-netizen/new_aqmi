@@ -69,6 +69,25 @@ class ThemeService
 
     private function validate(array $post): array
     {
+        $cssVariables = $post['css_variables'] ?? [];
+        if (!is_array($cssVariables)) $cssVariables = [];
+
+        // Persist block alignment data from the drag-and-drop layout editor
+        $blockAlign = [];
+        if (!empty($post['block_align_json'])) {
+            $decoded = json_decode($post['block_align_json'], true);
+            if (is_array($decoded)) {
+                foreach ($decoded as $block => $align) {
+                    if (in_array($align, ['left', 'center', 'right'], true)) {
+                        $blockAlign[$block] = $align;
+                    }
+                }
+            }
+        }
+        if (!empty($blockAlign)) {
+            $cssVariables['block_align'] = $blockAlign;
+        }
+
         return [
             'name'             => trim((string) ($post['name'] ?? '')),
             'description'      => trim((string) ($post['description'] ?? '')),
@@ -79,7 +98,7 @@ class ThemeService
             'body_color'       => !empty($post['body_color']) ? trim($post['body_color']) : null,
             'background_color' => trim((string) ($post['background_color'] ?? '#ffffff')),
             'font_family'      => trim((string) ($post['font_family'] ?? 'Inter, Arial, sans-serif')),
-            'css_variables'    => $post['css_variables'] ?? [],
+            'css_variables'    => $cssVariables,
             'is_default'       => (bool) ($post['is_default'] ?? false),
             'is_active'        => (bool) ($post['is_active'] ?? true),
         ];

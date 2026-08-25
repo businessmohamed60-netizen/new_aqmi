@@ -165,9 +165,9 @@ class Report
         return Database::execute("UPDATE reports SET admin_signature = ? WHERE id = ?", [$signature, $id]);
     }
 
-    public static function setTemplateId(int $id, ?int $templateId): int
+    public static function setThemeId(int $id, ?int $themeId): int
     {
-        return Database::execute("UPDATE reports SET template_id = ? WHERE id = ?", [$templateId, $id]);
+        return Database::execute("UPDATE reports SET theme_id = ? WHERE id = ?", [$themeId, $id]);
     }
 
     /**

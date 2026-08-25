@@ -117,6 +117,20 @@ try {
         echo "  Done.\n\n";
     }
 
+    // Migration 007: Rename reports.template_id → reports.theme_id
+    // Le champ stocke un ID de thème (report_themes), pas un ID de modèle
+    // (report_templates). On renomme la colonne pour refléter la réalité.
+    $col = $pdo->query("SHOW COLUMNS FROM reports LIKE 'template_id'")->fetch();
+    if ($col) {
+        echo "Applying migration 007: rename reports.template_id → theme_id...\n";
+        $pdo->exec("ALTER TABLE reports CHANGE COLUMN template_id theme_id INT NULL");
+        echo "  Done.\n\n";
+    } elseif (!$pdo->query("SHOW COLUMNS FROM reports LIKE 'theme_id'")->fetch()) {
+        echo "Adding reports.theme_id column (new install)...\n";
+        $pdo->exec("ALTER TABLE reports ADD COLUMN theme_id INT NULL");
+        echo "  Done.\n\n";
+    }
+
     // Verify final state
     echo "Verification:\n";
     $count = $pdo->query("SELECT COUNT(*) FROM report_themes")->fetchColumn();

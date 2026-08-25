@@ -156,6 +156,92 @@ $th = $theme ?? [];
     color: var(--rsd-text);
     border-color: var(--rsd-text-dim);
 }
+.rs-layout-editor-wrap {
+    margin-bottom: 1rem;
+}
+.rs-layout-canvas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1rem;
+    background: var(--rsd-surface-2);
+    border: 1px solid var(--rsd-border);
+    border-radius: var(--rsd-radius-sm);
+    min-height: 60px;
+    margin-bottom: 1rem;
+}
+.rs-layout-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    background: var(--rsd-surface);
+    border: 1px solid var(--rsd-border);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--rsd-text);
+    cursor: grab;
+    user-select: none;
+    transition: all var(--rsd-transition);
+}
+.rs-layout-block:hover {
+    border-color: var(--rsd-primary-light);
+    background: var(--rsd-primary-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31,111,235,0.2);
+}
+.rs-layout-block:active,
+.rs-layout-block.dragging {
+    cursor: grabbing;
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+.rs-layout-block i {
+    color: var(--rsd-primary-light);
+    font-size: 0.85rem;
+}
+.rs-layout-block .rs-align-tag {
+    font-size: 0.58rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 6px;
+    background: rgba(148,163,184,0.15);
+    color: var(--rsd-text-muted);
+    margin-left: 0.3rem;
+}
+.rs-layout-zones {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+}
+.rs-layout-zone {
+    min-height: 120px;
+    border: 2px dashed var(--rsd-border);
+    border-radius: var(--rsd-radius-sm);
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-content: flex-start;
+    transition: all var(--rsd-transition);
+}
+.rs-layout-zone.drag-over {
+    border-color: var(--rsd-primary-light);
+    background: var(--rsd-primary-dim);
+    transform: scale(1.02);
+}
+.rs-layout-zone-label {
+    width: 100%;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--rsd-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rsd-border);
+    margin-bottom: 0.5rem;
+}
 </style>
 
 <div class="rs-form-page container-fluid py-4">
@@ -228,6 +314,69 @@ $th = $theme ?? [];
                         <input type="text" name="font_family" class="rs-form-input" value="<?= e($th['font_family'] ?? 'Inter, Arial, sans-serif') ?>">
                     </div>
 
+                    <hr style="border-color:var(--rsd-border);margin:1.5rem 0;">
+
+                    <div class="rs-layout-editor-wrap">
+                        <label class="rs-form-label" style="margin-bottom:0.5rem;">
+                            <i class="fas fa-arrows-left-right me-1" style="color:var(--rsd-primary-light);"></i>
+                            Disposition des blocs
+                        </label>
+                        <p style="font-size:0.72rem;color:var(--rsd-text-dim);margin:0 0 1rem;">
+                            Glissez chaque bloc vers la gauche, le centre ou la droite avec la souris.
+                        </p>
+
+                        <div class="rs-layout-canvas" id="rsLayoutCanvas">
+                            <div class="rs-layout-block" draggable="true" data-block="header" data-align="<?= e($th['css_variables']['block_align']['header'] ?? 'center') ?>">
+                                <i class="fas fa-heading"></i>
+                                <span>En-tête</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="logo" data-align="<?= e($th['css_variables']['block_align']['logo'] ?? 'left') ?>">
+                                <i class="fas fa-image"></i>
+                                <span>Logo</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="company_info" data-align="<?= e($th['css_variables']['block_align']['company_info'] ?? 'left') ?>">
+                                <i class="fas fa-building"></i>
+                                <span>Infos entreprise</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="global_score" data-align="<?= e($th['css_variables']['block_align']['global_score'] ?? 'center') ?>">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Score global</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="domain_scores" data-align="<?= e($th['css_variables']['block_align']['domain_scores'] ?? 'center') ?>">
+                                <i class="fas fa-list-ol"></i>
+                                <span>Scores par domaine</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="recommendations" data-align="<?= e($th['css_variables']['block_align']['recommendations'] ?? 'left') ?>">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Recommandations</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="signature" data-align="<?= e($th['css_variables']['block_align']['signature'] ?? 'right') ?>">
+                                <i class="fas fa-signature"></i>
+                                <span>Signature</span>
+                            </div>
+                            <div class="rs-layout-block" draggable="true" data-block="footer" data-align="<?= e($th['css_variables']['block_align']['footer'] ?? 'center') ?>">
+                                <i class="fas fa-shoe-prints"></i>
+                                <span>Pied de page</span>
+                            </div>
+                        </div>
+
+                        <div class="rs-layout-zones">
+                            <div class="rs-layout-zone" data-zone="left">
+                                <span class="rs-layout-zone-label"><i class="fas fa-align-left"></i> Gauche</span>
+                            </div>
+                            <div class="rs-layout-zone" data-zone="center">
+                                <span class="rs-layout-zone-label"><i class="fas fa-align-center"></i> Centré</span>
+                            </div>
+                            <div class="rs-layout-zone" data-zone="right">
+                                <span class="rs-layout-zone-label"><i class="fas fa-align-right"></i> Droite</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="block_align_json" id="blockAlignJson" value="<?= e(json_encode($th['css_variables']['block_align'] ?? [])) ?>">
+
+                    <hr style="border-color:var(--rsd-border);margin:1.5rem 0;">
+
                     <div class="rs-form-switch">
                         <input class="form-check-input" type="checkbox" name="is_default" id="th-default" <?= !empty($th['is_default']) ? 'checked' : '' ?>>
                         <label for="th-default">Thème par défaut</label>
@@ -255,4 +404,104 @@ $content = ob_get_clean();
     'title'       => !empty($th) ? 'Modifier le thème' : 'Nouveau thème',
     'content'     => $content,
     'extraStyles' => '<link rel="stylesheet" href="/assets/modules/reportstudio/css/report_studio.css">',
+    'extraScripts' => '
+<script>
+(function() {
+    var canvas = document.getElementById("rsLayoutCanvas");
+    if (!canvas) return;
+    var zones = document.querySelectorAll(".rs-layout-zone");
+    var hiddenInput = document.getElementById("blockAlignJson");
+    var alignMap = {};
+
+    function getAlignMap() {
+        try { return JSON.parse(hiddenInput.value || "{}"); } catch(e) { return {}; }
+    }
+    function saveAlignMap() {
+        hiddenInput.value = JSON.stringify(alignMap);
+    }
+    function updateTags() {
+        document.querySelectorAll(".rs-layout-block").forEach(function(b) {
+            var a = b.getAttribute("data-align") || "left";
+            var tag = b.querySelector(".rs-align-tag");
+            if (!tag) {
+                tag = document.createElement("span");
+                tag.className = "rs-align-tag";
+                b.appendChild(tag);
+            }
+            var labels = {left:"Gauche", center:"Centre", right:"Droite"};
+            tag.textContent = labels[a] || a;
+        });
+    }
+    function placeBlockInZone(block, zone) {
+        var zoneName = zone.getAttribute("data-zone");
+        var blockName = block.getAttribute("data-block");
+        block.setAttribute("data-align", zoneName);
+        alignMap[blockName] = zoneName;
+        zone.appendChild(block);
+        saveAlignMap();
+        updateTags();
+    }
+
+    alignMap = getAlignMap();
+
+    // Initialize: move blocks to their saved zones
+    document.querySelectorAll(".rs-layout-block").forEach(function(block) {
+        var align = block.getAttribute("data-align") || "left";
+        var zone = document.querySelector(".rs-layout-zone[data-zone=\"" + align + "\"]");
+        if (zone) {
+            zone.appendChild(block);
+        }
+    });
+    updateTags();
+
+    // Drag events on blocks
+    document.querySelectorAll(".rs-layout-block").forEach(function(block) {
+        block.addEventListener("dragstart", function(e) {
+            e.dataTransfer.setData("text/plain", block.getAttribute("data-block"));
+            e.dataTransfer.effectAllowed = "move";
+            block.classList.add("dragging");
+        });
+        block.addEventListener("dragend", function() {
+            block.classList.remove("dragging");
+            zones.forEach(function(z) { z.classList.remove("drag-over"); });
+        });
+    });
+
+    // Drop zone events
+    zones.forEach(function(zone) {
+        zone.addEventListener("dragover", function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            zone.classList.add("drag-over");
+        });
+        zone.addEventListener("dragleave", function() {
+            zone.classList.remove("drag-over");
+        });
+        zone.addEventListener("drop", function(e) {
+            e.preventDefault();
+            zone.classList.remove("drag-over");
+            var blockName = e.dataTransfer.getData("text/plain");
+            var block = document.querySelector(".rs-layout-block[data-block=\"" + blockName + "\"]");
+            if (block) placeBlockInZone(block, zone);
+        });
+    });
+
+    // Also allow dragging back to canvas (unassigned / free area)
+    canvas.addEventListener("dragover", function(e) { e.preventDefault(); });
+    canvas.addEventListener("drop", function(e) {
+        e.preventDefault();
+        var blockName = e.dataTransfer.getData("text/plain");
+        var block = document.querySelector(".rs-layout-block[data-block=\"" + blockName + "\"]");
+        if (block) {
+            canvas.appendChild(block);
+            // Reset to center when moved back to canvas
+            block.setAttribute("data-align", "center");
+            alignMap[block.getAttribute("data-block")] = "center";
+            saveAlignMap();
+            updateTags();
+        }
+    });
+})();
+</script>
+',
 ]);

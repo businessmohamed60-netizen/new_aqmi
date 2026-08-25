@@ -73,6 +73,45 @@
   min-height: 100vh;
 }
 
+/* Global browser scrollbar — wider and visible */
+body::-webkit-scrollbar { width: 14px; height: 14px; }
+body::-webkit-scrollbar-track { background: rgba(148,163,184,0.08); border-radius: 8px; }
+body::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.45); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+body::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,0.7); background-clip: padding-box; }
+body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,163,184,0.08); }
+.nova-admin-wrap::-webkit-scrollbar,
+.nova-main::-webkit-scrollbar,
+.nova-content-area::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+.nova-admin-wrap::-webkit-scrollbar-track,
+.nova-main::-webkit-scrollbar-track,
+.nova-content-area::-webkit-scrollbar-track {
+  background: rgba(148,163,184,0.08);
+  border-radius: 8px;
+}
+.nova-admin-wrap::-webkit-scrollbar-thumb,
+.nova-main::-webkit-scrollbar-thumb,
+.nova-content-area::-webkit-scrollbar-thumb {
+  background: rgba(100,116,139,0.45);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.nova-admin-wrap::-webkit-scrollbar-thumb:hover,
+.nova-main::-webkit-scrollbar-thumb:hover,
+.nova-content-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(100,116,139,0.7);
+  background-clip: padding-box;
+}
+.nova-admin-wrap,
+.nova-main,
+.nova-content-area {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(100,116,139,0.5) rgba(148,163,184,0.08);
+}
+
 /* ─── 3. LAYOUT WRAPPER ───────────────────────────────────────── */
 .nova-admin-wrap {
   display: flex;
@@ -172,8 +211,11 @@
   padding: 0.75rem 0.75rem;
 }
 
-.nova-sidebar-nav::-webkit-scrollbar { width: 4px; }
-.nova-sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+.nova-sidebar-nav::-webkit-scrollbar { width: 10px; }
+.nova-sidebar-nav::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 6px; }
+.nova-sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 6px; }
+.nova-sidebar-nav::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.5); }
+.nova-sidebar-nav { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.35) rgba(0,0,0,0.15); }
 
 .nova-sidebar-section {
   font-size: 0.6rem;
@@ -496,6 +538,8 @@
 .nova-content-area {
   flex: 1;
   padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--vx-topbar-height));
   animation: novaContentFadeIn 0.4s ease both;
 }
 

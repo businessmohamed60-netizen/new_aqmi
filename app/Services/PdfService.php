@@ -75,7 +75,7 @@ class PdfService
      * et l'entoure d'une page de couverture + une page de certification
      * (observations, plan d'action, signature, QR code de vérification).
      */
-    public function generateCertificate(int $reportId, ?int $templateId = null): string
+    public function generateCertificate(int $reportId, ?int $themeId = null): string
     {
         $report = Report::find($reportId);
         if (!$report) throw new \RuntimeException('Report not found');
@@ -91,7 +91,7 @@ class PdfService
         $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
         $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
 
-        $theme = $this->loadCertificateTheme($templateId ?? (int)($report['template_id'] ?? 0));
+        $theme = $this->loadCertificateTheme($themeId ?? (int)($report['theme_id'] ?? 0));
         $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
         $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
         $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
@@ -182,10 +182,11 @@ class PdfService
 
     /**
      * Charge un thème de certificat depuis Report Studio.
-     * Retourne un tableau de couleurs/polices, ou les valeurs par
-     * défaut si aucun thème n'est trouvé ou si le module est absent.
+     * L'identifiant stocké sur le rapport est un ID de thème (report_themes),
+     * pas un ID de modèle (report_templates).
+     * Retourne les valeurs par défaut si aucun thème n'est trouvé.
      */
-    private function loadCertificateTheme(?int $templateId): array
+    private function loadCertificateTheme(?int $themeId): array
     {
         $defaults = [
             'navy'       => '#0b1f4d',
@@ -194,19 +195,27 @@ class PdfService
             'background' => '#ffffff',
         ];
 
-        if (!$templateId || $templateId <= 0) {
-            return $defaults;
-        }
-
         if (!class_exists(\App\Modules\ReportStudio\Models\ReportTheme::class)) {
             return $defaults;
         }
 
         try {
-            $theme = \App\Modules\ReportStudio\Models\ReportTheme::find($templateId);
+            $theme = null;
+
+            // Lookup direct du thème par son ID
+            if ($themeId && $themeId > 0) {
+                $theme = \App\Modules\ReportStudio\Models\ReportTheme::find($themeId);
+            }
+
+            // Fallback : thème par défaut défini dans Report Studio
+            if (!$theme) {
+                $theme = \App\Modules\ReportStudio\Models\ReportTheme::findDefault();
+            }
+
             if (!$theme) {
                 return $defaults;
             }
+
             return [
                 'navy'       => $theme->primary_color   ?: $defaults['navy'],
                 'gold'       => $theme->accent_color    ?: $defaults['gold'],

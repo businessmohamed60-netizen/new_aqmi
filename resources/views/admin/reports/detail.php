@@ -190,10 +190,10 @@ $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), 
         try { $themes = \App\Modules\ReportStudio\Models\ReportTheme::activeList(); } catch (\Throwable $e) {}
         ?>
         <label>Thème du certificat (Report Studio)</label>
-        <select name="template_id" class="cert-form">
+        <select name="theme_id" class="cert-form">
           <option value="">— Thème par défaut —</option>
           <?php foreach ($themes as $theme): ?>
-            <option value="<?= (int)$theme->id ?>" <?= ((int)($report['template_id'] ?? 0) === (int)$theme->id) ? 'selected' : '' ?>>
+            <option value="<?= (int)$theme->id ?>" <?= ((int)($report['theme_id'] ?? 0) === (int)$theme->id) ? 'selected' : '' ?>>
               <?= e($theme->name ?? 'Thème #' . $theme->id) ?>
             </option>
           <?php endforeach; ?>
