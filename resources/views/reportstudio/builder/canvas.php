@@ -10,7 +10,6 @@ declare(strict_types=1);
  * Variables expected:
  * @var array  $template      assembled template ['template'=>..., 'blocks'=>...]
  * @var array  $palette       BlockRegistry::grouped() — [category => [{block_key,label,icon,partial}, ...]]
- * @var string $themeCss      compiled CSS custom properties for the active theme
  */
 ?>
 <!DOCTYPE html>
@@ -25,7 +24,7 @@ declare(strict_types=1);
 
     <link href="/assets/modules/reportstudio/css/report_studio.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style><?= $themeCss ?? '' ?></style>
+    <style>:root { --rs-primary: #0d9488; --rs-heading: #0b1f4d; --rs-body: #102A43; --rs-font: 'DejaVu Sans', sans-serif; --rs-background: #ffffff; --rs-accent: #b8860b; }</style>
 </head>
 <body class="rs-builder-body">
 

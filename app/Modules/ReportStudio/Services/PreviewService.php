@@ -5,7 +5,6 @@ namespace App\Modules\ReportStudio\Services;
 
 use App\Modules\ReportStudio\Models\ReportTemplate;
 use App\Modules\ReportStudio\Models\ReportTemplateBlock;
-use App\Modules\ReportStudio\Models\ReportTheme;
 
 /**
  * Assembles a template with its blocks and theme for live preview
@@ -26,22 +25,11 @@ class PreviewService
         $blocks = ReportTemplateBlock::enabledForTemplate($templateId);
         $tplArray = $template->toArray();
 
-        $theme = null;
-        if (!empty($tplArray['theme_id'])) {
-            $theme = ReportTheme::find((int) $tplArray['theme_id']);
-        }
-        if (!$theme) {
-            $theme = ReportTheme::findDefault();
-        }
-
-        $compiler = new ThemeCompiler();
-
         return [
             'template'     => $tplArray,
             'blocks'       => array_map(fn($b) => $b->toArray(), $blocks),
-            'theme'        => $theme?->toArray() ?? [],
-            'themeCss'     => $theme ? $compiler->toCss($theme) : '',
-            'themeStyle'   => $theme ? $compiler->toInlineStyle($theme) : '',
+            'themeCss'     => $this->defaultCss(),
+            'themeStyle'   => $this->defaultInlineStyle(),
             'pageSettings' => [
                 'orientation'         => $tplArray['orientation'] ?? 'portrait',
                 'watermark_text'      => $tplArray['watermark_text'] ?? '',
@@ -92,5 +80,15 @@ class PreviewService
         if (!$date) return '—';
         $ts = strtotime($date);
         return $ts ? date('d/m/Y', $ts) : '—';
+    }
+
+    private function defaultCss(): string
+    {
+        return ":root {\n  --rs-primary: #0d9488;\n  --rs-heading: #0b1f4d;\n  --rs-body: #102A43;\n  --rs-font: 'DejaVu Sans', sans-serif;\n  --rs-background: #ffffff;\n  --rs-accent: #b8860b;\n}";
+    }
+
+    private function defaultInlineStyle(): string
+    {
+        return "--rs-primary: #0d9488; --rs-heading: #0b1f4d; --rs-body: #102A43; --rs-font: 'DejaVu Sans', sans-serif; --rs-background: #ffffff; --rs-accent: #b8860b";
     }
 }

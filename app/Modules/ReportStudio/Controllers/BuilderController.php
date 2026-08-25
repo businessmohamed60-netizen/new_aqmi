@@ -7,7 +7,6 @@ use App\Modules\ReportStudio\Services\BuilderService;
 use App\Modules\ReportStudio\Services\DataSourceService;
 use App\Modules\ReportStudio\Services\PreviewService;
 use App\Modules\ReportStudio\Services\TemplateService;
-use App\Modules\ReportStudio\Services\ThemeService;
 use App\Modules\ReportStudio\Services\BlockRegistry;
 
 /**
@@ -27,21 +26,9 @@ class BuilderController
             abort(404);
         }
 
-        $themeService = new ThemeService();
-        $theme = null;
-        if (!empty($data['template']['theme_id'])) {
-            $theme = $themeService->getTheme((int) $data['template']['theme_id']);
-        }
-        if (!$theme) {
-            $theme = $themeService->defaultTheme();
-        }
-
-        $compiler = new \App\Modules\ReportStudio\Services\ThemeCompiler();
-
         view('reportstudio/builder/canvas', [
             'template'  => $data,
             'palette'   => BlockRegistry::grouped(),
-            'themeCss'  => $theme ? $compiler->toCss($theme) : '',
         ]);
     }
 

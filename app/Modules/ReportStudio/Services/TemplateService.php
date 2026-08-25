@@ -5,7 +5,6 @@ namespace App\Modules\ReportStudio\Services;
 
 use App\Modules\ReportStudio\Models\ReportBlock;
 use App\Modules\ReportStudio\Models\ReportTemplate;
-use App\Modules\ReportStudio\Models\ReportTheme;
 
 /**
  * Handles template metadata CRUD (not the block layout — that's BuilderService).
@@ -53,7 +52,6 @@ class TemplateService
             'template_count' => ReportTemplate::count(),
             'published'      => ReportTemplate::publishedCount(),
             'block_count'    => count(ReportBlock::all()),
-            'theme_count'    => count(ReportTheme::all()),
         ];
     }
 
@@ -62,7 +60,6 @@ class TemplateService
         return [
             'name'        => trim((string) ($post['name'] ?? '')),
             'description' => trim((string) ($post['description'] ?? '')),
-            'theme_id'    => !empty($post['theme_id']) ? (int) $post['theme_id'] : null,
             'category'    => trim((string) ($post['category'] ?? '')),
             'status'      => in_array($post['status'] ?? '', ['draft', 'published', 'archived'], true)
                                 ? $post['status'] : 'draft',

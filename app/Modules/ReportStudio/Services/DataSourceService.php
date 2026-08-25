@@ -39,7 +39,6 @@ final class DataSourceService
         'report_templates',
         'report_template_blocks',
         'report_blocks',
-        'report_themes',
     ];
 
     public static function allowedTables(): array

@@ -5,7 +5,6 @@ namespace App\Modules\ReportStudio\Controllers;
 
 use App\Modules\ReportStudio\Services\BuilderService;
 use App\Modules\ReportStudio\Services\TemplateService;
-use App\Modules\ReportStudio\Services\ThemeService;
 
 /**
  * CRUD for report templates (metadata only — block layout is in BuilderController).
@@ -40,10 +39,8 @@ class TemplateController
 
     public function create(): void
     {
-        $themeService = new ThemeService();
         view('reportstudio/templates/form', [
             'template' => null,
-            'themes'   => array_map(fn($t) => $t->toArray(), $themeService->activeThemes()),
         ]);
     }
 
@@ -63,10 +60,8 @@ class TemplateController
             abort(404);
         }
 
-        $themeService = new ThemeService();
         view('reportstudio/templates/form', [
             'template' => $template->toArray(),
-            'themes'   => array_map(fn($t) => $t->toArray(), $themeService->activeThemes()),
         ]);
     }
 

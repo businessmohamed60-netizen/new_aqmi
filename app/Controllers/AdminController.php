@@ -700,14 +700,12 @@ class AdminController
             return;
         }
 
-        $themeId = !empty($_POST['theme_id']) ? (int)$_POST['theme_id'] : null;
         Report::saveAdminReview($id, [
             'admin_comment' => $_POST['admin_comment'] ?? $report['admin_comment'],
             'observations' => $_POST['observations'] ?? $report['observations'],
             'action_plan' => $_POST['action_plan'] ?? $report['action_plan'],
             'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? $report['aqmi_level_assigned'],
         ]);
-        Report::setThemeId($id, $themeId);
 
         $reportNumber = Report::assignReportNumber($id);
         $adminName = trim((Auth::user()['firstname'] ?? '') . ' ' . (Auth::user()['lastname'] ?? 'Admin'));
@@ -715,7 +713,7 @@ class AdminController
 
         try {
             $pdfService = new \App\Services\PdfService();
-            $filename = $pdfService->generateCertificate($id, $themeId);
+            $filename = $pdfService->generateCertificate($id);
             Report::updateStatus($id, 'certified', $adminName, $filename);
             $_SESSION['success'] = "Rapport certifié sous le numéro {$reportNumber}.";
         } catch (\Exception $e) {

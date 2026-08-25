@@ -113,9 +113,3 @@ $router->get('/admin/reportstudio/table-info/{table}', 'BuilderController@tableI
 $router->post('/admin/reportstudio/data-preview', 'BuilderController@dataPreview', $adminMiddleware);
 $router->post('/admin/reportstudio/upload-image', 'BuilderController@uploadImage', $adminMiddleware);
 $router->get('/admin/reportstudio/preview/{id}', 'PreviewController@show', $adminMiddleware);
-$router->get('/admin/reportstudio/themes', 'ThemeController@index', $adminMiddleware);
-$router->get('/admin/reportstudio/themes/create', 'ThemeController@create', $adminMiddleware);
-$router->post('/admin/reportstudio/themes', 'ThemeController@store', $adminMiddleware);
-$router->get('/admin/reportstudio/themes/{id}/edit', 'ThemeController@edit', $adminMiddleware);
-$router->post('/admin/reportstudio/themes/{id}', 'ThemeController@update', $adminMiddleware);
-$router->post('/admin/reportstudio/themes/{id}/delete', 'ThemeController@destroy', $adminMiddleware);

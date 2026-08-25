@@ -165,11 +165,6 @@ class Report
         return Database::execute("UPDATE reports SET admin_signature = ? WHERE id = ?", [$signature, $id]);
     }
 
-    public static function setThemeId(int $id, ?int $themeId): int
-    {
-        return Database::execute("UPDATE reports SET theme_id = ? WHERE id = ?", [$themeId, $id]);
-    }
-
     /**
      * Génère un numéro de rapport unique du type AQMI-2026-000123
      * et le persiste sur la ligne.

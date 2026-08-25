@@ -75,7 +75,7 @@ class PdfService
      * et l'entoure d'une page de couverture + une page de certification
      * (observations, plan d'action, signature, QR code de vérification).
      */
-    public function generateCertificate(int $reportId, ?int $themeId = null): string
+    public function generateCertificate(int $reportId): string
     {
         $report = Report::find($reportId);
         if (!$report) throw new \RuntimeException('Report not found');
@@ -91,18 +91,16 @@ class PdfService
         $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
         $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
 
-        $theme = $this->loadCertificateTheme($themeId ?? (int)($report['theme_id'] ?? 0));
-
         $template = $this->resolveStudioTemplate();
         if ($template) {
             $html = $this->renderCertificateWithStudioTemplate(
                 $template, $assessment, $analysis, $recommendations, $lead, $user,
-                $report, $reportNumber, $qrDataUri, $theme
+                $report, $reportNumber, $qrDataUri
             );
         } else {
-            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
-            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
-            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
+            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
+            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user);
+            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
 
             // buildHtml() renvoie un DOCUMENT COMPLET (<!DOCTYPE>, <html>, <head><style>,
             // <body>). On ne peut pas le coller tel quel entre deux fragments — ça
@@ -189,58 +187,7 @@ class PdfService
         }
     }
 
-    /**
-     * Charge un thème de certificat depuis Report Studio.
-     * L'identifiant stocké sur le rapport est un ID de thème (report_themes),
-     * pas un ID de modèle (report_templates).
-     * Retourne les valeurs par défaut si aucun thème n'est trouvé.
-     */
-    private function loadCertificateTheme(?int $themeId): array
-    {
-        $defaults = [
-            'navy'       => '#0b1f4d',
-            'gold'       => '#b8860b',
-            'font'       => 'sans-serif',
-            'background' => '#ffffff',
-        ];
-
-        if (!class_exists(\App\Modules\ReportStudio\Models\ReportTheme::class)) {
-            return $defaults;
-        }
-
-        try {
-            $theme = null;
-
-            // Lookup direct du thème par son ID
-            if ($themeId && $themeId > 0) {
-                $theme = \App\Modules\ReportStudio\Models\ReportTheme::find($themeId);
-            }
-
-            // Fallback : thème par défaut défini dans Report Studio
-            if (!$theme) {
-                $theme = \App\Modules\ReportStudio\Models\ReportTheme::findDefault();
-            }
-
-            if (!$theme) {
-                return $defaults;
-            }
-
-            return [
-                'navy'       => $theme->primary_color   ?: $defaults['navy'],
-                'gold'       => $theme->accent_color    ?: $defaults['gold'],
-                'font'       => $theme->font_family     ?: $defaults['font'],
-                'background' => $theme->background_color ?: $defaults['background'],
-            ];
-        } catch (\Throwable $e) {
-            error_log('loadCertificateTheme error: ' . $e->getMessage());
-            return $defaults;
-        }
-    }
-
-    /**
-     * Page de couverture du certificat officiel.
-     */
-    private function buildCoverPageHtml(array $assessment, array $analysis, ?array $lead, array $report, string $reportNumber, array $theme = []): string
+    private function buildCoverPageHtml(array $assessment, array $analysis, ?array $lead, array $report, string $reportNumber): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
         $sector = $lead['sector'] ?? '—';
@@ -252,8 +199,8 @@ class PdfService
         $certDate = $report['certified_at'] ? date('d/m/Y', strtotime($report['certified_at'])) : date('d/m/Y');
         $domainScores = $analysis['domain_scores'];
 
-        $navy = $theme['navy'] ?? '#0b1f4d';
-        $gold = $theme['gold'] ?? '#b8860b';
+        $navy = '#0b1f4d';
+        $gold = '#b8860b';
 
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
         $radarSvg = $this->buildRadarSvg($domainScores, $levelColor);
@@ -502,10 +449,10 @@ class PdfService
      * Dernière page : observations, plan d'action, déclaration officielle,
      * signature électronique de l'administrateur et QR code de vérification.
      */
-    private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri, array $theme = []): string
+    private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri): string
     {
-        $navy = $theme['navy'] ?? '#0b1f4d';
-        $gold = $theme['gold'] ?? '#b8860b';
+        $navy = '#0b1f4d';
+        $gold = '#b8860b';
 
         $qrImg = $qrDataUri
             ? '<img src="' . $qrDataUri . '" style="width:110px;height:110px;" />'
@@ -611,13 +558,6 @@ class PdfService
         $levelName = $level['name_fr'] ?? $level['name'] ?? 'Non défini';
         $levelColor = $level['color'] ?? '#102A43';
 
-        $domainLabels = [];
-        $domainValues = [];
-        foreach ($analysis['domain_scores'] as $ds) {
-            $domainLabels[] = $ds['domain_name_fr'] ?: $ds['domain_name'];
-            $domainValues[] = $ds['percent_score'];
-        }
-
         $radarSvg = $this->buildRadarSvg($analysis['domain_scores'], $levelColor);
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
 
@@ -693,17 +633,16 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         \App\Modules\ReportStudio\Models\ReportTemplate $template,
         array $assessment, array $analysis, array $recommendations,
         ?array $lead, ?array $user, array $report,
-        string $reportNumber, ?string $qrDataUri, array $theme
+        string $reportNumber, ?string $qrDataUri
     ): string {
         $previewService = new \App\Modules\ReportStudio\Services\PreviewService();
         $renderer = new \App\Modules\ReportStudio\Services\TemplateRenderer();
 
         $data = $previewService->loadForPreview((int) $template->id);
         if (!$data) {
-            // Fallback : construction hardcoded
-            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
-            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user, $theme);
-            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
+            $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
+            $rawBodyHtml = $this->buildHtml($assessment, $analysis, $recommendations, $lead, false, $user);
+            $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
             $bodyStyle = $this->extractHtmlPart($rawBodyHtml, 'style');
             $bodyInner = $this->extractHtmlPart($rawBodyHtml, 'body');
             return '<!DOCTYPE html><html><head><meta charset="UTF-8">'
@@ -745,8 +684,8 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $themeCss = $data['themeCss'] ?? '';
         $themeStyle = $data['themeStyle'] ?? '';
 
-        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber, $theme);
-        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri, $theme);
+        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
+        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
 
         return '<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
@@ -769,7 +708,7 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
             . '</body></html>';
     }
 
-    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null, array $theme = []): string
+    private function buildHtml(array $assessment, array $analysis, array $recommendations, ?array $lead, bool $includeIndustrialPark = true, ?array $user = null): string
     {
         $companyName = $lead['company'] ?? 'Entreprise';
         $leadFullName = ($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? '');
@@ -789,10 +728,8 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $email = $lead['email'] ?? ($user['email'] ?? 'Non spécifié');
         $domainCount = count($analysis['domain_scores']);
 
-        // Palette: utilise le thème transmis (certificat) ou la palette
-        // par défaut alignée sur le rapport en ligne (teal/or).
-        $navy = $theme['navy'] ?? '#0d9488';
-        $gold = $theme['gold'] ?? '#9c7a1f';
+        $navy = '#0d9488';
+        $gold = '#9c7a1f';
 
         // Domain score rows — NO nested tables, use div-based bars instead
         $domainRows = '';

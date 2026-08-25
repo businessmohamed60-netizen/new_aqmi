@@ -37,7 +37,6 @@ class ReportStudioController
             'template_count' => 0,
             'published'      => 0,
             'block_count'    => 14,
-            'theme_count'    => 3,
         ];
     }
 }

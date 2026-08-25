@@ -42,7 +42,7 @@ echo "================================\n\n";
 try {
     $pdo = Database::getInstance()->getConnection();
 
-    // Check if report_themes table exists
+    // Check if report_studio tables exist
     $tables = $pdo->query("SHOW TABLES LIKE 'report_%'")->fetchAll(PDO::FETCH_COLUMN);
     echo "Existing Report Studio tables: " . (empty($tables) ? 'NONE' : implode(', ', $tables)) . "\n\n";
 
@@ -117,24 +117,15 @@ try {
         echo "  Done.\n\n";
     }
 
-    // Migration 007: Rename reports.template_id → reports.theme_id
-    // Le champ stocke un ID de thème (report_themes), pas un ID de modèle
-    // (report_templates). On renomme la colonne pour refléter la réalité.
+    // Migration 007: reports.template_id is no longer used (themes removed).
+    // Keep the column if it exists for backwards compatibility but don't rename.
     $col = $pdo->query("SHOW COLUMNS FROM reports LIKE 'template_id'")->fetch();
     if ($col) {
-        echo "Applying migration 007: rename reports.template_id → theme_id...\n";
-        $pdo->exec("ALTER TABLE reports CHANGE COLUMN template_id theme_id INT NULL");
-        echo "  Done.\n\n";
-    } elseif (!$pdo->query("SHOW COLUMNS FROM reports LIKE 'theme_id'")->fetch()) {
-        echo "Adding reports.theme_id column (new install)...\n";
-        $pdo->exec("ALTER TABLE reports ADD COLUMN theme_id INT NULL");
-        echo "  Done.\n\n";
+        echo "Note: reports.template_id column exists (unused, kept for compatibility).\n\n";
     }
 
     // Verify final state
     echo "Verification:\n";
-    $count = $pdo->query("SELECT COUNT(*) FROM report_themes")->fetchColumn();
-    echo "  report_themes: {$count} rows\n";
     $count = $pdo->query("SELECT COUNT(*) FROM report_blocks")->fetchColumn();
     echo "  report_blocks: {$count} rows\n";
     $count = $pdo->query("SELECT COUNT(*) FROM report_templates")->fetchColumn();

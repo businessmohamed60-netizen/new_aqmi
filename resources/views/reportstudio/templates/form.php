@@ -143,17 +143,6 @@ $t = $template ?? [];
                             <input type="text" name="category" class="rs-form-input" value="<?= e($t['category'] ?? '') ?>" placeholder="Audit, Diagnostic...">
                         </div>
                         <div class="col-md-4">
-                            <label class="rs-form-label">Thème</label>
-                            <select name="theme_id" class="rs-form-select">
-                                <option value="">— Par défaut —</option>
-                                <?php foreach ($themes as $th): ?>
-                                    <option value="<?= e($th['id'] ?? '') ?>" <?= ((int)($t['theme_id'] ?? 0) === (int)($th['id'] ?? 0)) ? 'selected' : '' ?>>
-                                        <?= e($th['name'] ?? '') ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
                             <label class="rs-form-label">Statut</label>
                             <select name="status" class="rs-form-select">
                                 <?php foreach (['draft', 'published', 'archived'] as $s): ?>

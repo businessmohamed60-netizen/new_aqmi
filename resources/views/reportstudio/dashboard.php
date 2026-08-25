@@ -6,7 +6,6 @@ declare(strict_types=1);
  * @var int   $template_count
  * @var int   $published
  * @var int   $block_count
- * @var int   $theme_count
  */
 $blockGroups = \App\Modules\ReportStudio\Services\BlockRegistry::grouped();
 $totalBlocks = \App\Modules\ReportStudio\Services\BlockRegistry::all();
@@ -469,9 +468,6 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
                 <a href="<?= route('reportstudio.templates.create') ?>" class="rs-dash-btn rs-dash-btn-light">
                     <i class="fas fa-plus"></i> Nouveau rapport
                 </a>
-                <a href="<?= route('reportstudio.themes.index') ?>" class="rs-dash-btn rs-dash-btn-ghost">
-                    <i class="fas fa-palette"></i> Gérer les thèmes
-                </a>
                 <a href="<?= route('reportstudio.templates.index') ?>" class="rs-dash-btn rs-dash-btn-ghost">
                     <i class="fas fa-list"></i> Tous les modèles
                 </a>
@@ -502,13 +498,6 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
             </div>
         </div>
         <div class="rs-dash-kpi">
-            <div class="rs-dash-kpi-icon" style="background:rgba(13,148,136,0.08);color:var(--rsd-accent);">
-                <i class="fas fa-paintbrush"></i>
-            </div>
-            <div class="rs-dash-kpi-value"><?= $theme_count ?? 0 ?></div>
-            <div class="rs-dash-kpi-label">Thèmes</div>
-        </div>
-        <div class="rs-dash-kpi">
             <div class="rs-dash-kpi-icon" style="background:rgba(217,119,6,0.08);color:var(--rsd-warning);">
                 <i class="fas fa-file-circle-plus"></i>
             </div>
@@ -537,13 +526,6 @@ $draftCount = ($template_count ?? 0) - ($published ?? 0);
                     </div>
                     <div class="rs-qa-label">Mes modèles</div>
                     <div class="rs-qa-sub"><?= $template_count ?? 0 ?> au total</div>
-                </a>
-                <a href="<?= route('reportstudio.themes.index') ?>" class="rs-qa-item">
-                    <div class="rs-qa-icon" style="background:rgba(13,148,136,0.08);color:var(--rsd-accent);">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <div class="rs-qa-label">Thèmes</div>
-                    <div class="rs-qa-sub"><?= $theme_count ?? 0 ?> disponibles</div>
                 </a>
                 <a href="/admin/reports" class="rs-qa-item">
                     <div class="rs-qa-icon" style="background:rgba(5,150,105,0.08);color:var(--rsd-success);">

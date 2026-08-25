@@ -11,20 +11,17 @@ app/Modules/ReportStudio/
 │   ├── ReportStudioController.php   dashboard
 │   ├── TemplateController.php       template CRUD (POST forms)
 │   ├── BuilderController.php        builder canvas + AJAX autosave
-│   ├── ThemeController.php          theme CRUD (POST forms)
 │   └── PreviewController.php        live preview
 ├── Models/               ← thin data access via AQMI Database (PDO)
 │   ├── ReportTemplate.php
 │   ├── ReportTemplateBlock.php
-│   ├── ReportBlock.php
-│   └── ReportTheme.php
+│   └── ReportBlock.php
 ├── Services/             ← business logic, called by Controllers
 │   ├── TemplateService.php
 │   ├── BuilderService.php
 │   ├── PreviewService.php
-│   ├── ThemeService.php
 │   ├── TemplateRenderer.php         renders block partials
-│   ├── ThemeCompiler.php            theme → CSS custom properties
+│   ├── DataSourceService.php        chart data-source binding
 │   └── BlockRegistry.php            block_key → metadata map
 ├── Traits/
 │   └── HasJsonFields.php            JSON column cast helpers
@@ -33,7 +30,7 @@ app/Modules/ReportStudio/
 Views live in the host app at resources/views/reportstudio/
 (loaded via the view() and view_partial() helpers):
     dashboard.php, templates/{index,form,detail}, builder/{canvas,block_card,
-    property_panel,properties/*}, themes/{index,form}, preview/show,
+    property_panel,properties/*}, preview/show,
     report/* (14 final-render block partials)
 ```
 
@@ -80,13 +77,6 @@ GET  /reportstudio/builder/{id}/edit      BuilderController@edit
 PUT  /reportstudio/builder/{id}           BuilderController@update   (AJAX)
 
 GET  /reportstudio/preview/{id}           PreviewController@show
-
-GET  /reportstudio/themes                 ThemeController@index
-GET  /reportstudio/themes/create          ThemeController@create
-POST /reportstudio/themes                 ThemeController@store
-GET  /reportstudio/themes/{id}/edit       ThemeController@edit
-POST /reportstudio/themes/{id}            ThemeController@update
-POST /reportstudio/themes/{id}/delete     ThemeController@destroy
 ```
 
 ## Host helpers used (not re-implemented)
