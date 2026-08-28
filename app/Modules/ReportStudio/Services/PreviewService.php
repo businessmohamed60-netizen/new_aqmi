@@ -84,11 +84,11 @@ class PreviewService
 
     private function defaultCss(): string
     {
-        return ":root {\n  --rs-primary: #0d9488;\n  --rs-heading: #0b1f4d;\n  --rs-body: #102A43;\n  --rs-font: 'DejaVu Sans', sans-serif;\n  --rs-background: #ffffff;\n  --rs-accent: #b8860b;\n}";
+        return ":root {\n  --rs-primary: #0d9488;\n  --rs-heading: #0b1f4d;\n  --rs-body: #102A43;\n  --rs-font: 'DejaVu Sans', sans-serif;\n  --rs-background: #ffffff;\n  --rs-accent: #9d8fd1;\n}";
     }
 
     private function defaultInlineStyle(): string
     {
-        return "--rs-primary: #0d9488; --rs-heading: #0b1f4d; --rs-body: #102A43; --rs-font: 'DejaVu Sans', sans-serif; --rs-background: #ffffff; --rs-accent: #b8860b";
+        return "--rs-primary: #0d9488; --rs-heading: #0b1f4d; --rs-body: #102A43; --rs-font: 'DejaVu Sans', sans-serif; --rs-background: #ffffff; --rs-accent: #9d8fd1";
     }
 }

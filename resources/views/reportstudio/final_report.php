@@ -190,7 +190,7 @@ $circumference = 2 * pi() * 70;
                         <div class="stat-label">Domaines Faibles</div>
                     </div>
                     <div class="aqmi-fr-exec-stat">
-                        <div class="stat-value" style="color:#C9A227;"><?= $execSummary['domain_count'] ?></div>
+                        <div class="stat-value" style="color:#9d8fd1;"><?= $execSummary['domain_count'] ?></div>
                         <div class="stat-label">Domaines Évalués</div>
                     </div>
                 </div>
@@ -225,7 +225,7 @@ $circumference = 2 * pi() * 70;
                 <div class="aqmi-fr-domain-grid">
                     <?php foreach ($domainScores as $ds):
                         $pct = round($ds['percent_score']);
-                        $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#C9A227' : '#E5484D');
+                        $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#9d8fd1' : '#E5484D');
                     ?>
                     <div class="aqmi-fr-domain-item">
                         <div class="aqmi-fr-domain-score" style="color:<?= $c ?>;"><?= $pct ?>%</div>
@@ -270,7 +270,7 @@ $circumference = 2 * pi() * 70;
                     </div>
                     <?php foreach ($strengths as $s):
                         $pct = round($s['percent_score']);
-                        $c = $pct >= 70 ? '#2EC4B6' : '#C9A227';
+                        $c = $pct >= 70 ? '#2EC4B6' : '#9d8fd1';
                     ?>
                     <div class="aqmi-fr-list-item">
                         <span><?= e($s['domain_name_fr'] ?: $s['domain_name']) ?></span>
@@ -288,7 +288,7 @@ $circumference = 2 * pi() * 70;
                     </div>
                     <?php foreach ($weaknesses as $w):
                         $pct = round($w['percent_score']);
-                        $c = $pct >= 50 ? '#C9A227' : '#E5484D';
+                        $c = $pct >= 50 ? '#9d8fd1' : '#E5484D';
                     ?>
                     <div class="aqmi-fr-list-item">
                         <span><?= e($w['domain_name_fr'] ?: $w['domain_name']) ?></span>
@@ -315,7 +315,7 @@ $circumference = 2 * pi() * 70;
             </div>
             <div class="aqmi-fr-card">
                 <?php foreach ($gaps as $g):
-                    $sevColor = $g['severity'] === 'critical' ? '#E5484D' : ($g['severity'] === 'high' ? '#C9A227' : ($g['severity'] === 'medium' ? '#1f6feb' : '#2EC4B6'));
+                    $sevColor = $g['severity'] === 'critical' ? '#E5484D' : ($g['severity'] === 'high' ? '#9d8fd1' : ($g['severity'] === 'medium' ? '#1f6feb' : '#2EC4B6'));
                     $sevLabel = $g['severity'] === 'critical' ? 'Critique' : ($g['severity'] === 'high' ? 'Élevé' : ($g['severity'] === 'medium' ? 'Moyen' : 'Faible'));
                     $gapPct = $g['score'];
                 ?>
@@ -335,7 +335,7 @@ $circumference = 2 * pi() * 70;
         <!-- ============================== PRIORITIES ============================== -->
         <div class="aqmi-fr-section aqmi-fr-animate">
             <div class="aqmi-fr-section-header">
-                <div class="aqmi-fr-section-icon" style="background:rgba(201,162,39,0.15);color:#C9A227;">
+                <div class="aqmi-fr-section-icon" style="background:rgba(157,143,209,0.15);color:#9d8fd1;">
                     <i class="fas fa-flag"></i>
                 </div>
                 <div>
@@ -345,7 +345,7 @@ $circumference = 2 * pi() * 70;
             </div>
             <div class="aqmi-fr-priority-grid">
                 <?php foreach ($priorities as $p):
-                    $priColor = $p['priority'] === 'critical' ? '#E5484D' : ($p['priority'] === 'high' ? '#C9A227' : '#1f6feb');
+                    $priColor = $p['priority'] === 'critical' ? '#E5484D' : ($p['priority'] === 'high' ? '#9d8fd1' : '#1f6feb');
                     $priLabel = $p['priority'] === 'critical' ? 'Critique' : ($p['priority'] === 'high' ? 'Haute' : 'Moyenne');
                 ?>
                 <div class="aqmi-fr-priority-item" style="border-left-color:<?= $priColor ?>;">
@@ -381,7 +381,7 @@ $circumference = 2 * pi() * 70;
                     <?php foreach ($recommendations as $rec):
                         $p = $rec['priority'] ?? 'medium';
                         $icon = $p === 'critical' ? 'fa-circle-exclamation' : ($p === 'high' ? 'fa-bolt' : ($p === 'medium' ? 'fa-arrow-right' : 'fa-check'));
-                        $color = $p === 'critical' ? '#E5484D' : ($p === 'high' ? '#C9A227' : ($p === 'medium' ? '#1f6feb' : 'rgba(255,255,255,0.4)'));
+                        $color = $p === 'critical' ? '#E5484D' : ($p === 'high' ? '#9d8fd1' : ($p === 'medium' ? '#1f6feb' : 'rgba(255,255,255,0.4)'));
                         $label = $p === 'critical' ? 'Critique' : ($p === 'high' ? 'Haute' : ($p === 'medium' ? 'Moyenne' : 'Basse'));
                     ?>
                     <div class="aqmi-fr-reco-item">
@@ -426,7 +426,7 @@ $circumference = 2 * pi() * 70;
                         <?php endif; ?>
                     </ul>
                 </div>
-                <div class="aqmi-fr-action-phase" style="border-top-color:#C9A227;">
+                <div class="aqmi-fr-action-phase" style="border-top-color:#9d8fd1;">
                     <div class="aqmi-fr-action-phase-tag">Phase 2</div>
                     <div class="aqmi-fr-action-phase-title">Moyen Terme</div>
                     <div class="aqmi-fr-action-phase-duration"><i class="far fa-clock"></i> 3–9 mois</div>
@@ -469,7 +469,7 @@ $circumference = 2 * pi() * 70;
                         <td>0–3 mois</td>
                     </tr>
                     <tr>
-                        <td><span style="color:#C9A227;font-weight:bold;">●</span> Haute</td>
+                        <td><span style="color:#9d8fd1;font-weight:bold;">●</span> Haute</td>
                         <td class="center"><?= $actionPlan['counts']['high'] ?></td>
                         <td>3–6 mois</td>
                     </tr>

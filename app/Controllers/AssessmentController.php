@@ -193,7 +193,8 @@ class AssessmentController
         if (!$assessment || $assessment['status'] !== 'completed') { redirect('/'); return; }
 
         $analysis = $this->scoringService->analyzeAssessment($assessmentId);
-        view('assessment.lead', compact('assessment', 'analysis'));
+        $user = \App\Models\User::find((int) Auth::user()['id']);
+        view('assessment.lead', compact('assessment', 'analysis', 'user'));
     }
 
     public function saveLead(): void
@@ -212,15 +213,18 @@ class AssessmentController
             return;
         }
 
+        $userId = (int) Auth::user()['id'];
+        $currentUser = \App\Models\User::find($userId);
+
         $data = [
             'assessment_id' => $assessmentId,
-            'firstname' => $_POST['firstname'] ?? '',
-            'lastname' => $_POST['lastname'] ?? '',
+            'firstname' => $currentUser['firstname'] ?? '',
+            'lastname' => $currentUser['lastname'] ?? '',
             'company' => $_POST['company'] ?? '',
             'sector' => $_POST['sector'] ?? '',
             'job_title' => $_POST['job_title'] ?? '',
-            'phone' => $_POST['phone'] ?? '',
-            'email' => $_POST['email'] ?? '',
+            'phone' => $currentUser['phone'] ?? '',
+            'email' => $currentUser['email'] ?? '',
             'country' => $_POST['country'] ?? '',
             'company_size' => $_POST['company_size'] ?? '',
             'website' => $_POST['website'] ?? '',

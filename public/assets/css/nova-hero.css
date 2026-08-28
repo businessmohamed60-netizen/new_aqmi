@@ -150,7 +150,7 @@
 }
 
 .nova-hero-word-highlight {
-  background: linear-gradient(135deg, #2EC4B6, #C9A227, #1F6FEB);
+  background: linear-gradient(135deg, #2EC4B6, #9d8fd1, #1F6FEB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -165,7 +165,7 @@
 }
 
 .nova-hero-title .nova-gradient {
-  background: linear-gradient(135deg, #1F6FEB, #2EC4B6, #C9A227, #1F6FEB);
+  background: linear-gradient(135deg, #1F6FEB, #2EC4B6, #9d8fd1, #1F6FEB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

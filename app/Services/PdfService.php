@@ -209,7 +209,7 @@ class PdfService
         $domainScores = $analysis['domain_scores'];
 
         $navy = '#0b1f4d';
-        $gold = '#b8860b';
+        $gold = '#9d8fd1';
 
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
         $radarSvg = $this->buildRadarSvg($domainScores, $levelColor);
@@ -461,7 +461,7 @@ class PdfService
     private function buildCertificationPageHtml(array $report, string $reportNumber, ?string $qrDataUri): string
     {
         $navy = '#0b1f4d';
-        $gold = '#b8860b';
+        $gold = '#9d8fd1';
 
         $qrImg = $qrDataUri
             ? '<img src="' . $qrDataUri . '" style="width:110px;height:110px;" />'
@@ -665,12 +665,39 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
                 . '</body></html>';
         }
 
-        $blocksHtml = $renderer->renderAll($data['blocks'], $data['template'], $reportNumber, 'pdf');
-
         $globalScore = $analysis['global_score'];
         $level = $analysis['maturity_level'];
         $levelName = $level['name_fr'] ?? $level['name'] ?? 'Non défini';
         $levelColor = $level['color'] ?? '#102A43';
+
+        $companyName = $lead['company'] ?? 'Entreprise';
+        $sector = $lead['sector'] ?? '—';
+        $country = $lead['country'] ?? '—';
+
+        // Inject real certification data into qr_code, signature, and cover_page blocks
+        $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+        if ($appUrl === '') {
+            $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+                . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        }
+        $verifyUrl = $appUrl . '/verify/' . $reportNumber;
+        $adminName = trim(($report['admin_signature'] ?? '') ?: 'Administration AQMI');
+
+        foreach ($data['blocks'] as &$blk) {
+            if (($blk['block_key'] ?? '') === 'qr_code') {
+                $blk['block_config']['value'] = $verifyUrl;
+            }
+            if (($blk['block_key'] ?? '') === 'signature') {
+                $blk['block_config']['label'] = $adminName;
+                $blk['block_config']['role'] = 'AQMI Certification Board';
+            }
+            if (($blk['block_key'] ?? '') === 'cover_page') {
+                $blk['block_config']['company_name'] = $companyName;
+            }
+        }
+        unset($blk);
+
+        $blocksHtml = $renderer->renderAll($data['blocks'], $data['template'], $reportNumber, 'pdf');
 
         $radarSvg = $this->buildRadarSvg($analysis['domain_scores'], $levelColor);
         $gaugeSvg = $this->buildGaugeSvg($globalScore, $levelColor);
@@ -680,10 +707,6 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
             $recoHtml .= '<li style="font-size:10pt;margin-bottom:6px;">' . htmlspecialchars($rec['text'] ?? '') . '</li>';
         }
 
-        $companyName = $lead['company'] ?? 'Entreprise';
-        $sector = $lead['sector'] ?? '—';
-        $country = $lead['country'] ?? '—';
-
         $blocksHtml = str_replace(
             ['{{GLOBAL_SCORE}}', '{{LEVEL_NAME}}', '{{LEVEL_COLOR}}', '{{RADAR_SVG}}', '{{GAUGE_SVG}}', '{{RECOMMENDATIONS}}', '{{COMPANY_NAME}}', '{{SECTOR}}', '{{COUNTRY}}', '{{REPORT_NUMBER}}', '{{DATE}}'],
             [(string) $globalScore, $levelName, $levelColor, $radarSvg, $gaugeSvg, $recoHtml, htmlspecialchars($companyName), htmlspecialchars($sector), htmlspecialchars($country), htmlspecialchars($reportNumber), date('d/m/Y')],
@@ -692,9 +715,6 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 
         $themeCss = $data['themeCss'] ?? '';
         $themeStyle = $data['themeStyle'] ?? '';
-
-        $coverHtml = $this->buildCoverPageHtml($assessment, $analysis, $lead, $report, $reportNumber);
-        $certPageHtml = $this->buildCertificationPageHtml($report, $reportNumber, $qrDataUri);
 
         return '<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
@@ -709,11 +729,7 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 .rs-sig-line { border-top: 1px solid #999; margin-bottom: 6px; }
 </style>
 </head><body>'
-            . $coverHtml
-            . '<div style="page-break-before:always;"></div>'
             . '<div class="rs-report" style="' . $themeStyle . '">' . $blocksHtml . '</div>'
-            . '<div style="page-break-before:always;"></div>'
-            . $certPageHtml
             . '</body></html>';
     }
 
@@ -738,7 +754,7 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
         $domainCount = count($analysis['domain_scores']);
 
         $navy = '#0d9488';
-        $gold = '#9c7a1f';
+        $gold = '#7c6fb0';
 
         // Domain score rows — NO nested tables, use div-based bars instead
         $domainRows = '';

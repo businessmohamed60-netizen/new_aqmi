@@ -43,9 +43,9 @@
   const DEFAULT_CONFIGS = {
     global_score:    { label: 'Score global', score: 0, max: 100, show_rating: true, color: '#102A43', size: 'md', show_progress: true, suffix: '' },
     radar_chart:     { axes: [{ label: 'Domaine 1', value: 0 }], legend: true, color: '#102A43', fill_opacity: 0.2, height: 280, show_markers: true, stroke_width: 2 },
-    bar_chart:       { series: [{ label: 'Série 1', data: [{ label: 'A', value: 0 }] }], horizontal: false, legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#C9A227', color4: '#E5484D', height: 280, bar_radius: 4, stacked: false, fill_opacity: 0.9 },
-    line_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true, color: '#102A43', color2: '#2EC4B6', color3: '#C9A227', color4: '#E5484D', height: 280, stroke_width: 2, show_markers: true, fill_area: false },
-    donut_chart:     { series: [{ label: 'A', value: 1 }], legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#486581', color4: '#C9A227', color5: '#E5484D', color6: '#1F6FEB', height: 280, donut_size: '65%', stroke_width: 2, show_percent: true },
+    bar_chart:       { series: [{ label: 'Série 1', data: [{ label: 'A', value: 0 }] }], horizontal: false, legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#9d8fd1', color4: '#E5484D', height: 280, bar_radius: 4, stacked: false, fill_opacity: 0.9 },
+    line_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true, color: '#102A43', color2: '#2EC4B6', color3: '#9d8fd1', color4: '#E5484D', height: 280, stroke_width: 2, show_markers: true, fill_area: false },
+    donut_chart:     { series: [{ label: 'A', value: 1 }], legend: true, color: '#102A43', color2: '#2EC4B6', color3: '#486581', color4: '#9d8fd1', color5: '#E5484D', color6: '#1F6FEB', height: 280, donut_size: '65%', stroke_width: 2, show_percent: true },
     area_chart:      { series: [{ label: 'Série 1', data: [{ label: 'Jan', value: 0 }] }], legend: true, smooth: true, color: '#102A43', color2: '#2EC4B6', height: 280, stroke_width: 2, fill_opacity_from: 0.3, fill_opacity_to: 0.05, show_markers: true },
     gauge:           { label: 'Indicateur', value: 0, min: 0, max: 100, unit: '%', color: '#2EC4B6', height: 160, show_label: true, show_value: true, start_angle: -135, end_angle: 135, hollow_size: '62%' },
     recommendations: { title: 'Recommandations', items: [{ text: '' }], icon: 'bi-list-check', numbered: true, font_size: '0.9rem', color: '#102A43' },
@@ -201,7 +201,7 @@
     const ref = useApexChart(() => {
       const series = cfg.series || [];
       const categories = (series[0]?.data || []).map(d => d.label || '');
-      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#C9A227', cfg.color4 || '#E5484D'].filter(Boolean);
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#9d8fd1', cfg.color4 || '#E5484D'].filter(Boolean);
       return {
         chart: { type: 'bar', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
@@ -218,7 +218,7 @@
     const ref = useApexChart(() => {
       const series = cfg.series || [];
       const categories = (series[0]?.data || []).map(d => d.label || '');
-      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#C9A227', cfg.color4 || '#E5484D'].filter(Boolean);
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#9d8fd1', cfg.color4 || '#E5484D'].filter(Boolean);
       return {
         chart: { type: 'line', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => ({ name: s.label || '', data: (s.data || []).map(d => +d.value || 0) })),
@@ -235,7 +235,7 @@
   function DonutPreview({ cfg }) {
     const ref = useApexChart(() => {
       const series = cfg.series || [];
-      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#486581', cfg.color4 || '#C9A227', cfg.color5 || '#E5484D', cfg.color6 || '#1F6FEB'].filter(Boolean);
+      const colors = [cfg.color || '#102A43', cfg.color2 || '#2EC4B6', cfg.color3 || '#486581', cfg.color4 || '#9d8fd1', cfg.color5 || '#E5484D', cfg.color6 || '#1F6FEB'].filter(Boolean);
       return {
         chart: { type: 'donut', height: +cfg.height || 280, toolbar: { show: false }, sparkline: { enabled: true } },
         series: series.map(s => +s.value || 0), labels: series.map(s => s.label || ''),
@@ -644,7 +644,7 @@
           h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_bar', e.target.value) }),
           colorField('Couleur série 1', 'color', val('color', '#102A43'), setCfg),
           colorField('Couleur série 2', 'color2', val('color2', '#2EC4B6'), setCfg),
-          colorField('Couleur série 3', 'color3', val('color3', '#C9A227'), setCfg),
+          colorField('Couleur série 3', 'color3', val('color3', '#9d8fd1'), setCfg),
           colorField('Couleur série 4', 'color4', val('color4', '#E5484D'), setCfg),
           field('Hauteur (px)', 'number', 'height', +cfg.height || 280, setCfg),
           field('Rayon barres', 'number', 'bar_radius', +cfg.bar_radius || 4, setCfg),
@@ -661,7 +661,7 @@
           h('textarea', { className: 'form-control form-control-sm mb-2', rows: 5, value: raw, onChange: e => setCfg('series_raw_line', e.target.value) }),
           colorField('Couleur série 1', 'color', val('color', '#102A43'), setCfg),
           colorField('Couleur série 2', 'color2', val('color2', '#2EC4B6'), setCfg),
-          colorField('Couleur série 3', 'color3', val('color3', '#C9A227'), setCfg),
+          colorField('Couleur série 3', 'color3', val('color3', '#9d8fd1'), setCfg),
           colorField('Couleur série 4', 'color4', val('color4', '#E5484D'), setCfg),
           field('Hauteur (px)', 'number', 'height', +cfg.height || 280, setCfg),
           field('Épaisseur trait', 'number', 'stroke_width', +cfg.stroke_width || 2, setCfg),
@@ -695,7 +695,7 @@
           colorField('Couleur 1', 'color', val('color', '#102A43'), setCfg),
           colorField('Couleur 2', 'color2', val('color2', '#2EC4B6'), setCfg),
           colorField('Couleur 3', 'color3', val('color3', '#486581'), setCfg),
-          colorField('Couleur 4', 'color4', val('color4', '#C9A227'), setCfg),
+          colorField('Couleur 4', 'color4', val('color4', '#9d8fd1'), setCfg),
           colorField('Couleur 5', 'color5', val('color5', '#E5484D'), setCfg),
           colorField('Couleur 6', 'color6', val('color6', '#1F6FEB'), setCfg),
           field('Hauteur (px)', 'number', 'height', +cfg.height || 280, setCfg),

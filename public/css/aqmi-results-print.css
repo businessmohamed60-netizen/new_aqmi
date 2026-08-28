@@ -37,7 +37,7 @@
         --aqmi-accent: #0d9488 !important;
         --aqmi-accent-glow: rgba(13, 148, 136, 0.12) !important;
         --aqmi-success: #0d9488 !important;
-        --aqmi-warning: #9c7a1f !important;
+        --aqmi-warning: #7c6fb0 !important;
         --aqmi-danger: #c53030 !important;
         --aqmi-info: #1F6FEB !important;
         --aqmi-radius-md: 12px !important;
@@ -204,7 +204,7 @@
        assombries pour un bon contraste sur fond blanc (ciblage par la
        couleur exacte utilisée en ligne dans le HTML). */
     [style*="color:#2EC4B6"] { color: #0d9488 !important; }
-    [style*="color:#C9A227"] { color: #9c7a1f !important; }
+    [style*="color:#9d8fd1"] { color: #7c6fb0 !important; }
     [style*="color:#E5484D"] { color: #c53030 !important; }
 
     /* Barres de progression et badges : forcer les couleurs de fond */

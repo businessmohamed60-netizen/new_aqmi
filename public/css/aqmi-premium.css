@@ -22,12 +22,12 @@
   --aqmi-accent-soft: rgba(31, 111, 235, 0.12);
   --aqmi-success: #2EC4B6;
   --aqmi-success-glow: rgba(46, 196, 182, 0.28);
-  --aqmi-warning: #C9A227;
-  --aqmi-warning-glow: rgba(201, 162, 39, 0.28);
+  --aqmi-warning: #9d8fd1;
+  --aqmi-warning-glow: rgba(157,143,209, 0.28);
   --aqmi-danger: #E5484D;
   --aqmi-danger-glow: rgba(229, 72, 77, 0.28);
   --aqmi-info: #2EC4B6;
-  --aqmi-purple: #C9A227;
+  --aqmi-purple: #9d8fd1;
   --aqmi-muted: rgba(15, 23, 42, 0.06);
   --aqmi-radius-sm: 8px;
   --aqmi-radius-md: 14px;
@@ -565,9 +565,9 @@
 }
 
 .aqmi-answer-card.selected-partial {
-  background: rgba(201, 162, 39, 0.06);
-  border-color: rgba(201, 162, 39, 0.3);
-  box-shadow: 0 0 20px rgba(201, 162, 39, 0.12);
+  background: rgba(157,143,209, 0.06);
+  border-color: rgba(157,143,209, 0.3);
+  box-shadow: 0 0 20px rgba(157,143,209, 0.12);
   transform: translateX(4px);
 }
 
@@ -613,7 +613,7 @@
 }
 
 .aqmi-answer-card.selected-partial .aqmi-answer-icon {
-  background: rgba(201, 162, 39, 0.1);
+  background: rgba(157,143,209, 0.1);
   color: var(--aqmi-warning);
 }
 
@@ -694,8 +694,8 @@
 }
 
 .aqmi-rating-card[data-score="0"] { --rating-color: #E5484D; --rating-glow: rgba(229,72,77,0.3); }
-.aqmi-rating-card[data-score="1"] { --rating-color: #C9A227; --rating-glow: rgba(201,162,39,0.3); }
-.aqmi-rating-card[data-score="2"] { --rating-color: #C9A227; --rating-glow: rgba(201,162,39,0.3); }
+.aqmi-rating-card[data-score="1"] { --rating-color: #9d8fd1; --rating-glow: rgba(157,143,209,0.3); }
+.aqmi-rating-card[data-score="2"] { --rating-color: #9d8fd1; --rating-glow: rgba(157,143,209,0.3); }
 .aqmi-rating-card[data-score="3"] { --rating-color: #2EC4B6; --rating-glow: rgba(46,196,182,0.3); }
 .aqmi-rating-card[data-score="4"] { --rating-color: #2EC4B6; --rating-glow: rgba(46,196,182,0.3); }
 .aqmi-rating-card[data-score="5"] { --rating-color: #1F6FEB; --rating-glow: rgba(31,111,235,0.3); }
@@ -786,8 +786,8 @@
   background: rgba(46, 196, 182, 0.03);
 }
 .aqmi-answers[data-qtype="yes_no"] .aqmi-answer-card[data-cls="partial"]:hover {
-  border-color: rgba(201, 162, 39, 0.4);
-  background: rgba(201, 162, 39, 0.03);
+  border-color: rgba(157,143,209, 0.4);
+  background: rgba(157,143,209, 0.03);
 }
 .aqmi-answers[data-qtype="yes_no"] .aqmi-answer-card[data-cls="no"]:hover {
   border-color: rgba(229, 72, 77, 0.4);
@@ -3142,6 +3142,30 @@
 }
 
 /* RTL support for Arabic */
+
+/* Brand mark (AQMI logo) must never flip — force LTR */
+[dir="rtl"] .aqmi-brand-mark,
+[dir="rtl"] .aqmi-topbar-brand {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
+/* Topbar: brand stays on the left even in RTL */
+[dir="rtl"] .aqmi-topbar {
+  flex-direction: row;
+}
+
+/* Navigation: swap button order for RTL (Prev on right, Next on left) */
+[dir="rtl"] .aqmi-nav {
+  flex-direction: row-reverse;
+}
+
+/* Flip arrow icons inside nav buttons for RTL */
+[dir="rtl"] .aqmi-nav-btn i.fa-arrow-right,
+[dir="rtl"] .aqmi-nav-btn i.fa-arrow-left {
+  transform: scaleX(-1);
+}
+
 [dir="rtl"] .aqmi-lang-start-btn i {
   transform: scaleX(-1);
 }

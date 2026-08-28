@@ -18,15 +18,15 @@
   --auto-cyan: #1F6FEB;
   --auto-cyan-glow: rgba(59, 130, 246, 0.3);
   --auto-cyan-dim: rgba(59, 130, 246, 0.08);
-  --auto-purple: #C9A227;
+  --auto-purple: #9d8fd1;
   --auto-purple-glow: rgba(139, 92, 246, 0.3);
   --auto-green: #2EC4B6;
   --auto-green-glow: rgba(16, 185, 129, 0.25);
-  --auto-yellow: #C9A227;
+  --auto-yellow: #9d8fd1;
   --auto-yellow-glow: rgba(245, 158, 11, 0.25);
   --auto-red: #f43f5e;
   --auto-red-glow: rgba(244, 63, 94, 0.25);
-  --auto-orange: #C9A227;
+  --auto-orange: #9d8fd1;
 
   /* Surfaces */
   --auto-text-primary: var(--nova-text-primary, #EEF2F7);

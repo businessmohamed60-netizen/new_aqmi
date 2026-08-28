@@ -51,14 +51,17 @@ unset($_SESSION['error']);
           <div class="aqmi-lead-section-title">
             <i class="fas fa-user-circle"></i> Identité
           </div>
+          <p style="font-size:0.8rem;color:var(--auto-text-tertiary,#6b7280);margin-bottom:1rem;">
+            <i class="fas fa-lock"></i> Ces informations proviennent de votre compte et ne peuvent pas être modifiées ici.
+          </p>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
               <label>Prénom <span class="aqmi-req">*</span></label>
-              <input type="text" name="firstname" required placeholder="Votre prénom">
+              <input type="text" name="firstname" required value="<?= e($user['firstname'] ?? '') ?>" readonly>
             </div>
             <div class="aqmi-lead-field">
               <label>Nom <span class="aqmi-req">*</span></label>
-              <input type="text" name="lastname" required placeholder="Votre nom">
+              <input type="text" name="lastname" required value="<?= e($user['lastname'] ?? '') ?>" readonly>
             </div>
           </div>
           <div class="aqmi-lead-field">
@@ -68,11 +71,11 @@ unset($_SESSION['error']);
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
               <label>Email <span class="aqmi-req">*</span></label>
-              <input type="email" name="email" required placeholder="votre@email.com">
+              <input type="email" name="email" required value="<?= e($user['email'] ?? '') ?>" readonly>
             </div>
             <div class="aqmi-lead-field">
               <label>Téléphone</label>
-              <input type="tel" name="phone" placeholder="+33 6 12 34 56 78">
+              <input type="tel" name="phone" value="<?= e($user['phone'] ?? '') ?>" readonly>
             </div>
           </div>
         </div>

@@ -7,9 +7,9 @@
 :root {
   --aqmi-blue: #1F6FEB;
   --aqmi-cyan: #2EC4B6;
-  --aqmi-purple: #C9A227;
+  --aqmi-purple: #9d8fd1;
   --aqmi-green: #2EC4B6;
-  --aqmi-orange: #C9A227;
+  --aqmi-orange: #9d8fd1;
   --aqmi-red: #E5484D;
   --aqmi-glow: rgba(31,111,235,0.5);
   --aqmi-bg: #102A43;
@@ -18,7 +18,7 @@
   --aqmi-border: rgba(31,111,235,0.2);
   --aqmi-text: #EEF2F7;
   --aqmi-text-secondary: #a3b0c6;
-  --aqmi-gradient: linear-gradient(135deg, #1F6FEB, #2EC4B6, #C9A227);
+  --aqmi-gradient: linear-gradient(135deg, #1F6FEB, #2EC4B6, #9d8fd1);
   --aqmi-gradient-green: linear-gradient(135deg, #2EC4B6, #2EC4B6, #1F6FEB);
 }
 

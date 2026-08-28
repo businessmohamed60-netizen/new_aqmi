@@ -23,7 +23,7 @@ $title   = $config['title']   ?? ($title ?: 'Scores par domaine');
                 $max   = (int)($d['max']   ?? 100);
                 $pct   = $max > 0 ? round(($score / $max) * 100) : 0;
                 $level = $pct >= 80 ? 'A' : ($pct >= 60 ? 'B' : ($pct >= 40 ? 'C' : 'D'));
-                $levelColor = $pct >= 80 ? '#2EC4B6' : ($pct >= 60 ? '#1F6FEB' : ($pct >= 40 ? '#C9A227' : '#E5484D'));
+                $levelColor = $pct >= 80 ? '#2EC4B6' : ($pct >= 60 ? '#1F6FEB' : ($pct >= 40 ? '#9d8fd1' : '#E5484D'));
             ?>
                 <tr style="border-color:#EEF2F7;">
                     <td style="font-weight:600;color:#102A43;"><?= e($d['label'] ?? '') ?></td>

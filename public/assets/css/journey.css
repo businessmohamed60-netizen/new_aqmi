@@ -110,13 +110,13 @@
   height: 0%;
   background: linear-gradient(180deg,
     #1F6FEB,
-    #C9A227 15%,
+    #9d8fd1 15%,
     #2EC4B6 30%,
-    #C9A227 40%,
+    #9d8fd1 40%,
     #2EC4B6 55%,
     #E5484D 65%,
     #1F6FEB 78%,
-    #C9A227 88%,
+    #9d8fd1 88%,
     #2EC4B6 100%
   );
   border-radius: 3px;
@@ -273,7 +273,7 @@
   border-color: rgba(31,111,235,0.3);
   box-shadow: 0 0 40px rgba(31,111,235,0.08), inset 0 1px 0 rgba(31,111,235,0.1);
 }
-.journey-step[data-color="#C9A227"].active .journey-step-card {
+.journey-step[data-color="#9d8fd1"].active .journey-step-card {
   border-color: rgba(155,140,247,0.3);
   box-shadow: 0 0 40px rgba(155,140,247,0.08), inset 0 1px 0 rgba(155,140,247,0.1);
 }
@@ -281,9 +281,9 @@
   border-color: rgba(46,196,182,0.3);
   box-shadow: 0 0 40px rgba(46,196,182,0.08), inset 0 1px 0 rgba(46,196,182,0.1);
 }
-.journey-step[data-color="#C9A227"].active .journey-step-card {
-  border-color: rgba(201,162,39,0.3);
-  box-shadow: 0 0 40px rgba(201,162,39,0.08), inset 0 1px 0 rgba(201,162,39,0.1);
+.journey-step[data-color="#9d8fd1"].active .journey-step-card {
+  border-color: rgba(157,143,209,0.3);
+  box-shadow: 0 0 40px rgba(157,143,209,0.08), inset 0 1px 0 rgba(157,143,209,0.1);
 }
 .journey-step[data-color="#2EC4B6"].active .journey-step-card {
   border-color: rgba(46,196,182,0.3);

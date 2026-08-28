@@ -11,7 +11,7 @@
   --success-light: #dff6e8;
   --danger: #E5484D;
   --danger-light: #fce4e4;
-  --warning: #C9A227;
+  --warning: #9d8fd1;
   --warning-light: #fff1e3;
   --info: #00cfe8;
   --info-light: #d6f4f8;
@@ -256,8 +256,8 @@ h6, .h6 { font-size: 0.875rem; font-weight: 600; }
   color: #fff;
 }
 .btn-warning:hover {
-  background: #C9A227;
-  border-color: #C9A227;
+  background: #9d8fd1;
+  border-color: #9d8fd1;
   color: #fff;
 }
 

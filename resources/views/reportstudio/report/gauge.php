@@ -11,7 +11,7 @@ $unit  = $config['unit']  ?? '%';
 $range = max(1, $max - $min);
 $pct   = min(100, max(0, round((($value - $min) / $range) * 100)));
 $chartId = 'rs-gauge-' . uniqid();
-$gaugeColor = $pct >= 75 ? '#2EC4B6' : ($pct >= 50 ? '#1F6FEB' : ($pct >= 25 ? '#C9A227' : '#E5484D'));
+$gaugeColor = $pct >= 75 ? '#2EC4B6' : ($pct >= 50 ? '#1F6FEB' : ($pct >= 25 ? '#9d8fd1' : '#E5484D'));
 ?>
 <div class="rs-block-gauge text-center py-2">
     <h5 class="rs-block-title"><?= e($label) ?></h5>

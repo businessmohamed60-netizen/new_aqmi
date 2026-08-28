@@ -136,7 +136,7 @@ ob_start();
         <div class="aqmi-domain-grid">
           <?php foreach ($domainScores as $i => $ds):
             $pct = round($ds['percent_score']);
-            $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#C9A227' : '#E5484D');
+            $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#9d8fd1' : '#E5484D');
           ?>
             <div class="aqmi-domain-item">
               <div class="aqmi-domain-score" style="color:<?= $c ?>;"><?= $pct ?>%</div>
@@ -182,7 +182,7 @@ ob_start();
             </h4>
             <?php foreach ($domainScores as $ds):
               $pct = round($ds['percent_score']);
-              $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#C9A227' : '#E5484D');
+              $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#9d8fd1' : '#E5484D');
             ?>
               <div style="margin-bottom:0.5rem;">
                 <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.2rem;">
@@ -361,7 +361,7 @@ ob_start();
             $cls = $p === 'critical' ? 'r0' : ($p === 'high' ? 'r1' : ($p === 'medium' ? 'r2' : 'r3'));
             $ico = $p === 'critical' ? 'fa-circle-exclamation' : ($p === 'high' ? 'fa-bolt' : ($p === 'medium' ? 'fa-arrow-right' : 'fa-check'));
             $lbl = $p === 'critical' ? 'Critique' : ($p === 'high' ? 'Haute' : ($p === 'medium' ? 'Moyenne' : 'Basse'));
-            $bg = $p === 'critical' ? '#E5484D' : ($p === 'high' ? '#C9A227' : ($p === 'medium' ? '#1F6FEB' : 'var(--aqmi-text-tertiary)'));
+            $bg = $p === 'critical' ? '#E5484D' : ($p === 'high' ? '#9d8fd1' : ($p === 'medium' ? '#1F6FEB' : 'var(--aqmi-text-tertiary)'));
           ?>
             <div class="aqmi-rec-item">
               <div class="aqmi-rec-badge" style="background:<?= $bg ?>;"><i class="fas <?= $ico ?>"></i></div>
@@ -388,7 +388,7 @@ ob_start();
           <i class="fas fa-certificate"></i> Demander un Rapport AQMI Certifié
         </a>
       <?php elseif ($isCertRequested || $isUnderReview): ?>
-        <span class="btn" style="background:rgba(201,162,39,0.08);border-color:var(--aqmi-warning);color:var(--aqmi-warning);cursor:default;">
+        <span class="btn" style="background:rgba(157,143,209,0.08);border-color:var(--aqmi-warning);color:var(--aqmi-warning);cursor:default;">
           <i class="fas fa-hourglass-half"></i> En attente de validation
         </span>
       <?php elseif ($isApproved): ?>
@@ -492,7 +492,7 @@ $extraScripts = <<<SCRIPT
             return g;
           },
           fill: true, tension: 0.45,
-          pointBackgroundColor: ['#C9A227', '{$currentLevel['color']}', '#2EC4B6', '#2EC4B6'],
+          pointBackgroundColor: ['#9d8fd1', '{$currentLevel['color']}', '#2EC4B6', '#2EC4B6'],
           pointRadius: [8, 6, 6, 8],
           pointHoverRadius: [12, 10, 10, 12],
           borderWidth: 3

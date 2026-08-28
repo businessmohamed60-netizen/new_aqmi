@@ -83,16 +83,16 @@
     'production': { icon: 'fa-industry', scene: 'factory', gradient: 'rgba(31,111,235,0.04)' },
     'qualité': { icon: 'fa-flask', scene: 'lab', gradient: 'rgba(46,196,182,0.04)' },
     'qualite': { icon: 'fa-flask', scene: 'lab', gradient: 'rgba(46,196,182,0.04)' },
-    'maintenance': { icon: 'fa-robot', scene: 'robot', gradient: 'rgba(201,162,39,0.04)' },
+    'maintenance': { icon: 'fa-robot', scene: 'robot', gradient: 'rgba(157,143,209,0.04)' },
     'supply chain': { icon: 'fa-truck-fast', scene: 'logistics', gradient: 'rgba(46,196,182,0.04)' },
     'logistique': { icon: 'fa-truck-fast', scene: 'logistics', gradient: 'rgba(46,196,182,0.04)' },
-    'management': { icon: 'fa-users', scene: 'meeting', gradient: 'rgba(201,162,39,0.04)' },
+    'management': { icon: 'fa-users', scene: 'meeting', gradient: 'rgba(157,143,209,0.04)' },
     'compétences': { icon: 'fa-graduation-cap', scene: 'training', gradient: 'rgba(46,196,182,0.04)' },
     'competences': { icon: 'fa-graduation-cap', scene: 'training', gradient: 'rgba(46,196,182,0.04)' },
     'documentation': { icon: 'fa-file-lines', scene: 'docs', gradient: 'rgba(31,111,235,0.04)' },
-    'traçabilité': { icon: 'fa-qrcode', scene: 'trace', gradient: 'rgba(201,162,39,0.04)' },
-    'tracabilite': { icon: 'fa-qrcode', scene: 'trace', gradient: 'rgba(201,162,39,0.04)' },
-    'gouvernance': { icon: 'fa-building', scene: 'meeting', gradient: 'rgba(201,162,39,0.04)' },
+    'traçabilité': { icon: 'fa-qrcode', scene: 'trace', gradient: 'rgba(157,143,209,0.04)' },
+    'tracabilite': { icon: 'fa-qrcode', scene: 'trace', gradient: 'rgba(157,143,209,0.04)' },
+    'gouvernance': { icon: 'fa-building', scene: 'meeting', gradient: 'rgba(157,143,209,0.04)' },
     'risques': { icon: 'fa-shield-halved', scene: 'robot', gradient: 'rgba(229,72,77,0.04)' },
     'default': { icon: 'fa-clipboard-check', scene: 'default', gradient: 'rgba(31,111,235,0.04)' },
   };
@@ -255,7 +255,7 @@
     }
 
     // Question header
-    el.questionNumber.textContent = 'QUESTION ' + (index + 1);
+    el.questionNumber.textContent = tr('question').toUpperCase() + ' ' + (index + 1);
     el.questionTitle.textContent = localized(q, 'title');
 
     // Description
@@ -479,7 +479,7 @@
     el.answers.style.display = 'none';
     el.ratingGrid.style.display = '';
 
-    var colors = ['#E5484D', '#C9A227', '#C9A227', '#2EC4B6', '#1F6FEB', '#1F6FEB'];
+    var colors = ['#E5484D', '#9d8fd1', '#9d8fd1', '#2EC4B6', '#1F6FEB', '#1F6FEB'];
     var labels = (t.rating_labels || ['Inexistant', 'Initial', 'Basique', 'Maîtrisé', 'Performant', 'Excellence']).slice();
 
     var html = '';
@@ -702,7 +702,7 @@
       }
     });
 
-    var color = pct >= 70 ? '#2EC4B6' : (pct >= 40 ? '#C9A227' : '#E5484D');
+    var color = pct >= 70 ? '#2EC4B6' : (pct >= 40 ? '#9d8fd1' : '#E5484D');
     el.gaugeCircle.style.stroke = color;
     el.gaugeValue.style.color = color;
 
@@ -749,7 +749,7 @@
       }
     });
 
-    var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#C9A227' : score === 3 ? '#1F6FEB' : '#2EC4B6';
+    var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#9d8fd1' : score === 3 ? '#1F6FEB' : '#2EC4B6';
     el.mainGaugeIcon.style.color = color;
 
     var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
@@ -793,7 +793,7 @@
     container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:99999;overflow:hidden;';
     document.body.appendChild(container);
 
-    var colors = ['#1F6FEB', '#C9A227', '#2EC4B6', '#C9A227', '#E5484D', '#2EC4B6', '#1F6FEB'];
+    var colors = ['#1F6FEB', '#9d8fd1', '#2EC4B6', '#9d8fd1', '#E5484D', '#2EC4B6', '#1F6FEB'];
     var shapes = ['circle', 'square', 'triangle'];
 
     for (var i = 0; i < 60; i++) {
@@ -1000,7 +1000,7 @@
   var langTitle = document.getElementById('aqmiLangTitle');
   var langDesc = document.getElementById('aqmiLangDesc');
   var selectedLang = currentLang;
-  var langScreenVisible = !!langScreen;
+  var langScreenVisible = !!langScreen && langScreen.offsetParent !== null;
 
   function applyI18nLabels(lang) {
     var labels = i18nData[lang] || i18nData['fr'] || {};
@@ -1130,9 +1130,13 @@
     applyI18nLabels(selectedLang);
   }
 
-  // If no language screen, init directly
+  // If no language screen, show model screen or init directly
   if (!langScreenVisible) {
-    init();
+    if (cfg.isModelSelection) {
+      showModelScreen();
+    } else {
+      init();
+    }
   }
 
 })();

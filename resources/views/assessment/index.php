@@ -183,7 +183,7 @@ ob_start();
 <div class="aqmi-premium" id="aqmiApp">
 
   <!-- Language Selection Screen -->
-  <div class="aqmi-lang-screen" id="aqmiLangScreen">
+  <div class="aqmi-lang-screen" id="aqmiLangScreen"<?= isset($_SESSION['lang']) && $_SESSION['lang'] ? ' style="display:none;"' : '' ?>>
     <div class="aqmi-lang-screen-inner">
       <div class="aqmi-lang-screen-icon">
         <i class="fas fa-globe"></i>
@@ -286,7 +286,7 @@ ob_start();
               <linearGradient id="aqmiGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#E5484D"/>
                 <stop offset="25%" stop-color="#E8823A"/>
-                <stop offset="50%" stop-color="#C9A227"/>
+                <stop offset="50%" stop-color="#9d8fd1"/>
                 <stop offset="75%" stop-color="#1F6FEB"/>
                 <stop offset="100%" stop-color="#2EC4B6"/>
               </linearGradient>

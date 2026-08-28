@@ -5,12 +5,12 @@
 :root {
   --aqmi-primary: #1F6FEB;
   --aqmi-primary-dark: #102A43;
-  --aqmi-secondary: #C9A227;
+  --aqmi-secondary: #9d8fd1;
   --aqmi-accent: #2EC4B6;
   --aqmi-green: #2EC4B6;
-  --aqmi-orange: #C9A227;
+  --aqmi-orange: #9d8fd1;
   --aqmi-red: #E5484D;
-  --aqmi-purple: #C9A227;
+  --aqmi-purple: #9d8fd1;
   --aqmi-teal: #2EC4B6;
   --aqmi-bg: #EEF2F7;
   --aqmi-bg-alt: #EEF2F7;
@@ -131,7 +131,7 @@
   color: #fff; line-height: 1.08; margin-bottom: 16px; max-width: 900px;
 }
 .aqmi-hero-title .aqmi-glow-text {
-  background: linear-gradient(135deg, #1F6FEB, #C9A227, #2EC4B6);
+  background: linear-gradient(135deg, #1F6FEB, #9d8fd1, #2EC4B6);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .aqmi-hero-subtitle {

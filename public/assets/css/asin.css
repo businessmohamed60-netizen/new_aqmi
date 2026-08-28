@@ -7,9 +7,9 @@
 :root {
   --asin-blue: #1F6FEB;
   --asin-cyan: #2EC4B6;
-  --asin-purple: #C9A227;
+  --asin-purple: #9d8fd1;
   --asin-green: #2EC4B6;
-  --asin-orange: #C9A227;
+  --asin-orange: #9d8fd1;
   --asin-red: #E5484D;
   --asin-glow: rgba(31,111,235,0.5);
   --asin-bg: #102A43;
@@ -18,7 +18,7 @@
   --asin-border: rgba(31,111,235,0.2);
   --asin-text: #EEF2F7;
   --asin-text-secondary: #a3b0c6;
-  --asin-gradient: linear-gradient(135deg, #1F6FEB, #2EC4B6, #C9A227);
+  --asin-gradient: linear-gradient(135deg, #1F6FEB, #2EC4B6, #9d8fd1);
 }
 
 /* ─── Base ──────────────────────────────────────────────────────── */
@@ -174,7 +174,7 @@
 }
 
 .asin-hero-title .asin-gradient-text {
-  background: linear-gradient(135deg, #1F6FEB, #2EC4B6, #C9A227, #1F6FEB);
+  background: linear-gradient(135deg, #1F6FEB, #2EC4B6, #9d8fd1, #1F6FEB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -384,7 +384,7 @@
   width: 72px;
   height: 72px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #1F6FEB, #C9A227);
+  background: linear-gradient(135deg, #1F6FEB, #9d8fd1);
   display: flex;
   align-items: center;
   justify-content: center;

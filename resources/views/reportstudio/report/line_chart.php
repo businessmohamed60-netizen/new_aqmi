@@ -26,7 +26,7 @@ foreach ($series as $s) {
             xaxis: { categories: <?= json_encode($categories) ?>, labels: { style: { fontSize: '12px', fontWeight: 600 } } },
             stroke: { curve: <?= json_encode($config['smooth'] !== false ? 'smooth' : 'straight') ?>, width: 3 },
             legend: { show: <?= json_encode($config['legend'] !== false) ?>, position: 'bottom' },
-            colors: ['#102A43', '#2EC4B6', '#C9A227', '#E5484D'],
+            colors: ['#102A43', '#2EC4B6', '#9d8fd1', '#E5484D'],
             markers: { size: 5, strokeWidth: 2, strokeColors: '#fff' },
             grid: { borderColor: '#EEF2F7', strokeDashArray: 3 },
             tooltip: { theme: 'light' }
