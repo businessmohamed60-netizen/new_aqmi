@@ -89,7 +89,8 @@ class PdfService
         $user = $assessment['user_id'] ? \App\Models\User::find($assessment['user_id']) : null;
 
         $reportNumber = $report['report_number'] ?: Report::assignReportNumber($reportId);
-        $qrDataUri = $this->generateQrCode($reportId, $reportNumber);
+        $verifyToken = Report::getOrAssignVerifyToken($reportId);
+        $qrDataUri = $this->generateQrCode($reportId, $verifyToken);
 
         $template = null;
         if ($templateId !== null && $templateId > 0) {
@@ -160,7 +161,7 @@ class PdfService
      * Retourne null si endroid/qr-code n'est pas encore installé
      * (composer update requis) — le PDF se génère quand même, sans QR.
      */
-    private function generateQrCode(int $reportId, string $reportNumber): ?string
+    private function generateQrCode(int $reportId, string $verifyToken): ?string
     {
         if (!class_exists('Endroid\QrCode\Builder\Builder')) {
             return null;
@@ -171,7 +172,7 @@ class PdfService
             $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
                 . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
         }
-        $verifyUrl = $appUrl . '/verify/' . $reportNumber;
+        $verifyUrl = $appUrl . '/c/' . $verifyToken;
 
         try {
             $result = \Endroid\QrCode\Builder\Builder::create()
@@ -185,7 +186,7 @@ class PdfService
             if (!is_dir($qrDir)) {
                 mkdir($qrDir, 0775, true);
             }
-            $qrRelativePath = 'qrcodes/' . $reportNumber . '.png';
+            $qrRelativePath = 'qrcodes/' . $verifyToken . '.png';
             $result->saveToFile(BASE_PATH . '/storage/' . $qrRelativePath);
 
             Report::setQrCodePath($reportId, $qrRelativePath);
@@ -680,7 +681,8 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
             $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
                 . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
         }
-        $verifyUrl = $appUrl . '/verify/' . $reportNumber;
+        $verifyToken = Report::getOrAssignVerifyToken((int) $report['id']);
+        $verifyUrl = $appUrl . '/c/' . $verifyToken;
         $adminName = trim(($report['admin_signature'] ?? '') ?: 'Administration AQMI');
 
         foreach ($data['blocks'] as &$blk) {

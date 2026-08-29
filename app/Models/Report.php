@@ -14,6 +14,11 @@ class Report
         'certified',
     ];
 
+    /** Statuts du certificat pour la vérification publique */
+    public const CERT_STATUS_ACTIVE  = 'active';
+    public const CERT_STATUS_REVOKED = 'revoked';
+    public const CERT_STATUS_EXPIRED = 'expired';
+
     public static function find(int $id): ?array
     {
         return Database::fetch("SELECT * FROM reports WHERE id = ?", [$id]);
@@ -25,13 +30,32 @@ class Report
     }
 
     /**
-     * Utilisé par la page publique /verify/{report_number}.
+     * Utilisé par la page publique /verify/{report_number} (legacy).
      */
     public static function findByNumber(string $reportNumber): ?array
     {
         return Database::fetch(
-            "SELECT r.*, l.company, l.country FROM reports r LEFT JOIN leads l ON r.lead_id = l.id WHERE r.report_number = ? LIMIT 1",
+            "SELECT r.*, l.company, l.country, l.sector FROM reports r LEFT JOIN leads l ON r.lead_id = l.id WHERE r.report_number = ? LIMIT 1",
             [$reportNumber]
+        );
+    }
+
+    /**
+     * Recherche un certificat par son jeton aléatoire (page publique /c/{token}).
+     * Ne joint que les colonnes non sensibles nécessaires à la vérification.
+     */
+    public static function findByVerifyToken(string $token): ?array
+    {
+        if (strlen($token) < 16) return null;
+        return Database::fetch(
+            "SELECT r.id, r.report_number, r.status, r.certificate_status,
+                    r.issued_at, r.expires_at, r.revoked_at, r.revoked_reason,
+                    r.certified_at, r.aqmi_level_assigned,
+                    l.company, l.country, l.sector
+             FROM reports r
+             LEFT JOIN leads l ON r.lead_id = l.id
+             WHERE r.verify_token = ? LIMIT 1",
+            [$token]
         );
     }
 
@@ -160,6 +184,112 @@ class Report
         return Database::execute("UPDATE reports SET qr_code_path = ? WHERE id = ?", [$path, $id]);
     }
 
+    /**
+     * Attribue un jeton de vérification aléatoire (64 hex chars) au rapport.
+     * Retourne le jeton généré. Si un jeton existe déjà, le retourne tel quel.
+     */
+    public static function assignVerifyToken(int $id): string
+    {
+        $existing = self::find($id);
+        if ($existing && !empty($existing['verify_token'])) {
+            return $existing['verify_token'];
+        }
+        $token = bin2hex(random_bytes(32)); // 64 chars, non devinable
+        Database::execute("UPDATE reports SET verify_token = ? WHERE id = ?", [$token, $id]);
+        return $token;
+    }
+
+    /**
+     * Récupère le jeton de vérification d'un rapport (ou l'attribue si absent).
+     */
+    public static function getOrAssignVerifyToken(int $id): string
+    {
+        $report = self::find($id);
+        if ($report && !empty($report['verify_token'])) {
+            return $report['verify_token'];
+        }
+        return self::assignVerifyToken($id);
+    }
+
+    /**
+     * Active le certificat : statut active, date d'émission, date d'expiration.
+     * Appelée au moment de la certification par l'administrateur.
+     */
+    public static function activateCertificate(int $id, ?string $expiresAt = null): void
+    {
+        $report = self::find($id);
+        $token = ($report && !empty($report['verify_token']))
+            ? $report['verify_token']
+            : self::assignVerifyToken($id);
+
+        $sets = [
+            'certificate_status = ?',
+            'issued_at = ?',
+            'expires_at = ?',
+            'revoked_at = NULL',
+            'revoked_reason = NULL',
+        ];
+        $params = [
+            self::CERT_STATUS_ACTIVE,
+            date('Y-m-d'),
+            $expiresAt ?? date('Y-m-d', strtotime('+1 year')),
+        ];
+        $params[] = $id;
+        Database::execute("UPDATE reports SET " . implode(', ', $sets) . " WHERE id = ?", $params);
+    }
+
+    /**
+     * Révoque le certificat : statut revoked + motif + horodatage.
+     */
+    public static function revokeCertificate(int $id, ?string $reason = null): void
+    {
+        Database::execute(
+            "UPDATE reports SET certificate_status = ?, revoked_at = NOW(), revoked_reason = ? WHERE id = ?",
+            [self::CERT_STATUS_REVOKED, $reason, $id]
+        );
+    }
+
+    /**
+     * Réactive un certificat révoqué (statut active, purge des champs révocation).
+     * Recalcule l'expiration si elle est passée.
+     */
+    public static function reactivateCertificate(int $id, ?string $expiresAt = null): void
+    {
+        $report = self::find($id);
+        $newExpiry = $expiresAt;
+        if ($newExpiry === null) {
+            $currentExpiry = $report['expires_at'] ?? null;
+            if ($currentExpiry && strtotime($currentExpiry) > time()) {
+                $newExpiry = $currentExpiry;
+            } else {
+                $newExpiry = date('Y-m-d', strtotime('+1 year'));
+            }
+        }
+        Database::execute(
+            "UPDATE reports SET certificate_status = ?, revoked_at = NULL, revoked_reason = NULL, expires_at = ? WHERE id = ?",
+            [self::CERT_STATUS_ACTIVE, $newExpiry, $id]
+        );
+    }
+
+    /**
+     * Détermine le statut effectif du certificat en tenant compte de l'expiration
+     * automatique (un certificat actif dont la date d'expiration est dépassée
+     * est considéré comme expiré).
+     */
+    public static function effectiveStatus(?array $report): string
+    {
+        if (!$report) return 'not_found';
+        $status = $report['certificate_status'] ?? null;
+        if ($status === self::CERT_STATUS_REVOKED) return self::CERT_STATUS_REVOKED;
+        if ($status === self::CERT_STATUS_EXPIRED) return self::CERT_STATUS_EXPIRED;
+        // active or null — check expiry
+        $expiresAt = $report['expires_at'] ?? null;
+        if ($expiresAt && strtotime($expiresAt) < strtotime(date('Y-m-d'))) {
+            return self::CERT_STATUS_EXPIRED;
+        }
+        return self::CERT_STATUS_ACTIVE;
+    }
+
     public static function setSignature(int $id, string $signature): int
     {
         return Database::execute("UPDATE reports SET admin_signature = ? WHERE id = ?", [$signature, $id]);
@@ -197,5 +327,17 @@ class Report
     public static function countByStatus(string $status): int
     {
         return (int)Database::fetch("SELECT COUNT(*) as count FROM reports WHERE status = ?", [$status])['count'];
+    }
+
+    /**
+     * Vérifie périodiquement les certificats actifs expirés et met à jour
+     * leur statut en base. Retourne le nombre de certificats marqués expirés.
+     */
+    public static function expireOverdueCertificates(): int
+    {
+        return Database::execute(
+            "UPDATE reports SET certificate_status = ? WHERE certificate_status = ? AND expires_at IS NOT NULL AND expires_at < CURDATE()",
+            [self::CERT_STATUS_EXPIRED, self::CERT_STATUS_ACTIVE]
+        );
     }
 }

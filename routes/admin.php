@@ -75,6 +75,8 @@ $router->get('/admin/reports/{id}', 'AdminController@reportDetail', $adminMiddle
 $router->post('/admin/reports/{id}/review', 'AdminController@reportStartReview', $adminMiddleware);
 $router->post('/admin/reports/{id}/approve', 'AdminController@reportApprove', $adminMiddleware);
 $router->post('/admin/reports/{id}/certify', 'AdminController@reportCertify', $adminMiddleware);
+$router->post('/admin/reports/{id}/revoke', 'AdminController@reportRevoke', $adminMiddleware);
+$router->post('/admin/reports/{id}/reactivate', 'AdminController@reportReactivate', $adminMiddleware);
 
 // Consolidated reports certification
 $router->get('/admin/consolidated', 'AdminController@consolidatedReports', $adminMiddleware);

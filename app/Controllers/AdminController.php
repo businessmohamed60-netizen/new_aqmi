@@ -664,7 +664,18 @@ class AdminController
             $publishedTemplates = array_filter($allTemplates, fn($t) => $t->status === 'published');
         }
 
-        view('admin.reports.detail', compact('report', 'assessment', 'lead', 'customFields', 'analysis', 'recommendations', 'answers', 'publishedTemplates'));
+        $verifyUrl = null;
+        if ($report['status'] === 'certified' && !empty($report['verify_token'])) {
+            $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+            if ($appUrl === '') {
+                $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+                    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+            }
+            $verifyUrl = $appUrl . '/c/' . $report['verify_token'];
+        }
+        $certEffectiveStatus = Report::effectiveStatus($report);
+
+        view('admin.reports.detail', compact('report', 'assessment', 'lead', 'customFields', 'analysis', 'recommendations', 'answers', 'publishedTemplates', 'verifyUrl', 'certEffectiveStatus'));
     }
 
     public function reportStartReview(array $params): void
@@ -737,12 +748,50 @@ class AdminController
             $pdfService = new \App\Services\PdfService();
             $filename = $pdfService->generateCertificate($id, $templateId);
             Report::updateStatus($id, 'certified', $adminName, $filename);
+            Report::activateCertificate($id);
             $_SESSION['success'] = "Rapport certifié sous le numéro {$reportNumber}.";
         } catch (\Exception $e) {
             Report::updateStatus($id, 'certified', $adminName);
+            Report::activateCertificate($id);
             $_SESSION['error'] = "Certifié (n° {$reportNumber}) mais la génération du PDF a échoué : " . $e->getMessage();
         }
 
+        redirect('/admin/reports/' . $id);
+    }
+
+    // === CERTIFICATE REVOCATION ===
+
+    public function reportRevoke(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) { $_SESSION['error'] = 'Dossier introuvable.'; redirect('/admin/reports'); return; }
+        if ($report['status'] !== 'certified') {
+            $_SESSION['error'] = 'Seuls les certificats certifiés peuvent être révoqués.';
+            redirect('/admin/reports/' . $id);
+            return;
+        }
+        $reason = trim($_POST['revoke_reason'] ?? '');
+        Report::revokeCertificate($id, $reason !== '' ? $reason : null);
+        $_SESSION['success'] = 'Certificat révoqué. La page publique de vérification affichera désormais « Certificat Révoqué ».';
+        redirect('/admin/reports/' . $id);
+    }
+
+    public function reportReactivate(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) { $_SESSION['error'] = 'Dossier introuvable.'; redirect('/admin/reports'); return; }
+        if ($report['status'] !== 'certified') {
+            $_SESSION['error'] = 'Seuls les certificats certifiés peuvent être réactivés.';
+            redirect('/admin/reports/' . $id);
+            return;
+        }
+        $expiresAt = trim($_POST['expires_at'] ?? '');
+        Report::reactivateCertificate($id, $expiresAt !== '' ? $expiresAt : null);
+        $_SESSION['success'] = 'Certificat réactivé. La page publique de vérification affiche désormais « Certificat Valide ».';
         redirect('/admin/reports/' . $id);
     }
 

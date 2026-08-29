@@ -33,6 +33,7 @@ $router->post('/user/consolidated/{id}/delete', 'UserController@consolidatedDele
 // Report
 $router->get('/report/{id}/download', 'ReportController@download');
 $router->get('/verify/{report_number}', 'ReportController@verify');
+$router->get('/c/{token}', 'ReportController@verifyByToken');
 
 // Admin Auth
 $router->get('/admin/login', 'AdminController@login');

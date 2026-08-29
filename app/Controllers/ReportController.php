@@ -55,17 +55,50 @@ class ReportController
     }
 
     /**
-     * Page publique de vérification d'un certificat AQMI, accessible via
-     * le QR code imprimé sur le PDF officiel. Ne révèle que des
-     * informations non sensibles (pas les réponses, pas les coordonnées).
+     * Page publique de vérification d'un certificat AQMI par jeton aléatoire,
+     * accessible via le QR code imprimé sur le PDF officiel (/c/{token}).
+     * Ne révèle que des informations non sensibles (pas les réponses, pas les
+     * coordonnées). Les résultats détaillés restent accessibles uniquement
+     * aux utilisateurs autorisés après authentification.
+     */
+    public function verifyByToken(array $params): void
+    {
+        $token = trim($params['token'] ?? '');
+        Report::expireOverdueCertificates();
+        $report = $token !== '' ? Report::findByVerifyToken($token) : null;
+        $effectiveStatus = Report::effectiveStatus($report);
+
+        view('public/verify', [
+            'report'           => $report,
+            'verifyToken'      => $token,
+            'effectiveStatus'  => $effectiveStatus,
+            'isLegacy'         => false,
+        ]);
+    }
+
+    /**
+     * Page publique de vérification legacy par numéro de rapport
+     * (/verify/{report_number}). Redirige vers le système par jeton si possible.
      */
     public function verify(array $params): void
     {
         $reportNumber = trim($params['report_number'] ?? '');
         $report = $reportNumber !== '' ? Report::findByNumber($reportNumber) : null;
-        $isValid = $report !== null && $report['status'] === 'certified';
 
-        view('public/verify', compact('report', 'reportNumber', 'isValid'));
+        if ($report && !empty($report['verify_token'])) {
+            redirect('/c/' . $report['verify_token']);
+            return;
+        }
+
+        Report::expireOverdueCertificates();
+        $effectiveStatus = Report::effectiveStatus($report);
+
+        view('public/verify', [
+            'report'           => $report,
+            'verifyToken'      => $reportNumber,
+            'effectiveStatus'  => $effectiveStatus,
+            'isLegacy'         => true,
+        ]);
     }
 
     /**
