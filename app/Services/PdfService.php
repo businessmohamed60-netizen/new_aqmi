@@ -687,7 +687,10 @@ body { font-family: var(--rs-font, "DejaVu Sans", sans-serif); color: var(--rs-b
 
         foreach ($data['blocks'] as &$blk) {
             if (($blk['block_key'] ?? '') === 'qr_code') {
-                $blk['block_config']['value'] = $verifyUrl;
+                $qrMode = $blk['block_config']['mode'] ?? 'manual';
+                if ($qrMode === 'verify') {
+                    $blk['block_config']['value'] = $verifyUrl;
+                }
             }
             if (($blk['block_key'] ?? '') === 'signature') {
                 $blk['block_config']['label'] = $adminName;

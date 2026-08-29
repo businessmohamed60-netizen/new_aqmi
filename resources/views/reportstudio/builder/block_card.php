@@ -16,6 +16,35 @@ $visBadge = match ($visibility) {
     'pdf_only' => ['bi-file-pdf', 'PDF'],
     default    => ['bi-eye', 'Web+PDF'],
 };
+
+// Category color mapping (Canva-style)
+$catColors = [
+    'global_score'    => 'metrics',
+    'radar_chart'     => 'charts',
+    'bar_chart'       => 'charts',
+    'line_chart'      => 'charts',
+    'donut_chart'     => 'charts',
+    'area_chart'      => 'charts',
+    'gauge'           => 'metrics',
+    'recommendations' => 'content',
+    'company_info'    => 'content',
+    'aqmi_logo'       => 'branding',
+    'company_logo'    => 'branding',
+    'official_stamp'  => 'branding',
+    'qr_code'         => 'utility',
+    'signature'       => 'utility',
+    'header'          => 'structure',
+    'footer'          => 'structure',
+    'rich_text'       => 'content',
+    'image'           => 'media',
+    'background'      => 'media',
+    'cover_page'      => 'structure',
+    'kpi_card'        => 'metrics',
+    'domain_scores'   => 'metrics',
+    'page_break'      => 'structure',
+];
+$catClass = $catColors[$key] ?? 'utility';
+$catColorVar = 'var(--rs-cat-' . $catClass . ')';
 ?>
 <div class="rs-block <?= $enabled ? '' : 'rs-block-disabled' ?>"
      data-block-key="<?= e($key) ?>"
@@ -25,8 +54,8 @@ $visBadge = match ($visibility) {
      data-visibility="<?= e($visibility) ?>">
     <div class="rs-block-toolbar">
         <span class="rs-block-handle" title="Déplacer"><i class="bi bi-grip-vertical"></i></span>
-        <span class="rs-block-type"><i class="bi <?= e($blockIcon ?? 'bi-box') ?>"></i> <?= e($title ?: $key) ?></span>
-        <span class="rs-vis-badge badge bg-info text-dark" title="Visibilité">
+        <span class="rs-block-type"><i class="bi <?= e($blockIcon ?? 'bi-box') ?>" style="color: <?= $catColorVar ?>"></i> <?= e($title ?: $key) ?></span>
+        <span class="rs-vis-badge badge" style="background: <?= $catColorVar ?>1a; color: <?= $catColorVar ?>" title="Visibilité">
             <i class="bi <?= e($visBadge[0]) ?>"></i> <?= e($visBadge[1]) ?>
         </span>
         <div class="rs-block-actions ms-auto">

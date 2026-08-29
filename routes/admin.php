@@ -69,6 +69,7 @@ $router->get('/admin/lead-fields/delete/{id}', 'AdminController@leadFieldDelete'
 $router->get('/admin/reports', 'AdminController@reports', $adminMiddleware);
 $router->post('/admin/reports/validate/{id}', 'AdminController@reportValidate', $adminMiddleware);
 $router->post('/admin/reports/reject/{id}', 'AdminController@reportReject', $adminMiddleware);
+$router->post('/admin/reports/delete/{id}', 'AdminController@reportDelete', $adminMiddleware);
 
 // Certification workflow (dossier de demande)
 $router->get('/admin/reports/{id}', 'AdminController@reportDetail', $adminMiddleware);

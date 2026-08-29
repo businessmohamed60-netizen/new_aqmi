@@ -319,6 +319,11 @@ class Report
         return $number;
     }
 
+    public static function delete(int $id): int
+    {
+        return Database::execute("DELETE FROM reports WHERE id = ?", [$id]);
+    }
+
     public static function count(): int
     {
         return (int)Database::fetch("SELECT COUNT(*) as count FROM reports")['count'];

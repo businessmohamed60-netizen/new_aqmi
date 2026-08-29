@@ -611,6 +611,15 @@ class AdminController
         redirect('/admin/reports');
     }
 
+    public function reportDelete(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        if ($id > 0) Report::delete($id);
+        $_SESSION['success'] = 'Rapport supprimé.';
+        redirect('/admin/reports');
+    }
+
     public function reportReject(array $params): void
     {
         Auth::requireAuth();

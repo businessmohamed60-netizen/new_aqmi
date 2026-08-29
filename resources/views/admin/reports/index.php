@@ -85,8 +85,15 @@ ob_start();
                 <td style="font-size:0.7rem;"><?= $r['certification_requested_at'] ? formatDate($r['certification_requested_at']) : formatDate($r['generated_at']) ?></td>
                 <td class="text-center">
                   <a href="/admin/reports/<?= $r['id'] ?>" class="btn-auto-action" title="Ouvrir le dossier">
-                    <i class="fas fa-folder-open"></i> Ouvrir le dossier
+                    <i class="fas fa-folder-open"></i> Ouvrir
                   </a>
+                  <form method="POST" action="/admin/reports/delete/<?= $r['id'] ?>" class="d-inline"
+                        onsubmit="return confirm('Supprimer définitivement ce rapport (<?= e($r['report_number'] ?? '#' . $r['id']) ?>) ? Cette action est irréversible.');">
+                    <button type="submit" class="btn-auto-action" title="Supprimer le rapport"
+                            style="color:var(--auto-danger,#ef4444);border-color:var(--auto-border);">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
             <?php endforeach; ?>

@@ -53,7 +53,7 @@
     aqmi_logo:       { size: 'md', align: 'left', color: '#102A43', use_custom_image: false, image_url: '', image_height: '60px', image_border_radius: '0' },
     company_logo:    { url: '', size: 'md', align: 'left', max_height: '80px', border_radius: '0' },
     official_stamp:  { style: 'circular', text: 'CERTIFIÉ', subtext: 'AQMI', color: '#102A43', size: 100, align: 'right', border_width: 3, font_size: '0.9rem', use_custom_image: false, image_url: '', image_height: '100px' },
-    qr_code:         { value: '', size: 120, label: '', align: 'center', margin: 0 },
+    qr_code:         { mode: 'manual', value: '', size: 120, label: '', align: 'center', margin: 0 },
     signature:       { label: '', role: '', show_date: true, show_stamp: false, line_color: '#102A43', font_size: '0.9rem', date_format: 'fr-FR' },
     header:          { text: 'Titre', level: 1, align: 'left', show_report_number: false, show_date: false, show_page_number: false, color: '#102A43', font_size: '', uppercase: false, border_bottom: false },
     footer:          { text: '', align: 'center', show_report_number: false, show_date: false, show_page_number: true, color: '#6b7280', font_size: '0.8rem', border_top: true },
@@ -70,6 +70,11 @@
     metrics: 'Métriques', charts: 'Graphiques', content: 'Contenu',
     branding: 'Branding', utility: 'Utilitaire', structure: 'Structure', media: 'Média',
   };
+
+  // Map block_key -> category for color coding
+  const BLOCK_CATEGORY = Object.fromEntries(
+    Object.entries(BLOCK_META).map(([key, meta]) => [key, meta.category])
+  );
 
   // ============================================================
   // UTILITIES
@@ -339,6 +344,12 @@
       }
       case 'qr_code': {
         const size = +cfg.size || 120;
+        if (cfg.mode === 'verify') {
+          return h('div', { className: 'text-center py-1' },
+            h('div', { style: { width: size + 'px', height: size + 'px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed #6366f1', borderRadius: '8px', background: '#eef2ff', color: '#4338ca', gap: '6px', margin: '0 auto' } },
+              h('i', { className: 'bi bi-shield-check', style: { fontSize: '2rem' } }),
+              h('span', { style: { fontSize: '0.65rem', fontWeight: '600' } }, 'Vérification certificat')));
+        }
         return cfg.value
           ? h('div', { className: 'text-center py-1' }, h('img', { src: 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(cfg.value), width: size, height: size }))
           : h('div', { className: 'text-center py-1' }, h('i', { className: 'bi bi-qr-code fs-1 text-muted' }));
@@ -784,7 +795,10 @@
       
       case 'qr_code':
         return h(React.Fragment, null,
-          field('Donnée encodée', 'text', 'value', val('value', ''), setCfg),
+          selectField('Mode', 'mode', [{ v: 'manual', l: 'Manuel (URL ou texte)' }, { v: 'verify', l: 'Vérification certificat (auto)' }], cfg.mode || 'manual', setCfg),
+          (cfg.mode || 'manual') === 'verify'
+            ? h('div', { className: 'alert alert-info py-1 px-2 mb-2 small' }, h('i', { className: 'bi bi-info-circle' }), ' Le QR pointera automatiquement vers la page publique de vérification /c/{token} propre à chaque certificat.')
+            : field('Donnée encodée', 'text', 'value', val('value', ''), setCfg),
           field('Taille (px)', 'number', 'size', +cfg.size || 120, setCfg),
           field('Libellé sous QR', 'text', 'label', val('label', ''), setCfg),
           selectField('Alignement', 'align', [{ v: 'left', l: 'Gauche' }, { v: 'center', l: 'Centre' }, { v: 'right', l: 'Droite' }], cfg.align || 'center', setCfg),
@@ -1148,7 +1162,7 @@
           h('span', { className: 'input-group-text' }, h('i', { className: 'bi bi-search' })),
           h('input', { type: 'text', className: 'form-control', placeholder: 'Rechercher un bloc...', value: search, onChange: e => setSearch(e.target.value) }))),
       Object.entries(filtered).map(([category, items]) =>
-        h('div', { key: category, className: 'rs-palette-group' + (collapsed[category] ? ' collapsed' : '') },
+        h('div', { key: category, className: 'rs-palette-group rs-cat-' + category + (collapsed[category] ? ' collapsed' : '') },
           h('div', { className: 'rs-palette-cat', onClick: () => setCollapsed(c => ({ ...c, [category]: !c[category] })) },
             h('i', { className: 'bi bi-chevron-down rs-toggle' }),
             esc(CATEGORY_LABELS[category] || category),
@@ -1157,7 +1171,7 @@
             items.map(block =>
               h('div', {
                 key: block.block_key,
-                className: 'rs-palette-item',
+                className: 'rs-palette-item rs-cat-' + (BLOCK_CATEGORY[block.block_key] || category),
                 draggable: true,
                 onDragStart: (e) => { e.dataTransfer.effectAllowed = 'copy'; e.dataTransfer.setData('text/block-key', block.block_key); },
                 onClick: () => onAdd(block.block_key),
