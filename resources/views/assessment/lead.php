@@ -65,8 +65,8 @@ unset($_SESSION['error']);
             </div>
           </div>
           <div class="aqmi-lead-field">
-            <label>Fonction / Poste</label>
-            <input type="text" name="job_title" placeholder="Ex: Directeur Qualité, Responsable Production">
+            <label>Fonction / Poste <span class="aqmi-req">*</span></label>
+            <input type="text" name="job_title" required placeholder="Ex: Directeur Qualité, Responsable Production">
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
@@ -74,8 +74,8 @@ unset($_SESSION['error']);
               <input type="email" name="email" required value="<?= e($user['email'] ?? '') ?>" readonly>
             </div>
             <div class="aqmi-lead-field">
-              <label>Téléphone</label>
-              <input type="tel" name="phone" value="<?= e($user['phone'] ?? '') ?>" readonly>
+              <label>Téléphone <span class="aqmi-req">*</span></label>
+              <input type="tel" name="phone" required value="<?= e($user['phone'] ?? '') ?>" readonly>
             </div>
           </div>
         </div>
@@ -91,8 +91,8 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Secteur d'activité</label>
-              <select name="sector">
+              <label>Secteur d'activité <span class="aqmi-req">*</span></label>
+              <select name="sector" required>
                 <option value="">Sélectionnez...</option>
                 <option>Automobile</option>
                 <option>Pièces automobiles</option>
@@ -110,8 +110,8 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Catégorie d'activité</label>
-              <select name="activity_category">
+              <label>Catégorie d'activité <span class="aqmi-req">*</span></label>
+              <select name="activity_category" required>
                 <option value="">Sélectionnez...</option>
                 <option value="fabricant">Fabricant de pièces</option>
                 <option value="sous-traitant">Sous-traitant</option>
@@ -124,8 +124,8 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Niveau de la chaîne OEM</label>
-              <select name="oem_tier">
+              <label>Niveau de la chaîne OEM <span class="aqmi-req">*</span></label>
+              <select name="oem_tier" required>
                 <option value="">Sélectionnez...</option>
                 <option value="tier1">Tier 1 — Équipementier direct</option>
                 <option value="tier2">Tier 2 — Sous-traitant direct</option>
@@ -135,8 +135,8 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Catégorie de produits</label>
-              <select name="product_category">
+              <label>Catégorie de produits <span class="aqmi-req">*</span></label>
+              <select name="product_category" required>
                 <option value="">Sélectionnez...</option>
                 <option value="moteur">Pièces moteur</option>
                 <option value="transmission">Transmission / Boîte</option>
@@ -156,8 +156,8 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Pays</label>
-              <select name="country">
+              <label>Pays <span class="aqmi-req">*</span></label>
+              <select name="country" required>
                 <option value="">Sélectionnez...</option>
                 <option>France</option>
                 <option>Belgique</option>
@@ -175,8 +175,8 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Taille de l'entreprise</label>
-              <select name="company_size">
+              <label>Taille de l'entreprise <span class="aqmi-req">*</span></label>
+              <select name="company_size" required>
                 <option value="">Sélectionnez...</option>
                 <option value="1-10">1-10 employés</option>
                 <option value="11-50">11-50 employés</option>
@@ -188,18 +188,18 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Année de création</label>
-              <input type="number" name="founded_year" placeholder="Ex: 2010" min="1900" max="2030">
+              <label>Année de création <span class="aqmi-req">*</span></label>
+              <input type="number" name="founded_year" required placeholder="Ex: 2010" min="1900" max="2030">
             </div>
             <div class="aqmi-lead-field">
-              <label>Site web</label>
-              <input type="url" name="website" placeholder="https://www.example.com">
+              <label>Site web <span class="aqmi-req">*</span></label>
+              <input type="url" name="website" required placeholder="https://www.example.com">
             </div>
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>CA annuel (€)</label>
-              <select name="annual_revenue">
+              <label>CA annuel (€) <span class="aqmi-req">*</span></label>
+              <select name="annual_revenue" required>
                 <option value="">Sélectionnez...</option>
                 <option value="<2M">Moins de 2 M€</option>
                 <option value="2-10M">2 à 10 M€</option>
@@ -209,27 +209,27 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Part à l'export (%)</label>
-              <input type="number" name="export_percentage" min="0" max="100" placeholder="Ex: 35">
+              <label>Part à l'export (%) <span class="aqmi-req">*</span></label>
+              <input type="number" name="export_percentage" required min="0" max="100" placeholder="Ex: 35">
             </div>
           </div>
           <div class="aqmi-lead-field">
-            <label>Principaux clients / OEM</label>
-            <input type="text" name="main_clients" placeholder="Ex: Renault, Stellantis, Volkswagen, Bosch">
+            <label>Principaux clients / OEM <span class="aqmi-req">*</span></label>
+            <input type="text" name="main_clients" required placeholder="Ex: Renault, Stellantis, Volkswagen, Bosch">
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Nombre de sites de production</label>
-              <input type="number" name="production_sites" min="0" max="999" placeholder="Ex: 2">
+              <label>Nombre de sites de production <span class="aqmi-req">*</span></label>
+              <input type="number" name="production_sites" required min="0" max="999" placeholder="Ex: 2">
             </div>
             <div class="aqmi-lead-field">
-              <label>Effectif production</label>
-              <input type="number" name="workforce_production" min="0" max="99999" placeholder="Ex: 120">
+              <label>Effectif production <span class="aqmi-req">*</span></label>
+              <input type="number" name="workforce_production" required min="0" max="99999" placeholder="Ex: 120">
             </div>
           </div>
           <div class="aqmi-lead-field">
-            <label>Effectif ingénierie / R&D</label>
-            <input type="number" name="workforce_engineering" min="0" max="99999" placeholder="Ex: 15">
+            <label>Effectif ingénierie / R&D <span class="aqmi-req">*</span></label>
+            <input type="number" name="workforce_engineering" required min="0" max="99999" placeholder="Ex: 15">
           </div>
         </div>
 
@@ -289,8 +289,8 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Type de production</label>
-              <select name="production_type">
+              <label>Type de production <span class="aqmi-req">*</span></label>
+              <select name="production_type" required>
                 <option value="">Sélectionnez...</option>
                 <option value="unitaire">Unitaire</option>
                 <option value="petite_serie">Petite série</option>
@@ -301,28 +301,28 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Capacité de production</label>
-              <input type="text" name="production_capacity" placeholder="Ex: 5000 unités/mois">
+              <label>Capacité de production <span class="aqmi-req">*</span></label>
+              <input type="text" name="production_capacity" required placeholder="Ex: 5000 unités/mois">
             </div>
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Nombre de machines</label>
-              <input type="number" name="machine_count" placeholder="Ex: 25" min="0" max="9999">
+              <label>Nombre de machines <span class="aqmi-req">*</span></label>
+              <input type="number" name="machine_count" required placeholder="Ex: 25" min="0" max="9999">
             </div>
             <div class="aqmi-lead-field">
-              <label>Type de machines</label>
-              <input type="text" name="machine_types" placeholder="Ex: CNC, injection plastique">
+              <label>Type de machines <span class="aqmi-req">*</span></label>
+              <input type="text" name="machine_types" required placeholder="Ex: CNC, injection plastique">
             </div>
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Matières principales</label>
-              <input type="text" name="main_materials" placeholder="Ex: Acier, aluminium, plastique PA66">
+              <label>Matières principales <span class="aqmi-req">*</span></label>
+              <input type="text" name="main_materials" required placeholder="Ex: Acier, aluminium, plastique PA66">
             </div>
             <div class="aqmi-lead-field">
-              <label>Technologies de procédé</label>
-              <input type="text" name="process_technologies" placeholder="Ex: Usinage, emboutissage, injection, soudage">
+              <label>Technologies de procédé <span class="aqmi-req">*</span></label>
+              <input type="text" name="process_technologies" required placeholder="Ex: Usinage, emboutissage, injection, soudage">
             </div>
           </div>
         </div>
@@ -333,27 +333,27 @@ unset($_SESSION['error']);
             <i class="fas fa-clipboard-check"></i> Qualité & Performance
           </div>
           <div class="aqmi-lead-field">
-            <label>Certifications détenues</label>
-            <input type="text" name="certifications" placeholder="Ex: ISO 9001, IATF 16949, ISO 14001">
+            <label>Certifications détenues <span class="aqmi-req">*</span></label>
+            <input type="text" name="certifications" required placeholder="Ex: ISO 9001, IATF 16949, ISO 14001">
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Objectif PPM (défauts)</label>
-              <input type="number" name="ppm_target" min="0" max="999999" placeholder="Ex: 50">
+              <label>Objectif PPM (défauts) <span class="aqmi-req">*</span></label>
+              <input type="number" name="ppm_target" required min="0" max="999999" placeholder="Ex: 50">
             </div>
             <div class="aqmi-lead-field">
-              <label>Taux OTD (%)</label>
-              <input type="number" step="0.01" name="otd_rate" min="0" max="100" placeholder="Ex: 98.5">
+              <label>Taux OTD (%) <span class="aqmi-req">*</span></label>
+              <input type="number" step="0.01" name="otd_rate" required min="0" max="100" placeholder="Ex: 98.5">
             </div>
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Taux FTA — First Time Through (%)</label>
-              <input type="number" step="0.01" name="fta_rate" min="0" max="100" placeholder="Ex: 95.2">
+              <label>Taux FTA — First Time Through (%) <span class="aqmi-req">*</span></label>
+              <input type="number" step="0.01" name="fta_rate" required min="0" max="100" placeholder="Ex: 95.2">
             </div>
             <div class="aqmi-lead-field">
-              <label>Taux de rebut (%)</label>
-              <input type="number" step="0.01" name="scrap_rate" min="0" max="100" placeholder="Ex: 1.8">
+              <label>Taux de rebut (%) <span class="aqmi-req">*</span></label>
+              <input type="number" step="0.01" name="scrap_rate" required min="0" max="100" placeholder="Ex: 1.8">
             </div>
           </div>
         </div>
@@ -365,8 +365,8 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Système de traçabilité</label>
-              <select name="traceability_system">
+              <label>Système de traçabilité <span class="aqmi-req">*</span></label>
+              <select name="traceability_system" required>
                 <option value="">Sélectionnez...</option>
                 <option value="aucun">Aucun</option>
                 <option value="manuel">Manuel / papier</option>
@@ -377,8 +377,8 @@ unset($_SESSION['error']);
               </select>
             </div>
             <div class="aqmi-lead-field">
-              <label>Système logistique</label>
-              <select name="logistics_system">
+              <label>Système logistique <span class="aqmi-req">*</span></label>
+              <select name="logistics_system" required>
                 <option value="">Sélectionnez...</option>
                 <option value="kanban">Kanban</option>
                 <option value="mrp">MRP</option>
@@ -391,12 +391,12 @@ unset($_SESSION['error']);
           </div>
           <div class="aqmi-lead-split">
             <div class="aqmi-lead-field">
-              <label>Budget R&D (% du CA)</label>
-              <input type="number" step="0.1" name="rd_budget_percent" min="0" max="100" placeholder="Ex: 4.5">
+              <label>Budget R&D (% du CA) <span class="aqmi-req">*</span></label>
+              <input type="number" step="0.1" name="rd_budget_percent" required min="0" max="100" placeholder="Ex: 4.5">
             </div>
             <div class="aqmi-lead-field">
-              <label>ERP actuel</label>
-              <select name="current_erp">
+              <label>ERP actuel <span class="aqmi-req">*</span></label>
+              <select name="current_erp" required>
                 <option value="">Sélectionnez...</option>
                 <option>SAP</option>
                 <option>Oracle</option>
