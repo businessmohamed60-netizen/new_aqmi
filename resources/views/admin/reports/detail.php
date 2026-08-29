@@ -170,6 +170,109 @@ $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), 
     <?php if ($report['observations']): ?><p style="margin-top:0.8rem;"><strong>Observations :</strong> <?= nl2br(e($report['observations'])) ?></p><?php endif; ?>
     <?php if ($report['action_plan']): ?><p><strong>Plan d'action :</strong> <?= nl2br(e($report['action_plan'])) ?></p><?php endif; ?>
 
+    <!-- Sous-section : Vérification publique du certificat -->
+    <div style="margin-top:1.2rem;padding:1rem 1.1rem;border:1px solid rgba(148,163,184,0.15);border-radius:12px;background:rgba(15,23,42,0.35);">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--auto-text-primary);margin-bottom:0.7rem;">
+        <i class="fas fa-qrcode" style="color:var(--auto-cyan);margin-right:0.35rem;"></i> Vérification publique du certificat
+      </div>
+
+      <?php if (!empty($verifyUrl)): ?>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-bottom:0.7rem;">
+          <span style="font-size:0.72rem;color:var(--auto-text-tertiary);">Lien public de vérification :</span>
+          <code style="font-size:0.7rem;color:var(--auto-cyan);background:rgba(34,211,238,0.08);padding:0.2rem 0.5rem;border-radius:6px;word-break:break-all;"><?= e($verifyUrl) ?></code>
+          <button type="button" onclick="navigator.clipboard.writeText('<?= e($verifyUrl) ?>');this.textContent='Copié !';setTimeout(()=>this.textContent='Copier',1500);" style="font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:6px;border:1px solid rgba(148,163,184,0.2);background:transparent;color:var(--auto-text-secondary);cursor:pointer;">
+            <i class="fas fa-copy"></i> Copier
+          </button>
+          <a href="<?= e($verifyUrl) ?>" target="_blank" rel="noopener" style="font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:6px;border:1px solid rgba(59,130,246,0.3);background:rgba(59,130,246,0.1);color:#60a5fa;text-decoration:none;">
+            <i class="fas fa-external-link-alt"></i> Ouvrir
+          </a>
+        </div>
+
+        <!-- QR code generator: shows existing QR or a generate button -->
+        <div style="display:flex;flex-wrap:wrap;gap:0.8rem;align-items:center;margin-bottom:0.7rem;padding:0.6rem 0.8rem;border-radius:10px;background:rgba(15,23,42,0.4);">
+          <?php if (!empty($report['qr_code_path']) && file_exists(BASE_PATH . '/storage/' . $report['qr_code_path'])): ?>
+            <img src="/storage/<?= e($report['qr_code_path']) ?>" alt="QR Code de vérification" style="width:72px;height:72px;border-radius:8px;border:1px solid rgba(148,163,184,0.15);background:#fff;padding:4px;">
+            <div>
+              <div style="font-size:0.7rem;color:var(--auto-text-secondary);margin-bottom:0.3rem;">
+                <i class="fas fa-check-circle" style="color:#22c55e;"></i> QR code généré — scannez pour ouvrir la page de vérification publique.
+              </div>
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                <a href="/admin/reports/<?= (int)$report['id'] ?>/qr" download style="font-size:0.68rem;padding:0.25rem 0.7rem;border-radius:6px;border:1px solid rgba(34,211,238,0.3);background:rgba(34,211,238,0.1);color:var(--auto-cyan);text-decoration:none;">
+                  <i class="fas fa-download"></i> Télécharger le QR
+                </a>
+                <a href="/admin/reports/<?= (int)$report['id'] ?>/qr" style="font-size:0.68rem;padding:0.25rem 0.7rem;border-radius:6px;border:1px solid rgba(148,163,184,0.2);background:transparent;color:var(--auto-text-secondary);text-decoration:none;">
+                  <i class="fas fa-rotate"></i> Régénérer
+                </a>
+              </div>
+            </div>
+          <?php else: ?>
+            <div style="width:72px;height:72px;border-radius:8px;border:1px dashed rgba(148,163,184,0.2);display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,0.3);">
+              <i class="fas fa-qrcode" style="font-size:1.8rem;color:rgba(148,163,184,0.3);"></i>
+            </div>
+            <div>
+              <div style="font-size:0.7rem;color:var(--auto-text-secondary);margin-bottom:0.3rem;">
+                Aucun QR code généré pour ce certificat.
+              </div>
+              <a href="/admin/reports/<?= (int)$report['id'] ?>/qr" style="font-size:0.68rem;padding:0.25rem 0.7rem;border-radius:6px;border:1px solid rgba(34,211,238,0.3);background:rgba(34,211,238,0.1);color:var(--auto-cyan);text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;">
+                <i class="fas fa-qrcode"></i> Générer le QR code
+              </a>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <?php
+        $certStatusLabels = ['active' => 'Valide', 'revoked' => 'Révoqué', 'expired' => 'Expiré', 'not_found' => '—'];
+        $certStatusColors = ['active' => '#22c55e', 'revoked' => '#ef4444', 'expired' => '#f59e0b', 'not_found' => '#64748b'];
+        $csl = $certStatusLabels[$certEffectiveStatus] ?? '—';
+        $csc = $certStatusColors[$certEffectiveStatus] ?? '#64748b';
+        ?>
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.72rem;margin-bottom:0.8rem;">
+          <div><span style="color:var(--auto-text-tertiary);">Statut :</span> <strong style="color:<?= $csc ?>;"><?= e($csl) ?></strong></div>
+          <?php if (!empty($report['issued_at'])): ?><div><span style="color:var(--auto-text-tertiary);">Émis le :</span> <span style="color:var(--auto-text-secondary);"><?= formatDate($report['issued_at']) ?></span></div><?php endif; ?>
+          <?php if (!empty($report['expires_at'])): ?><div><span style="color:var(--auto-text-tertiary);">Expire le :</span> <span style="color:var(--auto-text-secondary);"><?= formatDate($report['expires_at']) ?></span></div><?php endif; ?>
+        </div>
+
+        <?php if ($certEffectiveStatus === 'revoked'): ?>
+          <?php if (!empty($report['revoked_reason'])): ?>
+            <p style="font-size:0.72rem;color:#f87171;margin:0 0 0.7rem;"><i class="fas fa-ban"></i> Motif de révocation : <?= e($report['revoked_reason']) ?></p>
+          <?php endif; ?>
+          <form method="post" action="/admin/reports/<?= $report['id'] ?>/reactivate" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:flex-end;">
+            <div>
+              <label style="font-size:0.68rem;color:var(--auto-text-tertiary);display:block;margin-bottom:0.2rem;">Nouvelle date d'expiration (optionnel)</label>
+              <input type="date" name="expires_at" value="<?= e($report['expires_at'] ?? date('Y-m-d', strtotime('+1 year'))) ?>" style="font-size:0.72rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid rgba(148,163,184,0.2);background:rgba(15,23,42,0.6);color:var(--auto-text-primary);">
+            </div>
+            <button type="submit" class="cert-btn" style="background:#22c55e;color:#fff;font-size:0.72rem;" onclick="return confirm('Réactiver ce certificat ?');">
+              <i class="fas fa-rotate-right"></i> Réactiver le certificat
+            </button>
+          </form>
+        <?php elseif ($certEffectiveStatus === 'expired'): ?>
+          <form method="post" action="/admin/reports/<?= $report['id'] ?>/reactivate" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:flex-end;">
+            <div>
+              <label style="font-size:0.68rem;color:var(--auto-text-tertiary);display:block;margin-bottom:0.2rem;">Nouvelle date d'expiration</label>
+              <input type="date" name="expires_at" value="<?= e(date('Y-m-d', strtotime('+1 year'))) ?>" style="font-size:0.72rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid rgba(148,163,184,0.2);background:rgba(15,23,42,0.6);color:var(--auto-text-primary);">
+            </div>
+            <button type="submit" class="cert-btn" style="background:#3b82f6;color:#fff;font-size:0.72rem;" onclick="return confirm('Renouveler ce certificat expiré ?');">
+              <i class="fas fa-rotate-right"></i> Renouveler
+            </button>
+          </form>
+        <?php else: ?>
+          <form method="post" action="/admin/reports/<?= $report['id'] ?>/revoke" style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:flex-end;">
+            <div style="flex:1;min-width:200px;">
+              <label style="font-size:0.68rem;color:var(--auto-text-tertiary);display:block;margin-bottom:0.2rem;">Motif de révocation (optionnel)</label>
+              <input type="text" name="revoke_reason" placeholder="ex: Faux document, non-conformité..." style="width:100%;font-size:0.72rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid rgba(148,163,184,0.2);background:rgba(15,23,42,0.6);color:var(--auto-text-primary);">
+            </div>
+            <button type="submit" class="cert-btn" style="background:rgba(239,68,68,0.15);color:#ef4444;font-size:0.72rem;" onclick="return confirm('Révoquer ce certificat ? La page publique affichera « Certificat Révoqué ».');">
+              <i class="fas fa-ban"></i> Révoquer le certificat
+            </button>
+          </form>
+        <?php endif; ?>
+      <?php else: ?>
+        <p style="font-size:0.72rem;color:var(--auto-text-tertiary);margin:0;">
+          <i class="fas fa-info-circle"></i> Le lien de vérification publique sera généré automatiquement lors de la certification.
+        </p>
+      <?php endif; ?>
+    </div>
+
   <?php else: ?>
     <form method="post" action="/admin/reports/<?= $report['id'] ?>/<?= $status === 'approved' ? 'certify' : 'approve' ?>" class="cert-form">
       <label>Commentaire administrateur</label>

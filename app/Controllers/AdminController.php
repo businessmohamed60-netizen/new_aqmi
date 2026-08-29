@@ -795,6 +795,65 @@ class AdminController
         redirect('/admin/reports/' . $id);
     }
 
+    /**
+     * Génère (ou régénère) le QR code de vérification publique pour un rapport
+     * certifié et renvoie l'image PNG directement au navigateur. Accessible via
+     * /admin/reports/{id}/qr — utilisé par le bouton « Générer le QR code » dans
+     * le panneau de certification.
+     */
+    public function reportQrCode(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $report = Report::find($id);
+        if (!$report) {
+            http_response_code(404);
+            echo 'Rapport introuvable.';
+            return;
+        }
+
+        $token = Report::getOrAssignVerifyToken($id);
+
+        if (!class_exists('Endroid\QrCode\Builder\Builder')) {
+            http_response_code(503);
+            echo 'La librairie endroid/qr-code n\'est pas installée. Exécutez: composer require endroid/qr-code';
+            return;
+        }
+
+        $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+        if ($appUrl === '') {
+            $appUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+                . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        }
+        $verifyUrl = $appUrl . '/c/' . $token;
+
+        try {
+            $result = \Endroid\QrCode\Builder\Builder::create()
+                ->writer(new \Endroid\QrCode\Writer\PngWriter())
+                ->data($verifyUrl)
+                ->size(400)
+                ->margin(10)
+                ->foregroundColor(new \Endroid\QrCode\Color\Color(11, 31, 77))
+                ->backgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255))
+                ->build();
+
+            $qrDir = BASE_PATH . '/storage/qrcodes';
+            if (!is_dir($qrDir)) {
+                mkdir($qrDir, 0775, true);
+            }
+            $qrRelativePath = 'qrcodes/' . $token . '.png';
+            $result->saveToFile(BASE_PATH . '/storage/' . $qrRelativePath);
+            Report::setQrCodePath($id, $qrRelativePath);
+
+            header('Content-Type: image/png');
+            header('Content-Disposition: attachment; filename="AQMI-QR-' . ($report['report_number'] ?? $id) . '.png"');
+            echo $result->getString();
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo 'Erreur lors de la génération du QR code : ' . $e->getMessage();
+        }
+    }
+
     // === USERS ===
     public function users(): void
     {
