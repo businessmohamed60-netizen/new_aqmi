@@ -44,7 +44,10 @@ function csrf_token(): string
 
 function asset(string $path): string
 {
-    return '/assets/' . ltrim($path, '/');
+    $clean = ltrim($path, '/');
+    $file = BASE_PATH . '/public/assets/' . $clean;
+    $ver = is_file($file) ? filemtime($file) : '';
+    return '/assets/' . $clean . ($ver ? '?v=' . $ver : '');
 }
 
 function url(string $path = ''): string
