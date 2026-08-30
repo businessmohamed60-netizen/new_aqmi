@@ -412,7 +412,17 @@ class AdminController
 
         // Update lead main fields
         $leadData = [];
-        foreach (['company_size', 'website', 'certifications', 'founded_year', 'production_type', 'notes'] as $f) {
+        foreach ([
+            'company_size', 'website', 'certifications', 'founded_year',
+            'production_type', 'notes', 'sector', 'activity_category',
+            'oem_tier', 'product_category', 'main_clients', 'annual_revenue',
+            'export_percentage', 'production_sites', 'workforce_production',
+            'workforce_engineering', 'job_title', 'phone', 'country',
+            'production_capacity', 'machine_count', 'machine_types',
+            'main_materials', 'process_technologies', 'ppm_target', 'otd_rate',
+            'fta_rate', 'scrap_rate', 'traceability_system', 'logistics_system',
+            'rd_budget_percent', 'current_erp',
+        ] as $f) {
             if (isset($_POST[$f])) $leadData[$f] = $_POST[$f];
         }
         if (!empty($leadData)) Lead::update($leadId, $leadData);

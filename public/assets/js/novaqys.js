@@ -107,7 +107,7 @@
       }
     });
 
-    /* ─── Hero parallax ───────────────────────────────────────────── */
+    /* ─── Hero parallax (subtle, no fade-out) ──────────────────────── */
     const hero = document.querySelector('.hero');
     const heroContent = document.querySelector('.hero-content');
     if (hero && heroContent) {
@@ -115,11 +115,9 @@
         const rect = hero.getBoundingClientRect();
         const progress = Math.max(0, Math.min(1, -rect.top / (rect.height * 0.5)));
         if (progress > 0) {
-          heroContent.style.transform = 'translateY(' + (progress * 20) + 'px)';
-          heroContent.style.opacity = Math.max(0, 1 - (progress * 1.5));
+          heroContent.style.transform = 'translateY(' + (progress * 12) + 'px)';
         } else {
           heroContent.style.transform = '';
-          heroContent.style.opacity = '';
         }
       }, { passive: true });
     }

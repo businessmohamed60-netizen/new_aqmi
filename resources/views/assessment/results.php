@@ -26,6 +26,21 @@ $isRejected = $reportStatus === 'rejected';
 
 $domainScores = $analysis['domain_scores'];
 $domainCount = count($domainScores);
+
+// Compute optimal column count for balanced grid rows.
+// Tries column counts 2–6 and picks the one where the last row
+// is closest to full (minimises orphan cards). Tie → more columns.
+$optimalCols = 2;
+$bestScore = PHP_INT_MAX;
+for ($c = 2; $c <= min(6, max(2, $domainCount)); $c++) {
+    $rem = $domainCount % $c;
+    $score = $rem === 0 ? 0 : ($c - $rem);
+    if ($score < $bestScore || ($score === $bestScore && $c > $optimalCols)) {
+        $bestScore = $score;
+        $optimalCols = $c;
+    }
+}
+if ($domainCount <= 1) $optimalCols = 1;
 $recommendations = $recommendations ?? [];
 $strengths = $analysis['strengths'] ?? [];
 $weaknesses = $analysis['weaknesses'] ?? [];
@@ -133,7 +148,7 @@ ob_start();
         </div>
       </div>
       <div class="aqmi-results-card">
-        <div class="aqmi-domain-grid">
+        <div class="aqmi-domain-grid" style="grid-template-columns:repeat(<?= $optimalCols ?>, 1fr);--cols:<?= $optimalCols ?>;">
           <?php foreach ($domainScores as $i => $ds):
             $pct = round($ds['percent_score']);
             $c = $pct >= 70 ? '#2EC4B6' : ($pct >= 50 ? '#9d8fd1' : '#E5484D');
@@ -141,6 +156,9 @@ ob_start();
             <div class="aqmi-domain-item">
               <div class="aqmi-domain-score" style="color:<?= $c ?>;"><?= $pct ?>%</div>
               <div class="aqmi-domain-name"><?= e($ds['domain_name_fr'] ?: $ds['domain_name']) ?></div>
+              <div class="aqmi-domain-bar">
+                <div class="aqmi-domain-bar-fill" style="width:<?= $pct ?>%;background:<?= $c ?>;"></div>
+              </div>
             </div>
           <?php endforeach; ?>
         </div>

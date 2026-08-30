@@ -262,17 +262,17 @@ input,button,textarea,select{font:inherit}
   position:relative;min-height:100vh;display:flex;align-items:center;
   overflow:hidden;padding-top:4.5rem;padding-bottom:5rem;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,207,232,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 20% 50%, rgba(115,103,240,0.03) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(255,159,67,0.03) 0%, transparent 50%),
-    linear-gradient(165deg, #080c10 0%, #0a1218 30%, #0d1620 60%, #08101a 100%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,207,232,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 20% 50%, rgba(115,103,240,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(255,159,67,0.04) 0%, transparent 50%),
+    linear-gradient(165deg, #0c1118 0%, #101820 30%, #0e1622 60%, #0b1118 100%);
 }
 .hero::before{
   content:'';position:absolute;inset:0;
   background-image:
-    radial-gradient(circle at 20% 30%,rgba(0,207,232,0.08) 0%,transparent 50%),
-    radial-gradient(circle at 80% 70%,rgba(255,159,67,0.06) 0%,transparent 50%),
-    radial-gradient(circle at 50% 100%,rgba(115,103,240,0.05) 0%,transparent 50%);
+    radial-gradient(circle at 20% 30%,rgba(0,207,232,0.10) 0%,transparent 50%),
+    radial-gradient(circle at 80% 70%,rgba(255,159,67,0.07) 0%,transparent 50%),
+    radial-gradient(circle at 50% 100%,rgba(115,103,240,0.06) 0%,transparent 50%);
   pointer-events:none;animation:heroGlowShift 20s ease-in-out infinite alternate;
 }
 @keyframes heroGlowShift{
