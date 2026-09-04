@@ -680,6 +680,14 @@
   .submit-note.show{opacity:1;}
 
 
+  .field-error{display:block;font-family:var(--font-mono);font-size:10px;color:var(--red);margin-top:6px;opacity:0;transform:translateY(-3px);transition:opacity .25s,transform .25s;}
+  .field.invalid .field-error{opacity:1;transform:none;}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--red);}
+  .req{color:var(--red);}
+  .opt{color:var(--steel-dim);font-weight:400;font-size:11px;}
+  .form-privacy-note{grid-column:1/-1;display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid var(--panel-border);font-size:11.5px;color:var(--steel);line-height:1.5;}
+  .form-privacy-note svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;color:var(--cyan);}
+
   .site-footer{border-top:1px solid var(--panel-border);padding:60px 0 30px;}
   .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;}
   @media(max-width:700px){.footer-grid{grid-template-columns:1fr;}}
@@ -1495,29 +1503,82 @@
         <p style="color:var(--steel);font-size:13.5px;margin-bottom:22px;line-height:1.6;">Notre équipe vous recontactera sous 48h pour activer votre compte et vous accompagner.</p>
         <div class="form-progress-row"><span>Progression</span><b id="formProgressLabel">0/8 champs complétés</b></div>
         <div class="form-progress-track"><div class="form-progress-fill" id="formProgressFill"></div></div>
-        <form class="form-grid" id="accountForm" onsubmit="return false;">
+        <form class="form-grid" id="accountForm" novalidate>
           <div class="form-section-label">Votre entreprise</div>
-          <div class="field"><label>ENTREPRISE *</label><input type="text" required></div>
-          <div class="field"><label>SECTEUR D'ACTIVITÉ *</label><input type="text" required></div>
-          <div class="field"><label>PAYS *</label><input type="text" required></div>
-          <div class="field"><label>TAILLE ENTREPRISE *</label>
-            <select required><option value="">Sélectionner...</option><option>1-10 employés</option><option>11-50 employés</option><option>51-200 employés</option><option>201-500 employés</option><option>500+ employés</option></select>
+          <div class="field">
+            <label for="f-company">Entreprise <span class="req">*</span></label>
+            <input id="f-company" name="company" type="text" placeholder="Nom de votre entreprise" required>
+            <span class="field-error">Merci d'indiquer le nom de votre entreprise.</span>
           </div>
+          <div class="field">
+            <label for="f-sector">Secteur d'activité <span class="req">*</span></label>
+            <input id="f-sector" name="sector" type="text" placeholder="Ex. équipementier automobile" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-country">Pays <span class="req">*</span></label>
+            <input id="f-country" name="country" type="text" placeholder="Ex. Algérie" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-size">Taille entreprise <span class="req">*</span></label>
+            <select id="f-size" name="size" required>
+              <option value="">Sélectionner...</option>
+              <option>1-10 employés</option>
+              <option>11-50 employés</option>
+              <option>51-200 employés</option>
+              <option>201-500 employés</option>
+              <option>500+ employés</option>
+            </select>
+            <span class="field-error">Merci de sélectionner une taille d'entreprise.</span>
+          </div>
+
           <div class="form-section-label">Vos coordonnées</div>
-          <div class="field"><label>NOM COMPLET *</label><input type="text" required></div>
-          <div class="field"><label>FONCTION *</label><input type="text" required></div>
-          <div class="field"><label>EMAIL PROFESSIONNEL *</label><input type="email" required></div>
-          <div class="field"><label>TÉLÉPHONE *</label><input type="tel" required></div>
+          <div class="field">
+            <label for="f-name">Nom complet <span class="req">*</span></label>
+            <input id="f-name" name="fullname" type="text" placeholder="Prénom et nom" required autocomplete="name">
+            <span class="field-error">Merci d'indiquer votre nom.</span>
+          </div>
+          <div class="field">
+            <label for="f-role">Fonction <span class="req">*</span></label>
+            <input id="f-role" name="role" type="text" placeholder="Ex. Responsable Qualité" required autocomplete="organization-title">
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-email">Email professionnel <span class="req">*</span></label>
+            <input id="f-email" name="email" type="email" placeholder="vous@entreprise.com" required autocomplete="email">
+            <span class="field-error">Merci d'indiquer une adresse email valide.</span>
+          </div>
+          <div class="field">
+            <label for="f-phone">Téléphone <span class="req">*</span></label>
+            <input id="f-phone" name="phone" type="tel" placeholder="+213 5XX XX XX XX" required autocomplete="tel">
+            <span class="field-error">Merci d'indiquer un numéro de téléphone.</span>
+          </div>
+
           <div class="form-section-label">Votre projet</div>
-          <div class="field full"><label>PLATEFORMES QUI VOUS INTÉRESSENT</label>
-            <div class="chip-row">
-              <span class="chip">AQMI Starter</span><span class="chip">AQMI Professional</span><span class="chip">NARA</span><span class="chip">NOVAQYS LMS</span><span class="chip">NOVAQYS QMS</span><span class="chip">ASIN</span>
+          <div class="field full">
+            <label for="chip-0">Plateformes qui vous intéressent <span class="opt">(optionnel, sélection multiple)</span></label>
+            <div class="chip-row" role="group" aria-label="Plateformes qui vous intéressent">
+              <span class="chip" id="chip-0" role="checkbox" aria-checked="false" tabindex="0">AQMI Starter</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">AQMI Professional</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NARA</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS LMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS QMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">ASIN</span>
             </div>
           </div>
-          <div class="field full"><label>MESSAGE (OPTIONNEL)</label><textarea></textarea></div>
+          <div class="field full">
+            <label for="f-message">Message <span class="opt">(optionnel)</span></label>
+            <textarea id="f-message" name="message" placeholder="Décrivez brièvement votre projet ou votre besoin..."></textarea>
+          </div>
+
           <div class="submit-row">
             <button class="btn primary submit-btn" type="submit" id="submitBtn">Envoyer ma demande</button>
             <span class="submit-note" id="submitNote">✓ Demande envoyée — nous revenons vers vous sous 48h</span>
+          </div>
+          <div class="form-privacy-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Vos données restent confidentielles et sont utilisées uniquement pour traiter votre demande.
           </div>
         </form>
       </div>
@@ -1899,9 +1960,10 @@ if(REDUCE_MOTION){
 /* Chip toggle in the account-request form (visual only) */
 document.querySelectorAll('.chip').forEach(chip=>{
   chip.addEventListener('click', ()=>chip.classList.toggle('active'));
+  chip.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); chip.classList.toggle('active'); } });
 });
 
-/* ---- Contact form: live completion progress + fake send/success state ---- */
+/* ---- Contact form: live completion progress + validation + send state ---- */
 (function(){
   const form = document.getElementById('accountForm');
   if(!form) return;
@@ -1917,6 +1979,7 @@ document.querySelectorAll('.chip').forEach(chip=>{
   requiredFields.forEach(f=>{
     f.addEventListener('input', updateProgress);
     f.addEventListener('change', updateProgress);
+    f.addEventListener('input', ()=>{ f.closest('.field').classList.remove('invalid'); });
   });
   updateProgress();
 
@@ -1925,6 +1988,20 @@ document.querySelectorAll('.chip').forEach(chip=>{
   form.addEventListener('submit', (e)=>{
     e.preventDefault();
     if(submitBtn.classList.contains('sending') || submitBtn.classList.contains('sent')) return;
+    let valid = true;
+    requiredFields.forEach(f=>{
+      const field = f.closest('.field');
+      if(!f.value || f.value.trim() === ''){
+        field.classList.add('invalid');
+        valid = false;
+      } else if(f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value)){
+        field.classList.add('invalid');
+        valid = false;
+      } else {
+        field.classList.remove('invalid');
+      }
+    });
+    if(!valid) return;
     submitBtn.classList.add('sending');
     submitBtn.textContent = 'Envoi en cours…';
     setTimeout(()=>{
