@@ -20,12 +20,15 @@
     --amber-soft:rgba(217,164,65,.35);
     --red:#e2495a;
     --green:#2bc46a;
+    --violet:#9b7fe0;
+    --violet-soft:rgba(155,127,224,.35);
     --font-display:'Space Grotesk',sans-serif;
     --font-body:'Inter',sans-serif;
     --font-mono:'IBM Plex Mono',monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{background:var(--bg-void);}
+  html{background:#03050a;}
+  body{background:transparent;}
   body{
     color:var(--white);font-family:var(--font-body);
     -webkit-font-smoothing:antialiased;overflow-x:hidden;
@@ -33,12 +36,56 @@
   a{color:inherit;text-decoration:none;}
   ::selection{background:var(--cyan);color:#000;}
 
-  /* ---------------- STAGE (pixel-faithful 1536x1024 canvas, scaled to fit) --------------- */
-  .stage-wrap{position:relative;width:100%;overflow:hidden;background:
-    radial-gradient(ellipse 60% 50% at 50% 38%, rgba(59,147,240,.10), transparent 65%),
-    radial-gradient(ellipse 70% 60% at 50% 95%, rgba(59,147,240,.06), transparent 70%),
-    var(--bg-void);
+  /* ---------------- MODERN AURORA BACKGROUND (fixed, sits behind the entire page) ---------------- */
+  .bg-aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+    background:linear-gradient(165deg,#04060c 0%,#060912 42%,#04060c 78%,#03050a 100%);
   }
+  .bg-aurora .blob{position:absolute;border-radius:50%;filter:blur(85px);will-change:transform;mix-blend-mode:screen;}
+  .bg-aurora .blob-1{width:640px;height:640px;left:-160px;top:-200px;
+    background:radial-gradient(circle,rgba(59,147,240,.5),transparent 70%);}
+  .bg-aurora .blob-2{width:520px;height:520px;right:-140px;top:4%;
+    background:radial-gradient(circle,rgba(217,164,65,.32),transparent 70%);}
+  .bg-aurora .blob-3{width:580px;height:580px;left:6%;top:48%;
+    background:radial-gradient(circle,rgba(155,127,224,.32),transparent 70%);}
+  .bg-aurora .blob-4{width:520px;height:520px;right:2%;bottom:-160px;
+    background:radial-gradient(circle,rgba(43,196,106,.26),transparent 70%);}
+  .bg-aurora .blob-5{width:460px;height:460px;left:38%;bottom:8%;
+    background:radial-gradient(circle,rgba(59,147,240,.22),transparent 70%);}
+  @media (prefers-reduced-motion: no-preference){
+    .bg-aurora .blob-1{animation:auroraFloat1 28s ease-in-out infinite;}
+    .bg-aurora .blob-2{animation:auroraFloat2 34s ease-in-out infinite;}
+    .bg-aurora .blob-3{animation:auroraFloat3 31s ease-in-out infinite;}
+    .bg-aurora .blob-4{animation:auroraFloat4 36s ease-in-out infinite;}
+    .bg-aurora .blob-5{animation:auroraFloat2 40s ease-in-out infinite reverse;}
+    @keyframes auroraFloat1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(70px,55px) scale(1.14);}}
+    @keyframes auroraFloat2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-55px,65px) scale(1.08);}}
+    @keyframes auroraFloat3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(45px,-45px) scale(1.1);}}
+    @keyframes auroraFloat4{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-45px,-55px) scale(1.16);}}
+  }
+  .bg-aurora::after{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 90% 65% at 50% 0%,transparent 0%,rgba(3,5,10,.55) 78%,#03050a 100%);
+  }
+
+  /* ---------------- STARFIELD (twinkling stars over the aurora, full page) ---------------- */
+  .bg-stars{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .star{position:absolute;top:var(--y);left:var(--x);width:var(--s);height:var(--s);border-radius:50%;
+    background:#fff;opacity:var(--o,.6);will-change:opacity;
+  }
+  .star.tinted{background:var(--tint,#fff);box-shadow:0 0 var(--glow,4px) rgba(255,255,255,.5);}
+  .star.bright{box-shadow:0 0 var(--glow,5px) rgba(255,255,255,.7);}
+  @media (prefers-reduced-motion: no-preference){
+    .star{animation:twinkle var(--dur,3.5s) ease-in-out var(--delay,0s) infinite;}
+    @keyframes twinkle{
+      0%,100%{opacity:var(--o-min,.15);transform:scale(.8);}
+      50%{opacity:var(--o-max,1);transform:scale(1.15);}
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .star{opacity:.55;}
+  }
+
+  /* ---------------- STAGE (pixel-faithful 1536x1024 canvas, scaled to fit) --------------- */
+  .stage-wrap{position:relative;width:100%;overflow:hidden;background:transparent;}
   .stage{
     width:1536px;height:1024px;position:relative;transform-origin:top left;
   }
@@ -297,7 +344,27 @@
   .stage.mobile-flow .jarrow{width:20px;margin:0 4px;}
 
   /* ================= SITE SECTIONS (below the AQMI hero) ================= */
-  .site{background:var(--bg-void);color:var(--white);font-family:var(--font-body);}
+  .site{
+    position:relative;
+    background:transparent;
+    color:var(--white);font-family:var(--font-body);
+  }
+  /* subtle blueprint grid, echoing the hero, running the length of the page */
+  .site::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.4;
+    background-image:
+      linear-gradient(rgba(59,147,240,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,147,240,.045) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:linear-gradient(180deg, black, black 85%, transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg, black, black 85%, transparent 100%);
+  }
+  /* film grain, matching the hero's texture, over the full page */
+  .site::after{
+    content:'';position:absolute;inset:0;z-index:999;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
   .wrap{max-width:1200px;margin:0 auto;padding:0 32px;}
   @media(max-width:760px){.wrap{padding:0 20px;}}
   .sec{padding:110px 0;position:relative;}
@@ -544,28 +611,59 @@
   .pmock-passport-score i{display:block;font-family:var(--font-mono);font-style:normal;font-size:7.5px;color:var(--steel-dim);letter-spacing:.05em;margin-top:2px;}
 
 
-  .module-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px;}
+  .module-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px;}
   @media(max-width:980px){.module-grid{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:640px){.module-grid{grid-template-columns:1fr;}}
-  .module-card{border:1px solid var(--panel-border);border-radius:8px;padding:18px;background:rgba(13,17,24,.35);transition:border-color .3s,transform .32s cubic-bezier(.16,.8,.3,1),box-shadow .3s,opacity .32s cubic-bezier(.16,.8,.3,1);}
-  .module-card:hover{border-color:var(--amber-soft);transform:translateY(-3px);box-shadow:0 12px 26px -18px var(--amber-soft);}
+
+  /* ---- Plateforme Centrale — header + domain legend ---- */
+  .qms-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+  .qms-head .sec-eyebrow,.qms-head .sec-title,.qms-head .sec-sub{text-align:left;margin-left:0;margin-right:0;}
+  #qms .challenge-intro{justify-content:flex-start;}
+  .qms-legend{display:flex;flex-direction:column;gap:9px;font-family:var(--font-mono);font-size:10.5px;color:var(--steel);padding-bottom:4px;flex:none;}
+  .qms-legend span{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .qms-legend i{width:7px;height:7px;border-radius:50%;flex:none;}
+  .dot-production{background:var(--cyan);box-shadow:0 0 6px var(--cyan-soft);}
+  .dot-qualite{background:var(--amber);box-shadow:0 0 6px var(--amber-soft);}
+  .dot-gestion{background:var(--green);box-shadow:0 0 6px rgba(43,196,106,.4);}
+  .dot-pilotage{background:var(--violet);box-shadow:0 0 6px var(--violet-soft);}
+  @media(max-width:760px){.qms-head{flex-direction:column;align-items:flex-start;}.qms-legend{flex-direction:row;flex-wrap:wrap;gap:16px;}}
+
+  /* ---- category filters ---- */
+  .qms-filters{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 6px;}
+  .qms-filter{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;color:var(--steel);background:rgba(255,255,255,.02);border:1px solid var(--panel-border);border-radius:20px;padding:8px 8px 8px 16px;cursor:pointer;transition:border-color .3s,color .3s,background .3s;}
+  .qms-filter b{font-weight:600;font-size:10px;color:var(--steel-dim);background:rgba(255,255,255,.05);border-radius:12px;padding:3px 8px;transition:background .3s,color .3s;}
+  .qms-filter:hover{color:var(--white);border-color:var(--cyan-soft);}
+  .qms-filter.active{color:var(--white);border-color:var(--cyan-soft);background:rgba(59,147,240,.1);}
+  .qms-filter.active b{background:linear-gradient(90deg,var(--cyan),var(--amber));color:#04101f;}
+
+  /* ---- module cards, 4 domain accents via data-cat ---- */
+  .module-card{
+    --accent:var(--cyan);--accent-soft:var(--cyan-soft);
+    position:relative;border:1px solid var(--panel-border);border-radius:10px;padding:20px 18px 18px;
+    background:rgba(13,17,24,.35);overflow:hidden;
+    transition:border-color .3s,transform .32s cubic-bezier(.16,.8,.3,1),box-shadow .3s,opacity .32s cubic-bezier(.16,.8,.3,1);
+  }
+  .module-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:var(--accent);opacity:.55;transition:opacity .3s,width .3s;}
+  .module-card:hover{border-color:var(--accent-soft);transform:translateY(-4px);box-shadow:0 14px 28px -18px var(--accent-soft);}
+  .module-card:hover::before{opacity:1;width:3.5px;}
+  .module-card[data-cat="qualite"]{--accent:var(--amber);--accent-soft:var(--amber-soft);}
+  .module-card[data-cat="gestion"]{--accent:var(--green);--accent-soft:rgba(43,196,106,.35);}
+  .module-card[data-cat="pilotage"]{--accent:var(--violet);--accent-soft:var(--violet-soft);}
+  .module-idx{position:absolute;top:14px;right:16px;font-family:var(--font-mono);font-size:10px;color:var(--steel-dim);letter-spacing:.05em;opacity:.6;transition:opacity .3s;}
+  .module-card:hover .module-idx{opacity:1;color:var(--accent);}
   .module-card h4{font-family:var(--font-display);font-size:14px;margin-bottom:6px;}
   .module-card p{color:var(--steel);font-size:12.5px;line-height:1.55;}
   .module-card.hide{opacity:0;transform:scale(.88);pointer-events:none;}
-
-  /* ---- Plateforme Centrale — category filters + enriched module cards ---- */
-  .qms-filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:30px 0 6px;}
-  .qms-filter{font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;color:var(--steel);background:transparent;border:1px solid var(--panel-border);border-radius:20px;padding:8px 16px;cursor:pointer;transition:border-color .3s,color .3s,background .3s;}
-  .qms-filter:hover{color:var(--white);border-color:var(--cyan-soft);}
-  .qms-filter.active{color:var(--cyan);border-color:var(--cyan-soft);background:rgba(59,147,240,.1);}
+  .module-arrow{display:inline-block;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--accent);opacity:0;transform:translateX(-4px);transition:opacity .25s,transform .25s;}
+  .module-card:hover .module-arrow{opacity:1;transform:translateX(0);}
 
   .module-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
-  .module-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,rgba(59,147,240,.16),rgba(59,147,240,.03));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;transition:transform .3s cubic-bezier(.16,.8,.3,1);}
+  .module-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,rgba(59,147,240,.16),rgba(59,147,240,.03));border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none;transition:transform .3s cubic-bezier(.16,.8,.3,1),background .3s;}
+  .module-card[data-cat="qualite"] .module-icon{background:linear-gradient(135deg,rgba(217,164,65,.16),rgba(217,164,65,.03));}
+  .module-card[data-cat="gestion"] .module-icon{background:linear-gradient(135deg,rgba(43,196,106,.16),rgba(43,196,106,.03));}
+  .module-card[data-cat="pilotage"] .module-icon{background:linear-gradient(135deg,rgba(155,127,224,.18),rgba(155,127,224,.03));}
   .module-card:hover .module-icon{transform:scale(1.08) rotate(-3deg);}
-  .module-icon svg{width:15px;height:15px;color:var(--cyan);}
-  .module-card.amber-cat .module-icon{background:linear-gradient(135deg,rgba(217,164,65,.16),rgba(217,164,65,.03));border-color:var(--amber-soft);}
-  .module-card.amber-cat .module-icon svg{color:var(--amber);}
-  .module-card.amber-cat:hover{border-color:var(--amber-soft);}
+  .module-icon svg{width:15px;height:15px;color:var(--accent);}
   .module-cat{font-family:var(--font-mono);font-size:8px;letter-spacing:.05em;color:var(--steel-dim);text-transform:uppercase;padding-top:5px;}
 
   /* ---------------- MODERN CENTERED TIMELINE (Parcours) ---------------- */
@@ -658,26 +756,72 @@
   .contact-link-item:hover b{color:var(--cyan);}
   .contact-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding-top:22px;border-top:1px solid var(--panel-border);}
 
-  .form-panel{background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:32px;}
+  .form-panel{position:relative;background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:32px;overflow:hidden;}
+  .form-panel::before{content:'';position:absolute;top:-40%;right:-20%;width:60%;height:180%;background:radial-gradient(ellipse closest-side, rgba(59,147,240,.10), transparent 70%);pointer-events:none;}
   .form-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
-  .form-progress-row b{color:var(--white);}
+  .form-progress-row b{color:var(--white);transition:color .25s;}
+  .form-progress-row b.complete{color:var(--green);}
   .form-progress-track{height:5px;border-radius:3px;background:rgba(255,255,255,.06);margin-bottom:26px;overflow:hidden;}
-  .form-progress-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width .4s cubic-bezier(.16,.8,.3,1);}
-  .form-section-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--cyan);text-transform:uppercase;margin:24px 0 12px;grid-column:1/-1;}
+  .form-progress-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width .4s cubic-bezier(.16,.8,.3,1);box-shadow:0 0 10px rgba(59,147,240,.5);}
+
+  /* ---- form layout ---- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;position:relative;z-index:1;}
+  @media(max-width:520px){.form-grid{grid-template-columns:1fr;}}
+  .form-section-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin:26px 0 4px;grid-column:1/-1;}
+  .form-section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--panel-border),transparent);}
   .form-grid>.form-section-label:first-child{margin-top:0;}
-  .field input,.field select,.field textarea{transition:border-color .25s,box-shadow .25s;}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--cyan-soft);box-shadow:0 0 0 3px rgba(59,147,240,.12);}
-  .chip{display:inline-flex;align-items:center;gap:6px;}
-  .chip::before{content:'+';color:var(--steel-dim);transition:color .2s;}
-  .chip.active{background:rgba(59,147,240,.12);}
-  .chip.active::before{content:'✓';color:var(--cyan);}
-  .submit-row{grid-column:1/-1;display:flex;align-items:center;gap:14px;}
-  .submit-btn{position:relative;transition:background .3s,transform .15s,opacity .3s;}
+  .field{grid-column:span 1;display:flex;flex-direction:column;gap:7px;}
+  .field.full{grid-column:1/-1;}
+  .field label{display:flex;align-items:baseline;gap:5px;font-family:var(--font-mono);font-size:10px;letter-spacing:.07em;color:var(--steel);text-transform:uppercase;}
+  .field label .req{color:var(--amber);font-size:11px;}
+  .field label .opt{font-size:9px;color:var(--steel-dim);text-transform:none;letter-spacing:0;font-family:var(--font-body);font-style:italic;}
+
+  /* ---- field controls ---- */
+  .field input,.field select,.field textarea{
+    width:100%;background:rgba(255,255,255,.028);border:1px solid var(--panel-border);border-radius:8px;
+    padding:12px 14px;color:var(--white);font-family:var(--font-body);font-size:13.5px;
+    transition:border-color .25s,box-shadow .25s,background .25s;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:var(--steel-dim);}
+  .field input:hover,.field select:hover,.field textarea:hover{border-color:#2a3240;}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--cyan);background:rgba(59,147,240,.045);
+    box-shadow:0 0 0 3px rgba(59,147,240,.14);
+  }
+  .field select{appearance:none;-webkit-appearance:none;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238b93a3' stroke-width='1.6'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:36px;}
+  .field select:invalid{color:var(--steel-dim);}
+  .field select option{background:#0d1118;color:var(--white);}
+  .field textarea{resize:vertical;min-height:96px;line-height:1.55;font-family:var(--font-body);}
+  .field-hint{font-family:var(--font-mono);font-size:9.5px;color:var(--steel-dim);letter-spacing:.02em;}
+  .field-error{display:none;font-family:var(--font-mono);font-size:10px;color:var(--red);letter-spacing:.02em;align-items:center;gap:5px;}
+  .field-error::before{content:'!';display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--red);color:#fff;font-size:8.5px;font-weight:700;flex:none;}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--red);background:rgba(226,73,90,.06);}
+  .field.invalid .field-error{display:flex;}
+  .field.valid input,.field.valid select,.field.valid textarea{border-color:rgba(43,196,106,.45);}
+
+  /* ---- platform chips (multi-select) ---- */
+  .chip-row{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+    background:rgba(255,255,255,.03);border:1px solid var(--panel-border);border-radius:20px;
+    padding:8px 14px 8px 11px;font-family:var(--font-mono);font-size:11px;color:var(--steel);
+    transition:border-color .2s,background .2s,color .2s,transform .15s;}
+  .chip:hover{border-color:var(--cyan-soft);color:var(--white);transform:translateY(-1px);}
+  .chip::before{content:'+';display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.06);color:var(--steel-dim);font-size:10px;transition:all .2s;flex:none;}
+  .chip.active{background:rgba(59,147,240,.14);border-color:var(--cyan);color:var(--white);}
+  .chip.active::before{content:'✓';background:var(--cyan);color:#04101f;}
+
+  .submit-row{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:6px;}
+  .submit-btn{position:relative;min-width:200px;text-align:center;transition:background .3s,transform .15s,opacity .3s;}
+  .submit-btn:hover:not(.sending):not(.sent){filter:brightness(1.1);transform:translateY(-1px);}
   .submit-btn:active{transform:scale(.97);}
   .submit-btn.sending{opacity:.75;pointer-events:none;}
   .submit-btn.sent{background:var(--green);}
   .submit-note{font-family:var(--font-mono);font-size:11px;color:var(--green);opacity:0;transition:opacity .3s;}
   .submit-note.show{opacity:1;}
+  .form-privacy-note{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin-top:2px;font-family:var(--font-mono);font-size:10px;color:var(--steel-dim);line-height:1.5;}
+  .form-privacy-note svg{width:13px;height:13px;color:var(--steel-dim);flex:none;margin-top:1px;}
 
 
   .site-footer{border-top:1px solid var(--panel-border);padding:60px 0 30px;}
@@ -691,6 +835,14 @@
 </style>
 </head>
 <body>
+<div class="bg-aurora" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+  <span class="blob blob-4"></span>
+  <span class="blob blob-5"></span>
+  <div class="bg-stars" id="bgStars"></div>
+</div>
 
 <div class="stage-wrap" id="stageWrap">
 <div class="stage" id="stage">
@@ -1186,269 +1338,50 @@
 <!-- ============ NOVAQYS QMS (modules) ============ -->
 <section class="sec" id="qms">
   <div class="wrap">
-    <div class="sec-eyebrow reveal">Plateforme Centrale</div>
-    <h2 class="sec-title reveal">NOVAQYS Automotive <b>Manufacturing Management</b> Platform</h2>
-    <p class="sec-sub reveal">La plateforme centrale de gestion de votre entreprise. Modules interconnectés couvrant tous les aspects de votre production.</p>
+    <div class="qms-head reveal">
+      <div>
+        <div class="sec-eyebrow">Plateforme Centrale</div>
+        <h2 class="sec-title">NOVAQYS Automotive <b>Manufacturing Management</b> Platform</h2>
+        <p class="sec-sub">La plateforme centrale de gestion de votre entreprise. Modules interconnectés couvrant tous les aspects de votre production.</p>
+      </div>
+      <div class="qms-legend">
+        <span><i class="dot-production"></i>Production</span>
+        <span><i class="dot-qualite"></i>Qualité</span>
+        <span><i class="dot-gestion"></i>Gestion &amp; Supply Chain</span>
+        <span><i class="dot-pilotage"></i>Pilotage &amp; IA</span>
+      </div>
+    </div>
     <div class="challenge-intro reveal">
       <div class="challenge-stat"><i></i>18 modules</div>
       <div class="challenge-stat"><i></i>4 domaines</div>
       <div class="challenge-stat"><i></i>1 plateforme unifiée</div>
     </div>
     <div class="qms-filters reveal">
-      <button class="qms-filter active" data-filter="all">Tous (18)</button>
-      <button class="qms-filter" data-filter="production">Production (5)</button>
-      <button class="qms-filter" data-filter="qualite">Qualité (5)</button>
-      <button class="qms-filter" data-filter="gestion">Gestion &amp; Supply Chain (5)</button>
-      <button class="qms-filter" data-filter="pilotage">Pilotage &amp; IA (3)</button>
+      <button class="qms-filter active" data-filter="all">Tous<b>18</b></button>
+      <button class="qms-filter" data-filter="production">Production<b>5</b></button>
+      <button class="qms-filter" data-filter="qualite">Qualité<b>5</b></button>
+      <button class="qms-filter" data-filter="gestion">Gestion &amp; Supply Chain<b>5</b></button>
+      <button class="qms-filter" data-filter="pilotage">Pilotage &amp; IA<b>3</b></button>
     </div>
     <div class="module-grid">
-      <div class="module-card reveal" data-cat="production"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3v-3l6 3v7H3z"/><path d="M7 21v-4M12 21v-4M16 21v-4"/></svg></div><span class="module-cat">Production</span></div><h4>Production &amp; MES</h4><p>Gestion des ordres de fabrication, suivi shop floor et OEE temps réel.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="qualite"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div><span class="module-cat">Qualité</span></div><h4>Qualité</h4><p>CAPA, FMEA, SPC, plan de surveillance. Contrôle qualité intégral.</p></div>
-      <div class="module-card reveal" data-cat="production"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 005.4-5.4l-2.3 2.3-2-2 2.3-2.3z"/></svg></div><span class="module-cat">Production</span></div><h4>Maintenance</h4><p>GMAO préventive et curative. Historique des interventions et alertes.</p></div>
-      <div class="module-card reveal" data-cat="gestion"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="11" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="16" cy="18" r="1.6"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Supply Chain</h4><p>Gestion des stocks, achats et logistique. Approvisionnements optimisés.</p></div>
-      <div class="module-card reveal" data-cat="gestion"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 2v18M4 6.5l8 4.5 8-4.5"/></svg></div><span class="module-cat">Gestion</span></div><h4>ERP Intégré</h4><p>Gestion complète des ressources : RH, ventes, finances et planification.</p></div>
-      <div class="module-card reveal" data-cat="production"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16M7 4v16M10 4v16M14 4v16M17 4v16M20 4v16"/></svg></div><span class="module-cat">Production</span></div><h4>MES &amp; Traçabilité</h4><p>Manufacturing Execution System avec traçabilité complète batch.</p></div>
-      <div class="module-card reveal" data-cat="production"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></div><span class="module-cat">Production</span></div><h4>OEE &amp; Performance</h4><p>Taux de rendement synthétique, indicateurs de performance en temps réel.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="qualite"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18" stroke-dasharray="2 3"/><path d="M3 17l4-6 4 3 4-8 4 5"/></svg></div><span class="module-cat">Qualité</span></div><h4>SPC &amp; FMEA</h4><p>Maîtrise statistique des processus et analyse des modes de défaillance.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="qualite"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/></svg></div><span class="module-cat">Qualité</span></div><h4>APQP &amp; PPAP</h4><p>Gestion de projets, phases APQP et livrables PPAP.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="qualite"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a1 1 0 011-1h5l2 2h9a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/></svg></div><span class="module-cat">Qualité</span></div><h4>GED</h4><p>Gestion documentaire. Procédures, processus et manuel qualité.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="qualite"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114-5.3M20 12a8 8 0 01-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><span class="module-cat">Qualité</span></div><h4>CAPA &amp; Audits</h4><p>Actions correctives, audit interne et revue de direction.</p></div>
-      <div class="module-card reveal" data-cat="production"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><span class="module-cat">Production</span></div><h4>Planification</h4><p>Planification de production, ordonnancement et gestion des capacités.</p></div>
-      <div class="module-card reveal" data-cat="gestion"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13V22"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Stocks &amp; Achats</h4><p>Gestion des inventaires, approvisionnements et réapprovisionnement.</p></div>
-      <div class="module-card reveal" data-cat="gestion"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M16 11l2 2 4-4"/></svg></div><span class="module-cat">Gestion</span></div><h4>Ventes &amp; CRM</h4><p>Gestion des clients, devis, commandes et facturation.</p></div>
-      <div class="module-card reveal" data-cat="gestion"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M14.5 21v-1.5a5 5 0 015-5"/></svg></div><span class="module-cat">Gestion</span></div><h4>RH &amp; Compétences</h4><p>Matrice de compétences, plan de formation et habilitations.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="pilotage"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20V13M20 20V8"/><path d="M4 20h16"/></svg></div><span class="module-cat">Pilotage</span></div><h4>BI &amp; Reporting</h4><p>Business Intelligence, tableaux de bord et reporting automatisé.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="pilotage"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div><span class="module-cat">Pilotage</span></div><h4>Intelligence Artificielle</h4><p>Analyse prédictive, détection d'anomalies et recommandations IA.</p></div>
-      <div class="module-card amber-cat reveal" data-cat="pilotage"><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 01-.5-8.97A5.5 5.5 0 0117 8.5a4 4 0 01-.5 7.98"/><path d="M7 18h10"/></svg></div><span class="module-cat">Pilotage</span></div><h4>Digitalisation</h4><p>Transformation numérique complète de vos processus industriels.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ASIN (detail) ============ -->
-<section class="sec tight" id="asin">
-  <div class="wrap">
-    <div class="platform-block reveal">
-      <div>
-        <div class="platform-head">
-          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M8 12l-2.5 2.5a3 3 0 004.24 4.24L12 16.5"/><path d="M16 12l2.5-2.5a3 3 0 00-4.24-4.24L12 7.5"/></svg></div>
-          <div>
-            <div class="platform-eyebrow">ASIN</div>
-            <h3 style="margin-bottom:0">Automotive Supplier Intelligence Network</h3>
-          </div>
-        </div>
-        <p class="desc">LinkedIn + Alibaba + ThomasNet de l'industrie automobile. ASIN est la marketplace B2B mondiale dédiée à la chaîne d'approvisionnement automobile. Connectez-vous aux constructeurs, publiez votre offre et développez votre réseau de sous-traitance international.</p>
-        <div class="pfact-row">
-          <span class="challenge-stat"><i></i>2 400+ fournisseurs</span>
-          <span class="challenge-stat"><i></i>142 pays</span>
-          <span class="challenge-stat"><i></i>RFQ en temps réel</span>
-        </div>
-        <ul class="check-list">
-          <li>Passeport Industriel intelligent avec scoring AQMI</li>
-          <li>Marketplace produits, machines et matières premières</li>
-          <li>Système de RFQ et messagerie intégrée</li>
-          <li>Recherche intelligente par procédés et capacités</li>
-        </ul>
-        <a class="card-link" href="#contact">Rejoindre le réseau ASIN →</a>
-      </div>
-      <div class="platform-visual reveal">
-        <div class="pmock-head">
-          <div class="pmock-label"><i></i>Réseau actif</div>
-          <div class="pmock-chip">142 pays</div>
-        </div>
-        <div class="pmock-passport">
-          <div class="pmock-passport-id">NQ</div>
-          <div class="pmock-passport-info"><b>NovaTech Composants</b><span>Injection plastique · Usinage CNC</span></div>
-          <div class="pmock-passport-score">84<i>AQMI</i></div>
-        </div>
-        <div class="pmock-audit">
-          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Faisceaux électriques — 50k pcs/an</div><span class="pmock-badge ok">Nouveau</span></div>
-          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Pièces usinées alu — série B</div><span class="pmock-badge warn">Négociation</span></div>
-          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Injection plastique — outillage</div><span class="pmock-badge ok">Accepté</span></div>
-        </div>
-        <div class="pmock-evidence"><span>Fournisseurs connectés</span><b>2 400+</b></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ LE PARCOURS ============ -->
-<section class="sec" id="parcours-sec">
-  <div class="wrap">
-    <div class="sec-eyebrow reveal">Le Parcours</div>
-    <h2 class="sec-title reveal">Le parcours d'une entreprise dans l'écosystème <b>NOVAQYS</b></h2>
-    <p class="sec-sub reveal">Du diagnostic initial à l'intégration dans la supply chain mondiale, chaque étape est structurée pour garantir votre succès.</p>
-
-    <div class="ptl" id="ptl">
-      <div class="ptl-spine"><div class="ptl-spine-fill" id="ptlFill"></div></div>
-
-      <div class="ptl-item reveal" data-step="01">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><h4>Découverte</h4><p>L'entreprise découvre l'écosystème NOVAQYS et évalue sa maturité avec AQMI Starter. Une première vision claire de son potentiel.</p></div>
-        <div class="ptl-dot"><span>01</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal milestone" data-step="02">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M11 19V5M18 19v-7"/><path d="M3 19h18"/></svg></div><h4>AQMI Starter</h4><p>Auto-évaluation gratuite. L'entreprise identifie ses forces et ses axes de progrès avec un premier score de maturité.</p>
-          <div class="ptl-metric-bar"><div class="ptl-metric-fill" data-fill="52"></div></div>
-          <div class="metric">Score de maturité — <b>52%</b></div>
-        </div>
-        <div class="ptl-dot gold"><span>02</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal" data-step="03">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div><h4>Formation LMS</h4><p>Les équipes sont formées aux normes IATF 16949, aux méthodes Lean et aux standards qualité automobile via notre plateforme LMS.</p></div>
-        <div class="ptl-dot"><span>03</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal" data-step="04">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div><h4>Digitalisation QMS</h4><p>L'entreprise déploie NOVAQYS QMS pour structurer et digitaliser ses processus qualité, production et supply chain.</p></div>
-        <div class="ptl-dot"><span>04</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal milestone" data-step="05">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><h4>AQMI Professional</h4><p>Évaluation approfondie avec analyse détaillée, plan de progrès personnalisé et suivi de la progression.</p>
-          <div class="ptl-progression">
-            <div class="ptl-prog-step"><i data-fill="52"></i><b>52%</b></div>
-            <div class="ptl-prog-arrow">→</div>
-            <div class="ptl-prog-step"><i data-fill="78"></i><b>78%</b></div>
-            <div class="ptl-prog-arrow">→</div>
-            <div class="ptl-prog-step"><i data-fill="95"></i><b>95%</b></div>
-          </div>
-          <div class="metric">Progression du score de maturité</div>
-        </div>
-        <div class="ptl-dot gold"><span>05</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal" data-step="06">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Évaluation NARA</h4><p>Audit professionnel par un constructeur ou un équipementier via NARA. Validation officielle et rapport détaillé.</p></div>
-        <div class="ptl-dot"><span>06</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal" data-step="07">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/></svg></div><h4>Visibilité ASIN</h4><p>L'entreprise rejoint ASIN et publie son passeport industriel international. Visibilité mondiale auprès des donneurs d'ordre.</p></div>
-        <div class="ptl-dot"><span>07</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal milestone" data-step="08">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V8l6-4 6 4v13"/><path d="M15 21V11l6-3v13"/><path d="M9 9h.01M9 13h.01M9 17h.01"/></svg></div><h4>Accès constructeurs</h4><p>Mise en relation directe avec les acheteurs des plus grands constructeurs automobiles mondiaux.</p>
-          <div class="oem-row"><span>Stellantis</span><span>Renault</span><span>Volkswagen</span><span>Toyota</span><span>BMW</span><span>Hyundai</span></div>
-        </div>
-        <div class="ptl-dot gold"><span>08</span></div><div class="ptl-side"></div>
-      </div>
-
-      <div class="ptl-item reveal" data-step="09">
-        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div><h4>Développement</h4><p>Nouveaux contrats, croissance internationale, développement commercial accéléré. L'entreprise devient un fournisseur de rang mondial.</p></div>
-        <div class="ptl-dot"><span>09</span></div><div class="ptl-side"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ BENEFICES ============ -->
-<section class="sec">
-  <div class="wrap">
-    <div class="sec-eyebrow gold reveal">Bénéfices</div>
-    <h2 class="sec-title reveal">Les bénéfices de l'écosystème <b>NOVAQYS</b></h2>
-    <p class="sec-sub reveal">Une transformation complète pour faire de votre entreprise un acteur incontournable de la supply chain automobile mondiale.</p>
-    <div class="grid cols-4">
-      <div class="card benefit-card reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V7M16 20V14M18.5 5.5h4.5v4.5"/><path d="M23 5.5L18 10.5"/></svg></div></div>
-        <div class="benefit-stat">-<span class="reveal" data-count-to="30" data-suffix="%">0</span></div>
-        <h3>Réduction des coûts</h3>
-        <p>Optimisez vos processus et réduisez vos coûts de production jusqu'à 30% grâce à la digitalisation et l'élimination des gaspillages.</p>
-      </div>
-      <div class="card benefit-card amber reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div></div>
-        <div class="benefit-stat">+<span class="reveal" data-count-to="45" data-suffix="%">0</span></div>
-        <h3>Amélioration qualité</h3>
-        <p>Atteignez un niveau de qualité conforme aux exigences des plus grands constructeurs avec un système QMS performant.</p>
-      </div>
-      <div class="card benefit-card reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 21l5-3 5 3-2-6.5"/></svg></div></div>
-        <div class="benefit-stat"><span class="reveal" data-count-to="100" data-suffix="%">0</span></div>
-        <h3>Conformité IATF</h3>
-        <p>Maîtrisez les exigences IATF 16949 et obtenez votre certification avec un accompagnement structuré et progressif.</p>
-      </div>
-      <div class="card benefit-card amber reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11.5v4.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/><path d="M22 9v6"/></svg></div></div>
-        <div class="benefit-stat"><span class="reveal" data-count-to="40" data-suffix="+">0</span></div>
-        <h3>Montée en compétences</h3>
-        <p>Formez vos équipes aux standards automobiles internationaux grâce à notre plateforme LMS spécialisée.</p>
-      </div>
-      <div class="card benefit-card reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div></div>
-        <div class="benefit-stat"><span class="reveal" data-count-to="100" data-suffix="%">0</span></div>
-        <h3>Transformation digitale</h3>
-        <p>Digitalisez l'intégralité de vos processus qualité, production et supply chain avec une plateforme unifiée.</p>
-      </div>
-      <div class="card benefit-card amber reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div></div>
-        <div class="benefit-stat"><span class="reveal" data-count-to="142" data-suffix="">0</span></div>
-        <h3>Visibilité internationale</h3>
-        <p>Accédez au marché mondial de la sous-traitance automobile via ASIN, la marketplace B2B dédiée, présente dans 142 pays.</p>
-      </div>
-      <div class="card benefit-card reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M8 12l-2.5 2.5a3 3 0 004.24 4.24L12 16.5"/><path d="M16 12l2.5-2.5a3 3 0 00-4.24-4.24L12 7.5"/></svg></div></div>
-        <div class="benefit-stat"><span class="reveal" data-count-to="2400" data-suffix="+">0</span></div>
-        <h3>Nouveau réseau</h3>
-        <p>Intégrez un nouveau réseau de sous-traitance performant et connectez-vous directement aux donneurs d'ordre.</p>
-      </div>
-      <div class="card benefit-card amber reveal">
-        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></div></div>
-        <div class="benefit-stat">+<span class="reveal" data-count-to="25" data-suffix="%">0</span></div>
-        <h3>Compétitivité</h3>
-        <p>Renforcez votre position concurrentielle grâce à une meilleure efficacité opérationnelle et une visibilité accrue.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ RAPPORT AQMI ============ -->
-<section class="sec tight">
-  <div class="wrap">
-    <div class="sec-eyebrow reveal">Rapport AQMI</div>
-    <h2 class="sec-title reveal">Exemple de rapport d'évaluation <b>AQMI</b></h2>
-    <p class="sec-sub reveal">Découvrez un aperçu du rapport détaillé que vous recevrez après votre évaluation. Score global, analyse par domaine, forces, faiblesses et recommandations personnalisées.</p>
-    <div class="report-block reveal">
-      <div class="report-frame">
-        <img src="https://novaqys.com/assets/pdf/rapport-aqmi-exemple.png?v=1788261626" alt="Aperçu du rapport AQMI">
-      </div>
-      <div>
-        <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:16px;">Ce que contient le rapport</h3>
-        <ul class="check-list">
-          <li>Score global de maturité</li>
-          <li>Analyse détaillée par domaine</li>
-          <li>Forces et axes d'amélioration</li>
-          <li>Benchmark sectoriel</li>
-          <li>Recommandations personnalisées</li>
-          <li>Plan d'action prioritaire</li>
-        </ul>
-        <div class="btn-row" style="justify-content:flex-start;margin-top:28px;">
-          <a class="btn ghost" href="https://novaqys.com/assets/pdf/rapport-aqmi-exemple.png?v=1788261626">Télécharger l'exemple</a>
-          <a class="btn primary" href="https://novaqys.com/assessment/start">Faire mon évaluation</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SUCCESS STORY ============ -->
-<section class="sec">
-  <div class="wrap">
-    <div class="sec-eyebrow gold reveal">Success Story</div>
-    <h2 class="sec-title reveal">Ils ont réussi leur transformation <b>AQMI</b></h2>
-    <p class="sec-sub reveal">Découvrez comment les entreprises du secteur automobile atteignent l'excellence opérationnelle grâce à l'écosystème NOVAQYS.</p>
-    <div class="success-card reveal">
-      <div class="success-score" data-count-to="87" data-suffix="">0<span>SCORE AQMI · EXCELLENCE</span></div>
-      <div>
-        <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:10px;">Leader Industriel Certifié</h3>
-        <p style="color:var(--steel);font-size:14px;line-height:1.7;">Cette entreprise a atteint un score de maturité AQMI de 87%, démontrant une maîtrise exceptionnelle des processus qualité et une capacité d'innovation remarquable dans le secteur automobile.</p>
-        <div class="success-stats">
-          <div><b>87%</b><span>SCORE GLOBAL</span></div>
-          <div><b>6/6</b><span>DOMAINES MAÎTRISÉS</span></div>
-          <div><b>Top 5%</b><span>BENCHMARK SECTORIEL</span></div>
-        </div>
-        <a class="btn primary" style="margin-top:24px;display:inline-block;" href="https://novaqys.com/assessment/start">Obtenez votre score AQMI</a>
-      </div>
+      <div class="module-card reveal" data-cat="production" style="--i:0"><span class="module-idx">01</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3v-3l6 3v7H3z"/><path d="M7 21v-4M12 21v-4M16 21v-4"/></svg></div><span class="module-cat">Production</span></div><h4>Production &amp; MES</h4><p>Gestion des ordres de fabrication, suivi shop floor et OEE temps réel.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:1"><span class="module-idx">02</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div><span class="module-cat">Qualité</span></div><h4>Qualité</h4><p>CAPA, FMEA, SPC, plan de surveillance. Contrôle qualité intégral.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:2"><span class="module-idx">03</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 005.4-5.4l-2.3 2.3-2-2 2.3-2.3z"/></svg></div><span class="module-cat">Production</span></div><h4>Maintenance</h4><p>GMAO préventive et curative. Historique des interventions et alertes.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:3"><span class="module-idx">04</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="11" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="16" cy="18" r="1.6"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Supply Chain</h4><p>Gestion des stocks, achats et logistique. Approvisionnements optimisés.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:4"><span class="module-idx">05</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 2v18M4 6.5l8 4.5 8-4.5"/></svg></div><span class="module-cat">Gestion</span></div><h4>ERP Intégré</h4><p>Gestion complète des ressources : RH, ventes, finances et planification.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:5"><span class="module-idx">06</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16M7 4v16M10 4v16M14 4v16M17 4v16M20 4v16"/></svg></div><span class="module-cat">Production</span></div><h4>MES &amp; Traçabilité</h4><p>Manufacturing Execution System avec traçabilité complète batch.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:6"><span class="module-idx">07</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></div><span class="module-cat">Production</span></div><h4>OEE &amp; Performance</h4><p>Taux de rendement synthétique, indicateurs de performance en temps réel.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:7"><span class="module-idx">08</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18" stroke-dasharray="2 3"/><path d="M3 17l4-6 4 3 4-8 4 5"/></svg></div><span class="module-cat">Qualité</span></div><h4>SPC &amp; FMEA</h4><p>Maîtrise statistique des processus et analyse des modes de défaillance.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:8"><span class="module-idx">09</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/></svg></div><span class="module-cat">Qualité</span></div><h4>APQP &amp; PPAP</h4><p>Gestion de projets, phases APQP et livrables PPAP.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:9"><span class="module-idx">10</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a1 1 0 011-1h5l2 2h9a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/></svg></div><span class="module-cat">Qualité</span></div><h4>GED</h4><p>Gestion documentaire. Procédures, processus et manuel qualité.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:10"><span class="module-idx">11</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114-5.3M20 12a8 8 0 01-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><span class="module-cat">Qualité</span></div><h4>CAPA &amp; Audits</h4><p>Actions correctives, audit interne et revue de direction.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:11"><span class="module-idx">12</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><span class="module-cat">Production</span></div><h4>Planification</h4><p>Planification de production, ordonnancement et gestion des capacités.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:12"><span class="module-idx">13</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13V22"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Stocks &amp; Achats</h4><p>Gestion des inventaires, approvisionnements et réapprovisionnement.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:13"><span class="module-idx">14</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M16 11l2 2 4-4"/></svg></div><span class="module-cat">Gestion</span></div><h4>Ventes &amp; CRM</h4><p>Gestion des clients, devis, commandes et facturation.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:14"><span class="module-idx">15</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M14.5 21v-1.5a5 5 0 015-5"/></svg></div><span class="module-cat">Gestion</span></div><h4>RH &amp; Compétences</h4><p>Matrice de compétences, plan de formation et habilitations.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:15"><span class="module-idx">16</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20V13M20 20V8"/><path d="M4 20h16"/></svg></div><span class="module-cat">Pilotage</span></div><h4>BI &amp; Reporting</h4><p>Business Intelligence, tableaux de bord et reporting automatisé.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:16"><span class="module-idx">17</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div><span class="module-cat">Pilotage</span></div><h4>Intelligence Artificielle</h4><p>Analyse prédictive, détection d'anomalies et recommandations IA.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:17"><span class="module-idx">18</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 01-.5-8.97A5.5 5.5 0 0117 8.5a4 4 0 01-.5 7.98"/><path d="M7 18h10"/></svg></div><span class="module-cat">Pilotage</span></div><h4>Digitalisation</h4><p>Transformation numérique complète de vos processus industriels.</p><span class="module-arrow">→</span></div>
     </div>
   </div>
 </section>
@@ -1495,29 +1428,82 @@
         <p style="color:var(--steel);font-size:13.5px;margin-bottom:22px;line-height:1.6;">Notre équipe vous recontactera sous 48h pour activer votre compte et vous accompagner.</p>
         <div class="form-progress-row"><span>Progression</span><b id="formProgressLabel">0/8 champs complétés</b></div>
         <div class="form-progress-track"><div class="form-progress-fill" id="formProgressFill"></div></div>
-        <form class="form-grid" id="accountForm" onsubmit="return false;">
+        <form class="form-grid" id="accountForm" novalidate>
           <div class="form-section-label">Votre entreprise</div>
-          <div class="field"><label>ENTREPRISE *</label><input type="text" required></div>
-          <div class="field"><label>SECTEUR D'ACTIVITÉ *</label><input type="text" required></div>
-          <div class="field"><label>PAYS *</label><input type="text" required></div>
-          <div class="field"><label>TAILLE ENTREPRISE *</label>
-            <select required><option value="">Sélectionner...</option><option>1-10 employés</option><option>11-50 employés</option><option>51-200 employés</option><option>201-500 employés</option><option>500+ employés</option></select>
+          <div class="field">
+            <label for="f-company">Entreprise <span class="req">*</span></label>
+            <input id="f-company" name="company" type="text" placeholder="Nom de votre entreprise" required>
+            <span class="field-error">Merci d'indiquer le nom de votre entreprise.</span>
           </div>
+          <div class="field">
+            <label for="f-sector">Secteur d'activité <span class="req">*</span></label>
+            <input id="f-sector" name="sector" type="text" placeholder="Ex. équipementier automobile" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-country">Pays <span class="req">*</span></label>
+            <input id="f-country" name="country" type="text" placeholder="Ex. Algérie" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-size">Taille entreprise <span class="req">*</span></label>
+            <select id="f-size" name="size" required>
+              <option value="">Sélectionner...</option>
+              <option>1-10 employés</option>
+              <option>11-50 employés</option>
+              <option>51-200 employés</option>
+              <option>201-500 employés</option>
+              <option>500+ employés</option>
+            </select>
+            <span class="field-error">Merci de sélectionner une taille d'entreprise.</span>
+          </div>
+
           <div class="form-section-label">Vos coordonnées</div>
-          <div class="field"><label>NOM COMPLET *</label><input type="text" required></div>
-          <div class="field"><label>FONCTION *</label><input type="text" required></div>
-          <div class="field"><label>EMAIL PROFESSIONNEL *</label><input type="email" required></div>
-          <div class="field"><label>TÉLÉPHONE *</label><input type="tel" required></div>
+          <div class="field">
+            <label for="f-name">Nom complet <span class="req">*</span></label>
+            <input id="f-name" name="fullname" type="text" placeholder="Prénom et nom" required autocomplete="name">
+            <span class="field-error">Merci d'indiquer votre nom.</span>
+          </div>
+          <div class="field">
+            <label for="f-role">Fonction <span class="req">*</span></label>
+            <input id="f-role" name="role" type="text" placeholder="Ex. Responsable Qualité" required autocomplete="organization-title">
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-email">Email professionnel <span class="req">*</span></label>
+            <input id="f-email" name="email" type="email" placeholder="vous@entreprise.com" required autocomplete="email">
+            <span class="field-error">Merci d'indiquer une adresse email valide.</span>
+          </div>
+          <div class="field">
+            <label for="f-phone">Téléphone <span class="req">*</span></label>
+            <input id="f-phone" name="phone" type="tel" placeholder="+213 5XX XX XX XX" required autocomplete="tel">
+            <span class="field-error">Merci d'indiquer un numéro de téléphone.</span>
+          </div>
+
           <div class="form-section-label">Votre projet</div>
-          <div class="field full"><label>PLATEFORMES QUI VOUS INTÉRESSENT</label>
-            <div class="chip-row">
-              <span class="chip">AQMI Starter</span><span class="chip">AQMI Professional</span><span class="chip">NARA</span><span class="chip">NOVAQYS LMS</span><span class="chip">NOVAQYS QMS</span><span class="chip">ASIN</span>
+          <div class="field full">
+            <label for="chip-0">Plateformes qui vous intéressent <span class="opt">(optionnel, sélection multiple)</span></label>
+            <div class="chip-row" role="group" aria-label="Plateformes qui vous intéressent">
+              <span class="chip" id="chip-0" role="checkbox" aria-checked="false" tabindex="0">AQMI Starter</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">AQMI Professional</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NARA</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS LMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS QMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">ASIN</span>
             </div>
           </div>
-          <div class="field full"><label>MESSAGE (OPTIONNEL)</label><textarea></textarea></div>
+          <div class="field full">
+            <label for="f-message">Message <span class="opt">(optionnel)</span></label>
+            <textarea id="f-message" name="message" placeholder="Décrivez brièvement votre projet ou votre besoin..."></textarea>
+          </div>
+
           <div class="submit-row">
             <button class="btn primary submit-btn" type="submit" id="submitBtn">Envoyer ma demande</button>
             <span class="submit-note" id="submitNote">✓ Demande envoyée — nous revenons vers vous sous 48h</span>
+          </div>
+          <div class="form-privacy-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Vos données restent confidentielles et sont utilisées uniquement pour traiter votre demande.
           </div>
         </form>
       </div>
@@ -1561,6 +1547,51 @@
 
 
 <script>
+// ---------- STARFIELD (twinkling stars over the fixed aurora background) ----------
+(function(){
+  const container = document.getElementById('bgStars');
+  if(!container) return;
+  const REDUCE_MOTION_STARS = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tints = [
+    {c:'#eaf3ff', s:'rgba(59,147,240,.6)'},   // cyan
+    {c:'#fff3dc', s:'rgba(217,164,65,.55)'},  // amber
+    {c:'#f1eaff', s:'rgba(155,127,224,.55)'}, // violet
+    {c:'#ffffff', s:'rgba(255,255,255,.6)'}   // plain white (most common)
+  ];
+  const COUNT = window.innerWidth < 760 ? 45 : 90;
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<COUNT;i++){
+    const star = document.createElement('span');
+    const tinted = Math.random() < 0.18;
+    const bright = !tinted && Math.random() < 0.1;
+    star.className = tinted ? 'star tinted' : (bright ? 'star bright' : 'star');
+    const size = (Math.random() * 1.6 + 0.8).toFixed(2) + 'px';
+    const glow = (Math.random() * 2 + 2).toFixed(1) + 'px';
+    const x = (Math.random() * 100).toFixed(2) + '%';
+    const y = (Math.random() * 100).toFixed(2) + '%';
+    const dur = (Math.random() * 3.5 + 2.5).toFixed(2) + 's';
+    const delay = (-Math.random() * 6).toFixed(2) + 's';
+    const oMax = (Math.random() * 0.35 + 0.6).toFixed(2);
+    const oMin = (Math.random() * 0.15 + 0.05).toFixed(2);
+    star.style.setProperty('--s', size);
+    star.style.setProperty('--glow', glow);
+    star.style.setProperty('--x', x);
+    star.style.setProperty('--y', y);
+    star.style.setProperty('--dur', dur);
+    star.style.setProperty('--delay', delay);
+    star.style.setProperty('--o-max', oMax);
+    star.style.setProperty('--o-min', oMin);
+    star.style.setProperty('--o', REDUCE_MOTION_STARS ? oMax : oMin);
+    if(tinted){
+      const t = tints[Math.floor(Math.random()*3)];
+      star.style.setProperty('--tint', t.c);
+      star.style.setProperty('--tint-soft', t.s);
+    }
+    frag.appendChild(star);
+  }
+  container.appendChild(frag);
+})();
+
 // ---------- STAGE SCALING (pixel-faithful 1536x1024 canvas) ----------
 const stage = document.getElementById('stage');
 const stageWrap = document.getElementById('stageWrap');
@@ -1869,11 +1900,44 @@ if(REDUCE_MOTION){
   });
 })();
 
-/* ---- Plateforme Centrale: category filter tabs ---- */
+/* ---- Plateforme Centrale: category filter tabs + last-row balancing ---- */
 (function(){
+  const grid = document.querySelector('.module-grid');
   const filters = document.querySelectorAll('.qms-filter');
   const cards = document.querySelectorAll('.module-card');
-  if(!filters.length || !cards.length) return;
+  if(!filters.length || !cards.length || !grid) return;
+
+  function currentCols(){
+    const w = window.innerWidth;
+    if(w <= 640) return 1;
+    if(w <= 980) return 2;
+    return 4;
+  }
+
+  function balanceGrid(cat){
+    cards.forEach(c=>{ c.style.gridColumn = ''; });
+    const cols = currentCols();
+    if(cols <= 1) return;
+    const visible = Array.from(cards).filter(c => cat === 'all' || c.dataset.cat === cat);
+    const total = visible.length;
+    const rem = total % cols;
+    if(rem === 0) return;
+    const lastRow = visible.slice(total - rem);
+    if(cols % rem === 0){
+      // split the last row evenly across the full row width
+      const span = cols / rem;
+      lastRow.forEach(c => c.style.gridColumn = 'span ' + span);
+    }else{
+      // uneven remainder: widen the final card to close the gap
+      lastRow[lastRow.length - 1].style.gridColumn = 'span ' + (cols - rem + 1);
+    }
+  }
+
+  function activeFilter(){
+    const btn = document.querySelector('.qms-filter.active');
+    return btn ? btn.dataset.filter : 'all';
+  }
+
   filters.forEach(btn=>{
     btn.addEventListener('click', ()=>{
       if(btn.classList.contains('active')) return;
@@ -1892,31 +1956,64 @@ if(REDUCE_MOTION){
           setTimeout(()=>{ if(card.classList.contains('hide')) card.style.display = 'none'; }, REDUCE_MOTION ? 0 : 320);
         }
       });
+      balanceGrid(cat);
     });
+  });
+
+  balanceGrid('all');
+  let resizeTimer;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=> balanceGrid(activeFilter()), 150);
   });
 })();
 
-/* Chip toggle in the account-request form (visual only) */
+/* Chip toggle in the account-request form (multi-select, keyboard accessible) */
 document.querySelectorAll('.chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>chip.classList.toggle('active'));
+  function toggle(){
+    chip.classList.toggle('active');
+    chip.setAttribute('aria-checked', chip.classList.contains('active') ? 'true' : 'false');
+  }
+  chip.addEventListener('click', toggle);
+  chip.addEventListener('keydown', (e)=>{
+    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+  });
 });
 
-/* ---- Contact form: live completion progress + fake send/success state ---- */
+/* ---- Contact form: live completion progress, inline validation, fake send/success state ---- */
 (function(){
   const form = document.getElementById('accountForm');
   if(!form) return;
   const requiredFields = Array.from(form.querySelectorAll('[required]'));
   const fill = document.getElementById('formProgressFill');
   const label = document.getElementById('formProgressLabel');
+
   function updateProgress(){
     const filled = requiredFields.filter(f=>f.value && f.value.trim() !== '').length;
     const pct = Math.round((filled/requiredFields.length)*100);
     fill.style.width = pct+'%';
     label.textContent = filled+'/'+requiredFields.length+' champs complétés';
+    label.classList.toggle('complete', filled === requiredFields.length);
   }
+
+  function validateField(f, showError){
+    const wrap = f.closest('.field');
+    if(!wrap) return true;
+    const ok = f.checkValidity();
+    if(ok){
+      wrap.classList.remove('invalid');
+      if(f.value.trim() !== '') wrap.classList.add('valid'); else wrap.classList.remove('valid');
+    } else if(showError){
+      wrap.classList.add('invalid');
+      wrap.classList.remove('valid');
+    }
+    return ok;
+  }
+
   requiredFields.forEach(f=>{
-    f.addEventListener('input', updateProgress);
-    f.addEventListener('change', updateProgress);
+    f.addEventListener('input', ()=>{ updateProgress(); validateField(f, false); });
+    f.addEventListener('change', ()=>{ updateProgress(); validateField(f, false); });
+    f.addEventListener('blur', ()=> validateField(f, true));
   });
   updateProgress();
 
@@ -1925,6 +2022,18 @@ document.querySelectorAll('.chip').forEach(chip=>{
   form.addEventListener('submit', (e)=>{
     e.preventDefault();
     if(submitBtn.classList.contains('sending') || submitBtn.classList.contains('sent')) return;
+
+    let firstInvalid = null;
+    requiredFields.forEach(f=>{
+      const ok = validateField(f, true);
+      if(!ok && !firstInvalid) firstInvalid = f;
+    });
+    if(firstInvalid){
+      firstInvalid.focus();
+      firstInvalid.closest('.field')?.scrollIntoView({behavior: REDUCE_MOTION ? 'auto' : 'smooth', block:'center'});
+      return;
+    }
+
     submitBtn.classList.add('sending');
     submitBtn.textContent = 'Envoi en cours…';
     setTimeout(()=>{
