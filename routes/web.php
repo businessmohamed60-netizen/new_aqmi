@@ -8,6 +8,8 @@ $router->get('/', 'HomeController@index');
 $router->post('/contact', 'HomeController@contact');
 $router->post('/account-request', 'HomeController@accountRequest');
 $router->get('/lang/{lang}', 'HomeController@switchLang');
+$router->get('/cgu', 'HomeController@cgu');
+$router->get('/privacy', 'HomeController@privacy');
 
 // Assessment (auth required)
 $auth = [\App\Middleware\AuthMiddleware::class];

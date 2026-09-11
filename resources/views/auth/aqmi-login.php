@@ -59,6 +59,10 @@ ob_start();
       <a href="/forgot" class="aqmi-link">Mot de passe oublié ?</a>
       <span class="aqmi-sep">·</span>
       <a href="/" class="aqmi-link">Retour à l'accueil</a>
+      <span class="aqmi-sep">·</span>
+      <a href="/cgu" class="aqmi-link">CGU</a>
+      <span class="aqmi-sep">·</span>
+      <a href="/privacy" class="aqmi-link">Données</a>
     </div>
 
     <div class="aqmi-auth-divider">

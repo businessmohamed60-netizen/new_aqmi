@@ -1613,7 +1613,7 @@
     </div>
     <div class="footer-bottom">
       <span>© 2026 NOVAQYS. Tous droits réservés.</span>
-      <span>Mentions légales · Politique de confidentialité</span>
+      <span><a href="/cgu" style="color:inherit;text-decoration:none;">Mentions légales</a> · <a href="/privacy" style="color:inherit;text-decoration:none;">Politique de confidentialité</a></span>
     </div>
   </div>
 </footer>

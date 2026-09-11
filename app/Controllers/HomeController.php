@@ -83,4 +83,14 @@ class HomeController
         $redirect = $_SERVER['HTTP_REFERER'] ?? '/';
         redirect($redirect);
     }
+
+    public function cgu(): void
+    {
+        view('legal.cgu');
+    }
+
+    public function privacy(): void
+    {
+        view('legal.privacy');
+    }
 }

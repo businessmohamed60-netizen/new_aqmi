@@ -41,6 +41,8 @@
           <a href="/">Accueil</a>
           <a href="/login">Connexion</a>
           <a href="/forgot">Mot de passe</a>
+          <a href="/cgu">CGU</a>
+          <a href="/privacy">Protection des données</a>
         </div>
       </div>
     </footer>
@@ -85,6 +87,7 @@
     </style>
     <?php endif; ?>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= asset('js/mobile.js') ?>"></script>
     <script src="<?= asset('js/novaqys.js') ?>"></script>
     <?= $extraScripts ?? '' ?>

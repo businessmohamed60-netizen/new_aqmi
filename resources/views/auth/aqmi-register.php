@@ -102,8 +102,8 @@ ob_start();
       <div class="aqmi-checkbox-wrap">
         <input type="checkbox" name="terms" class="aqmi-checkbox" id="termsCheck" required>
         <label class="aqmi-checkbox-label" for="termsCheck">
-          J'accepte les <a href="#" target="_blank">conditions d'utilisation</a> et la
-          <a href="#" target="_blank">politique de confidentialité</a>
+          J'accepte les <a href="/cgu" target="_blank">conditions d'utilisation</a> et la
+          <a href="/privacy" target="_blank">politique de confidentialité</a>
         </label>
       </div>
 

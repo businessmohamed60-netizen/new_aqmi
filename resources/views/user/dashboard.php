@@ -659,6 +659,97 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   .ud-gauge-wrap { width: 170px; height: 170px; }
   .ud-gauge-score { font-size: 2rem; }
 }
+
+/* ====== Excellence Footer ====== */
+.ud-excellence-footer {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--vx-card-border);
+  background: linear-gradient(180deg, transparent 0%, rgba(99,102,241,0.03) 100%);
+  padding: 2rem 2rem 1.5rem;
+}
+.ud-excellence-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.ud-excellence-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ud-excellence-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--vx-primary-gradient);
+  border-radius: var(--vx-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 4px 16px var(--vx-primary-glow);
+  flex-shrink: 0;
+}
+.ud-excellence-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--vx-text-primary);
+  letter-spacing: -0.2px;
+}
+.ud-excellence-tag {
+  font-size: 0.65rem;
+  color: var(--vx-text-muted);
+  letter-spacing: 0.03em;
+}
+.ud-excellence-slogan {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--vx-text-secondary);
+  font-style: italic;
+  max-width: 480px;
+}
+.ud-excellence-icon {
+  color: var(--vx-warning);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.ud-excellence-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+}
+.ud-excellence-links a {
+  color: var(--vx-text-muted);
+  text-decoration: none;
+  transition: color var(--vx-transition);
+}
+.ud-excellence-links a:hover {
+  color: var(--vx-primary);
+}
+.ud-excellence-dot {
+  color: var(--vx-text-muted);
+}
+.ud-excellence-copy {
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--vx-text-muted);
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--vx-divider);
+}
+@media (max-width: 768px) {
+  .ud-excellence-inner { flex-direction: column; text-align: center; }
+  .ud-excellence-slogan { font-size: 0.75rem; }
+}
 </style>
 
 <div class="user-dashboard">
@@ -669,21 +760,19 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
       <span><?= __('dashboard.brand') ?></span>
     </div>
     <div class="d-flex align-items-center" style="gap:1rem;">
-      <span class="d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
+      <span class="d-none d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
         <i class="fas fa-user" style="color:var(--vx-primary);margin-right:0.25rem;"></i><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?>
       </span>
-      <div class="dropdown">
-        <button class="nova-btn nova-btn-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding:0.375rem 0.6rem;font-size:0.75rem;">
-          <i class="fas fa-globe" style="margin-right:0.25rem;"></i><?= strtoupper($langCode) ?>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" style="font-size:0.8rem;">
-          <li><a class="dropdown-item" href="/lang/fr" style="<?= $langCode==='fr'?'font-weight:700;color:var(--vx-primary);':'' ?>">Français</a></li>
-          <li><a class="dropdown-item" href="/lang/en" style="<?= $langCode==='en'?'font-weight:700;color:var(--vx-primary);':'' ?>">English</a></li>
-          <li><a class="dropdown-item" href="/lang/ar" style="<?= $langCode==='ar'?'font-weight:700;color:var(--vx-primary);':'' ?>">العربية</a></li>
-        </ul>
+      <div class="d-flex align-items-center" style="gap:0.2rem;background:rgba(255,255,255,0.03);border:1px solid var(--vx-card-border);border-radius:var(--vx-radius-sm);padding:0.2rem;">
+        <i class="fas fa-globe" style="font-size:0.7rem;color:var(--vx-text-muted);margin:0 0.2rem;"></i>
+        <?php foreach (['fr','en','ar'] as $l): ?>
+          <a href="/lang/<?= $l ?>" style="font-size:0.7rem;font-weight:<?= $langCode===$l?'700':'500'?>;padding:0.2rem 0.45rem;border-radius:0.25rem;text-decoration:none;color:<?= $langCode===$l?'#fff':'var(--vx-text-secondary)'?>;background:<?= $langCode===$l?'var(--vx-primary)':'transparent'?>;transition:all var(--vx-transition);">
+            <?= strtoupper($l) ?>
+          </a>
+        <?php endforeach; ?>
       </div>
-      <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
-        <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i><?= __('dashboard.logout') ?>
+      <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;color:var(--vx-danger);border-color:var(--vx-danger);" title="<?= __('dashboard.logout') ?>">
+        <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i><span class="d-none d-md-inline"><?= __('dashboard.logout') ?></span>
       </a>
     </div>
   </div>
@@ -978,6 +1067,31 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
       <?php endif; ?>
     </div>
   </div>
+
+  <!-- AQMI Excellence Footer -->
+  <footer class="ud-excellence-footer">
+    <div class="ud-excellence-inner">
+      <div class="ud-excellence-brand">
+        <span class="ud-excellence-mark">N</span>
+        <div>
+          <div class="ud-excellence-name">NOVAQYS · AQMI</div>
+          <div class="ud-excellence-tag">Automotive Quality Maturity Index</div>
+        </div>
+      </div>
+      <div class="ud-excellence-slogan">
+        <i class="fas fa-medal ud-excellence-icon"></i>
+        <span>L'excellence qualité n'est pas une destination, c'est chaque évaluation qui vous y mène.</span>
+      </div>
+      <div class="ud-excellence-links">
+        <a href="/cgu">CGU</a>
+        <span class="ud-excellence-dot">·</span>
+        <a href="/privacy">Protection des données</a>
+      </div>
+    </div>
+    <div class="ud-excellence-copy">
+      &copy; <?= date('Y') ?> NOVAQYS. Tous droits réservés.
+    </div>
+  </footer>
 
   <!-- Mobile Bottom Navigation -->
   <nav style="position:fixed;bottom:0;left:0;right:0;z-index:1050;background:rgba(255,253,248,0.96);border-top:1px solid var(--vx-card-border);display:flex;padding:0.35rem 0;justify-content:space-around;backdrop-filter:blur(12px);" class="d-md-none">
