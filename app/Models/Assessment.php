@@ -91,4 +91,12 @@ class Assessment
         $completed = self::countCompleted();
         return round(($completed / $total) * 100, 1);
     }
+
+    public static function delete(int $id): int
+    {
+        Database::execute("DELETE FROM assessment_answers WHERE assessment_id = ?", [$id]);
+        Database::execute("DELETE FROM reports WHERE assessment_id = ?", [$id]);
+        Database::execute("UPDATE leads SET assessment_id = NULL WHERE assessment_id = ?", [$id]);
+        return Database::execute("DELETE FROM assessments WHERE id = ?", [$id]);
+    }
 }

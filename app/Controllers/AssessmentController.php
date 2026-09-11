@@ -358,13 +358,6 @@ class AssessmentController
         $lead = Lead::findByAssessment($assessmentId);
         if (!$lead) { redirect('/assessment/' . $assessmentId . '/results'); return; }
 
-        // Ce bouton n'est affiché que pour RENVOYER une demande déjà
-        // rejetée (voir results.php, cas $isRejected). Sans ceci, la
-        // demande restait bloquée au statut 'rejected' en base et ne
-        // réapparaissait donc jamais dans la liste des demandes en
-        // attente de l'admin (Report::pendingCertifications() ne
-        // remonte que 'certification_requested' / 'under_review') —
-        // seul un email était envoyé, la base n'était jamais mise à jour.
         $report = \App\Models\Report::findByAssessment($assessmentId);
         if ($report) {
             \App\Models\Report::updateStatus($report['id'], 'certification_requested');
@@ -383,6 +376,22 @@ class AssessmentController
         }
 
         redirect('/assessment/' . $assessmentId . '/results');
+    }
+
+    public function cancel(array $params): void
+    {
+        Auth::requireAuth();
+        $assessmentId = (int)($params['id'] ?? 0);
+        $assessment = Assessment::find($assessmentId);
+        if (!$assessment || $assessment['user_id'] != Auth::id()) {
+            $_SESSION['error'] = 'Évaluation introuvable.';
+            redirect('/user/dashboard');
+            return;
+        }
+
+        Assessment::delete($assessmentId);
+        $_SESSION['success'] = 'Évaluation supprimée avec succès.';
+        redirect('/user/dashboard');
     }
 
     }

@@ -955,6 +955,11 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
                 <a href="/assessment/<?= $a['id'] ?>" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
                   <i class="fas fa-arrow-right" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.continue') ?>
                 </a>
+                <form method="POST" action="/assessment/<?= $a['id'] ?>/cancel" style="display:inline;" onsubmit="return confirm('Supprimer cette évaluation ? Cette action est irréversible.');">
+                  <button type="submit" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;color:var(--vx-danger);border-color:var(--vx-danger);">
+                    <i class="fas fa-trash" style="margin-right:0.25rem;"></i>Supprimer
+                  </button>
+                </form>
               <?php endif; ?>
             </div>
           </div>

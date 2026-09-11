@@ -182,58 +182,68 @@ ob_start();
 ?>
 <div class="aqmi-premium" id="aqmiApp">
 
-  <!-- Language Selection Screen -->
-  <div class="aqmi-lang-screen" id="aqmiLangScreen"<?= isset($_SESSION['lang']) && $_SESSION['lang'] ? ' style="display:none;"' : '' ?>>
-    <div class="aqmi-lang-screen-inner">
-      <div class="aqmi-lang-screen-icon">
-        <i class="fas fa-globe"></i>
+  <!-- Unified Model + Language Selection Screen -->
+  <div class="aqmi-select-screen" id="aqmiSelectScreen"<?= (!$isModelSelection) ? ' style="display:none;"' : '' ?>>
+    <div class="aqmi-select-screen-inner">
+      <div class="aqmi-select-hero">
+        <div class="aqmi-select-hero-icon">
+          <i class="fas fa-clipboard-check"></i>
+        </div>
+        <h1 class="aqmi-select-hero-title" id="aqmiSelectTitle">Nouvelle évaluation</h1>
+        <p class="aqmi-select-hero-desc" id="aqmiSelectDesc">Choisissez votre modèle d'évaluation et votre langue pour commencer</p>
       </div>
-      <h1 class="aqmi-lang-screen-title" id="aqmiLangTitle">Choisissez votre langue</h1>
-      <p class="aqmi-lang-screen-desc" id="aqmiLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre au questionnaire</p>
-      <div class="aqmi-lang-choices">
-        <button class="aqmi-lang-choice" data-lang="fr" type="button">
-          <span class="aqmi-lang-choice-flag">FR</span>
-          <span class="aqmi-lang-choice-name">Français</span>
-        </button>
-        <button class="aqmi-lang-choice" data-lang="en" type="button">
-          <span class="aqmi-lang-choice-flag">EN</span>
-          <span class="aqmi-lang-choice-name">English</span>
-        </button>
-        <button class="aqmi-lang-choice" data-lang="ar" type="button">
-          <span class="aqmi-lang-choice-flag">AR</span>
-          <span class="aqmi-lang-choice-name">العربية</span>
-        </button>
-      </div>
-      <button class="aqmi-lang-start-btn" id="aqmiLangStartBtn" type="button" disabled>
-        <span id="aqmiLangStartText">Commencer le questionnaire</span>
-        <i class="fas fa-arrow-right"></i>
-      </button>
-    </div>
-  </div>
 
-  <!-- Model Selection Screen -->
-  <div class="aqmi-model-screen" id="aqmiModelScreen" style="display:none;">
-    <div class="aqmi-model-screen-inner">
-      <div class="aqmi-model-screen-icon">
-        <i class="fas fa-clipboard-check"></i>
+      <!-- Step 1: Model Selection -->
+      <div class="aqmi-select-section" id="aqmiSelectModelSection">
+        <div class="aqmi-select-section-header">
+          <span class="aqmi-select-step-badge">1</span>
+          <h2 class="aqmi-select-section-title" id="aqmiSelectModelTitle">Choisissez votre modèle d'évaluation</h2>
+          <p class="aqmi-select-section-sub" id="aqmiSelectModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
+        </div>
+        <div class="aqmi-select-model-grid" id="aqmiModelChoices">
+          <?php foreach (($config['models'] ?? []) as $m): ?>
+            <button class="aqmi-select-model-card" data-model="<?= (int)$m['id'] ?>" type="button">
+              <span class="aqmi-select-model-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
+                <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
+              </span>
+              <div class="aqmi-select-model-info">
+                <span class="aqmi-select-model-name"><?= e($m['name_fr'] ?: $m['name']) ?></span>
+                <?php if (!empty($m['description_fr']) || !empty($m['description'])): ?>
+                  <span class="aqmi-select-model-desc"><?= e($m['description_fr'] ?: $m['description']) ?></span>
+                <?php endif; ?>
+              </div>
+              <span class="aqmi-select-model-check"><i class="fas fa-check-circle"></i></span>
+            </button>
+          <?php endforeach; ?>
+        </div>
       </div>
-      <h1 class="aqmi-model-screen-title" id="aqmiModelTitle">Choisissez votre modèle d'évaluation</h1>
-      <p class="aqmi-model-screen-desc" id="aqmiModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
-      <div class="aqmi-model-choices" id="aqmiModelChoices">
-        <?php foreach (($config['models'] ?? []) as $m): ?>
-          <button class="aqmi-model-choice" data-model="<?= (int)$m['id'] ?>" type="button">
-            <span class="aqmi-model-choice-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
-              <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
-            </span>
-            <span class="aqmi-model-choice-name"><?= e($m['name_fr'] ?: $m['name']) ?></span>
-            <?php if (!empty($m['description_fr']) || !empty($m['description'])): ?>
-              <span class="aqmi-model-choice-desc"><?= e($m['description_fr'] ?: $m['description']) ?></span>
-            <?php endif; ?>
+
+      <!-- Step 2: Language Selection -->
+      <div class="aqmi-select-section" id="aqmiSelectLangSection">
+        <div class="aqmi-select-section-header">
+          <span class="aqmi-select-step-badge">2</span>
+          <h2 class="aqmi-select-section-title" id="aqmiSelectLangTitle">Choisissez votre langue</h2>
+          <p class="aqmi-select-section-sub" id="aqmiSelectLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre</p>
+        </div>
+        <div class="aqmi-select-lang-row">
+          <button class="aqmi-select-lang-card" data-lang="fr" type="button">
+            <span class="aqmi-select-lang-flag">FR</span>
+            <span class="aqmi-select-lang-name">Français</span>
           </button>
-        <?php endforeach; ?>
+          <button class="aqmi-select-lang-card" data-lang="en" type="button">
+            <span class="aqmi-select-lang-flag">EN</span>
+            <span class="aqmi-select-lang-name">English</span>
+          </button>
+          <button class="aqmi-select-lang-card" data-lang="ar" type="button">
+            <span class="aqmi-select-lang-flag">AR</span>
+            <span class="aqmi-select-lang-name">العربية</span>
+          </button>
+        </div>
       </div>
-      <button class="aqmi-model-start-btn" id="aqmiModelStartBtn" type="button" disabled>
-        <span id="aqmiModelStartText">Commencer l'évaluation</span>
+
+      <!-- Start Button -->
+      <button class="aqmi-select-start-btn" id="aqmiSelectStartBtn" type="button" disabled>
+        <span id="aqmiSelectStartText">Commencer l'évaluation</span>
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>

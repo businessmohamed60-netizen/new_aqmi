@@ -992,37 +992,62 @@
     gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
   }
 
-  // ── Language Selection Screen ──
-  var langScreen = document.getElementById('aqmiLangScreen');
-  var langChoices = document.querySelectorAll('.aqmi-lang-choice');
-  var langStartBtn = document.getElementById('aqmiLangStartBtn');
-  var langStartText = document.getElementById('aqmiLangStartText');
-  var langTitle = document.getElementById('aqmiLangTitle');
-  var langDesc = document.getElementById('aqmiLangDesc');
+  // ── Unified Model + Language Selection Screen ──
+  var selectScreen = document.getElementById('aqmiSelectScreen');
+  var selectStartBtn = document.getElementById('aqmiSelectStartBtn');
+  var selectStartText = document.getElementById('aqmiSelectStartText');
+  var modelCards = document.querySelectorAll('.aqmi-select-model-card');
+  var langCards = document.querySelectorAll('.aqmi-select-lang-card');
+  var selectModelTitle = document.getElementById('aqmiSelectModelTitle');
+  var selectModelDesc = document.getElementById('aqmiSelectModelDesc');
+  var selectLangTitle = document.getElementById('aqmiSelectLangTitle');
+  var selectLangDesc = document.getElementById('aqmiSelectLangDesc');
+  var selectTitle = document.getElementById('aqmiSelectTitle');
+  var selectDesc = document.getElementById('aqmiSelectDesc');
+  var selectedModelId = null;
   var selectedLang = currentLang;
-  var langScreenVisible = !!langScreen && langScreen.offsetParent !== null;
+  var selectScreenVisible = !!selectScreen && selectScreen.offsetParent !== null;
 
-  function applyI18nLabels(lang) {
+  function applySelectLabels(lang) {
     var labels = i18nData[lang] || i18nData['fr'] || {};
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       var key = el.getAttribute('data-i18n');
       if (labels[key] !== undefined) el.textContent = labels[key];
     });
-    if (langTitle && labels.choose_lang) langTitle.textContent = labels.choose_lang;
-    if (langDesc && labels.choose_lang_desc) langDesc.textContent = labels.choose_lang_desc;
-    if (langStartText && labels.start) langStartText.textContent = labels.start;
+    if (selectModelTitle && labels.choose_model) selectModelTitle.textContent = labels.choose_model;
+    if (selectModelDesc && labels.choose_model_desc) selectModelDesc.textContent = labels.choose_model_desc;
+    if (selectLangTitle && labels.choose_lang) selectLangTitle.textContent = labels.choose_lang;
+    if (selectLangDesc && labels.choose_lang_desc) selectLangDesc.textContent = labels.choose_lang_desc;
+    if (selectStartText && labels.start_assessment) selectStartText.textContent = labels.start_assessment;
   }
 
-  function dismissLangScreen() {
-    if (!langScreen) return;
-    gsap.to(langScreen, {
+  function updateSelectButton() {
+    if (selectStartBtn) {
+      selectStartBtn.disabled = !(selectedModelId && selectedLang);
+    }
+  }
+
+  function dismissSelectScreen() {
+    if (!selectScreen) return;
+    gsap.to(selectScreen, {
       opacity: 0, duration: 0.5, ease: 'power2.inOut',
       onComplete: function() {
-        langScreen.style.display = 'none';
-        langScreenVisible = false;
-        // If model selection is needed, show model screen instead of init
-        if (cfg.isModelSelection) {
-          showModelScreen();
+        selectScreen.style.display = 'none';
+        selectScreenVisible = false;
+        if (cfg.isModelSelection && selectedModelId) {
+          var formData = new FormData();
+          formData.append('assessment_id', assessmentId);
+          formData.append('model_id', selectedModelId);
+          fetch('/assessment/select-model', { method: 'POST', body: formData })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              if (data.success && data.redirect) {
+                window.location.href = data.redirect;
+              } else {
+                window.location.reload();
+              }
+            })
+            .catch(function() { window.location.reload(); });
         } else {
           init();
         }
@@ -1030,113 +1055,53 @@
     });
   }
 
-  // ── Model Selection Screen ──
-  var modelScreen = document.getElementById('aqmiModelScreen');
-  var modelChoices = document.querySelectorAll('.aqmi-model-choice');
-  var modelStartBtn = document.getElementById('aqmiModelStartBtn');
-  var modelStartText = document.getElementById('aqmiModelStartText');
-  var modelTitle = document.getElementById('aqmiModelTitle');
-  var modelDesc = document.getElementById('aqmiModelDesc');
-  var selectedModelId = null;
-
-  function applyModelLabels(lang) {
-    var labels = i18nData[lang] || i18nData['fr'] || {};
-    if (modelTitle && labels.choose_model) modelTitle.textContent = labels.choose_model;
-    if (modelDesc && labels.choose_model_desc) modelDesc.textContent = labels.choose_model_desc;
-    if (modelStartText && labels.start_assessment) modelStartText.textContent = labels.start_assessment;
-  }
-
-  function showModelScreen() {
-    if (!modelScreen) { init(); return; }
-    modelScreen.style.display = '';
-    applyModelLabels(currentLang);
-    gsap.fromTo(modelScreen, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-  }
-
-  function dismissModelScreen() {
-    if (!modelScreen) return;
-    gsap.to(modelScreen, {
-      opacity: 0, duration: 0.4, ease: 'power2.inOut',
-      onComplete: function() {
-        modelScreen.style.display = 'none';
-        // Submit model selection then reload to get model-filtered questions
-        var formData = new FormData();
-        formData.append('assessment_id', assessmentId);
-        formData.append('model_id', selectedModelId);
-        fetch('/assessment/select-model', { method: 'POST', body: formData })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
-            if (data.success && data.redirect) {
-              window.location.href = data.redirect;
-            } else {
-              window.location.reload();
-            }
-          })
-          .catch(function() { window.location.reload(); });
-      }
-    });
-  }
-
-  if (modelScreen) {
-    modelChoices.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        modelChoices.forEach(function(b) { b.classList.remove('selected'); });
-        btn.classList.add('selected');
-        selectedModelId = btn.getAttribute('data-model');
-        modelStartBtn.disabled = false;
-      });
-    });
-
-    if (modelStartBtn) {
-      modelStartBtn.addEventListener('click', function() {
-        if (modelStartBtn.disabled || !selectedModelId) return;
-        dismissModelScreen();
-      });
-    }
-  }
-
-  if (langScreen) {
+  if (selectScreen) {
     // Pre-select current lang
-    langChoices.forEach(function(btn) {
+    langCards.forEach(function(btn) {
       if (btn.getAttribute('data-lang') === selectedLang) btn.classList.add('selected');
       btn.addEventListener('click', function() {
-        langChoices.forEach(function(b) { b.classList.remove('selected'); });
+        langCards.forEach(function(b) { b.classList.remove('selected'); });
         btn.classList.add('selected');
         selectedLang = btn.getAttribute('data-lang');
-        langStartBtn.disabled = false;
-        applyI18nLabels(selectedLang);
-        // Set RTL for Arabic
+        updateSelectButton();
+        applySelectLabels(selectedLang);
         document.documentElement.setAttribute('dir', selectedLang === 'ar' ? 'rtl' : 'ltr');
         updateBrandMark(selectedLang);
       });
     });
 
-    if (langStartBtn) {
-      langStartBtn.addEventListener('click', function() {
-        if (langStartBtn.disabled) return;
-        // Save language to session via AJAX
+    // Model selection
+    modelCards.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        modelCards.forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        selectedModelId = btn.getAttribute('data-model');
+        updateSelectButton();
+      });
+    });
+
+    // Start button
+    if (selectStartBtn) {
+      selectStartBtn.addEventListener('click', function() {
+        if (selectStartBtn.disabled || !selectedModelId || !selectedLang) return;
         fetch('/lang/' + selectedLang, { method: 'GET', redirect: 'manual' })
-          .catch(function() {}) // ignore errors, session is set server-side
+          .catch(function() {})
           .finally(function() {
             currentLang = selectedLang;
             t = i18nData[currentLang] || i18nData['fr'] || {};
             updateBrandMark(currentLang);
-            dismissLangScreen();
+            dismissSelectScreen();
           });
       });
     }
 
-    // Apply initial labels
-    applyI18nLabels(selectedLang);
+    applySelectLabels(selectedLang);
+    updateSelectButton();
   }
 
-  // If no language screen, show model screen or init directly
-  if (!langScreenVisible) {
-    if (cfg.isModelSelection) {
-      showModelScreen();
-    } else {
-      init();
-    }
+  // If no selection screen, init directly
+  if (!selectScreenVisible) {
+    init();
   }
 
 })();
