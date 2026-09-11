@@ -42,7 +42,7 @@ echo "================================\n\n";
 try {
     $pdo = Database::getInstance()->getConnection();
 
-    // Check if report_studio tables exist
+    // Check if report_themes table exists
     $tables = $pdo->query("SHOW TABLES LIKE 'report_%'")->fetchAll(PDO::FETCH_COLUMN);
     echo "Existing Report Studio tables: " . (empty($tables) ? 'NONE' : implode(', ', $tables)) . "\n\n";
 
@@ -117,15 +117,10 @@ try {
         echo "  Done.\n\n";
     }
 
-    // Migration 007: reports.template_id is no longer used (themes removed).
-    // Keep the column if it exists for backwards compatibility but don't rename.
-    $col = $pdo->query("SHOW COLUMNS FROM reports LIKE 'template_id'")->fetch();
-    if ($col) {
-        echo "Note: reports.template_id column exists (unused, kept for compatibility).\n\n";
-    }
-
     // Verify final state
     echo "Verification:\n";
+    $count = $pdo->query("SELECT COUNT(*) FROM report_themes")->fetchColumn();
+    echo "  report_themes: {$count} rows\n";
     $count = $pdo->query("SELECT COUNT(*) FROM report_blocks")->fetchColumn();
     echo "  report_blocks: {$count} rows\n";
     $count = $pdo->query("SELECT COUNT(*) FROM report_templates")->fetchColumn();
