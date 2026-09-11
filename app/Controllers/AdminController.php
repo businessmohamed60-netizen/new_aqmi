@@ -518,6 +518,17 @@ class AdminController
         redirect('/admin/evaluation-models');
     }
 
+    public function evaluationModelToggle(array $params): void
+    {
+        Auth::requireAuth();
+        $id = (int)($params['id'] ?? 0);
+        $model = EvaluationModel::find($id);
+        if ($model) {
+            EvaluationModel::update($id, ['is_active' => $model['is_active'] ? 0 : 1]);
+        }
+        jsonResponse(['success' => true]);
+    }
+
     public function evaluationModelDomainsSave(): void
     {
         Auth::requireAuth();

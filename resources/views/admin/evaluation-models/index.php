@@ -113,7 +113,7 @@ ob_start();
 $extraScripts = <<<SCRIPTS
 <script>
 $(document).on('change', '.toggle-model', function() {
-    $.post('/admin/questions/toggle/' + $(this).data('id'), {});
+    $.post('/admin/evaluation-models/toggle/' + $(this).data('id'), {});
 });
 </script>
 SCRIPTS;

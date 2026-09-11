@@ -56,6 +56,7 @@ $router->get('/admin/evaluation-models/create', 'AdminController@evaluationModel
 $router->get('/admin/evaluation-models/edit/{id}', 'AdminController@evaluationModelForm', $adminMiddleware);
 $router->post('/admin/evaluation-models/save', 'AdminController@evaluationModelSave', $adminMiddleware);
 $router->get('/admin/evaluation-models/delete/{id}', 'AdminController@evaluationModelDelete', $adminMiddleware);
+$router->post('/admin/evaluation-models/toggle/{id}', 'AdminController@evaluationModelToggle', $adminMiddleware);
 $router->post('/admin/evaluation-models/domains/save', 'AdminController@evaluationModelDomainsSave', $adminMiddleware);
 
 // Lead Custom Fields

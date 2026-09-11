@@ -672,6 +672,16 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
       <span class="d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
         <i class="fas fa-user" style="color:var(--vx-primary);margin-right:0.25rem;"></i><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?>
       </span>
+      <div class="dropdown">
+        <button class="nova-btn nova-btn-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding:0.375rem 0.6rem;font-size:0.75rem;">
+          <i class="fas fa-globe" style="margin-right:0.25rem;"></i><?= strtoupper($langCode) ?>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" style="font-size:0.8rem;">
+          <li><a class="dropdown-item" href="/lang/fr" style="<?= $langCode==='fr'?'font-weight:700;color:var(--vx-primary);':'' ?>">Français</a></li>
+          <li><a class="dropdown-item" href="/lang/en" style="<?= $langCode==='en'?'font-weight:700;color:var(--vx-primary);':'' ?>">English</a></li>
+          <li><a class="dropdown-item" href="/lang/ar" style="<?= $langCode==='ar'?'font-weight:700;color:var(--vx-primary);':'' ?>">العربية</a></li>
+        </ul>
+      </div>
       <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
         <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i><?= __('dashboard.logout') ?>
       </a>
