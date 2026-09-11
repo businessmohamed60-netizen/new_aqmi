@@ -198,10 +198,11 @@ ob_start();
         <p class="aqmi-select-hero-desc" id="aqmiSelectDesc">Choisissez votre modèle d'évaluation et votre langue pour commencer</p>
       </div>
 
+      <div class="aqmi-select-card">
       <!-- Step 1: Model Selection -->
       <div class="aqmi-select-section" id="aqmiSelectModelSection">
         <div class="aqmi-select-section-header">
-          <span class="aqmi-select-step-badge">1</span>
+          <span class="aqmi-select-step-badge">01<i class="fas fa-clipboard-list"></i></span>
           <h2 class="aqmi-select-section-title" id="aqmiSelectModelTitle">Choisissez votre modèle d'évaluation</h2>
           <p class="aqmi-select-section-sub" id="aqmiSelectModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
         </div>
@@ -226,7 +227,7 @@ ob_start();
       <!-- Step 2: Language Selection -->
       <div class="aqmi-select-section" id="aqmiSelectLangSection">
         <div class="aqmi-select-section-header">
-          <span class="aqmi-select-step-badge">2</span>
+          <span class="aqmi-select-step-badge">02<i class="fas fa-language"></i></span>
           <h2 class="aqmi-select-section-title" id="aqmiSelectLangTitle">Choisissez votre langue</h2>
           <p class="aqmi-select-section-sub" id="aqmiSelectLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre</p>
         </div>
@@ -246,11 +247,14 @@ ob_start();
         </div>
       </div>
 
-      <!-- Start Button -->
-      <button class="aqmi-select-start-btn" id="aqmiSelectStartBtn" type="button" disabled>
-        <span id="aqmiSelectStartText">Commencer l'évaluation</span>
-        <i class="fas fa-arrow-right"></i>
-      </button>
+      <!-- Start Button (Footer) -->
+      <div class="aqmi-select-card-footer">
+        <button class="aqmi-select-start-btn" id="aqmiSelectStartBtn" type="button" disabled>
+          <span id="aqmiSelectStartText">Commencer l'évaluation</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      </div><!-- /.aqmi-select-card -->
     </div>
   </div>
 
@@ -354,7 +358,10 @@ ob_start();
             <!-- Rating Scale -->
             <div class="aqmi-rating-grid" id="aqmiRatingGrid" style="display:none;"></div>
 
-            <!-- Navigation -->
+          </div>
+
+          <!-- Sticky Navigation Footer -->
+          <div class="aqmi-question-footer">
             <div class="aqmi-nav">
               <button class="aqmi-nav-btn" id="aqmiPrevBtn">
                 <i class="fas fa-arrow-left"></i>
@@ -369,6 +376,7 @@ ob_start();
                 <i class="fas fa-arrow-right"></i>
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>

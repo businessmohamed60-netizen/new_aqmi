@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['lang'] ?? 'fr' ?>" dir="<?= ($_SESSION['lang'] ?? 'fr') === 'ar' ? 'rtl' : 'ltr' ?>" data-bs-theme="dark">
+<html lang="<?= $_SESSION['lang'] ?? 'fr' ?>" dir="<?= ($_SESSION['lang'] ?? 'fr') === 'ar' ? 'rtl' : 'ltr' ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -16,7 +16,8 @@
       body {
         margin: 0;
         padding: 0;
-        background: #08080e;
+        background: var(--aqmi-bg, #f4f7fb);
+        font-family: var(--aqmi-font, 'Inter', sans-serif);
       }
     </style>
 </head>

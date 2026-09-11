@@ -3288,3 +3288,643 @@
   .aqmi-select-lang-row { gap: 0.6rem; }
   .aqmi-select-lang-card { padding: 0.7rem 1.2rem; }
 }
+
+/* ================================================================
+   PREMIUM UI OVERHAUL — SaaS/Canva-grade Select Screen + Question
+   ================================================================ */
+
+/* ── Select Screen Card Container ── */
+.aqmi-select-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 24px;
+  padding: 2.25rem 2.5rem;
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.04),
+    0 12px 40px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.aqmi-select-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--aqmi-accent), var(--aqmi-success), var(--aqmi-accent));
+  background-size: 200% 100%;
+  animation: aqmi-card-top-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes aqmi-card-top-shimmer {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 0%; }
+}
+
+.aqmi-select-card-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.05);
+  margin-top: 0.25rem;
+}
+
+/* ── Step Badges: 01 / 02 with icon ── */
+.aqmi-select-step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: auto;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.75rem;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--aqmi-accent), #173b57);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.35rem;
+  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.22);
+}
+
+.aqmi-select-step-badge i {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+/* ── Model Cards: Premium SaaS tiles ── */
+.aqmi-select-model-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.35rem 1.5rem;
+  background: #ffffff;
+  border: 2px solid rgba(15, 23, 42, 0.07);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: var(--aqmi-font);
+  color: var(--aqmi-text);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.aqmi-select-model-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.03), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+
+.aqmi-select-model-card:hover {
+  border-color: rgba(31, 111, 235, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(31, 111, 235, 0.06);
+}
+
+.aqmi-select-model-card:hover::after {
+  opacity: 1;
+}
+
+.aqmi-select-model-card.selected {
+  border-color: var(--aqmi-accent);
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.04), rgba(31, 111, 235, 0.01));
+  box-shadow: 0 8px 28px rgba(31, 111, 235, 0.14), inset 0 0 0 1px rgba(31, 111, 235, 0.1);
+}
+
+.aqmi-select-model-card.selected::after {
+  opacity: 1;
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.06), transparent 50%);
+}
+
+.aqmi-select-model-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aqmi-select-model-card:hover .aqmi-select-model-icon {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.aqmi-select-model-card.selected .aqmi-select-model-icon {
+  transform: scale(1.05);
+}
+
+.aqmi-select-model-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.aqmi-select-model-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--aqmi-text);
+}
+
+.aqmi-select-model-desc {
+  font-size: 0.75rem;
+  color: var(--aqmi-text-secondary);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.aqmi-select-model-check {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  font-size: 1.15rem;
+  color: var(--aqmi-accent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.aqmi-select-model-card.selected .aqmi-select-model-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Language Cards: Premium pills ── */
+.aqmi-select-lang-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.75rem;
+  background: #ffffff;
+  border: 2px solid rgba(15, 23, 42, 0.07);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: var(--aqmi-font);
+  color: var(--aqmi-text);
+  position: relative;
+  overflow: hidden;
+}
+
+.aqmi-select-lang-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--aqmi-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.aqmi-select-lang-card:hover {
+  border-color: rgba(31, 111, 235, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.aqmi-select-lang-card:hover::after {
+  transform: scaleX(1);
+}
+
+.aqmi-select-lang-card.selected {
+  border-color: var(--aqmi-accent);
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.04), rgba(31, 111, 235, 0.01));
+  box-shadow: 0 6px 20px rgba(31, 111, 235, 0.12);
+}
+
+.aqmi-select-lang-card.selected::after {
+  transform: scaleX(1);
+}
+
+.aqmi-select-lang-flag {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--aqmi-accent);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--aqmi-accent-soft);
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  flex-shrink: 0;
+}
+
+.aqmi-select-lang-card:hover .aqmi-select-lang-flag {
+  transform: scale(1.05);
+}
+
+.aqmi-select-lang-card.selected .aqmi-select-lang-flag {
+  background: var(--aqmi-accent);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31, 111, 235, 0.3);
+}
+
+.aqmi-select-lang-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ── Start Button: Premium CTA ── */
+.aqmi-select-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, var(--aqmi-accent), #173b57);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-family: var(--aqmi-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 8px 24px rgba(31, 111, 235, 0.28);
+  align-self: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.aqmi-select-start-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.aqmi-select-start-btn:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.aqmi-select-start-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(31, 111, 235, 0.35);
+}
+
+.aqmi-select-start-btn:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.aqmi-select-start-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: grayscale(0.5);
+}
+
+.aqmi-select-start-btn i {
+  font-size: 0.85rem;
+  transition: transform 0.3s ease;
+}
+
+.aqmi-select-start-btn:hover:not(:disabled) i {
+  transform: translateX(4px);
+}
+
+/* ── Question Panel: Card Layout ── */
+.aqmi-question-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 3rem;
+  position: relative;
+  overflow-y: auto;
+}
+
+.aqmi-question {
+  max-width: 580px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  border-radius: 20px;
+  padding: 2rem 2.25rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.aqmi-question-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.aqmi-question-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Question Footer: Sticky Nav ── */
+.aqmi-question-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+  position: sticky;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 0 0 20px 20px;
+  margin-left: -2.25rem;
+  margin-right: -2.25rem;
+  margin-bottom: -2rem;
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
+  padding-bottom: 1.5rem;
+}
+
+/* ── Nav Buttons: Premium ── */
+.aqmi-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1.5px solid rgba(15, 23, 42, 0.1);
+  background: #ffffff;
+  color: var(--aqmi-text-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.aqmi-nav-btn:hover {
+  background: #f8fafc;
+  color: var(--aqmi-text);
+  border-color: rgba(15, 23, 42, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.aqmi-nav-btn:active {
+  transform: translateY(0);
+}
+
+.aqmi-nav-btn:focus-visible {
+  outline: 2px solid var(--aqmi-accent);
+  outline-offset: 2px;
+}
+
+.aqmi-nav-btn.primary {
+  background: linear-gradient(135deg, var(--aqmi-accent), #173b57);
+  border-color: var(--aqmi-accent);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(31, 111, 235, 0.22);
+}
+
+.aqmi-nav-btn.primary:hover {
+  box-shadow: 0 10px 30px rgba(31, 111, 235, 0.3);
+  transform: translateY(-2px);
+}
+
+.aqmi-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.aqmi-nav-btn i {
+  font-size: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.aqmi-nav-btn:hover i.fa-arrow-right {
+  transform: translateX(3px);
+}
+
+.aqmi-nav-btn:hover i.fa-arrow-left {
+  transform: translateX(-3px);
+}
+
+/* ── Responsive: Select Screen Card ── */
+@media (max-width: 768px) {
+  .aqmi-select-card {
+    padding: 1.5rem 1.75rem;
+    gap: 1.5rem;
+    border-radius: 18px;
+  }
+
+  .aqmi-select-screen-inner {
+    gap: 1.25rem;
+  }
+
+  .aqmi-select-hero-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .aqmi-select-hero-icon i {
+    font-size: 1.3rem;
+  }
+
+  .aqmi-select-hero-title {
+    font-size: 1.35rem;
+  }
+
+  .aqmi-select-hero-desc {
+    font-size: 0.82rem;
+  }
+
+  .aqmi-select-model-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .aqmi-select-model-card {
+    padding: 1.1rem 1.25rem;
+  }
+
+  .aqmi-select-model-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .aqmi-select-lang-row {
+    gap: 0.6rem;
+  }
+
+  .aqmi-select-lang-card {
+    padding: 0.85rem 1.35rem;
+    flex: 1 1 auto;
+  }
+
+  .aqmi-select-lang-flag {
+    width: 36px;
+    height: 36px;
+    font-size: 0.78rem;
+  }
+
+  .aqmi-select-start-btn {
+    padding: 0.85rem 2rem;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .aqmi-select-card-footer {
+    padding-top: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .aqmi-select-card {
+    padding: 1.25rem 1.35rem;
+    gap: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .aqmi-select-hero-title {
+    font-size: 1.2rem;
+  }
+
+  .aqmi-select-section-title {
+    font-size: 1rem;
+  }
+
+  .aqmi-select-section-sub {
+    font-size: 0.75rem;
+  }
+
+  .aqmi-select-step-badge {
+    font-size: 0.68rem;
+    padding: 0 0.6rem;
+    height: 26px;
+  }
+
+  .aqmi-select-model-card {
+    padding: 1rem 1.1rem;
+    gap: 0.75rem;
+    border-radius: 12px;
+  }
+
+  .aqmi-select-model-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  .aqmi-select-model-name {
+    font-size: 0.85rem;
+  }
+
+  .aqmi-select-model-desc {
+    font-size: 0.7rem;
+  }
+
+  .aqmi-select-lang-card {
+    flex: 1 1 100%;
+    padding: 0.75rem 1.15rem;
+  }
+
+  .aqmi-select-lang-flag {
+    width: 34px;
+    height: 34px;
+  }
+
+  .aqmi-select-lang-name {
+    font-size: 0.82rem;
+  }
+}
+
+/* ── Responsive: Question Card ── */
+@media (max-width: 968px) {
+  .aqmi-question-panel {
+    padding: 1.5rem 1.75rem;
+  }
+
+  .aqmi-question {
+    max-width: 100%;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .aqmi-question-footer {
+    margin-left: -1.75rem;
+    margin-right: -1.75rem;
+    margin-bottom: -1.5rem;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+    padding-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .aqmi-question-panel {
+    padding: 1rem 1rem;
+  }
+
+  .aqmi-question {
+    padding: 1.25rem 1.35rem;
+    border-radius: 16px;
+  }
+
+  .aqmi-question-footer {
+    margin-left: -1.35rem;
+    margin-right: -1.35rem;
+    margin-bottom: -1.25rem;
+    padding-left: 1.35rem;
+    padding-right: 1.35rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    border-radius: 0 0 16px 16px;
+  }
+}
+
+/* ── Select Screen: small mobile ── */
+@media (max-width: 400px) {
+  .aqmi-select-card {
+    padding: 1rem 1.1rem;
+  }
+
+  .aqmi-select-hero-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+  }
+
+  .aqmi-select-hero-title {
+    font-size: 1.1rem;
+  }
+
+  .aqmi-select-model-grid {
+    gap: 0.5rem;
+  }
+
+  .aqmi-select-model-card {
+    padding: 0.85rem 1rem;
+  }
+}
