@@ -5,14 +5,23 @@ use App\Helpers\Database;
 use App\Models\Assessment;
 use App\Models\Answer;
 use App\Models\Domain;
+use App\Models\EvaluationModel;
 use App\Models\ScoreLevel;
 
 class ScoringService
 {
     public function calculateDomainScores(int $assessmentId): array
     {
+        $assessment = Assessment::find($assessmentId);
+        $modelId = $assessment ? (int)$assessment['model_id'] : 0;
+
         $scores = Answer::getScoresByDomain($assessmentId);
-        $domains = Domain::allActive();
+
+        if ($modelId) {
+            $domains = EvaluationModel::getDomains($modelId);
+        } else {
+            $domains = Domain::allActive();
+        }
         $result = [];
 
         foreach ($domains as $domain) {

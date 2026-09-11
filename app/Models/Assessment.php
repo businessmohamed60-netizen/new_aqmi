@@ -55,6 +55,12 @@ class Assessment
         return (float)($result['avg_score'] ?? 0);
     }
 
+    public static function countByUser(int $userId): int
+    {
+        $result = Database::fetch("SELECT COUNT(*) as count FROM assessments WHERE user_id = ?", [$userId]);
+        return (int)($result['count'] ?? 0);
+    }
+
     public static function getMonthlyStats(int $months = 6): array
     {
         return Database::fetchAll(

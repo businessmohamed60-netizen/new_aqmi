@@ -58,6 +58,21 @@ ob_start();
         </div>
       </div>
 
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="auto-label">Nombre d'évaluations autorisé</label>
+          <select name="assessment_limit_mode" class="auto-select" id="assessment_limit_mode">
+            <option value="unlimited" <?= ($user['assessment_limit'] ?? null) === null ? 'selected' : '' ?>>Illimité</option>
+            <option value="limited" <?= ($user['assessment_limit'] ?? null) !== null ? 'selected' : '' ?>>Limite définie</option>
+          </select>
+        </div>
+        <div class="col-md-6" id="assessment_limit_value_wrap" style="display:none;">
+          <label class="auto-label">Nombre maximum d'évaluations</label>
+          <input type="number" name="assessment_limit" class="auto-input" min="0" value="<?= e($user['assessment_limit'] ?? 10) ?>" placeholder="ex: 10">
+          <small style="color:var(--auto-text-muted);font-size:0.7rem;">0 = aucune nouvelle évaluation autorisée</small>
+        </div>
+      </div>
+
       <div class="mb-4">
         <div class="form-check form-switch">
           <input type="hidden" name="is_active" value="0">
@@ -73,6 +88,17 @@ ob_start();
     </form>
   </div>
 </div>
+<script>
+(function() {
+  var modeSelect = document.getElementById('assessment_limit_mode');
+  var valueWrap = document.getElementById('assessment_limit_value_wrap');
+  function toggle() {
+    valueWrap.style.display = modeSelect.value === 'limited' ? '' : 'none';
+  }
+  modeSelect.addEventListener('change', toggle);
+  toggle();
+})();
+</script>
 <?php
 $content = ob_get_clean();
 require BASE_PATH . '/resources/views/layouts/admin.php';

@@ -31,12 +31,19 @@ class User
     public static function update(int $id, array $data): int
     {
         $sets = []; $params = [];
-        foreach (['role_id', 'firstname', 'lastname', 'email', 'password', 'phone', 'is_active', 'avatar'] as $key) {
-            if (isset($data[$key])) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
+        foreach (['role_id', 'firstname', 'lastname', 'email', 'password', 'phone', 'is_active', 'avatar', 'assessment_limit'] as $key) {
+            if (array_key_exists($key, $data)) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
         }
         if (empty($sets)) return 0;
         $params[] = $id;
         return Database::execute("UPDATE users SET " . implode(', ', $sets) . " WHERE id = ?", $params);
+    }
+
+    public static function getAssessmentLimit(int $userId): ?int
+    {
+        $row = Database::fetch("SELECT assessment_limit FROM users WHERE id = ?", [$userId]);
+        if (!$row) return null;
+        return $row['assessment_limit'] !== null ? (int)$row['assessment_limit'] : null;
     }
 
     public static function delete(int $id): int

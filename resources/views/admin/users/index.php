@@ -37,7 +37,7 @@ ob_start();
     <div style="overflow-x:auto;">
       <table class="auto-table">
         <thead>
-          <tr><th>#</th><th>Nom</th><th>Email</th><th>Rôle</th><th class="text-center">Actif</th><th>Dernière connexion</th><th class="text-center">Actions</th></tr>
+          <tr><th>#</th><th>Nom</th><th>Email</th><th>Rôle</th><th class="text-center">Limite éval.</th><th class="text-center">Actif</th><th>Dernière connexion</th><th class="text-center">Actions</th></tr>
         </thead>
         <tbody>
           <?php foreach ($users as $u): ?>
@@ -46,6 +46,13 @@ ob_start();
               <td><span class="user-name"><?= e($u['firstname'] . ' ' . $u['lastname']) ?></span></td>
               <td><span class="user-email"><?= e($u['email']) ?></span></td>
               <td><span class="auto-badge auto-badge-cyan"><?= e($u['role_name']) ?></span></td>
+              <td class="text-center">
+                <?php if ($u['assessment_limit'] === null): ?>
+                  <span class="auto-badge auto-badge-green">Illimité</span>
+                <?php else: ?>
+                  <span class="auto-badge <?= $u['assessment_limit'] == 0 ? 'auto-badge-red' : 'auto-badge-cyan' ?>"><?= (int)$u['assessment_limit'] ?></span>
+                <?php endif; ?>
+              </td>
               <td class="text-center">
                 <span class="auto-badge <?= $u['is_active'] ? 'auto-badge-green' : 'auto-badge-red' ?>">
                   <?= $u['is_active'] ? 'Oui' : 'Non' ?>

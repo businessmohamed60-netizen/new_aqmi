@@ -78,10 +78,18 @@ class UserController
 
         $consolidatedReports = \App\Models\ConsolidatedReport::findByUser($userId);
 
+        $assessmentLimit = \App\Models\User::getAssessmentLimit($userId);
+        $assessmentsRemaining = null;
+        $assessmentsUsed = $totalAssessments;
+        if ($assessmentLimit !== null) {
+            $assessmentsRemaining = max(0, $assessmentLimit - $assessmentsUsed);
+        }
+
         view('user.dashboard', compact(
             'assessments', 'totalAssessments', 'completedCount', 'user', 'consolidatedReports',
             'bestScore', 'avgScore', 'latestScore', 'progressDelta', 'maturityLevel',
-            'completionRate', 'scoreHistory', 'scoreLevels'
+            'completionRate', 'scoreHistory', 'scoreLevels',
+            'assessmentLimit', 'assessmentsRemaining', 'assessmentsUsed'
         ));
     }
 

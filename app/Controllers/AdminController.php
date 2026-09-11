@@ -920,6 +920,11 @@ class AdminController
             $data['password'] = password_hash($_POST['password'], PASSWORD_BCRYPT);
         }
 
+        $limitMode = $_POST['assessment_limit_mode'] ?? 'unlimited';
+        $data['assessment_limit'] = ($limitMode === 'limited' && isset($_POST['assessment_limit']))
+            ? (int)$_POST['assessment_limit']
+            : null;
+
         if ($id > 0) {
             User::update($id, $data);
         } else {

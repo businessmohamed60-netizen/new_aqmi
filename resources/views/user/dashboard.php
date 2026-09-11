@@ -694,6 +694,14 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
     <div class="user-welcome">
       <h2><?= __('dashboard.welcome', ['name' => e($user['firstname'] ?? '')]) ?></h2>
       <p><?= __('dashboard.welcome_sub') ?></p>
+      <?php if (isset($assessmentLimit) && $assessmentLimit !== null): ?>
+        <p style="margin-top:0.5rem;font-size:0.75rem;color:<?= $assessmentsRemaining > 0 ? 'var(--vx-text-secondary)' : 'var(--vx-danger)' ?>;font-weight:600;">
+          <i class="fas fa-chart-bar" style="margin-right:0.25rem;"></i>
+          <?= $assessmentsRemaining > 0
+            ? "Évaluations restantes : {$assessmentsRemaining} / {$assessmentLimit}"
+            : "Limite atteinte ({$assessmentLimit} évaluation(s)). Contactez l'administrateur." ?>
+        </p>
+      <?php endif; ?>
     </div>
 
     <?php
@@ -888,8 +896,11 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
           <a href="/user/consolidated" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
             <i class="fas fa-layer-group" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.consolidate') ?>
           </a>
-          <a href="/assessment/start" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;">
+          <a href="/assessment/start" class="nova-btn nova-btn-primary" style="padding:0.375rem 0.75rem;font-size:0.75rem;<?= isset($assessmentsRemaining) && $assessmentsRemaining === 0 ? 'pointer-events:none;opacity:0.5;' : '' ?>">
             <i class="fas fa-plus" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.new') ?>
+            <?php if (isset($assessmentLimit) && $assessmentLimit !== null): ?>
+              <span style="margin-left:0.35rem;font-size:0.65rem;opacity:0.85;">(<?= $assessmentsUsed ?>/<?= $assessmentLimit ?>)</span>
+            <?php endif; ?>
           </a>
         </div>
       </div>
@@ -952,7 +963,12 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
         <div class="user-empty-state">
           <div class="user-empty-icon"><i class="fas fa-clipboard-list"></i></div>
           <p><?= __('dashboard.assessments.empty') ?></p>
-          <a href="/assessment/start" class="nova-btn nova-btn-primary"><i class="fas fa-plus" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.start') ?></a>
+          <a href="/assessment/start" class="nova-btn nova-btn-primary" <?= isset($assessmentsRemaining) && $assessmentsRemaining === 0 ? 'style="pointer-events:none;opacity:0.5;"' : '' ?>><i class="fas fa-plus" style="margin-right:0.25rem;"></i><?= __('dashboard.assessments.start') ?></a>
+          <?php if (isset($assessmentLimit) && $assessmentLimit !== null && $assessmentsRemaining === 0): ?>
+            <p style="margin-top:0.75rem;font-size:0.75rem;color:var(--vx-danger);font-weight:600;">
+              <i class="fas fa-lock" style="margin-right:0.25rem;"></i>Vous avez atteint votre limite de <?= $assessmentLimit ?> évaluation(s).
+            </p>
+          <?php endif; ?>
         </div>
       <?php endif; ?>
     </div>

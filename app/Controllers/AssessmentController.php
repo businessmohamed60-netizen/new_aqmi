@@ -38,9 +38,22 @@ class AssessmentController
             return;
         }
 
+        $userId = Auth::id();
+        $limit = \App\Models\User::getAssessmentLimit($userId);
+        if ($limit !== null) {
+            $count = Assessment::countByUser($userId);
+            if ($count >= $limit) {
+                $_SESSION['error'] = $limit === 0
+                    ? 'Les nouvelles évaluations sont désactivées pour votre compte. Contactez l\'administrateur.'
+                    : 'Vous avez atteint votre limite de ' . $limit . ' évaluation(s). Contactez l\'administrateur pour l\'augmenter.';
+                redirect('/dashboard');
+                return;
+            }
+        }
+
         $assessmentId = Assessment::create([
             'session_id' => $sessionId,
-            'user_id' => Auth::check() ? Auth::id() : null,
+            'user_id' => $userId,
         ]);
         redirect('/assessment/' . $assessmentId);
     }
@@ -106,8 +119,8 @@ class AssessmentController
 
         foreach ($domains as $i => $domain) {
             $questions = Database::fetchAll(
-                "SELECT * FROM questions WHERE domain_id = ? AND is_active = 1 ORDER BY sort_order",
-                [$domain['id']]
+                "SELECT * FROM questions WHERE domain_id = ? AND is_active = 1 AND (model_id = ? OR model_id IS NULL) ORDER BY sort_order",
+                [$domain['id'], $modelId]
             );
             if (empty($questions)) continue;
 
