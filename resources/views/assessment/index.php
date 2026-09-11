@@ -4,6 +4,11 @@ $isModelSelection = isset($models) && !isset($domainQuestions);
 $totalQuestions = 0;
 $questionsFlat = [];
 $domainsFlat = [];
+$completionPercent = $completionPercent ?? 0;
+$answers = $answers ?? [];
+$domainQuestions = $domainQuestions ?? [];
+$currentDomainIndex = $currentDomainIndex ?? 0;
+$currentDomain = $currentDomain ?? null;
 
 if (!$isModelSelection) {
 foreach ($domainQuestions as $dq) {
