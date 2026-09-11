@@ -1,12 +1,12 @@
 <?php
-/** Official Stamp — AQMI certification seal (circular, rectangular, or badge).
+/** Official Stamp — premium certification seal (circular, rectangular, or badge).
  * @var array $config
  * @var string $title
  */
 $style   = $config['style']   ?? 'circular';
 $text    = $config['text']    ?? 'CERTIFIÉ';
 $subtext = $config['subtext'] ?? 'AQMI';
-$color   = $config['color']   ?? '#102A43';
+$color   = $config['color']   ?? '#0f2845';
 $size    = (int) ($config['size'] ?? 110);
 $align   = $config['align']   ?? 'right';
 $useCustomImage = $config['use_custom_image'] ?? false;
@@ -20,15 +20,15 @@ $imageHeight = $config['image_height'] ?? '100px';
     <?php elseif ($style === 'circular'): ?>
         <div class="rs-stamp rs-stamp-circular"
              style="width:<?= $size ?>px;height:<?= $size ?>px;border-color:<?= e($color) ?>;color:<?= e($color) ?>">
-            <div class="rs-stamp-inner">
+            <div class="rs-stamp-inner" style="position: relative; z-index: 1;">
                 <span class="rs-stamp-text" style="font-size:<?= max(9, (int)($size * 0.12)) ?>px"><?= e($text) ?></span>
                 <span class="rs-stamp-subtext" style="font-size:<?= max(8, (int)($size * 0.09)) ?>px"><?= e($subtext) ?></span>
             </div>
         </div>
     <?php elseif ($style === 'rectangular'): ?>
         <div class="rs-stamp rs-stamp-rectangular"
-             style="border-color:<?= e($color) ?>;color:<?= e($color) ?>">
-            <div class="rs-stamp-inner rs-stamp-rect-inner">
+             style="border-color:<?= e($color) ?>;color:<?= e($color) ?>;padding: 14px 24px;">
+            <div class="rs-stamp-inner" style="position: relative; z-index: 1;">
                 <span class="rs-stamp-text"><?= e($text) ?></span>
                 <span class="rs-stamp-subtext"><?= e($subtext) ?></span>
             </div>

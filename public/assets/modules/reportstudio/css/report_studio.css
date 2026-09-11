@@ -1,6 +1,6 @@
 /* ============================================================
-   AQMI Report Studio — Modern Canva-style Designer UI
-   Vibrant colors, rounded shapes, smooth animations
+   AQMI Report Studio — Premium Canva-style Designer
+   Sophisticated, editorial-grade certificate + report styling
    ============================================================ */
 
 :root {
@@ -53,8 +53,20 @@
 
   --rs-font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --rs-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+  --rs-font-display:  'Playfair Display', 'Georgia', serif;
   --rs-transition:   180ms cubic-bezier(0.4, 0, 0.2, 1);
   --rs-transition-slow: 280ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Premium certificate palette */
+  --cert-gold:        #c5a455;
+  --cert-gold-light:  #e8d5a0;
+  --cert-gold-dark:   #9a7d3a;
+  --cert-navy:        #0f2845;
+  --cert-navy-light:  #1e3a5f;
+  --rs-heading:       #0f2845;
+  --rs-body:          #2a3a52;
+  --cert-paper:       #faf8f3;
+  --cert-cream:       #f6f1e7;
 }
 
 /* ============================================================
@@ -486,7 +498,7 @@
 .rs-explorer-disabled-icon { font-size: 11px; color: var(--rs-text-dim); }
 
 /* ============================================================
-   CANVAS
+   CANVAS — premium A4 paper with elegant shadow
    ============================================================ */
 .rs-canvas-pane {
   background: var(--rs-bg);
@@ -558,11 +570,11 @@
   background-position: 0 0;
 }
 
-/* A4 canvas — rounded with shadow */
+/* A4 canvas — premium paper with subtle warm tint */
 .rs-canvas {
-  background: #ffffff;
-  border-radius: var(--rs-radius);
-  box-shadow: var(--rs-shadow-lg);
+  background: var(--cert-paper, #faf8f3);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.10);
   padding: 28px;
   min-height: 600px;
   width: 100%;
@@ -1084,45 +1096,107 @@
 }
 
 /* ============================================================
-   BLOCK PREVIEW STYLES (shared with report render)
+   BLOCK PREVIEW STYLES — premium certificate components
+   (shared between builder canvas and report render)
    ============================================================ */
+
+/* Global Score — elegant ring with inner shadow and rating badge */
 .rs-score-ring {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: conic-gradient(var(--rs-primary, #102A43) calc(var(--rs-pct, 0) * 1%), #e5e7eb 0);
+  background: conic-gradient(var(--rs-primary, #0f2845) calc(var(--rs-pct, 0) * 1%), #e8edf2 0);
   position: relative;
+  box-shadow: 0 4px 20px rgba(15,40,69,0.12);
 }
 .rs-score-ring-inner {
-  width: 76px;
-  height: 76px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
 }
 .rs-score-value {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: #102A43;
+  color: #0f2845;
+  font-family: var(--rs-font);
+  line-height: 1;
 }
-.rs-score-value small { font-size: 0.7rem; color: #6b7280; }
+.rs-score-value small { font-size: 0.65rem; color: #8298b5; font-weight: 500; }
+.rs-score-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2a3a52;
+  letter-spacing: 0.02em;
+}
+.rs-score-rating {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 5px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.rs-score-rating[data-rating="A"] { background: #e6f4ea; color: #059669; border: 1px solid #a7e8c0; }
+.rs-score-rating[data-rating="B"] { background: #e0e7ff; color: #4f46e5; border: 1px solid #c7d0f5; }
+.rs-score-rating[data-rating="C"] { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.rs-score-rating[data-rating="D"] { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
 
+/* AQMI brand mark — refined */
 .rs-aqmi-mark {
   font-weight: 800;
-  letter-spacing: 2px;
-  color: #102A43;
+  letter-spacing: 3px;
+  color: #0f2845;
+  font-size: 1.5rem;
 }
+.rs-logo-sm .rs-aqmi-mark { font-size: 1.1rem; }
+.rs-logo-md .rs-aqmi-mark { font-size: 1.5rem; }
+.rs-logo-lg .rs-aqmi-mark { font-size: 2rem; }
 
+/* Recommendations — editorial numbered list */
 .rs-reco-list {
-  padding-left: 1.2em;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: reco-counter;
+}
+.rs-reco-list > li {
+  counter-increment: reco-counter;
+  padding: 10px 0 10px 40px;
+  position: relative;
+  border-bottom: 1px solid #f0e8d8;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #2a3a52;
+}
+.rs-reco-list > li:last-child { border-bottom: none; }
+.rs-reco-list > li::before {
+  content: counter(reco-counter, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--cert-gold) 0%, var(--cert-gold-dark) 100%);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--rs-font);
+  letter-spacing: 0.02em;
 }
 
+/* Official Stamp — refined with double border ring */
 .rs-stamp {
   display: inline-flex;
   flex-direction: column;
@@ -1130,25 +1204,258 @@
   justify-content: center;
   border: 3px solid;
   text-align: center;
-  padding: 8px;
+  padding: 10px;
+  position: relative;
 }
-.rs-stamp-circular { border-radius: 50%; }
+.rs-stamp-circular {
+  border-radius: 50%;
+}
+.rs-stamp-circular::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.35;
+}
 .rs-stamp-rectangular { border-radius: 6px; }
+.rs-stamp-rectangular::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  opacity: 0.3;
+  pointer-events: none;
+}
 .rs-stamp-badge { display: inline-flex; flex-direction: column; align-items: center; }
-.rs-stamp-text { font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; }
-.rs-stamp-subtext { font-size: 0.65rem; letter-spacing: 1px; opacity: 0.8; }
+.rs-stamp-text { font-weight: 800; font-size: 0.85rem; letter-spacing: 1.5px; }
+.rs-stamp-subtext { font-size: 0.65rem; letter-spacing: 2px; opacity: 0.7; font-weight: 600; }
 
+/* Signature — elegant with refined line */
 .rs-sig-line {
-  border-top: 1.5px solid #102A43;
-  width: 200px;
+  border-top: 1.5px solid #0f2845;
+  width: 220px;
+  margin-bottom: 8px;
+}
+
+.rs-header-title { font-weight: 700; letter-spacing: -0.01em; }
+.rs-block-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: #0f2845; letter-spacing: 0.01em; }
+
+.rs-richtext-content { font-size: 0.9rem; line-height: 1.7; color: #2a3a52; }
+.rs-richtext-content p { margin-bottom: 0.5rem; }
+
+/* ============================================================
+   PREMIUM CERTIFICATE BLOCKS — editorial-grade components
+   ============================================================ */
+
+/* Cover Page — full premium certificate layout */
+.rs-block-cover-page {
+  background: var(--cert-paper);
+  border: 1px solid #e8e0d0;
+  position: relative;
+  overflow: hidden;
+}
+.rs-block-cover-page .cert-decorative-border {
+  position: absolute;
+  inset: 10px;
+  border: 2px solid var(--cert-gold);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}
+.rs-block-cover-page .cert-decorative-border::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--cert-gold-light);
+  opacity: 0.5;
+  border-radius: 1px;
+}
+.rs-block-cover-page .cert-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--cert-gold);
+  z-index: 2;
+}
+.rs-block-cover-page .cert-corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+.rs-block-cover-page .cert-corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+.rs-block-cover-page .cert-corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+.rs-block-cover-page .cert-corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+.rs-block-cover-page .cert-content {
+  position: relative;
+  z-index: 3;
+  padding: 28px 24px;
+}
+.rs-block-cover-page .cert-brand {
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-size: 1.8rem;
+  color: #0f2845;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.rs-block-cover-page .cert-brand::after {
+  content: '';
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cert-gold), transparent);
+}
+.rs-block-cover-page .cert-brand-tagline {
+  font-size: 0.7rem;
+  color: #8298b5;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.rs-block-cover-page .cert-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cert-gold), transparent);
+  margin: 20px 0;
+  border: none;
+}
+.rs-block-cover-page .cert-title {
+  font-family: var(--rs-font-display), Georgia, serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0f2845;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   margin-bottom: 6px;
 }
+.rs-block-cover-page .cert-subtitle {
+  font-size: 0.85rem;
+  color: #5a6a82;
+  font-weight: 500;
+  margin: 0;
+}
+.rs-block-cover-page .cert-prepared-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #8298b5;
+}
+.rs-block-cover-page .cert-company-name {
+  font-family: var(--rs-font-display), Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0f2845;
+  margin-bottom: 12px;
+}
+.rs-block-cover-page .cert-ref-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #8298b5;
+}
+.rs-block-cover-page .cert-ref-number {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f2845;
+  font-family: var(--rs-font-mono), monospace;
+}
+.rs-block-cover-page .cert-ref-date {
+  font-size: 0.72rem;
+  color: #5a6a82;
+}
+.rs-block-cover-page .cert-stamp-container {
+  margin: 16px auto;
+}
+.rs-block-cover-page .cert-footer-bar {
+  border-top: 1px solid #e8e0d0;
+  padding-top: 14px;
+  margin-top: 16px;
+}
 
-.rs-header-title { font-weight: 700; }
-.rs-block-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+/* Domain Scores — premium table */
+.rs-block-domain-scores .table {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e8e0d0;
+}
+.rs-block-domain-scores thead {
+  background: linear-gradient(135deg, #0f2845, #1e3a5f);
+}
+.rs-block-domain-scores thead th {
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  padding: 10px 12px;
+}
+.rs-block-domain-scores tbody tr {
+  border-color: #f0e8d8;
+  transition: background 150ms ease;
+}
+.rs-block-domain-scores tbody tr:hover {
+  background: #faf6ed;
+}
+.rs-block-domain-scores tbody td {
+  padding: 10px 12px;
+  font-size: 0.82rem;
+}
 
-.rs-richtext-content { font-size: 0.9rem; line-height: 1.6; }
-.rs-richtext-content p { margin-bottom: 0.5rem; }
+/* KPI Card — premium with soft shadow */
+.rs-block-kpi-card {
+  border: 1px solid #e8e0d0;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(15,40,69,0.04);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.rs-block-kpi-card:hover {
+  box-shadow: 0 4px 16px rgba(15,40,69,0.08);
+  transform: translateY(-1px);
+}
+
+/* QR Code — framed with subtle border */
+.rs-block-qr img,
+.rs-qr-img {
+  border: 1px solid #e8e0d0;
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+}
+.rs-qr-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #c5a455;
+  border-radius: 8px;
+  background: #faf8f3;
+  color: #9a7d3a;
+}
+
+/* Image — subtle frame */
+.rs-img {
+  border: 1px solid #e8e0d0;
+  border-radius: 4px;
+}
+
+/* Company Info — refined layout */
+.rs-block-company-info dt {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #8298b5;
+}
+.rs-block-company-info dd {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #0f2845;
+}
 
 /* ============================================================
    STATUS BAR
@@ -1205,23 +1512,45 @@
 }
 
 /* ============================================================
-   REPORT PREVIEW (A4 container for preview.js)
+   REPORT PREVIEW — A4 premium certificate paper
    ============================================================ */
-.rs-report {
-  max-width: 210mm;
-  margin: 0 auto;
-  background: #fff;
-  padding: 20mm 15mm;
-  color: #1a1a1a;
-  box-shadow: var(--rs-shadow-md);
-  border-radius: var(--rs-radius);
+.rs-preview-body {
+  background: #e8e4dc;
+  margin: 0;
+  padding: 0;
 }
-.rs-report.rs-landscape { max-width: 297mm; }
+
+.rs-preview-toolbar {
+  background: #fff;
+  border-bottom: 1px solid var(--rs-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.rs-report-container {
+  max-width: 210mm;
+  margin: 24px auto;
+  padding: 0;
+  position: relative;
+}
+.rs-report-container.rs-landscape { max-width: 297mm; }
+
+.rs-report {
+  max-width: 100%;
+  margin: 0 auto;
+  background: var(--cert-paper, #faf8f3);
+  padding: 20mm 16mm;
+  color: #1a1a1a;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  border-radius: 2px;
+  position: relative;
+}
+.rs-report.rs-landscape { max-width: 297mm; padding: 16mm 20mm; }
 
 .rs-report-block {
   margin-bottom: 16px;
   page-break-inside: avoid;
 }
+.rs-report-row { margin-bottom: 4px; }
 
 .rs-watermark {
   position: absolute;
@@ -1234,18 +1563,43 @@
   opacity: 0.08;
   pointer-events: none;
   z-index: 0;
+  letter-spacing: 0.1em;
+}
+
+.rs-report-empty {
+  text-align: center;
+  padding: 60px 20px;
 }
 
 /* Visibility classes */
 .rs-vis-web_only { }
 .rs-vis-pdf_only { }
 
-/* Print rules */
+/* ============================================================
+   PRINT — premium certificate output
+   ============================================================ */
 @media print {
   @page { size: A4; margin: 0; }
   body * { visibility: hidden; }
-  .rs-report, .rs-report * { visibility: visible; }
-  .rs-report { position: absolute; left: 0; top: 0; box-shadow: none; }
+  .rs-report-container, .rs-report-container * { visibility: visible; }
+  .rs-report-container {
+    margin: 0;
+    max-width: none;
+  }
+  .rs-report {
+    box-shadow: none;
+    border-radius: 0;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm 16mm;
+  }
+  .rs-report.rs-landscape {
+    width: 297mm;
+    min-height: 210mm;
+    padding: 16mm 20mm;
+  }
   .rs-vis-web_only { display: none !important; }
   .rs-report-block { page-break-inside: avoid; }
+  .rs-preview-toolbar { display: none !important; }
+  .rs-block-page-break { page-break-after: always; }
 }

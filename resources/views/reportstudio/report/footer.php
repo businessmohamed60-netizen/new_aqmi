@@ -1,5 +1,5 @@
 <?php
-/** Footer — dynamic text with page numbering and report number.
+/** Footer — premium dynamic text with page numbering.
  * @var array $config
  * @var string $title
  * @var array  $template
@@ -10,6 +10,9 @@ $align      = $config['align'] ?? 'center';
 $showPage   = $config['show_page_number']   ?? true;
 $showReport = $config['show_report_number'] ?? false;
 $showDate   = $config['show_date']          ?? false;
+$color      = $config['color'] ?? '#8298b5';
+$fontSize   = $config['font_size'] ?? '0.78rem';
+$borderTop  = $config['border_top'] ?? true;
 
 $tplData   = $template ?? [];
 $rptNumber = $reportNumber ?? ($tplData['report_number_prefix'] ?? 'AQMI-RPT-') . ($tplData['id'] ?? '000');
@@ -26,6 +29,6 @@ if ($showReport) $parts[] = 'N° ' . e($rptNumber);
 if ($showDate) $parts[] = date('d/m/Y');
 if ($showPage) $parts[] = '<span class="rs-dynamic-page"></span>';
 ?>
-<div class="rs-block-footer py-2 text-<?= e($align) ?> border-top">
-    <small class="text-muted"><?= implode(' · ', array_filter($parts, fn($p) => $p !== '')) ?: 'Pied de page' ?></small>
+<div class="rs-block-footer py-2 text-<?= e($align) ?>" style="<?= $borderTop ? 'border-top: 1px solid #e8e0d0;' : '' ?>">
+    <small style="color: <?= e($color) ?>; font-size: <?= e($fontSize) ?>; letter-spacing: 0.02em;"><?= implode(' · ', array_filter($parts, fn($p) => $p !== '')) ?: 'Pied de page' ?></small>
 </div>
