@@ -1,24 +1,24 @@
 <?php
 /** Cover Page — Premium certificate title page with editorial-grade design.
- * Features: double gold borders, ornamental corner flourishes, guilloche pattern,
+ * Features: triple gold borders, ornamental corner flourishes, guilloche pattern,
  *   elegant typography hierarchy, central seal, refined decorative elements.
  * @var array $config
  * @var string $title
  * @var array  $template
  * @var string $reportNumber
  */
-$companyName  = $config['company_name']  ?? 'Nom de l\'entreprise';
-$reportTitle  = $config['report_title']  ?? 'Rapport d\'Audit Qualité';
-$subtitle     = $config['subtitle']     ?? 'Automotive Quality Maturity Index';
-$showLogo     = $config['show_logo']     ?? true;
-$showStamp    = $config['show_stamp']    ?? true;
-$showDate     = $config['show_date']     ?? true;
-$showNumber   = $config['show_number']  ?? true;
-$accentColor  = $config['accent_color'] ?? '#0f2845';
-$goldColor    = $config['gold_color']   ?? '#c5a455';
-$rptNumber    = $reportNumber ?? 'AQMI-RPT-000';
-$certDate     = !empty($template['certification_date']) ? date('d/m/Y', strtotime($template['certification_date'])) : date('d/m/Y');
-$expDate      = !empty($template['expiration_date']) ? date('d/m/Y', strtotime($template['expiration_date'])) : '';
+$companyName   = $config['company_name']   ?? 'Nom de l\'entreprise';
+$reportTitle   = $config['report_title']   ?? 'Rapport d\'Audit Qualité';
+$subtitle      = $config['subtitle']      ?? 'Automotive Quality Maturity Index';
+$showLogo      = $config['show_logo']      ?? true;
+$showStamp     = $config['show_stamp']     ?? true;
+$showDate      = $config['show_date']      ?? true;
+$showNumber    = $config['show_number']    ?? true;
+$accentColor   = $config['accent_color']   ?? '#0f2845';
+$goldColor     = $config['gold_color']     ?? '#c5a455';
+$rptNumber     = $reportNumber ?? 'AQMI-RPT-000';
+$certDate      = !empty($template['certification_date']) ? date('d/m/Y', strtotime($template['certification_date'])) : date('d/m/Y');
+$expDate       = !empty($template['expiration_date']) ? date('d/m/Y', strtotime($template['expiration_date'])) : '';
 $bgImageUrl     = $config['bg_image_url'] ?? '';
 $bgImageOpacity = $config['bg_image_opacity'] ?? 1;
 $bgImageSize    = $config['bg_image_size'] ?? 'cover';
@@ -30,7 +30,7 @@ $certBodyText   = $config['cert_body_text'] ?? 'Ce document atteste que l\'entre
 $signatureLabel = $config['signature_label'] ?? 'Direction Qualité AQMI';
 $signatureRole  = $config['signature_role'] ?? 'Auditeur Principal';
 
-$coverStyle = 'min-height: 320px; position: relative; background-color: ' . e($bgColor) . ';';
+$coverStyle = 'min-height: 380px; position: relative; background-color: ' . e($bgColor) . ';';
 if ($bgImageUrl) {
     $coverStyle .= ' overflow: hidden;';
 }
@@ -40,10 +40,11 @@ if ($bgImageUrl) {
         <div style="position:absolute;inset:0;background-image:url(<?= e($bgImageUrl) ?>);background-size:<?= e($bgImageSize) ?>;background-position:<?= e($bgImagePosition) ?>;background-repeat:<?= e($bgImageRepeat) ?>;opacity:<?= e((string)$bgImageOpacity) ?>;z-index:0;"></div>
     <?php endif; ?>
 
-    <!-- Outer decorative border (gold) -->
+    <!-- Triple decorative border -->
     <div class="cert-border-outer" style="border-color: <?= e($goldColor) ?>;"></div>
-    <!-- Inner decorative border (thinner, gold-light) -->
+    <div class="cert-border-mid" style="border-color: <?= e($goldColor) ?>;"></div>
     <div class="cert-border-inner" style="border-color: <?= e($goldColor) ?>;"></div>
+
     <!-- Guilloche pattern overlay -->
     <div class="cert-guilloche" style="--cg-color: <?= e($goldColor) ?>;"></div>
 
@@ -56,7 +57,7 @@ if ($bgImageUrl) {
     <!-- Top accent bar -->
     <div class="cert-accent-bar" style="background: linear-gradient(90deg, transparent, <?= e($goldColor) ?>, transparent);"></div>
 
-    <div class="cert-content" style="position: relative; z-index: 5; min-height: 300px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="cert-content" style="position: relative; z-index: 5; min-height: 360px; display: flex; flex-direction: column; justify-content: space-between;">
         <!-- Header: brand + reference -->
         <div class="cert-header-row d-flex justify-content-between align-items-start">
             <div>
@@ -110,6 +111,7 @@ if ($bgImageUrl) {
                 <div class="cert-seal-area">
                     <div class="cert-seal" style="border-color: <?= e($goldColor) ?>; color: <?= e($accentColor) ?>">
                         <div class="cert-seal-inner-ring" style="border-color: <?= e($goldColor) ?>"></div>
+                        <div class="cert-seal-inner-ring-2" style="border-color: <?= e($goldColor) ?>"></div>
                         <div class="cert-seal-content">
                             <i class="bi bi-patch-check-fill cert-seal-icon" style="color: <?= e($goldColor) ?>"></i>
                             <span class="cert-seal-text">CERTIFIÉ</span>
@@ -125,7 +127,7 @@ if ($bgImageUrl) {
             <?php endif; ?>
         </div>
 
-        <!-- Footer: signature + meta -->
+        <!-- Footer: signature + validity + meta -->
         <div class="cert-footer-section">
             <div class="cert-footer-divider" style="background: linear-gradient(90deg, transparent, <?= e($goldColor) ?>, transparent);"></div>
             <div class="cert-footer-row d-flex justify-content-between align-items-end">
