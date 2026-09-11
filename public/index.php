@@ -1,7 +1,4 @@
 <?php
-// ===== MARQUEUR DE TEST — cherchez "TEST-MARKER-9F3K2" dans le code source de la page =====
-echo '<!-- TEST-MARKER-9F3K2 -->';
-
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $normalizedUri = rtrim($requestUri, '/');
 if ($normalizedUri === '') {
