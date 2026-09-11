@@ -1,4 +1,4 @@
-<?php $title = __('dashboard.title'); ob_start();
+<?php $title = __('dashboard.title'); $hideLangSwitcher = true; ob_start();
 $langCode = $_SESSION['lang'] ?? 'fr';
 $levelNameField = $langCode === 'ar' ? 'name_ar' : ($langCode === 'fr' ? 'name_fr' : 'name');
 $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-FR'); ?>
@@ -57,36 +57,47 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 
 /* ====== Topbar ====== */
 .user-topbar {
-  background: rgba(255,253,248,0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,253,248,0.92);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
   border-bottom: 1px solid var(--vx-card-border);
-  padding: 0.75rem 2rem;
+  padding: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 1px 12px rgba(80,64,42,0.04);
+}
+.user-topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.625rem 1.5rem;
 }
 .user-topbar .brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   font-weight: 800;
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: var(--vx-text-primary);
   letter-spacing: -0.3px;
+  text-decoration: none;
 }
 .user-topbar .brand .brand-icon {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   background: var(--vx-primary-gradient);
-  border-radius: var(--vx-radius-sm);
+  border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #fff;
   font-weight: 800;
   box-shadow: 0 4px 16px var(--vx-primary-glow);
@@ -94,6 +105,185 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 }
 .user-topbar .brand:hover .brand-icon {
   transform: scale(1.05) rotate(-3deg);
+}
+
+/* Topbar right section */
+.ud-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* User chip */
+.ud-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.35rem;
+  border-radius: 2rem;
+  background: var(--vx-primary-light);
+  border: 1px solid rgba(99,102,241,0.12);
+  transition: all var(--vx-transition);
+  cursor: default;
+}
+.ud-user-chip:hover {
+  background: rgba(99,102,241,0.10);
+  border-color: rgba(99,102,241,0.20);
+}
+.ud-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--vx-primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.ud-user-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--vx-text-primary);
+  white-space: nowrap;
+}
+
+/* Language dropdown */
+.ud-lang-dropdown {
+  position: relative;
+}
+.ud-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--vx-card-border);
+  cursor: pointer;
+  font-family: var(--ud-font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--vx-text-secondary);
+  transition: all var(--vx-transition);
+}
+.ud-lang-btn:hover {
+  background: var(--vx-primary-light);
+  border-color: rgba(99,102,241,0.20);
+  color: var(--vx-primary);
+}
+.ud-lang-btn i {
+  font-size: 0.7rem;
+}
+.ud-lang-current {
+  font-weight: 800;
+  color: var(--vx-primary);
+}
+.ud-lang-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  min-width: 140px;
+  background: var(--vx-card-bg);
+  border: 1px solid var(--vx-card-border);
+  border-radius: var(--vx-radius-md);
+  box-shadow: var(--vx-shadow-lg);
+  padding: 0.3rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: all 0.2s ease;
+  z-index: 200;
+}
+.ud-lang-dropdown.is-open .ud-lang-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.ud-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--vx-text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.ud-lang-item:hover {
+  background: var(--vx-primary-light);
+  color: var(--vx-primary);
+}
+.ud-lang-item.is-active {
+  background: var(--vx-primary-light);
+  color: var(--vx-primary);
+  font-weight: 700;
+}
+.ud-lang-item .ud-lang-flag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vx-primary-light);
+  color: var(--vx-primary);
+}
+.ud-lang-item.is-active .ud-lang-flag {
+  background: var(--vx-primary);
+  color: #fff;
+}
+
+/* Divider */
+.ud-topbar-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--vx-card-border);
+  flex-shrink: 0;
+}
+
+/* Logout button */
+.ud-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--ud-font);
+  color: var(--vx-danger);
+  background: var(--vx-danger-light);
+  border: 1px solid rgba(239,68,68,0.15);
+  text-decoration: none;
+  transition: all var(--vx-transition);
+  cursor: pointer;
+}
+.ud-logout-btn:hover {
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.30);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239,68,68,0.15);
+  color: var(--vx-danger);
+}
+.ud-logout-btn i {
+  font-size: 0.8rem;
+}
+
+/* Responsive topbar */
+@media (max-width: 768px) {
+  .user-topbar-inner { padding: 0.5rem 1rem; }
+  .ud-user-name { display: none; }
+  .ud-user-chip { padding: 0.25rem; }
+  .ud-topbar-divider { display: none; }
+  .ud-logout-btn span { display: none; }
+  .ud-logout-btn { padding: 0.35rem 0.5rem; }
 }
 
 /* ====== Content ====== */
@@ -650,7 +840,6 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 
 /* ====== Responsive ====== */
 @media (max-width: 768px) {
-  .user-topbar { padding: 0.5rem 1rem; }
   .user-content { padding: 1rem; }
   .user-welcome { padding: 1.25rem; }
   .user-welcome h2 { font-size: 1.15rem; }
@@ -755,25 +944,40 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 <div class="user-dashboard">
   <!-- Topbar -->
   <div class="user-topbar">
-    <div class="brand">
-      <span class="brand-icon">N</span>
-      <span><?= __('dashboard.brand') ?></span>
-    </div>
-    <div class="d-flex align-items-center" style="gap:1rem;">
-      <span class="d-none d-md-inline" style="font-size:0.75rem;color:var(--vx-text-secondary);">
-        <i class="fas fa-user" style="color:var(--vx-primary);margin-right:0.25rem;"></i><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?>
-      </span>
-      <div class="d-flex align-items-center" style="gap:0.2rem;background:rgba(255,255,255,0.03);border:1px solid var(--vx-card-border);border-radius:var(--vx-radius-sm);padding:0.2rem;">
-        <i class="fas fa-globe" style="font-size:0.7rem;color:var(--vx-text-muted);margin:0 0.2rem;"></i>
-        <?php foreach (['fr','en','ar'] as $l): ?>
-          <a href="/lang/<?= $l ?>" style="font-size:0.7rem;font-weight:<?= $langCode===$l?'700':'500'?>;padding:0.2rem 0.45rem;border-radius:0.25rem;text-decoration:none;color:<?= $langCode===$l?'#fff':'var(--vx-text-secondary)'?>;background:<?= $langCode===$l?'var(--vx-primary)':'transparent'?>;transition:all var(--vx-transition);">
-            <?= strtoupper($l) ?>
-          </a>
-        <?php endforeach; ?>
-      </div>
-      <a href="/logout" class="nova-btn nova-btn-outline" style="padding:0.375rem 0.75rem;font-size:0.75rem;color:var(--vx-danger);border-color:var(--vx-danger);" title="<?= __('dashboard.logout') ?>">
-        <i class="fas fa-sign-out-alt" style="margin-right:0.25rem;"></i><span class="d-none d-md-inline"><?= __('dashboard.logout') ?></span>
+    <div class="user-topbar-inner">
+      <a href="/user/dashboard" class="brand" style="text-decoration:none;">
+        <span class="brand-icon">N</span>
+        <span><?= __('dashboard.brand') ?></span>
       </a>
+      <div class="ud-topbar-right">
+        <div class="ud-user-chip">
+          <span class="ud-user-avatar"><?= strtoupper(mb_substr($user['firstname'] ?? 'U', 0, 1)) ?></span>
+          <span class="ud-user-name"><?= e($user['firstname'] ?? '') ?> <?= e($user['lastname'] ?? '') ?></span>
+        </div>
+        <div class="ud-lang-dropdown" id="udLangDropdown">
+          <button class="ud-lang-btn" id="udLangBtn" type="button">
+            <i class="fas fa-globe"></i>
+            <span class="ud-lang-current"><?= strtoupper($langCode) ?></span>
+            <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i>
+          </button>
+          <div class="ud-lang-menu">
+            <?php foreach (['fr'=>'Français','en'=>'English','ar'=>'العربية'] as $l => $lName): ?>
+              <a href="/lang/<?= $l ?>" class="ud-lang-item <?= $langCode===$l ? 'is-active' : '' ?>">
+                <span class="ud-lang-flag"><?= strtoupper($l) ?></span>
+                <span><?= $lName ?></span>
+                <?php if ($langCode===$l): ?>
+                  <i class="fas fa-check" style="margin-left:auto;font-size:0.65rem;color:var(--vx-primary);"></i>
+                <?php endif; ?>
+              </a>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        <div class="ud-topbar-divider"></div>
+        <a href="/logout" class="ud-logout-btn" title="<?= __('dashboard.logout') ?>">
+          <i class="fas fa-arrow-right-from-bracket"></i>
+          <span><?= __('dashboard.logout') ?></span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -1109,6 +1313,21 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
     </a>
   </nav>
 </div>
+
+<script>
+(function() {
+  var dropdown = document.getElementById('udLangDropdown');
+  var btn = document.getElementById('udLangBtn');
+  if (!dropdown || !btn) return;
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    dropdown.classList.toggle('is-open');
+  });
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target)) dropdown.classList.remove('is-open');
+  });
+})();
+</script>
 
 <?php if (!empty($scoreHistory) && count($scoreHistory) >= 1): ?>
 <script>
