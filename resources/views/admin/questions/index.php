@@ -89,6 +89,8 @@ try {
     </div>
   </div>
 
+  <span id="csrfHolder" style="display:none;"><?= csrf_field() ?></span>
+
   <!-- Import Modal -->
   <div class="modal fade" id="importModal" tabindex="-1">
     <div class="modal-dialog">
@@ -214,7 +216,14 @@ $(document).ready(function() {
     $(document).on('change', '.toggle-status', function() {
         var cb = $(this);
         var url = cb.data('url');
-        $.post(url).fail(function() { location.reload(); });
+        var csrfInputEl = $('#csrfHolder input');
+        var csrfData = {};
+        if (csrfInputEl.length) { csrfData[csrfInputEl.attr('name')] = csrfInputEl.val(); }
+        $.post(url, csrfData).fail(function(xhr) {
+            console.error('Toggle question a échoué :', xhr.status, xhr.responseText);
+            alert('La mise à jour a échoué (code ' + xhr.status + '). La page va se recharger.');
+            location.reload();
+        });
     });
 });
 </script>

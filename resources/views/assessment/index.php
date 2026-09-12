@@ -259,7 +259,7 @@ ob_start();
   </div>
 
   <!-- Top Bar -->
-  <div class="aqmi-topbar">
+  <div class="aqmi-topbar"<?= $isModelSelection ? ' style="display:none;"' : '' ?> id="aqmiTopbar">
     <div class="aqmi-topbar-brand">
       <div class="aqmi-brand-mark" id="aqmiBrandMark"><span>A</span><span>Q</span><span>M</span><span>I</span></div>
       <div class="aqmi-brand-copy">
@@ -276,7 +276,7 @@ ob_start();
   </div>
 
   <!-- Progress Bar -->
-  <div class="aqmi-progress-wrap">
+  <div class="aqmi-progress-wrap"<?= $isModelSelection ? ' style="display:none;"' : '' ?> id="aqmiProgressWrap">
     <div class="aqmi-progress-header">
       <div class="aqmi-progress-question">
         <span data-i18n="question">Question</span> <span class="num" id="aqmiCurrentNum">1</span>
@@ -291,7 +291,7 @@ ob_start();
   </div>
 
   <!-- Main Content -->
-  <div class="aqmi-content">
+  <div class="aqmi-content"<?= $isModelSelection ? ' style="display:none;"' : '' ?> id="aqmiContent">
     <!-- Left: Maturity Gauge -->
     <div class="aqmi-illustration">
       <div class="aqmi-illustration-inner">
@@ -384,7 +384,7 @@ ob_start();
   </div>
 
   <!-- Maturity Gauge -->
-  <div class="aqmi-gauge" id="aqmiGauge">
+  <div class="aqmi-gauge" id="aqmiGauge"<?= $isModelSelection ? ' style="display:none;"' : '' ?>>
     <div class="aqmi-gauge-ring">
       <svg viewBox="0 0 40 40">
         <circle class="bg" cx="20" cy="20" r="17"/>
@@ -413,6 +413,27 @@ var AQMI_CONFIG = {$configJson};
 var AQMI_I18N = {$i18nJson};
 </script>
 <script src="/js/aqmi-premium.js?v={$jsVersion}"></script>
+<script>
+// Filet de sécurité : garantit la bascule select-screen -> questionnaire
+// même si aqmi-premium.js ne gère pas (encore) ces éléments.
+document.addEventListener('DOMContentLoaded', function () {
+  var startBtn = document.getElementById('aqmiSelectStartBtn');
+  if (!startBtn) return;
+  startBtn.addEventListener('click', function () {
+    if (startBtn.disabled) return;
+    var selectScreen = document.getElementById('aqmiSelectScreen');
+    var topbar = document.getElementById('aqmiTopbar');
+    var progressWrap = document.getElementById('aqmiProgressWrap');
+    var content = document.getElementById('aqmiContent');
+    var gauge = document.getElementById('aqmiGauge');
+    if (selectScreen) selectScreen.style.display = 'none';
+    if (topbar) topbar.style.display = '';
+    if (progressWrap) progressWrap.style.display = '';
+    if (content) content.style.display = '';
+    if (gauge) gauge.style.display = '';
+  });
+});
+</script>
 SCRIPT;
 
 $content = ob_get_clean();

@@ -3019,9 +3019,9 @@
 /* ── Language Selection Screen ── */
 /* ── Unified Model + Language Selection Screen ── */
 .aqmi-select-screen {
-  position: absolute;
+  position: fixed; /* ancré au viewport, ne scrolle jamais avec .aqmi-premium (voir overflow:auto en mobile) */
   inset: 0;
-  z-index: 9000;
+  z-index: 9500; /* au-dessus de .aqmi-topbar/.aqmi-progress-wrap/.aqmi-content (z-index 100) */
   background: linear-gradient(160deg, #f4f7fb 0%, #e8eef6 50%, #dde7f5 100%);
   display: flex;
   align-items: center;

@@ -111,7 +111,7 @@ $optIndex = count($options);
           <div class="row g-3 mb-3">
             <div class="col-4">
               <label class="auto-label">Poids</label>
-              <input type="number" name="weight" class="auto-input" step="0.5" min="0.5" max="5" value="<?= e($question['weight'] ?? '1') ?>">
+              <input type="number" name="weight" class="auto-input" step="0.1" min="0" max="100" value="<?= e($question['weight'] ?? '1') ?>">
             </div>
             <div class="col-4">
               <label class="auto-label">Ordre</label>
@@ -271,14 +271,15 @@ $(document).ready(function() {
 
     function filterDomains() {
         var modelId = $('select[name="model_id"]').val();
-        var allowed = modelId && modelDomains[modelId] ? modelDomains[modelId] : null;
+        var allowed = modelId && modelDomains[modelId] && modelDomains[modelId].length ? modelDomains[modelId] : null;
         var select = $('#domainSelect');
         var prev = select.val();
         select.empty().append('<option value="">Sélectionnez un domaine</option>');
         allDomainOptions.each(function() {
             var val = $(this).val();
             if (!val) return;
-            if (!allowed || allowed.indexOf(parseInt(val)) !== -1) {
+            var isCurrentSaved = (val === currentDomainId && currentDomainId !== '');
+            if (!allowed || allowed.indexOf(parseInt(val)) !== -1 || isCurrentSaved) {
                 select.append($(this).clone());
             }
         });
