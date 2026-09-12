@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Modules\ReportStudio\Controllers;
 
+use App\Helpers\Database;
 use App\Modules\ReportStudio\Services\BuilderService;
 use App\Modules\ReportStudio\Services\DataSourceService;
 use App\Modules\ReportStudio\Services\PreviewService;
@@ -20,8 +21,15 @@ class BuilderController
     public function edit(array $params): void
     {
         $id = (int) ($params['id'] ?? 0);
-        $builderService = new BuilderService();
-        $data = $builderService->loadForBuilder($id);
+        $data = null;
+        if (Database::isConnected()) {
+            try {
+                $builderService = new BuilderService();
+                $data = $builderService->loadForBuilder($id);
+            } catch (\Throwable $e) {
+                error_log('ReportStudio builder edit error: ' . $e->getMessage());
+            }
+        }
         if (!$data) {
             abort(404);
         }

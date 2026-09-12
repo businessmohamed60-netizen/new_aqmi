@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Modules\ReportStudio\Controllers;
 
+use App\Helpers\Database;
 use App\Modules\ReportStudio\Services\PreviewService;
 use App\Modules\ReportStudio\Services\TemplateRenderer;
 
@@ -15,8 +16,15 @@ class PreviewController
     public function show(array $params): void
     {
         $id = (int) ($params['id'] ?? 0);
-        $previewService = new PreviewService();
-        $data = $previewService->loadForPreview($id);
+        $data = null;
+        if (Database::isConnected()) {
+            try {
+                $previewService = new PreviewService();
+                $data = $previewService->loadForPreview($id);
+            } catch (\Throwable $e) {
+                error_log('ReportStudio preview error: ' . $e->getMessage());
+            }
+        }
         if (!$data) {
             abort(404);
         }

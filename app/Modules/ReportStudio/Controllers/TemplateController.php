@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Modules\ReportStudio\Controllers;
 
+use App\Helpers\Database;
 use App\Modules\ReportStudio\Services\BuilderService;
 use App\Modules\ReportStudio\Services\TemplateService;
 
@@ -14,17 +15,30 @@ class TemplateController
 {
     public function index(): void
     {
-        $service = new TemplateService();
+        $templates = [];
+        if (Database::isConnected()) {
+            try {
+                $service = new TemplateService();
+                $templates = array_map(fn($t) => $t->toArray(), $service->listTemplates());
+            } catch (\Throwable $e) {
+                error_log('ReportStudio templates list error: ' . $e->getMessage());
+            }
+        }
         view('reportstudio/templates/index', [
-            'templates' => array_map(fn($t) => $t->toArray(), $service->listTemplates()),
+            'templates' => $templates,
         ]);
     }
 
     public function show(array $params): void
     {
         $id = (int) ($params['id'] ?? 0);
-        $service = new TemplateService();
-        $template = $service->getTemplate($id);
+        try {
+            $service = new TemplateService();
+            $template = $service->getTemplate($id);
+        } catch (\Throwable $e) {
+            error_log('ReportStudio template show error: ' . $e->getMessage());
+            $template = null;
+        }
         if (!$template) {
             abort(404);
         }
@@ -54,8 +68,13 @@ class TemplateController
     public function edit(array $params): void
     {
         $id = (int) ($params['id'] ?? 0);
-        $service = new TemplateService();
-        $template = $service->getTemplate($id);
+        try {
+            $service = new TemplateService();
+            $template = $service->getTemplate($id);
+        } catch (\Throwable $e) {
+            error_log('ReportStudio template edit error: ' . $e->getMessage());
+            $template = null;
+        }
         if (!$template) {
             abort(404);
         }
