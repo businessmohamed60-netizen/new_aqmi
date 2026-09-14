@@ -961,7 +961,7 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
             <i class="fas fa-chevron-down" style="font-size:0.6rem;"></i>
           </button>
           <div class="ud-lang-menu">
-            <?php foreach (['fr'=>'Français','en'=>'English','ar'=>'العربية'] as $l => $lName): ?>
+            <?php foreach (['fr'=>'Français','en'=>'English','ar'=>'العربية','es'=>'Español'] as $l => $lName): ?>
               <a href="/lang/<?= $l ?>" class="ud-lang-item <?= $langCode===$l ? 'is-active' : '' ?>">
                 <span class="ud-lang-flag"><?= strtoupper($l) ?></span>
                 <span><?= $lName ?></span>

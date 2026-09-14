@@ -3,6 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function(){
+  if (sessionStorage.getItem('lang_redirect_done')) return;
+  sessionStorage.setItem('lang_redirect_done', '1');
+  var navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  if (navLang.indexOf('es') === 0) {
+    window.location.replace('Landing_ES.html');
+    return;
+  }
+  fetch('https://ipapi.co/json/')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d.country_code && d.country_code.toUpperCase() === 'ES') {
+        window.location.replace('Landing_ES.html');
+      }
+    })
+    .catch(function(){});
+})();
+</script>
 <title>AQMI — Automotive Quality & Manufacturing Index | NOVAQYS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -880,7 +899,7 @@
     </div>
     <div class="nav-right">
       <div class="nav-status"><span class="dot"></span>AQMI EVALUATION — LIVE</div>
-      <div class="lang-toggle"><b>EN</b><span>|</span><span>FR</span></div>
+      <div class="lang-toggle"><b>EN</b><span>|</span><span>FR</span><span>|</span><a href="Landing_ES.html" style="color:inherit;text-decoration:none;">ES</a></div>
       <a class="lang-toggle" href="https://novaqys.com/login" style="text-decoration:none;">ADMIN</a>
       <a class="nav-cta" href="https://novaqys.com/user/login">GET YOUR AQMI SCORE</a>
     </div>

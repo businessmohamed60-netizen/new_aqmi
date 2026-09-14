@@ -229,6 +229,7 @@
   function localized(obj, base) {
     if (currentLang === 'ar' && obj[base + '_ar']) return obj[base + '_ar'];
     if (currentLang === 'en' && obj[base + '_en']) return obj[base + '_en'];
+    if (currentLang === 'es' && obj[base + '_es']) return obj[base + '_es'];
     return obj[base];
   }
 
@@ -383,7 +384,7 @@
     var html = '<div class="aqmi-text-input-wrap">';
     html += '<textarea class="aqmi-text-input" data-qid="' + q.id + '" data-idx="' + index + '" rows="4" maxlength="' + maxLen + '" placeholder="' + tr('text_placeholder') + '">' + val + '</textarea>';
     html += '<div class="aqmi-text-input-meta">';
-    html += '  <span class="aqmi-text-input-hint"><i class="fas fa-keyboard"></i> ' + (currentLang === 'ar' ? 'اكتب إجابتك' : currentLang === 'en' ? 'Type your answer' : 'Saisissez votre réponse') + '</span>';
+    html += '  <span class="aqmi-text-input-hint"><i class="fas fa-keyboard"></i> ' + (currentLang === 'ar' ? 'اكتب إجابتك' : currentLang === 'en' ? 'Type your answer' : currentLang === 'es' ? 'Escriba su respuesta' : 'Saisissez votre réponse') + '</span>';
     html += '  <span class="aqmi-text-input-counter" data-max="' + maxLen + '">' + val.length + ' / ' + maxLen + '</span>';
     html += '</div></div>';
     el.answers.innerHTML = html;

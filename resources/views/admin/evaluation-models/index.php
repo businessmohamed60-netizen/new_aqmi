@@ -365,6 +365,7 @@ ob_start();
         <a href="/lang/fr" class="<?= $currentLang === 'fr' ? 'active' : '' ?>">FR</a>
         <a href="/lang/en" class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</a>
         <a href="/lang/ar" class="<?= $currentLang === 'ar' ? 'active' : '' ?>">AR</a>
+        <a href="/lang/es" class="<?= $currentLang === 'es' ? 'active' : '' ?>">ES</a>
       </div>
       <a href="/admin/evaluation-models/create" class="ev-btn ev-btn-primary ev-btn-sm">
         <i class="fas fa-plus"></i>

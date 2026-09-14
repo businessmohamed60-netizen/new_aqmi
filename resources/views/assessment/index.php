@@ -17,9 +17,11 @@ foreach ($domainQuestions as $dq) {
         'name' => $dq['domain']['name_fr'] ?: $dq['domain']['name'],
         'name_en' => $dq['domain']['name'],
         'name_ar' => $dq['domain']['name_ar'] ?? null,
+        'name_es' => $dq['domain']['name_es'] ?? null,
         'icon' => ($dq['domain']['icon'] ?? null) ?: 'fa-industry',
         'description' => ($dq['domain']['description_fr'] ?? null) ?: ($dq['domain']['description'] ?? ''),
         'description_ar' => $dq['domain']['description_ar'] ?? null,
+        'description_es' => $dq['domain']['description_es'] ?? null,
     ];
     foreach ($dq['questions'] as $q) {
         $answered = false;
@@ -41,10 +43,13 @@ foreach ($domainQuestions as $dq) {
             'title' => $q['title_fr'] ?: $q['title'],
             'title_en' => $q['title'],
             'title_ar' => $q['title_ar'] ?? null,
+            'title_es' => $q['title_es'] ?? null,
             'description' => $q['description_fr'] ?: $q['description'],
             'description_ar' => $q['description_ar'] ?? null,
+            'description_es' => $q['description_es'] ?? null,
             'help_text' => $q['help_text_fr'] ?? $q['help_text'] ?? null,
             'help_text_ar' => $q['help_text_ar'] ?? null,
+            'help_text_es' => $q['help_text_es'] ?? null,
             'question_type' => $q['question_type'] ?? 'rating_scale',
             'options' => $q['options'] ?? null,
             'options_json' => $q['options'] ?? null,
@@ -181,6 +186,41 @@ $i18n = [
         'choose_model_desc' => 'اختر النموذج الذي يناسب سياقك',
         'start_assessment' => 'بدء التقييم',
     ],
+    'es' => [
+        'choose_lang' => 'Elija su idioma',
+        'choose_lang_desc' => 'Seleccione el idioma en el que desea responder el cuestionario',
+        'start' => 'Comenzar el cuestionario',
+        'time_remaining' => 'Tiempo restante',
+        'question' => 'Pregunta',
+        'domain' => 'Dominio',
+        'maturity' => 'Madurez',
+        'learn_more' => 'Más información',
+        'prev' => 'Anterior',
+        'next' => 'Siguiente',
+        'saved' => 'Guardado',
+        'score_label' => 'Puntuación Global',
+        'rating_labels' => ['Inexistente', 'Inicial', 'Básico', 'Controlado', 'Eficiente', 'Excelencia'],
+        'gauge_labels' => ['Inexistente', 'Inicial', 'Básico', 'Controlado', 'Eficiente', 'Excelencia'],
+        'gauge_waiting' => 'En espera',
+        'yes_label' => 'Sí',
+        'partial_label' => 'Parcialmente',
+        'no_label' => 'No',
+        'na_label' => 'No aplicable',
+        'yes_sub' => 'Buena práctica totalmente aplicada',
+        'partial_sub' => 'Buena práctica parcialmente aplicada',
+        'no_sub' => 'Buena práctica no aplicada',
+        'na_sub' => 'Esta pregunta no aplica',
+        'text_placeholder' => 'Ingrese su respuesta...',
+        'numeric_placeholder' => 'Ingrese un valor',
+        'no_options' => 'No hay opciones disponibles',
+        'completion_title' => '¡Cuestionario completado!',
+        'completion_desc' => 'Gracias por responder todas las preguntas. Estamos preparando su diagnóstico personalizado.',
+        'completion_btn' => 'Ver mis resultados',
+        'domain_transition_label' => 'DOMINIO',
+        'choose_model' => 'Elija su modelo de evaluación',
+        'choose_model_desc' => 'Seleccione el modelo que corresponde a su contexto',
+        'start_assessment' => 'Comenzar la evaluación',
+    ],
 ];
 
 ob_start();
@@ -243,6 +283,10 @@ ob_start();
           <button class="aqmi-select-lang-card" data-lang="ar" type="button">
             <span class="aqmi-select-lang-flag">AR</span>
             <span class="aqmi-select-lang-name">العربية</span>
+          </button>
+          <button class="aqmi-select-lang-card" data-lang="es" type="button">
+            <span class="aqmi-select-lang-flag">ES</span>
+            <span class="aqmi-select-lang-name">Español</span>
           </button>
         </div>
       </div>

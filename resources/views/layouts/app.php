@@ -244,6 +244,7 @@
                             <li><a class="dropdown-item <?= ($_SESSION['lang'] ?? '') === 'fr' ? 'active' : '' ?>" href="/lang/fr">Français</a></li>
                             <li><a class="dropdown-item <?= ($_SESSION['lang'] ?? '') === 'en' ? 'active' : '' ?>" href="/lang/en">English</a></li>
                             <li><a class="dropdown-item <?= ($_SESSION['lang'] ?? '') === 'ar' ? 'active' : '' ?>" href="/lang/ar">العربية</a></li>
+                            <li><a class="dropdown-item <?= ($_SESSION['lang'] ?? '') === 'es' ? 'active' : '' ?>" href="/lang/es">Español</a></li>
                         </ul>
                     </li>
                 </ul>

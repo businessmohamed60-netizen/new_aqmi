@@ -77,7 +77,7 @@ class HomeController
     public function switchLang(array $params): void
     {
         $lang = $params['lang'] ?? 'fr';
-        if (in_array($lang, ['fr', 'en', 'ar'])) {
+        if (in_array($lang, ['fr', 'en', 'ar', 'es'])) {
             $_SESSION['lang'] = $lang;
         }
         $redirect = $_SERVER['HTTP_REFERER'] ?? '/';

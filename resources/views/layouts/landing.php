@@ -20,13 +20,13 @@
 <body>
     <?php
     $currentLang = $_SESSION['lang'] ?? 'fr';
-    $langLabels = ['fr' => 'Français', 'en' => 'English', 'ar' => 'العربية'];
-    $langFlags = ['fr' => 'FR', 'en' => 'EN', 'ar' => 'AR'];
+    $langLabels = ['fr' => 'Français', 'en' => 'English', 'ar' => 'العربية', 'es' => 'Español'];
+    $langFlags = ['fr' => 'FR', 'en' => 'EN', 'ar' => 'AR', 'es' => 'ES'];
     ?>
     <?php if (!isset($hideLangSwitcher)): ?>
     <div style="position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;gap:0.25rem;background:rgba(255,253,248,0.9);backdrop-filter:blur(10px);border:1px solid var(--nova-border,#e7e1d7);border-radius:0.5rem;padding:0.25rem;">
       <i class="fas fa-globe" style="font-size:0.75rem;color:var(--nova-text-muted,#7d8794);align-self:center;margin:0 0.25rem;"></i>
-      <?php foreach (['fr','en','ar'] as $l): ?>
+      <?php foreach (['fr','en','ar','es'] as $l): ?>
         <a href="/lang/<?= $l ?>" style="font-size:0.7rem;font-weight:<?= $currentLang===$l?'700':'500'?>;padding:0.2rem 0.5rem;border-radius:0.3rem;text-decoration:none;color:<?= $currentLang===$l?'#fff':'var(--nova-text-primary,#17212b)'?>;background:<?= $currentLang===$l?'var(--nova-blue,#1F6FEB)':'transparent'?>;"><?= strtoupper($l) ?></a>
       <?php endforeach; ?>
     </div>
