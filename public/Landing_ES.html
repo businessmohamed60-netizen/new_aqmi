@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AQMI — Automotive Quality & Manufacturing Index | NOVAQYS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#04070c;
+    --bg-panel:rgba(13,17,24,.55);
+    --panel-border:#1c222c;
+    --white:#f2f4f7;
+    --steel:#8b93a3;
+    --steel-dim:#565e6b;
+    --cyan:#3b93f0;
+    --cyan-soft:rgba(59,147,240,.35);
+    --amber:#d9a441;
+    --amber-soft:rgba(217,164,65,.35);
+    --red:#e2495a;
+    --green:#2bc46a;
+    --violet:#9b7fe0;
+    --violet-soft:rgba(155,127,224,.35);
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{background:#03050a;}
+  body{background:transparent;}
+  body{
+    color:var(--white);font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--cyan);color:#000;}
+
+  /* ---------------- MODERN AURORA BACKGROUND (fixed, sits behind the entire page) ---------------- */
+  .bg-aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+    background:linear-gradient(165deg,#04060c 0%,#060912 42%,#04060c 78%,#03050a 100%);
+  }
+  .bg-aurora .blob{position:absolute;border-radius:50%;filter:blur(85px);will-change:transform;mix-blend-mode:screen;}
+  .bg-aurora .blob-1{width:640px;height:640px;left:-160px;top:-200px;
+    background:radial-gradient(circle,rgba(59,147,240,.5),transparent 70%);}
+  .bg-aurora .blob-2{width:520px;height:520px;right:-140px;top:4%;
+    background:radial-gradient(circle,rgba(217,164,65,.32),transparent 70%);}
+  .bg-aurora .blob-3{width:580px;height:580px;left:6%;top:48%;
+    background:radial-gradient(circle,rgba(155,127,224,.32),transparent 70%);}
+  .bg-aurora .blob-4{width:520px;height:520px;right:2%;bottom:-160px;
+    background:radial-gradient(circle,rgba(43,196,106,.26),transparent 70%);}
+  .bg-aurora .blob-5{width:460px;height:460px;left:38%;bottom:8%;
+    background:radial-gradient(circle,rgba(59,147,240,.22),transparent 70%);}
+  @media (prefers-reduced-motion: no-preference){
+    .bg-aurora .blob-1{animation:auroraFloat1 28s ease-in-out infinite;}
+    .bg-aurora .blob-2{animation:auroraFloat2 34s ease-in-out infinite;}
+    .bg-aurora .blob-3{animation:auroraFloat3 31s ease-in-out infinite;}
+    .bg-aurora .blob-4{animation:auroraFloat4 36s ease-in-out infinite;}
+    .bg-aurora .blob-5{animation:auroraFloat2 40s ease-in-out infinite reverse;}
+    @keyframes auroraFloat1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(70px,55px) scale(1.14);}}
+    @keyframes auroraFloat2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-55px,65px) scale(1.08);}}
+    @keyframes auroraFloat3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(45px,-45px) scale(1.1);}}
+    @keyframes auroraFloat4{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-45px,-55px) scale(1.16);}}
+  }
+  .bg-aurora::after{content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 90% 65% at 50% 0%,transparent 0%,rgba(3,5,10,.55) 78%,#03050a 100%);
+  }
+  /* Blob sizes/positions are tuned for a wide desktop viewport; scale them
+     down on narrower screens so the aurora doesn't overwhelm a small phone
+     screen (a 640px blob is nearly 2x a 375px-wide viewport otherwise). */
+  @media(max-width:900px){
+    .bg-aurora .blob{filter:blur(60px);}
+    .bg-aurora .blob-1{width:360px;height:360px;left:-100px;top:-120px;}
+    .bg-aurora .blob-2{width:300px;height:300px;right:-90px;top:2%;}
+    .bg-aurora .blob-3{width:320px;height:320px;left:-4%;top:46%;}
+    .bg-aurora .blob-4{width:300px;height:300px;right:-6%;bottom:-100px;}
+    .bg-aurora .blob-5{width:260px;height:260px;left:30%;bottom:4%;}
+  }
+  @media(max-width:480px){
+    .bg-aurora .blob{filter:blur(46px);}
+    .bg-aurora .blob-1{width:260px;height:260px;}
+    .bg-aurora .blob-2{width:220px;height:220px;}
+    .bg-aurora .blob-3{width:230px;height:230px;}
+    .bg-aurora .blob-4{width:220px;height:220px;}
+    .bg-aurora .blob-5{width:190px;height:190px;}
+  }
+
+  /* ---------------- STARFIELD (twinkling stars over the aurora, full page) ---------------- */
+  .bg-stars{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .star{position:absolute;top:var(--y);left:var(--x);width:var(--s);height:var(--s);border-radius:50%;
+    background:#fff;opacity:var(--o,.6);will-change:opacity;
+  }
+  .star.tinted{background:var(--tint,#fff);box-shadow:0 0 var(--glow,4px) rgba(255,255,255,.5);}
+  .star.bright{box-shadow:0 0 var(--glow,5px) rgba(255,255,255,.7);}
+  @media (prefers-reduced-motion: no-preference){
+    .star{animation:twinkle var(--dur,3.5s) ease-in-out var(--delay,0s) infinite;}
+    @keyframes twinkle{
+      0%,100%{opacity:var(--o-min,.15);transform:scale(.8);}
+      50%{opacity:var(--o-max,1);transform:scale(1.15);}
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .star{opacity:.55;}
+  }
+
+  /* ---------------- STAGE (pixel-faithful 1536x1024 canvas, scaled to fit) --------------- */
+  .stage-wrap{position:relative;width:100%;overflow:hidden;background:transparent;}
+  .stage{
+    width:1536px;height:1024px;position:relative;transform-origin:top left;
+  }
+  /* technical blueprint grid, very subtle */
+  .stage::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(rgba(59,147,240,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,147,240,.05) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 30%, black 0%, transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%, black 0%, transparent 75%);
+  }
+  /* subtle grain */
+  .stage::after{
+    content:'';position:absolute;inset:0;z-index:999;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  .abs{position:absolute;}
+
+  /* ---------------- ENTRANCE SEQUENCE (top of page) ---------------- */
+  @media (prefers-reduced-motion: no-preference){
+    .nav,.hero-title,.hero-sub,.ba-toggle{opacity:0;animation:heroIn .8s cubic-bezier(.16,.8,.3,1) forwards;}
+    .nav{animation-delay:.05s;}
+    .hero-title{animation-delay:.3s;}
+    .hero-sub{animation-delay:.48s;}
+    .ba-toggle{animation-delay:.66s;}
+    @keyframes heroIn{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:none;}}
+  }
+
+  /* ---------------- NAV ---------------- */
+  .nav{left:0;top:0;width:1536px;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-bottom:1px solid var(--panel-border);background:rgba(5,8,13,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:20;}
+  .nav-logo{display:flex;align-items:center;gap:12px;}
+  .nav-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,rgba(59,147,240,.18),rgba(217,164,65,.14));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;}
+  .nav-mark svg{width:15px;height:15px;color:var(--cyan);}
+  .nav-logo-text{display:flex;align-items:baseline;gap:12px;}
+  .nav-logo b{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:.01em;}
+  .nav-logo span{font-family:var(--font-mono);font-size:9.5px;color:var(--steel);line-height:1.3;letter-spacing:.04em;}
+  .nav-links{display:flex;gap:30px;font-size:13px;color:var(--steel);}
+  .nav-links a{position:relative;transition:color .2s;padding-bottom:4px;}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--cyan);transition:width .3s cubic-bezier(.16,.8,.3,1);}
+  .nav-links a:hover{color:var(--white);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-links a.active{color:var(--cyan);font-weight:500;}
+  .nav-links a.active::after{width:100%;background:linear-gradient(90deg,var(--cyan),var(--amber));}
+  .nav-right{display:flex;align-items:center;gap:16px;}
+  .nav-status{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;color:var(--steel);}
+  .nav-status .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 var(--cyan-soft);}
+  @media (prefers-reduced-motion: no-preference){
+    .nav-status .dot{animation:navPulse 2.4s ease-in-out infinite;}
+    @keyframes navPulse{0%,100%{box-shadow:0 0 0 0 var(--cyan-soft);}50%{box-shadow:0 0 0 5px transparent;}}
+  }
+  .lang-toggle{font-family:var(--font-mono);font-size:11.5px;color:var(--steel);border:1px solid var(--panel-border);border-radius:3px;padding:6px 12px;display:flex;gap:6px;}
+  .lang-toggle b{color:var(--white);}
+  .nav-cta{font-size:12.5px;font-weight:600;background:var(--cyan);color:#04101f;padding:10px 18px;border-radius:4px;transition:filter .2s,transform .2s;}
+  .nav-cta:hover{filter:brightness(1.12);transform:translateY(-1px);}
+
+  /* ---------------- HERO TITLES ---------------- */
+  .hero-title{left:0;top:80px;width:1536px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:38px;letter-spacing:-.01em;}
+  .hero-title .arrow{color:var(--steel);margin:0 16px;font-weight:400;display:inline-block;}
+  @media (prefers-reduced-motion: no-preference){
+    .hero-title .arrow{animation:arrowSlide 2.2s ease-in-out infinite;}
+    @keyframes arrowSlide{0%,100%{transform:translateX(0);}50%{transform:translateX(6px);}}
+  }
+  .hero-title .after-word{background:linear-gradient(120deg,var(--cyan),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;}
+  .hero-sub{left:0;top:124px;width:1536px;text-align:center;font-size:13.5px;color:var(--steel);}
+  #heroSubText{display:inline-block;transition:opacity .5s ease;}
+
+  /* segmented BEFORE/AFTER toggle */
+  .ba-toggle{left:655px;top:138px;width:225px;height:32px;border-radius:20px;background:rgba(16,20,28,.95);border:1px solid var(--panel-border);display:flex;padding:3px;gap:3px;cursor:pointer;user-select:none;z-index:16;}
+  .ba-toggle .seg{flex:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--steel);transition:color .3s;position:relative;z-index:2;}
+  .ba-toggle .knob{position:absolute;top:3px;left:3px;width:calc(50% - 3px);height:calc(100% - 6px);border-radius:16px;background:linear-gradient(135deg,#3b93f0,#2f7fe0);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:1;box-shadow:0 0 16px rgba(59,147,240,.5);}
+  .ba-toggle.state-after .knob{transform:translateX(100%);}
+  .ba-toggle.state-after .seg.after{color:#fff;}
+  .ba-toggle:not(.state-after) .seg.before{color:#fff;}
+
+  /* ---------------- HERO PUMP + DIVIDER ---------------- */
+  .pump-stage{left:250px;top:145px;width:750px;height:370px;overflow:hidden;z-index:1;}
+  .pump-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter .5s ease;}
+  .pump-img.before-filter{filter:grayscale(.85) brightness(.8) saturate(.3) contrast(1.05);}
+  .divider-line{left:515px;top:0px;width:2px;height:610px;background:linear-gradient(180deg, transparent, var(--cyan) 8%, var(--cyan) 92%, transparent);box-shadow:0 0 14px 1px var(--cyan-soft);z-index:20;pointer-events:none;animation:dividerPulse 2.6s ease-in-out infinite;}
+  @keyframes dividerPulse{0%,100%{opacity:.75;box-shadow:0 0 14px 1px var(--cyan-soft);}50%{opacity:1;box-shadow:0 0 26px 4px var(--cyan-soft);}}
+  .divider-handle{left:497px;top:378px;width:36px;height:36px;border-radius:50%;background:#0a1622;border:1.5px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--cyan);cursor:ew-resize;z-index:21;box-shadow:0 0 14px rgba(59,147,240,.5);touch-action:none;animation:handlePulse 2.6s ease-in-out infinite;}
+  @keyframes handlePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+
+  /* continuous scan-line sweep across the AFTER side of the pump */
+  .scan-sweep{left:765px;top:145px;width:235px;height:370px;overflow:hidden;pointer-events:none;z-index:12;}
+  .scan-sweep::before{content:'';position:absolute;left:0;right:0;height:38px;top:-38px;
+    background:linear-gradient(180deg, transparent, rgba(90,180,255,.55), rgba(140,200,255,.9), rgba(90,180,255,.55), transparent);
+    filter:blur(1px);animation:sweep 3.6s ease-in-out infinite;}
+  @keyframes sweep{0%{top:-38px;}55%{top:370px;}100%{top:370px;}}
+
+  /* drifting particles behind the pump */
+  .particle{position:absolute;border-radius:50%;background:var(--cyan);pointer-events:none;z-index:8;}
+  @keyframes drift{0%{transform:translateY(0);opacity:0;}12%{opacity:.9;}88%{opacity:.6;}100%{transform:translateY(-90px);opacity:0;}}
+
+  /* callouts */
+  .callout{z-index:15;display:flex;align-items:center;gap:0;}
+  .callout .box{background:rgba(8,12,18,.86);border:1px solid var(--panel-border);border-radius:3px;padding:6px 11px;white-space:nowrap;transition:border-color .35s, box-shadow .35s;}
+  .callout .box b{display:block;font-size:11px;letter-spacing:.03em;color:var(--white);}
+  .callout .box span{font-size:9.5px;color:var(--steel);}
+  .callout.active .box{border-color:var(--cyan);box-shadow:0 0 12px rgba(59,147,240,.35);}
+  .callout .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+  .callout .connector{position:absolute;stroke:var(--cyan-soft);stroke-width:1;fill:none;transition:stroke .35s;}
+  .callout.active .connector{stroke:var(--cyan);}
+
+  /* drag/scroll hints */
+  .hint{top:598px;text-align:center;color:var(--steel);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;z-index:10;}
+  .hint svg{display:block;margin:0 auto 6px;animation:bob 2.2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
+  /* bottom taglines */
+  .tagline{top:620px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;color:var(--steel);z-index:10;}
+  .tagline.after{color:var(--cyan);}
+
+  /* ---------------- LEFT PANEL ---------------- */
+  .lp-title{left:28px;top:140px;font-family:var(--font-display);font-weight:700;font-size:24px;z-index:10;}
+  .lp-sub{left:28px;top:174px;font-size:12px;color:var(--steel);z-index:10;}
+  .lp-pill{left:28px;top:200px;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;color:var(--steel);border:1px solid var(--panel-border);border-radius:3px;padding:6px 12px;background:var(--bg-void);z-index:10;}
+  .lp-panel{left:25px;top:238px;width:335px;height:214px;background:#0a0d13;border:1px solid var(--panel-border);z-index:9;}
+  .lp-row{left:45px;width:295px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--steel);letter-spacing:.02em;z-index:10;}
+  .lp-row .badge{font-size:9.5px;font-weight:600;letter-spacing:.04em;padding:3px 8px;border-radius:2px;color:var(--steel-dim);}
+  .lp-row .badge.amber{background:rgba(217,164,65,.14);color:var(--amber);}
+  .lp-row .badge.red{background:rgba(226,73,90,.14);color:var(--red);}
+  .lp-note{left:25px;top:520px;width:335px;height:78px;background:#0a0d13;border:1px solid var(--panel-border);padding:14px 16px;display:flex;gap:12px;z-index:10;}
+  .lp-note .ic{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+  .lp-note b{display:block;font-size:12px;margin-bottom:4px;}
+  .lp-note p{font-size:10.5px;color:var(--steel);line-height:1.5;}
+
+  /* ---------------- RIGHT PANEL ---------------- */
+  .rp-title{left:1206px;top:140px;font-family:var(--font-display);font-weight:700;font-size:24px;z-index:10;}
+  .rp-title .accent{color:var(--cyan);}
+  .rp-sub{left:1206px;top:174px;font-size:12px;color:var(--steel);z-index:10;}
+  .score-card{left:1204px;top:204px;width:330px;height:96px;background:#0a0d13;border:1px solid var(--panel-border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:10;}
+  .score-ring-wrap{position:relative;width:64px;height:64px;flex-shrink:0;animation:ringGlow 2.6s ease-in-out infinite;}
+  .score-ring-wrap svg{transform:rotate(-90deg);}
+  .score-num-mini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:15px;}
+  @keyframes ringGlow{0%,100%{filter:drop-shadow(0 0 2px rgba(59,147,240,.4));}50%{filter:drop-shadow(0 0 9px rgba(59,147,240,.85));}}
+  .score-text .lbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--steel);margin-bottom:4px;}
+  .score-text .num{font-family:var(--font-display);font-weight:700;font-size:36px;line-height:1;}
+  .score-text .num small{font-size:14px;color:var(--steel);font-weight:400;}
+  .rp-metrics{left:1206px;top:312px;width:330px;z-index:10;}
+  .rp-row{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;color:var(--steel);margin-bottom:15px;}
+  .rp-row .mn{width:88px;flex-shrink:0;letter-spacing:.02em;}
+  .rp-row .mtrack{flex:1;height:3px;background:rgba(255,255,255,.08);position:relative;border-radius:2px;overflow:hidden;}
+  .rp-row .mtrack i{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#3b93f0,#5fb0ff);width:0%;transition:width 1.4s cubic-bezier(.16,1,.3,1);border-radius:2px;}
+  .rp-row b{width:30px;text-align:right;color:var(--white);flex-shrink:0;}
+  .rp-note{left:1204px;top:520px;width:330px;height:78px;background:#0a0d13;border:1px solid var(--panel-border);padding:14px 16px;display:flex;gap:12px;z-index:10;}
+  .rp-note .ic{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px;}
+  .rp-note b{display:block;font-size:12px;margin-bottom:4px;}
+  .rp-note p{font-size:10.5px;color:var(--steel);line-height:1.5;}
+
+  /* ---------------- EXPLODED VIEW SECTION ---------------- */
+  .ev-title{left:28px;top:690px;font-family:var(--font-display);font-weight:700;font-size:20px;z-index:10;}
+  .ev-sub{left:28px;top:716px;font-size:11.5px;color:var(--steel);z-index:10;}
+  .thumb-card{width:88px;height:78px;border-radius:4px;background:#0a0d13;border:1px solid var(--panel-border);cursor:pointer;transition:border-color .25s, box-shadow .25s, transform .25s;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;z-index:10;}
+  .thumb-card img{width:70px;height:52px;object-fit:contain;}
+  .thumb-card .lbl{font-family:var(--font-mono);font-size:8.5px;color:var(--steel);letter-spacing:.04em;position:absolute;bottom:-16px;left:0;right:0;text-align:center;}
+  .thumb-card.active,.thumb-card:hover{border-color:var(--cyan);box-shadow:0 0 12px rgba(59,147,240,.3);transform:translateY(-2px);}
+  .thumb-card.active .lbl,.thumb-card:hover .lbl{color:var(--cyan);}
+
+  .ae-toggle{left:670px;top:698px;width:240px;height:34px;border-radius:20px;background:rgba(16,20,28,.95);border:1px solid var(--panel-border);display:flex;padding:3px;gap:3px;cursor:pointer;user-select:none;z-index:10;}
+  .ae-toggle .seg{flex:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;letter-spacing:.02em;color:var(--steel);transition:color .3s;position:relative;z-index:2;}
+  .ae-toggle .knob{position:absolute;top:3px;left:3px;width:calc(50% - 3px);height:calc(100% - 6px);border-radius:16px;background:linear-gradient(135deg,#3b93f0,#2f7fe0);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:1;box-shadow:0 0 16px rgba(59,147,240,.5);}
+  .ae-toggle.state-exploded .knob{transform:translateX(100%);}
+  .ae-toggle.state-exploded .seg.exploded{color:#fff;}
+  .ae-toggle:not(.state-exploded) .seg.assembled{color:#fff;}
+
+  .ev-stage{left:385px;top:705px;width:770px;height:175px;overflow:hidden;z-index:1;}
+  .ev-stage img{position:absolute;top:0;width:770px;height:175px;object-fit:cover;transition:opacity .55s ease, transform .55s ease;}
+  .ev-stage img.assembled-img{opacity:0;transform:scale(1.04);}
+  .ev-stage.state-assembled img.assembled-img{opacity:1;transform:scale(1);}
+  .ev-stage.state-assembled img.exploded-img{opacity:0;}
+
+  .scan-panel{left:1204px;top:685px;width:332px;height:207px;background:#0a0d13;border:1px solid var(--panel-border);padding:14px 18px;overflow:hidden;z-index:10;}
+  .scan-panel h4{font-family:var(--font-display);font-size:14px;margin-bottom:9px;}
+  .scan-item{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--steel);margin-bottom:6px;opacity:0;transform:translateX(-6px);transition:opacity .4s, transform .4s;}
+  .scan-item.show{opacity:1;transform:translateX(0);}
+  .scan-item .chk{width:14px;height:14px;border-radius:50%;border:1.3px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;transform:scale(0);transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .35s;}
+  .scan-item.show .chk{transform:scale(1);background:rgba(59,147,240,.15);}
+  .scan-thumb-img{position:absolute;right:-6px;top:-4px;width:150px;height:auto;opacity:.9;pointer-events:none;}
+  .scan-complete{position:absolute;right:14px;bottom:12px;background:rgba(43,196,106,.14);border:1px solid var(--green);color:var(--green);font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;padding:5px 10px;border-radius:3px;opacity:0;transform:scale(.9);transition:opacity .4s, transform .4s;}
+  .scan-complete.show{opacity:1;transform:scale(1);}
+  .scan-complete i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 6px var(--green);}
+
+  /* ---------------- BOTTOM JOURNEY ---------------- */
+  .journey-wrap{left:0;top:895px;width:1536px;height:129px;border-top:1px solid var(--panel-border);background:rgba(6,9,14,.5);}
+  .journey-title{left:0;top:32px;width:1536px;text-align:center;font-family:var(--font-display);font-weight:600;font-size:16px;}
+  .journey-row{left:0;top:78px;width:1536px;display:flex;align-items:center;justify-content:center;gap:0;}
+  .jstep{display:flex;align-items:center;gap:9px;opacity:0;transform:translateY(10px);transition:opacity .5s, transform .5s;}
+  .jstep.show{opacity:1;transform:translateY(0);}
+  .jstep .jicon{width:32px;height:32px;border-radius:50%;border:1.3px solid var(--panel-border);display:flex;align-items:center;justify-content:center;color:var(--steel);flex-shrink:0;transition:border-color .3s,color .3s,box-shadow .3s;}
+  .jstep.highlight .jicon{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px rgba(59,147,240,.5);}
+  .jstep span{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;color:var(--steel);white-space:nowrap;}
+  .jstep.highlight span{color:var(--cyan);}
+  .jarrow{width:52px;height:1px;background:linear-gradient(90deg,var(--panel-border),var(--panel-border));position:relative;margin:0 10px;overflow:hidden;}
+  .jarrow::after{content:'';position:absolute;top:-1.5px;left:-20%;width:20%;height:4px;background:var(--cyan);border-radius:2px;filter:blur(1px);box-shadow:0 0 8px var(--cyan);animation:travel 3.2s linear infinite;opacity:.85;}
+  @keyframes travel{0%{left:-20%;}100%{left:100%;}}
+
+  @media(max-width:900px){
+    .stage-wrap{overflow-x:hidden;}
+  }
+
+  /* ---------------- MOBILE STACKED FLOW ---------------- */
+  /* Below 760px the pixel-faithful 1536x1024 stage is abandoned in favour
+     of a real single-column flow: the pump stays the central visual, every
+     other block drops beneath it, decorative-only elements (particles,
+     connector lines, dot markers) are hidden, and each block keeps only
+     the CSS properties useful in flow (color, type, borders) — position/
+     left/top/width/height are neutralised via the .mobile-flow override. */
+  .stage.mobile-flow{
+    width:100%;height:auto;transform:none;
+    display:flex;flex-direction:column;gap:22px;padding:22px 20px 40px;
+  }
+  .stage.mobile-flow .abs{position:static;left:auto;top:auto;width:auto;height:auto;}
+  .stage.mobile-flow #particleField{display:none !important;}
+  .stage.mobile-flow #connectorOverlay{display:none !important;}
+  .stage.mobile-flow .callout .dot,
+  .stage.mobile-flow .callout svg.connector,
+  .stage.mobile-flow .divider-line,
+  .stage.mobile-flow .divider-handle,
+  .stage.mobile-flow .scan-sweep{display:none;}
+
+  .stage.mobile-flow .nav{order:1;width:100%;padding:14px 4px;flex-wrap:wrap;gap:10px;}
+  .stage.mobile-flow .nav-links{display:none;}
+  .stage.mobile-flow .nav-status{display:none;}
+  .stage.mobile-flow .hero-title{order:2;font-size:26px;text-align:center;line-height:1.3;}
+  .stage.mobile-flow .hero-title .arrow{display:block;margin:4px 0;}
+  .stage.mobile-flow .hero-sub{order:3;text-align:center;font-size:13px;padding:0 6px;}
+  .stage.mobile-flow .ba-toggle{order:4;position:relative;margin:0 auto;}
+
+  .stage.mobile-flow .pump-stage{order:5;position:relative;width:100%;max-width:420px;height:220px;margin:0 auto;border-radius:6px;}
+  .stage.mobile-flow .callout{position:static;display:flex;justify-content:space-between;width:100%;max-width:420px;margin:6px auto 0;order:6;}
+  .stage.mobile-flow .callout .box{width:100%;text-align:left;}
+  .stage.mobile-flow .hint{order:7;}
+  .stage.mobile-flow .tagline{order:8;text-align:center;}
+
+  .stage.mobile-flow .lp-title,.stage.mobile-flow .rp-title{order:9;text-align:center;font-size:19px;}
+  .stage.mobile-flow .lp-sub,.stage.mobile-flow .rp-sub{order:10;text-align:center;}
+  .stage.mobile-flow .lp-pill{order:11;margin:0 auto;}
+  .stage.mobile-flow .lp-panel,.stage.mobile-flow .rp-panel{order:12;width:100%;padding:16px;}
+  .stage.mobile-flow .lp-row{width:100%;order:12;}
+  .stage.mobile-flow .score-card{order:13;width:100%;}
+  .stage.mobile-flow .rp-metrics{order:14;width:100%;}
+  .stage.mobile-flow .lp-note,.stage.mobile-flow .rp-note{order:15;width:100%;}
+
+  .stage.mobile-flow .ev-title{order:16;text-align:center;}
+  .stage.mobile-flow .ev-sub{order:17;text-align:center;}
+  .stage.mobile-flow .ae-toggle{order:18;position:relative;margin:0 auto;}
+  .stage.mobile-flow .ev-stage{order:19;position:relative;width:100%;height:auto;aspect-ratio:770/175;}
+  .stage.mobile-flow .ev-stage img{width:100%;height:100%;}
+  .stage.mobile-flow .thumb-card{order:20;position:relative;}
+  .stage.mobile-flow .scan-panel{order:21;width:100%;}
+
+  .stage.mobile-flow .journey-wrap{order:22;width:100%;padding:20px 0;}
+  .stage.mobile-flow .journey-row{flex-wrap:wrap;justify-content:center;row-gap:14px;}
+  .stage.mobile-flow .jarrow{width:20px;margin:0 4px;}
+
+  /* ================= SITE SECTIONS (below the AQMI hero) ================= */
+  .site{
+    position:relative;
+    background:transparent;
+    color:var(--white);font-family:var(--font-body);
+  }
+  /* subtle blueprint grid, echoing the hero, running the length of the page */
+  .site::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.4;
+    background-image:
+      linear-gradient(rgba(59,147,240,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,147,240,.045) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:linear-gradient(180deg, black, black 85%, transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg, black, black 85%, transparent 100%);
+  }
+  /* film grain, matching the hero's texture, over the full page */
+  .site::after{
+    content:'';position:absolute;inset:0;z-index:999;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px;}
+  @media(max-width:760px){.wrap{padding:0 20px;}}
+  .sec{padding:110px 0;position:relative;content-visibility:auto;contain-intrinsic-size:auto 900px;}
+  .sec.tight{padding:80px 0;}
+  .sec-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);text-align:center;margin-bottom:14px;}
+  .sec-eyebrow.gold{color:var(--amber);}
+  .sec-title{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.4vw,42px);text-align:center;letter-spacing:-.01em;max-width:760px;margin:0 auto;}
+  .sec-title b{color:var(--cyan);}
+  .sec-sub{font-family:var(--font-body);color:var(--steel);text-align:center;max-width:640px;margin:18px auto 0;font-size:15.5px;line-height:1.6;}
+  .reveal{opacity:0;transform:translateY(28px) scale(.98);transition:opacity .75s cubic-bezier(.16,.8,.3,1),transform .75s cubic-bezier(.16,.8,.3,1);}
+  .reveal.in{opacity:1;transform:none;}
+  .sec-title{position:relative;}
+  .sec-title::after{content:"";display:block;width:0;height:2px;margin:20px auto 0;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width 1s cubic-bezier(.16,.8,.3,1) .3s;}
+  .sec-title.in::after{width:64px;}
+
+  .grid .card,.module-grid .module-card{transition-delay:calc(var(--i,0) * 70ms);}
+  .grid.cols-3 .card:nth-child(1),.grid.cols-4 .card:nth-child(1),.module-grid .module-card:nth-child(1){--i:0;}
+  .grid.cols-3 .card:nth-child(2),.grid.cols-4 .card:nth-child(2),.module-grid .module-card:nth-child(2){--i:1;}
+  .grid.cols-3 .card:nth-child(3),.grid.cols-4 .card:nth-child(3),.module-grid .module-card:nth-child(3){--i:2;}
+  .grid.cols-3 .card:nth-child(4),.grid.cols-4 .card:nth-child(4),.module-grid .module-card:nth-child(4){--i:3;}
+  .grid .card:nth-child(5),.module-grid .module-card:nth-child(5){--i:4;}
+  .grid .card:nth-child(6),.module-grid .module-card:nth-child(6){--i:5;}
+  .grid .card:nth-child(7),.module-grid .module-card:nth-child(7){--i:6;}
+  .grid .card:nth-child(8),.module-grid .module-card:nth-child(8){--i:7;}
+  .module-grid .module-card:nth-child(9){--i:8;} .module-grid .module-card:nth-child(10){--i:9;}
+  .module-grid .module-card:nth-child(11){--i:10;} .module-grid .module-card:nth-child(12){--i:11;}
+  .module-grid .module-card:nth-child(13){--i:12;} .module-grid .module-card:nth-child(14){--i:13;}
+  .module-grid .module-card:nth-child(15){--i:14;} .module-grid .module-card:nth-child(16){--i:15;}
+  .module-grid .module-card:nth-child(17){--i:16;} .module-grid .module-card:nth-child(18){--i:17;}
+
+  .check-list li{transition-delay:calc(var(--li,0) * 90ms);}
+  .check-list li:nth-child(1){--li:0;} .check-list li:nth-child(2){--li:1;}
+  .check-list li:nth-child(3){--li:2;} .check-list li:nth-child(4){--li:3;}
+  .check-list li:nth-child(5){--li:4;} .check-list li:nth-child(6){--li:5;}
+  .check-list li::before{transition:transform .45s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s;transition-delay:calc(var(--li,0) * 90ms);}
+  .platform-block.in .check-list li::before{transform:scale(1);}
+  .check-list li:hover::before{background:rgba(217,164,65,.18);border-color:var(--amber-soft);color:var(--amber);}
+
+  @keyframes pulseSoft{0%,100%{box-shadow:0 0 0 0 var(--cyan-soft);}50%{box-shadow:0 0 0 6px transparent;}}
+  .visual-tags span{transition:border-color .3s,color .3s;}
+  .platform-visual.in .visual-tags span{animation:pulseSoft 2.6s ease-in-out infinite;}
+  .platform-visual.in .visual-tags span:nth-child(odd){animation-delay:.4s;border-color:var(--amber-soft);}
+
+  .grid{display:grid;gap:20px;margin-top:56px;}
+  .grid.cols-4{grid-template-columns:repeat(4,1fr);}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr);}
+  @media(max-width:980px){.grid.cols-4{grid-template-columns:repeat(2,1fr);}.grid.cols-3{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr;}}
+
+  .card{background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:10px;padding:26px 24px;transition:border-color .3s,transform .3s,box-shadow .3s;}
+  .card:hover{border-color:var(--cyan-soft);transform:translateY(-5px);box-shadow:0 14px 30px -18px var(--cyan-soft);}
+  .card:nth-child(3n):hover{border-color:var(--amber-soft);box-shadow:0 14px 30px -18px var(--amber-soft);}
+  .card h3{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:10px;}
+  .card p{color:var(--steel);font-size:13.8px;line-height:1.6;}
+  .card .num{font-family:var(--font-mono);font-size:11px;color:var(--cyan);letter-spacing:.08em;margin-bottom:12px;display:block;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;color:var(--steel);border:1px solid var(--panel-border);border-radius:3px;padding:5px 9px;}
+  .card-link{display:inline-block;margin-top:16px;font-family:var(--font-mono);font-size:11.5px;color:var(--cyan);letter-spacing:.04em;text-decoration:none;border-bottom:1px solid transparent;}
+  .card-link:hover{border-color:var(--cyan);}
+
+  /* ---- Pourquoi NOVAQYS — modernised challenge cards ---- */
+  .challenge-intro{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:28px;}
+  .challenge-stat{font-family:var(--font-mono);font-size:11px;color:var(--steel);border:1px solid var(--panel-border);border-radius:20px;padding:7px 14px;display:flex;align-items:center;gap:7px;}
+  .challenge-stat b{color:var(--white);font-weight:600;}
+  .challenge-stat i{width:5px;height:5px;border-radius:50%;background:var(--cyan);flex:none;}
+
+  .challenge-card{position:relative;padding:24px 22px 22px;border-radius:12px;overflow:hidden;}
+  .challenge-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 22% -10%, rgba(59,147,240,.14), transparent 60%);opacity:0;transition:opacity .4s;pointer-events:none;}
+  .challenge-card.amber::before{background:radial-gradient(circle at 22% -10%, rgba(217,164,65,.14), transparent 60%);}
+  .challenge-card:hover::before{opacity:1;}
+  .challenge-card:hover{transform:translateY(-6px);box-shadow:0 18px 38px -20px rgba(59,147,240,.45);}
+  .challenge-card.amber:hover{border-color:var(--amber-soft);box-shadow:0 18px 38px -20px rgba(217,164,65,.45);}
+
+  .challenge-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;position:relative;z-index:1;}
+  .challenge-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:linear-gradient(135deg,rgba(59,147,240,.18),rgba(59,147,240,.03));border:1px solid var(--cyan-soft);transition:transform .35s cubic-bezier(.16,.8,.3,1);}
+  .challenge-card:hover .challenge-icon{transform:scale(1.08) rotate(-3deg);}
+  .challenge-icon svg{width:19px;height:19px;color:var(--cyan);}
+  .challenge-card.amber .challenge-icon{background:linear-gradient(135deg,rgba(217,164,65,.18),rgba(217,164,65,.03));border-color:var(--amber-soft);}
+  .challenge-card.amber .challenge-icon svg{color:var(--amber);}
+  .challenge-num{font-family:var(--font-mono);font-size:10.5px;color:var(--steel-dim);letter-spacing:.08em;padding-top:3px;}
+
+  .challenge-card h3{position:relative;z-index:1;font-family:var(--font-display);font-weight:600;font-size:16.5px;margin-bottom:9px;}
+  .challenge-card p{position:relative;z-index:1;color:var(--steel);font-size:13.4px;line-height:1.62;}
+
+  .challenge-tag{position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;margin-top:17px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;color:var(--cyan);border:1px solid var(--cyan-soft);border-radius:20px;padding:5px 11px 5px 9px;}
+  .challenge-tag i{width:5px;height:5px;border-radius:50%;background:currentColor;flex:none;}
+  .challenge-card.amber .challenge-tag{color:var(--amber);border-color:var(--amber-soft);}
+
+  /* ---- L'Écosystème — 3D flip-in + progress ring + magnetic tilt/spotlight ---- */
+  .eco-grid{perspective:1200px;}
+  .eco-card{position:relative;z-index:0;transform-style:preserve-3d;overflow:hidden;}
+  .eco-card.reveal{transform-origin:bottom center;opacity:0;transform:rotateX(-30deg) translateY(38px) scale(.96);transition:opacity .85s cubic-bezier(.16,.8,.3,1),transform .85s cubic-bezier(.16,.8,.3,1);}
+  .eco-card.reveal.in{opacity:1;transform:rotateX(var(--tiltX,0deg)) rotateY(var(--tiltY,0deg));}
+  .eco-card.reveal.in.settled{transition:transform .25s cubic-bezier(.16,.8,.3,1),border-color .3s,box-shadow .3s;}
+  .eco-card:hover{border-color:var(--cyan-soft);box-shadow:0 20px 40px -22px rgba(59,147,240,.4);}
+  .eco-card.amber:hover{border-color:var(--amber-soft);box-shadow:0 20px 40px -22px rgba(217,164,65,.4);}
+  .eco-card::after{content:'';position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(220px circle at var(--spotX,50%) var(--spotY,50%), rgba(59,147,240,.14), transparent 60%);}
+  .eco-card.amber::after{background:radial-gradient(220px circle at var(--spotX,50%) var(--spotY,50%), rgba(217,164,65,.14), transparent 60%);}
+  .eco-card:hover::after{opacity:1;}
+  .eco-card>*{position:relative;z-index:1;}
+
+  /* ---- Bénéfices — quantified animated-counter cards ---- */
+  .benefit-card{position:relative;overflow:hidden;}
+  .benefit-card::before{content:'';position:absolute;top:-40%;right:-30%;width:65%;height:65%;background:radial-gradient(circle, rgba(59,147,240,.1), transparent 70%);pointer-events:none;transition:opacity .4s;}
+  .benefit-card.amber::before{background:radial-gradient(circle, rgba(217,164,65,.1), transparent 70%);}
+  .benefit-card:hover::before{opacity:1.4;}
+  .benefit-top{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .benefit-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,rgba(59,147,240,.16),rgba(59,147,240,.04));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;transition:transform .35s cubic-bezier(.16,.8,.3,1);}
+  .benefit-card:hover .benefit-icon{transform:scale(1.08) rotate(-3deg);}
+  .benefit-icon svg{width:18px;height:18px;color:var(--cyan);}
+  .benefit-card.amber .benefit-icon{background:linear-gradient(135deg,rgba(217,164,65,.16),rgba(217,164,65,.04));border-color:var(--amber-soft);}
+  .benefit-card.amber .benefit-icon svg{color:var(--amber);}
+  .benefit-stat{position:relative;z-index:1;font-family:var(--font-display);font-weight:700;font-size:32px;color:var(--cyan);line-height:1;}
+  .benefit-card.amber .benefit-stat{color:var(--amber);}
+  .benefit-stat .reveal{opacity:1;transform:none;transition:none;}
+  .benefit-card h3{position:relative;z-index:1;font-family:var(--font-display);font-weight:600;font-size:15.5px;margin:14px 0 8px;}
+  .benefit-card p{position:relative;z-index:1;color:var(--steel);font-size:13px;line-height:1.6;}
+
+  .eco-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+  .eco-ring{position:relative;width:52px;height:52px;flex:none;}
+  .eco-ring svg{width:52px;height:52px;transform:rotate(-90deg);}
+  .eco-ring-track{fill:none;stroke:var(--panel-border);stroke-width:3;}
+  .eco-ring-fill{fill:none;stroke:var(--cyan);stroke-width:3.2;stroke-linecap:round;stroke-dasharray:138.2;stroke-dashoffset:138.2;transition:stroke-dashoffset 1.1s cubic-bezier(.16,.8,.3,1);transition-delay:calc(var(--i,0) * 90ms + .1s);}
+  .eco-card.amber .eco-ring-fill{stroke:var(--amber);}
+  .eco-card.in .eco-ring-fill{stroke-dashoffset:0;}
+  .eco-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:600;font-size:12.5px;color:var(--white);}
+  .eco-live{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9px;letter-spacing:.05em;color:var(--steel);padding-top:4px;}
+  .eco-live i{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 var(--cyan-soft);animation:navPulse 2.4s ease-in-out infinite;}
+  .eco-card.amber .eco-live i{background:var(--amber);box-shadow:0 0 0 0 var(--amber-soft);}
+
+  .eco-card h3{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:10px;}
+  .eco-card p{color:var(--steel);font-size:13.8px;line-height:1.6;}
+  @media(prefers-reduced-motion:reduce){.eco-card.reveal{transition:opacity .01s;transform:none;}}
+
+  .platform-block{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:100px;}
+  .platform-block.rev{direction:rtl;}
+  .platform-block.rev>*{direction:ltr;}
+  @media(max-width:860px){.platform-block{grid-template-columns:1fr;gap:32px;}}
+  .platform-eyebrow{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;margin-bottom:12px;}
+  .platform-block h3{font-family:var(--font-display);font-weight:700;font-size:26px;margin-bottom:16px;}
+  .platform-block p.desc{color:var(--steel);font-size:14.5px;line-height:1.7;margin-bottom:20px;}
+  .check-list{display:flex;flex-direction:column;gap:11px;}
+  .check-list li{list-style:none;display:flex;gap:10px;font-size:13.8px;color:var(--white);align-items:flex-start;}
+  .check-list li::before{content:"✓";width:17px;height:17px;border-radius:5px;background:rgba(59,147,240,.12);border:1px solid var(--cyan-soft);color:var(--cyan);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;flex:none;transform:scale(0);}
+  .platform-visual{background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:12px;padding:28px;min-height:220px;}
+  .visual-tags{display:flex;flex-wrap:wrap;gap:10px;}
+  .visual-tags span{font-family:var(--font-mono);font-size:10.5px;color:var(--steel);border:1px solid var(--panel-border);border-radius:20px;padding:7px 14px;}
+
+  /* ---- Platform detail sections — developed UX system ---- */
+  .platform-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .platform-icon{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,rgba(59,147,240,.18),rgba(59,147,240,.03));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;}
+  .platform-icon svg{width:21px;height:21px;color:var(--cyan);}
+  .platform-head .platform-eyebrow{margin-bottom:4px;}
+  .pfact-row{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 22px;}
+
+  .pmock-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--panel-border);}
+  .pmock-label{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--steel);text-transform:uppercase;}
+  .pmock-label i{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 var(--cyan-soft);animation:navPulse 2.4s ease-in-out infinite;}
+  .pmock-chip{font-family:var(--font-mono);font-size:9.5px;color:var(--cyan);border:1px solid var(--cyan-soft);border-radius:20px;padding:4px 10px;}
+
+  /* Starter: gauge + metric bars */
+  .pmock-gauge-row{display:flex;align-items:center;gap:22px;margin-bottom:24px;}
+  .pmock-gauge{position:relative;width:92px;height:92px;flex:none;}
+  .pmock-gauge svg{width:92px;height:92px;transform:rotate(-90deg);}
+  .pmock-gauge-track{fill:none;stroke:var(--panel-border);stroke-width:6;}
+  .pmock-gauge-fill{fill:none;stroke:var(--cyan);stroke-width:6;stroke-linecap:round;stroke-dasharray:238.8;stroke-dashoffset:238.8;transition:stroke-dashoffset 1.3s cubic-bezier(.16,.8,.3,1) .1s;}
+  .platform-visual.in .pmock-gauge-fill{stroke-dashoffset:calc(238.8 - (238.8 * var(--pct,78) / 100));}
+  .pmock-gauge-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .pmock-gauge-num b{font-family:var(--font-display);font-size:22px;font-weight:700;}
+  .pmock-gauge-num span{font-family:var(--font-mono);font-size:7.5px;color:var(--steel-dim);letter-spacing:.04em;text-align:center;}
+  .pmock-gauge-side b{display:block;font-family:var(--font-display);font-size:15px;margin-bottom:4px;}
+  .pmock-gauge-side span{font-family:var(--font-mono);font-size:10.5px;color:var(--steel);line-height:1.6;}
+  .pmock-metrics{display:flex;flex-direction:column;gap:13px;}
+  .pmock-metric-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--steel);margin-bottom:6px;}
+  .pmock-metric-top b{color:var(--white);font-family:var(--font-mono);font-weight:500;}
+  .pmock-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;}
+  .pmock-bar i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width 1.1s cubic-bezier(.16,.8,.3,1);}
+  .platform-visual.in .pmock-bar i{width:var(--w,0%);}
+  .pmock-metrics .pmock-metric:nth-child(1) .pmock-bar i{transition-delay:.1s;}
+  .pmock-metrics .pmock-metric:nth-child(2) .pmock-bar i{transition-delay:.25s;}
+  .pmock-metrics .pmock-metric:nth-child(3) .pmock-bar i{transition-delay:.4s;}
+  .pmock-metrics .pmock-metric:nth-child(4) .pmock-bar i{transition-delay:.55s;}
+  .pmock-foot{display:flex;align-items:center;gap:9px;margin-top:20px;padding-top:16px;border-top:1px solid var(--panel-border);font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
+  .pmock-foot .chk{width:16px;height:16px;border-radius:50%;background:rgba(43,196,106,.15);border:1px solid rgba(43,196,106,.4);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;flex:none;}
+
+  /* Professional: benchmark compare + progress plan */
+  .pmock-legend{display:flex;gap:16px;margin-bottom:18px;font-family:var(--font-mono);font-size:10px;color:var(--steel);}
+  .pmock-legend span{display:flex;align-items:center;gap:6px;}
+  .pmock-legend i{width:8px;height:8px;border-radius:2px;}
+  .pmock-legend .you i{background:var(--cyan);}
+  .pmock-legend .sector i{background:var(--steel-dim);}
+  .pmock-compare{margin-bottom:16px;}
+  .pmock-compare-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--steel);margin-bottom:8px;}
+  .pmock-compare-top b{color:var(--white);}
+  .pmock-compare-track{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.06);margin-top:8px;}
+  .pmock-compare-track i.you{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--cyan);width:0;transition:width 1.15s cubic-bezier(.16,.8,.3,1);}
+  .pmock-compare-track i.sector{position:absolute;top:-6px;width:2px;height:17px;background:var(--steel-dim);opacity:0;transition:left 1.15s cubic-bezier(.16,.8,.3,1) .2s,opacity .4s .2s;}
+  .platform-visual.in .pmock-compare-track i.you{width:var(--wy,0%);}
+  .platform-visual.in .pmock-compare-track i.sector{left:var(--ws,0%);opacity:1;}
+  .pmock-plan{display:flex;flex-direction:column;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--panel-border);}
+  .pmock-plan-item{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--white);}
+  .pmock-plan-status{font-family:var(--font-mono);font-size:8.5px;letter-spacing:.04em;padding:3px 9px;border-radius:20px;text-transform:uppercase;flex:none;}
+  .pmock-plan-status.done{color:var(--green);border:1px solid rgba(43,196,106,.35);background:rgba(43,196,106,.1);}
+  .pmock-plan-status.progress{color:var(--cyan);border:1px solid var(--cyan-soft);background:rgba(59,147,240,.1);}
+  .pmock-plan-status.planned{color:var(--steel);border:1px solid var(--panel-border);}
+
+  /* NARA: supplier audit list + evidence counter */
+  .pmock-audit{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+  .pmock-audit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--panel-border);border-radius:8px;opacity:0;transform:translateX(-8px);transition:opacity .45s,transform .45s,border-color .3s;}
+  .platform-visual.in .pmock-audit-row{opacity:1;transform:none;}
+  .pmock-audit-row:hover{border-color:var(--cyan-soft);}
+  .pmock-audit:nth-child(1) .pmock-audit-row:nth-child(1),.pmock-audit-row:nth-child(1){transition-delay:.05s;}
+  .pmock-audit-row:nth-child(2){transition-delay:.2s;}
+  .pmock-audit-row:nth-child(3){transition-delay:.35s;}
+  .pmock-audit-row:nth-child(4){transition-delay:.5s;}
+  .pmock-audit-name{font-size:12px;color:var(--white);display:flex;align-items:center;gap:9px;min-width:0;}
+  .pmock-audit-name i{width:26px;height:26px;border-radius:6px;background:rgba(59,147,240,.1);border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--cyan);flex:none;}
+  .pmock-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.03em;padding:4px 9px;border-radius:20px;white-space:nowrap;flex:none;}
+  .pmock-badge.ok{color:var(--green);background:rgba(43,196,106,.1);border:1px solid rgba(43,196,106,.35);}
+  .pmock-badge.warn{color:var(--amber);background:rgba(217,164,65,.1);border:1px solid var(--amber-soft);}
+  .pmock-badge.bad{color:var(--red);background:rgba(226,73,90,.1);border:1px solid rgba(226,73,90,.35);}
+  .pmock-evidence{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--panel-border);font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
+  .pmock-evidence b{color:var(--white);font-size:16px;font-family:var(--font-display);}
+
+  /* LMS: module progress + certification + quiz preview */
+  .pmock-module{margin-bottom:15px;}
+  .pmock-module-top{display:flex;justify-content:space-between;font-size:12px;color:var(--white);margin-bottom:7px;}
+  .pmock-module-top span{font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
+  .pmock-cert{display:flex;align-items:center;gap:12px;margin-top:18px;padding:12px 14px;border-radius:8px;background:rgba(217,164,65,.08);border:1px solid var(--amber-soft);}
+  .pmock-cert svg{width:20px;height:20px;color:var(--amber);flex:none;}
+  .pmock-cert b{font-size:12px;color:var(--white);display:block;}
+  .pmock-cert span{font-family:var(--font-mono);font-size:9.5px;color:var(--steel);}
+  .pmock-quiz{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-family:var(--font-mono);font-size:10px;color:var(--steel);padding-top:14px;border-top:1px solid var(--panel-border);}
+  .pmock-quiz b{color:var(--cyan);}
+
+  /* ASIN: industrial passport + RFQ feed */
+  .pmock-passport{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--panel-border);border-radius:10px;margin-bottom:20px;background:rgba(59,147,240,.04);}
+  .pmock-passport-id{width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,rgba(59,147,240,.22),rgba(59,147,240,.05));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:12px;color:var(--cyan);flex:none;}
+  .pmock-passport-info{flex:1;min-width:0;}
+  .pmock-passport-info b{display:block;font-size:12.5px;color:var(--white);margin-bottom:3px;}
+  .pmock-passport-info span{font-family:var(--font-mono);font-size:9.5px;color:var(--steel);}
+  .pmock-passport-score{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--cyan);text-align:center;flex:none;}
+  .pmock-passport-score i{display:block;font-family:var(--font-mono);font-style:normal;font-size:7.5px;color:var(--steel-dim);letter-spacing:.05em;margin-top:2px;}
+
+
+  .module-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px;}
+  @media(max-width:980px){.module-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.module-grid{grid-template-columns:1fr;}}
+
+  /* ---- Plateforme Centrale — header + domain legend ---- */
+  .qms-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+  .qms-head .sec-eyebrow,.qms-head .sec-title,.qms-head .sec-sub{text-align:left;margin-left:0;margin-right:0;}
+  #qms .challenge-intro{justify-content:flex-start;}
+  .qms-legend{display:flex;flex-direction:column;gap:9px;font-family:var(--font-mono);font-size:10.5px;color:var(--steel);padding-bottom:4px;flex:none;}
+  .qms-legend span{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .qms-legend i{width:7px;height:7px;border-radius:50%;flex:none;}
+  .dot-production{background:var(--cyan);box-shadow:0 0 6px var(--cyan-soft);}
+  .dot-qualite{background:var(--amber);box-shadow:0 0 6px var(--amber-soft);}
+  .dot-gestion{background:var(--green);box-shadow:0 0 6px rgba(43,196,106,.4);}
+  .dot-pilotage{background:var(--violet);box-shadow:0 0 6px var(--violet-soft);}
+  @media(max-width:760px){.qms-head{flex-direction:column;align-items:flex-start;}.qms-legend{flex-direction:row;flex-wrap:wrap;gap:16px;}}
+
+  /* ---- category filters ---- */
+  .qms-filters{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 6px;}
+  .qms-filter{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;color:var(--steel);background:rgba(255,255,255,.02);border:1px solid var(--panel-border);border-radius:20px;padding:8px 8px 8px 16px;cursor:pointer;transition:border-color .3s,color .3s,background .3s;}
+  .qms-filter b{font-weight:600;font-size:10px;color:var(--steel-dim);background:rgba(255,255,255,.05);border-radius:12px;padding:3px 8px;transition:background .3s,color .3s;}
+  .qms-filter:hover{color:var(--white);border-color:var(--cyan-soft);}
+  .qms-filter.active{color:var(--white);border-color:var(--cyan-soft);background:rgba(59,147,240,.1);}
+  .qms-filter.active b{background:linear-gradient(90deg,var(--cyan),var(--amber));color:#04101f;}
+
+  /* ---- module cards, 4 domain accents via data-cat ---- */
+  .module-card{
+    --accent:var(--cyan);--accent-soft:var(--cyan-soft);
+    position:relative;border:1px solid var(--panel-border);border-radius:10px;padding:20px 18px 18px;
+    background:rgba(13,17,24,.35);overflow:hidden;
+    transition:border-color .3s,transform .32s cubic-bezier(.16,.8,.3,1),box-shadow .3s,opacity .32s cubic-bezier(.16,.8,.3,1);
+  }
+  .module-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:var(--accent);opacity:.55;transition:opacity .3s,width .3s;}
+  .module-card:hover{border-color:var(--accent-soft);transform:translateY(-4px);box-shadow:0 14px 28px -18px var(--accent-soft);}
+  .module-card:hover::before{opacity:1;width:3.5px;}
+  .module-card[data-cat="qualite"]{--accent:var(--amber);--accent-soft:var(--amber-soft);}
+  .module-card[data-cat="gestion"]{--accent:var(--green);--accent-soft:rgba(43,196,106,.35);}
+  .module-card[data-cat="pilotage"]{--accent:var(--violet);--accent-soft:var(--violet-soft);}
+  .module-idx{position:absolute;top:14px;right:16px;font-family:var(--font-mono);font-size:10px;color:var(--steel-dim);letter-spacing:.05em;opacity:.6;transition:opacity .3s;}
+  .module-card:hover .module-idx{opacity:1;color:var(--accent);}
+  .module-card h4{font-family:var(--font-display);font-size:14px;margin-bottom:6px;}
+  .module-card p{color:var(--steel);font-size:12.5px;line-height:1.55;}
+  .module-card.hide{opacity:0;transform:scale(.88);pointer-events:none;}
+  .module-arrow{display:inline-block;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--accent);opacity:0;transform:translateX(-4px);transition:opacity .25s,transform .25s;}
+  .module-card:hover .module-arrow{opacity:1;transform:translateX(0);}
+
+  .module-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+  .module-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,rgba(59,147,240,.16),rgba(59,147,240,.03));border:1px solid var(--accent-soft);display:flex;align-items:center;justify-content:center;flex:none;transition:transform .3s cubic-bezier(.16,.8,.3,1),background .3s;}
+  .module-card[data-cat="qualite"] .module-icon{background:linear-gradient(135deg,rgba(217,164,65,.16),rgba(217,164,65,.03));}
+  .module-card[data-cat="gestion"] .module-icon{background:linear-gradient(135deg,rgba(43,196,106,.16),rgba(43,196,106,.03));}
+  .module-card[data-cat="pilotage"] .module-icon{background:linear-gradient(135deg,rgba(155,127,224,.18),rgba(155,127,224,.03));}
+  .module-card:hover .module-icon{transform:scale(1.08) rotate(-3deg);}
+  .module-icon svg{width:15px;height:15px;color:var(--accent);}
+  .module-cat{font-family:var(--font-mono);font-size:8px;letter-spacing:.05em;color:var(--steel-dim);text-transform:uppercase;padding-top:5px;}
+
+  /* ---------------- MODERN CENTERED TIMELINE (Parcours) ---------------- */
+  .ptl{position:relative;margin-top:70px;}
+  .ptl-spine{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--panel-border);}
+  .ptl-spine-fill{width:100%;height:0;background:linear-gradient(180deg,var(--cyan),var(--amber));transition:height 1.8s cubic-bezier(.16,.8,.3,1);}
+  .ptl-item{display:grid;grid-template-columns:1fr 60px 1fr;align-items:start;margin-bottom:56px;position:relative;}
+  .ptl-item:nth-child(odd) .ptl-card{grid-column:1;text-align:right;}
+  .ptl-item:nth-child(odd) .ptl-side{grid-column:3;}
+  .ptl-item:nth-child(even) .ptl-card{grid-column:3;text-align:left;}
+  .ptl-item:nth-child(even) .ptl-side{grid-column:1;}
+  .ptl-item:nth-child(odd) .ptl-icon{margin-left:auto;}
+  .ptl-dot{grid-column:2;justify-self:center;width:40px;height:40px;border-radius:50%;background:var(--bg-void);border:1px solid var(--cyan-soft);color:var(--cyan);font-family:var(--font-mono);font-size:11.5px;display:flex;align-items:center;justify-content:center;z-index:2;transition:transform .4s,border-color .4s;}
+  .ptl-item.milestone .ptl-dot{border-color:var(--amber-soft);color:var(--amber);}
+  .ptl-item.in .ptl-dot{transform:scale(1.15);}
+  .ptl-card{background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:12px;padding:22px 24px;max-width:420px;transition:border-color .3s,transform .3s;}
+  .ptl-item:nth-child(odd) .ptl-card{margin-left:auto;}
+  .ptl-item.milestone .ptl-card{border-color:var(--amber-soft);}
+  .ptl-card:hover{transform:translateY(-3px);border-color:var(--cyan-soft);}
+  .ptl-icon{width:34px;height:34px;border-radius:8px;background:rgba(59,147,240,.1);color:var(--cyan);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+  .ptl-icon svg{width:17px;height:17px;}
+  .ptl-item.milestone .ptl-icon{background:rgba(217,164,65,.12);color:var(--amber);}
+  .ptl-card h4{font-family:var(--font-display);font-size:16.5px;margin-bottom:6px;}
+  .ptl-card p{color:var(--steel);font-size:13.5px;line-height:1.6;}
+  .ptl-card .metric{font-family:var(--font-mono);font-size:11px;color:var(--steel);margin-top:10px;}
+  .ptl-card .metric b{color:var(--amber);}
+
+  .ptl-metric-bar{margin-top:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;}
+  .ptl-metric-fill{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width 1.3s cubic-bezier(.16,.8,.3,1) .2s;}
+
+  .ptl-progression{display:flex;align-items:flex-end;gap:8px;margin-top:14px;}
+  .ptl-prog-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+  .ptl-prog-step i{display:block;width:100%;height:46px;border-radius:5px 5px 2px 2px;background:rgba(255,255,255,.05);position:relative;overflow:hidden;}
+  .ptl-prog-step i::after{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(180deg,var(--amber),var(--cyan));transition:height 1.2s cubic-bezier(.16,.8,.3,1);}
+  .ptl-prog-step i.go::after{height:var(--fillH,0%);}
+  .ptl-prog-step b{font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
+  .ptl-prog-arrow{color:var(--steel-dim);font-size:13px;padding-bottom:22px;}
+
+  .oem-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .ptl-item:nth-child(odd) .oem-row{justify-content:flex-end;}
+  .oem-row span{font-family:var(--font-mono);font-size:10px;letter-spacing:.03em;color:var(--steel);border:1px solid var(--panel-border);border-radius:4px;padding:5px 10px;}
+
+  @media(max-width:860px){
+    .ptl-spine{left:19px;}
+    .ptl-item,.ptl-item:nth-child(odd),.ptl-item:nth-child(even){grid-template-columns:40px 1fr;}
+    .ptl-item:nth-child(odd) .ptl-dot,.ptl-item:nth-child(even) .ptl-dot{grid-column:1;}
+    .ptl-item:nth-child(odd) .ptl-card,.ptl-item:nth-child(even) .ptl-card{grid-column:2;text-align:left;margin-left:0;max-width:none;}
+    .ptl-item:nth-child(odd) .ptl-icon{margin-left:0;}
+    .ptl-item .ptl-side{display:none;}
+    .oem-row,.ptl-item:nth-child(odd) .oem-row{justify-content:flex-start;}
+  }
+
+  .report-block{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:56px;}
+  @media(max-width:860px){.report-block{grid-template-columns:1fr;}}
+  .report-frame{border:1px solid var(--panel-border);border-radius:12px;overflow:hidden;background:var(--bg-panel);}
+  .report-frame img{width:100%;display:block;}
+
+  .success-card{margin-top:56px;display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:center;background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:40px;}
+  @media(max-width:760px){.success-card{grid-template-columns:1fr;text-align:center;}}
+  .success-score{font-family:var(--font-display);font-weight:700;font-size:64px;background:linear-gradient(135deg,var(--cyan),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;text-align:center;}
+  .success-score span{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--steel);margin-top:6px;}
+  .success-stats{display:flex;gap:26px;margin-top:18px;flex-wrap:wrap;}
+  @media(max-width:760px){.success-stats{justify-content:center;}}
+  .success-stats div b{display:block;font-family:var(--font-display);font-size:18px;color:var(--amber);}
+  .success-stats div span{font-family:var(--font-mono);font-size:10px;color:var(--steel);}
+
+  .cta-band{text-align:center;background:linear-gradient(180deg,rgba(59,147,240,.08),transparent);border-top:1px solid var(--panel-border);border-bottom:1px solid var(--panel-border);}
+  .btn-row{display:flex;gap:16px;justify-content:center;margin-top:36px;flex-wrap:wrap;}
+  .btn{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.05em;padding:14px 28px;border-radius:6px;text-decoration:none;display:inline-block;transition:border-color .3s,color .3s,transform .3s;}
+  .btn.primary{background:var(--cyan);color:#04070c;font-weight:600;}
+  .btn.ghost{border:1px solid var(--panel-border);color:var(--white);}
+  .btn.ghost:hover{border-color:var(--amber-soft);color:var(--amber);transform:translateY(-2px);}
+
+  .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;margin-top:56px;align-items:start;}
+  @media(max-width:860px){.contact-grid{grid-template-columns:1fr;}}
+  .contact-card{background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:32px;}
+  .contact-avatar{width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,rgba(59,147,240,.22),rgba(59,147,240,.05));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--cyan);margin-bottom:16px;}
+  .contact-person b{font-family:var(--font-display);font-size:19px;display:block;}
+  .contact-person span{color:var(--steel);font-size:13.5px;}
+  .contact-status{margin:14px 0 4px;}
+  .contact-links{margin-top:20px;display:flex;flex-direction:column;}
+  .contact-link-item{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--panel-border);text-decoration:none;transition:padding-left .25s,border-color .25s;}
+  .contact-link-item:last-child{border-bottom:none;}
+  .contact-link-item:hover{padding-left:8px;border-color:var(--cyan-soft);}
+  .cli-icon{width:30px;height:30px;border-radius:8px;background:rgba(59,147,240,.1);border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;}
+  .cli-icon svg{width:14px;height:14px;color:var(--cyan);}
+  .contact-link-item div{display:flex;flex-direction:column;gap:2px;}
+  .contact-link-item span{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;color:var(--steel-dim);text-transform:uppercase;}
+  .contact-link-item b{font-size:13px;font-weight:500;color:var(--white);transition:color .25s;}
+  .contact-link-item:hover b{color:var(--cyan);}
+  .contact-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;padding-top:22px;border-top:1px solid var(--panel-border);}
+
+  .form-panel{position:relative;background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:32px;overflow:hidden;}
+  .form-panel::before{content:'';position:absolute;top:-40%;right:-20%;width:60%;height:180%;background:radial-gradient(ellipse closest-side, rgba(59,147,240,.10), transparent 70%);pointer-events:none;}
+  .form-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-family:var(--font-mono);font-size:10.5px;color:var(--steel);}
+  .form-progress-row b{color:var(--white);transition:color .25s;}
+  .form-progress-row b.complete{color:var(--green);}
+  .form-progress-track{height:5px;border-radius:3px;background:rgba(255,255,255,.06);margin-bottom:26px;overflow:hidden;}
+  .form-progress-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width .4s cubic-bezier(.16,.8,.3,1);box-shadow:0 0 10px rgba(59,147,240,.5);}
+
+  /* ---- form layout ---- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;position:relative;z-index:1;}
+  @media(max-width:520px){.form-grid{grid-template-columns:1fr;}}
+  .form-section-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin:26px 0 4px;grid-column:1/-1;}
+  .form-section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--panel-border),transparent);}
+  .form-grid>.form-section-label:first-child{margin-top:0;}
+  .field{grid-column:span 1;display:flex;flex-direction:column;gap:7px;}
+  .field.full{grid-column:1/-1;}
+  .field label{display:flex;align-items:baseline;gap:5px;font-family:var(--font-mono);font-size:10px;letter-spacing:.07em;color:var(--steel);text-transform:uppercase;}
+  .field label .req{color:var(--amber);font-size:11px;}
+  .field label .opt{font-size:9px;color:var(--steel-dim);text-transform:none;letter-spacing:0;font-family:var(--font-body);font-style:italic;}
+
+  /* ---- field controls ---- */
+  .field input,.field select,.field textarea{
+    width:100%;background:rgba(255,255,255,.028);border:1px solid var(--panel-border);border-radius:8px;
+    padding:12px 14px;color:var(--white);font-family:var(--font-body);font-size:13.5px;
+    transition:border-color .25s,box-shadow .25s,background .25s;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:var(--steel-dim);}
+  .field input:hover,.field select:hover,.field textarea:hover{border-color:#2a3240;}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--cyan);background:rgba(59,147,240,.045);
+    box-shadow:0 0 0 3px rgba(59,147,240,.14);
+  }
+  .field select{appearance:none;-webkit-appearance:none;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238b93a3' stroke-width='1.6'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:36px;}
+  .field select:invalid{color:var(--steel-dim);}
+  .field select option{background:#0d1118;color:var(--white);}
+  .field textarea{resize:vertical;min-height:96px;line-height:1.55;font-family:var(--font-body);}
+  .field-hint{font-family:var(--font-mono);font-size:9.5px;color:var(--steel-dim);letter-spacing:.02em;}
+  .field-error{display:none;font-family:var(--font-mono);font-size:10px;color:var(--red);letter-spacing:.02em;align-items:center;gap:5px;}
+  .field-error::before{content:'!';display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--red);color:#fff;font-size:8.5px;font-weight:700;flex:none;}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--red);background:rgba(226,73,90,.06);}
+  .field.invalid .field-error{display:flex;}
+  .field.valid input,.field.valid select,.field.valid textarea{border-color:rgba(43,196,106,.45);}
+
+  /* ---- platform chips (multi-select) ---- */
+  .chip-row{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+    background:rgba(255,255,255,.03);border:1px solid var(--panel-border);border-radius:20px;
+    padding:8px 14px 8px 11px;font-family:var(--font-mono);font-size:11px;color:var(--steel);
+    transition:border-color .2s,background .2s,color .2s,transform .15s;}
+  .chip:hover{border-color:var(--cyan-soft);color:var(--white);transform:translateY(-1px);}
+  .chip::before{content:'+';display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.06);color:var(--steel-dim);font-size:10px;transition:all .2s;flex:none;}
+  .chip.active{background:rgba(59,147,240,.14);border-color:var(--cyan);color:var(--white);}
+  .chip.active::before{content:'✓';background:var(--cyan);color:#04101f;}
+
+  .submit-row{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:6px;}
+  .submit-btn{position:relative;min-width:200px;text-align:center;transition:background .3s,transform .15s,opacity .3s;}
+  .submit-btn:hover:not(.sending):not(.sent){filter:brightness(1.1);transform:translateY(-1px);}
+  .submit-btn:active{transform:scale(.97);}
+  .submit-btn.sending{opacity:.75;pointer-events:none;}
+  .submit-btn.sent{background:var(--green);}
+  .submit-note{font-family:var(--font-mono);font-size:11px;color:var(--green);opacity:0;transition:opacity .3s;}
+  .submit-note.show{opacity:1;}
+  .form-privacy-note{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin-top:2px;font-family:var(--font-mono);font-size:10px;color:var(--steel-dim);line-height:1.5;}
+  .form-privacy-note svg{width:13px;height:13px;color:var(--steel-dim);flex:none;margin-top:1px;}
+
+
+  .site-footer{border-top:1px solid var(--panel-border);padding:60px 0 30px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;}
+  @media(max-width:700px){.footer-grid{grid-template-columns:1fr;}}
+  .footer-grid h5{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--steel);margin-bottom:14px;text-transform:uppercase;}
+  .footer-grid a{display:block;color:var(--white);text-decoration:none;font-size:13.5px;margin-bottom:10px;opacity:.85;}
+  .footer-grid a:hover{color:var(--cyan);}
+  .footer-brand p{color:var(--steel);font-size:13px;line-height:1.6;margin-top:12px;max-width:320px;}
+  .footer-bottom{margin-top:50px;padding-top:24px;border-top:1px solid var(--panel-border);display:flex;justify-content:space-between;color:var(--steel-dim);font-family:var(--font-mono);font-size:11px;flex-wrap:wrap;gap:10px;}
+</style>
+</head>
+<body>
+<div class="bg-aurora" aria-hidden="true">
+  <span class="blob blob-1"></span>
+  <span class="blob blob-2"></span>
+  <span class="blob blob-3"></span>
+  <span class="blob blob-4"></span>
+  <span class="blob blob-5"></span>
+  <div class="bg-stars" id="bgStars"></div>
+</div>
+
+<div class="stage-wrap" id="stageWrap">
+<div class="stage" id="stage">
+
+  <!-- NAV -->
+  <div class="abs nav" id="top">
+    <div class="nav-logo">
+      <div class="nav-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div class="nav-logo-text"><b>NOVAQYS</b><span>INTELIGENCIA DE FABRICACIÓN<br>AUTOMOTRIZ</span></div>
+    </div>
+    <div class="nav-links">
+      <a class="active" href="#top">AQMI</a><a href="#ecosystem">ECOSISTEMA</a><a href="#qms">SOLUCIONES</a><a href="#asin">ASIN</a><a href="#pourquoi">NOSOTROS</a><a href="#contact">CONTACTO</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-status"><span class="dot"></span>EVALUACIÓN AQMI — EN VIVO</div>
+      <div class="lang-toggle"><b>ES</b><span>|</span><span>EN</span></div>
+      <a class="lang-toggle" href="https://novaqys.com/login" style="text-decoration:none;">ADMIN</a>
+      <a class="nav-cta" href="https://novaqys.com/user/login">OBTÉN TU PUNTAJE AQMI</a>
+    </div>
+  </div>
+
+  <!-- HERO TITLE -->
+  <div class="abs hero-title">ANTES<span class="arrow">→</span><span class="after-word">DESPUÉS</span></div>
+  <div class="abs hero-sub"><span id="heroSubText">Descubre cómo AQMI transforma una pieza automotriz física en inteligencia industrial medible</span></div>
+
+  <!-- BEFORE/AFTER TOGGLE -->
+  <div class="abs ba-toggle state-after" id="baToggle">
+    <div class="knob"></div>
+    <div class="seg before">ANTES</div>
+    <div class="seg after">DESPUÉS</div>
+  </div>
+
+  <!-- LEFT PANEL -->
+  <div class="abs lp-title">ANTES DE AQMI</div>
+  <div class="abs lp-sub">Una pieza física con potencial desconocido</div>
+  <div class="abs lp-pill">DATOS BRUTOS DEL COMPONENTE</div>
+  <div class="abs lp-panel"></div>
+  <div class="abs lp-row" style="top:258px;">CALIDAD<span class="badge">DESCONOCIDO</span></div>
+  <div class="abs lp-row" style="top:295px;">MADUREZ<span class="badge">DESCONOCIDO</span></div>
+  <div class="abs lp-row" style="top:332px;">CONTROL DE PROCESO<span class="badge">DESCONOCIDO</span></div>
+  <div class="abs lp-row" style="top:369px;">TRAZABILIDAD<span class="badge amber">LIMITADA</span></div>
+  <div class="abs lp-row" style="top:406px;">OEE<span class="badge">DESCONOCIDO</span></div>
+  <div class="abs lp-row" style="top:443px;">CUMPLIMIENTO<span class="badge red">SIN CERTIFICAR</span></div>
+  <div class="abs lp-note">
+    <div class="ic">i</div>
+    <div><b>Visibilidad limitada</b><p>Sin AQMI, es difícil evaluar la calidad, la madurez y el rendimiento en toda la cadena de suministro.</p></div>
+  </div>
+  <div class="abs tagline" style="left:28px;">INCIERTO. NO MEDIDO. DESCONECTADO.</div>
+
+  <!-- RIGHT PANEL -->
+  <div class="abs rp-title">DESPUÉS DE <span class="accent">AQMI</span></div>
+  <div class="abs rp-sub">Medido. Mejorado. Certificado. Conectado.</div>
+  <div class="abs score-card">
+    <div class="score-ring-wrap">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/>
+        <circle id="scoreRing" cx="32" cy="32" r="27" fill="none" stroke="#3b93f0" stroke-width="5" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+      </svg>
+      <div class="score-num-mini" id="scoreMini">0</div>
+    </div>
+    <div class="score-text">
+      <div class="lbl">PUNTAJE AQMI</div>
+      <div class="num"><span id="scoreCounter">0</span><small>/100</small></div>
+    </div>
+  </div>
+  <div class="abs rp-metrics">
+    <div class="rp-row"><span class="mn">CALIDAD</span><span class="mtrack"><i data-w="94"></i></span><b data-target="94">0%</b></div>
+    <div class="rp-row"><span class="mn">MADUREZ</span><span class="mtrack"><i data-w="86"></i></span><b data-target="86">0%</b></div>
+    <div class="rp-row"><span class="mn">IATF 16949</span><span class="mtrack"><i data-w="91"></i></span><b data-target="91">0%</b></div>
+    <div class="rp-row"><span class="mn">OEE</span><span class="mtrack"><i data-w="82"></i></span><b data-target="82">0%</b></div>
+    <div class="rp-row"><span class="mn">TRAZABILIDAD</span><span class="mtrack"><i data-w="89"></i></span><b data-target="89">0%</b></div>
+    <div class="rp-row"><span class="mn">DIGITALIZACIÓN</span><span class="mtrack"><i data-w="88"></i></span><b data-target="88">0%</b></div>
+  </div>
+  <div class="abs rp-note">
+    <div class="ic">✓</div>
+    <div><b>Listo para el mercado global</b><p>AQMI convierte los datos en confianza y abre la puerta a oportunidades automotrices globales.</p></div>
+  </div>
+  <div class="abs tagline after" style="left:1206px;">INTELIGENTE. MEDIDO. CONECTADO.</div>
+
+  <!-- HERO PUMP -->
+  <div class="abs pump-stage" id="pumpStage">
+    <img class="pump-img" id="pumpImg" src="images/pump-before-after.jpg" loading="eager" alt="Bomba de agua automotriz — antes y después del análisis AQMI">
+  </div>
+  <div class="abs divider-line" id="dividerLine"></div>
+  <div class="abs divider-handle" id="dividerHandle">‹›</div>
+  <div class="abs scan-sweep" id="scanSweep"></div>
+  <div class="abs" id="particleField" style="left:250px;top:145px;width:750px;height:370px;overflow:hidden;pointer-events:none;z-index:8;"></div>
+
+  <!-- CALLOUTS -->
+  <svg class="abs" id="connectorOverlay" style="left:0;top:0;width:1536px;height:1024px;pointer-events:none;z-index:14;">
+    <line class="connector" data-key="bearing" x1="990" y1="205" x2="1035" y2="178"></line>
+    <line class="connector" data-key="housing" x1="905" y1="278" x2="945" y2="253"></line>
+    <line class="connector" data-key="outlet" x1="1035" y1="372" x2="1063" y2="373"></line>
+    <line class="connector" data-key="shaft" x1="1010" y1="478" x2="1048" y2="478"></line>
+    <line class="connector" data-key="seal" x1="795" y1="528" x2="800" y2="563"></line>
+    <line class="connector" data-key="impeller" x1="605" y1="508" x2="580" y2="533"></line>
+  </svg>
+  <div class="abs callout" data-key="bearing" style="left:1035px;top:158px;"><div class="box"><b>RODAMIENTO</b><span>Fiabilidad</span></div></div>
+  <div class="abs callout" data-key="housing" style="left:945px;top:233px;"><div class="box"><b>CARCASA</b><span>Calidad de fabricación</span></div></div>
+  <div class="abs callout" data-key="outlet" style="left:1063px;top:353px;"><div class="box"><b>SALIDA</b><span>Flujo de refrigerante</span></div></div>
+  <div class="abs callout" data-key="shaft" style="left:1048px;top:458px;"><div class="box"><b>EJE</b><span>Precisión</span></div></div>
+  <div class="abs callout" data-key="seal" style="left:800px;top:563px;"><div class="box"><b>SELLO</b><span>Control de calidad</span></div></div>
+  <div class="abs callout" data-key="impeller" style="left:560px;top:513px;"><div class="box"><b>IMPULSOR</b><span>Rendimiento</span></div></div>
+
+  <!-- HINTS -->
+  <div class="abs hint" style="left:565px;width:100px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="16" rx="5"/><line x1="12" y1="7" x2="12" y2="11"/></svg>
+    ARRASTRA PARA ROTAR
+  </div>
+  <div class="abs hint" style="left:680px;width:120px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v13M12 17l-4-4M12 17l4-4"/><path d="M4 20h16" opacity=".4"/></svg>
+    DESPLÁZATE PARA EXPLORAR
+  </div>
+
+  <!-- EXPLODED VIEW -->
+  <div class="abs ev-title">VISTA EXPLOSIONADA</div>
+  <div class="abs ev-sub" style="top:704px;">Explora los componentes</div>
+
+  <div class="abs thumb-card" data-part="pulley" style="left:18px;top:722px;"><img src="images/scan-thumb-1.jpg" loading="lazy"><span class="lbl">Polea</span></div>
+  <div class="abs thumb-card" data-part="bearing" style="left:118px;top:722px;"><img src="images/scan-thumb-2.jpg" loading="lazy"><span class="lbl">Rodamiento</span></div>
+  <div class="abs thumb-card" data-part="shaft" style="left:213px;top:722px;"><img src="images/scan-thumb-3.jpg" loading="lazy"><span class="lbl">Eje</span></div>
+  <div class="abs thumb-card" data-part="impeller" style="left:308px;top:722px;"><img src="images/scan-thumb-4.jpg" loading="lazy"><span class="lbl">Impulsor</span></div>
+  <div class="abs thumb-card" data-part="seal" style="left:18px;top:810px;"><img src="images/scan-thumb-5.jpg" loading="lazy"><span class="lbl">Sello</span></div>
+  <div class="abs thumb-card" data-part="housing" style="left:118px;top:810px;"><img src="images/scan-thumb-6.jpg" loading="lazy"><span class="lbl">Carcasa</span></div>
+  <div class="abs thumb-card" data-part="cover" style="left:213px;top:810px;"><img src="images/scan-thumb-7.jpg" loading="lazy"><span class="lbl">Tapa</span></div>
+
+  <div class="abs ae-toggle state-exploded" id="aeToggle">
+    <div class="knob"></div>
+    <div class="seg assembled">ENSAMBLADO</div>
+    <div class="seg exploded">EXPLOSIONADO</div>
+  </div>
+
+  <div class="abs ev-stage state-exploded" id="evStage">
+    <img class="exploded-img" src="images/pump-exploded.jpg" loading="lazy" alt="Bomba de agua — vista de componentes explosionada">
+    <img class="assembled-img" src="images/pump-before-after.jpg" loading="lazy" alt="Bomba de agua — ensamblada" style="object-position:35% 30%;">
+  </div>
+
+  <!-- AQMI SCAN PANEL -->
+  <div class="abs scan-panel">
+    <img class="scan-thumb-img" src="images/scan-main-thumb.jpg" loading="lazy" alt="">
+    <h4>ESCANEO AQMI</h4>
+    <div class="scan-item"><span class="chk">✓</span>Análisis 3D del componente</div>
+    <div class="scan-item"><span class="chk">✓</span>Verificación de materiales</div>
+    <div class="scan-item"><span class="chk">✓</span>Control dimensional</div>
+    <div class="scan-item"><span class="chk">✓</span>Inspección de superficie</div>
+    <div class="scan-item"><span class="chk">✓</span>Simulación de rendimiento</div>
+    <div class="scan-item"><span class="chk">✓</span>Certificación de calidad</div>
+    <div class="scan-complete"><i></i>ESCANEO COMPLETO</div>
+  </div>
+
+  <!-- BOTTOM JOURNEY -->
+  <div class="abs journey-wrap">
+    <div class="abs journey-title">AQMI TRANSFORMA TU FABRICACIÓN</div>
+    <div class="abs journey-row" id="journeyRow">
+      <div class="jstep"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div><span>PIEZA FÍSICA</span></div>
+      <div class="jarrow"></div>
+      <div class="jstep"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></div><span>RECOPILACIÓN DE DATOS</span></div>
+      <div class="jarrow"></div>
+      <div class="jstep highlight"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3a4 4 0 0 0-4 4v1a3 3 0 0 0-1 5.6V17a3 3 0 0 0 3 3h1"/><path d="M15 3a4 4 0 0 1 4 4v1a3 3 0 0 1 1 5.6V17a3 3 0 0 1-3 3h-1"/><path d="M9 3v17M15 3v17"/></svg></div><span>INTELIGENCIA AQMI</span></div>
+      <div class="jarrow"></div>
+      <div class="jstep"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M11 19V5M18 19v-7"/><path d="M3 19h18"/></svg></div><span>MEJORA DEL RENDIMIENTO</span></div>
+      <div class="jarrow"></div>
+      <div class="jstep"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><span>CERTIFICACIÓN</span></div>
+      <div class="jarrow"></div>
+      <div class="jstep"><div class="jicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/></svg></div><span>VISIBILIDAD GLOBAL</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="site">
+
+<!-- ============ POURQUOI NOVAQYS ============ -->
+<section class="sec" id="pourquoi">
+  <div class="wrap">
+    <div class="sec-eyebrow reveal">Por qué NOVAQYS</div>
+    <h2 class="sec-title reveal">Los desafíos de la industria <b>automotriz</b> hoy</h2>
+    <p class="sec-sub reveal">La industria automotriz enfrenta exigencias crecientes. NOVAQYS te acompaña para transformar cada desafío en una oportunidad.</p>
+    <div class="challenge-intro reveal">
+      <div class="challenge-stat"><i></i>8 desafíos identificados</div>
+      <div class="challenge-stat"><i></i>6 plataformas de respuesta</div>
+      <div class="challenge-stat"><i></i>1 ecosistema integrado</div>
+    </div>
+    <div class="grid cols-4">
+      <div class="card challenge-card reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div>
+          <span class="challenge-num">01</span>
+        </div>
+        <h3>Competencia mundial</h3>
+        <p>Frente a una intensa competencia internacional, los fabricantes deben mejorar constantemente su competitividad mientras controlan sus costos de producción.</p>
+        <span class="challenge-tag"><i></i>Competitividad</span>
+      </div>
+      <div class="card challenge-card amber reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11"/><path d="M10 20V7"/><path d="M16 20V14"/><path d="M4 20h16"/><path d="M14.5 5.5h4.5v4.5"/><path d="M19 5.5L14 10.5"/></svg></div>
+          <span class="challenge-num">02</span>
+        </div>
+        <h3>Reducción de costos</h3>
+        <p>La presión sobre los márgenes exige una optimización continua de los procesos y una reducción del desperdicio sin comprometer la calidad.</p>
+        <span class="challenge-tag"><i></i>Rentabilidad</span>
+      </div>
+      <div class="card challenge-card reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <span class="challenge-num">03</span>
+        </div>
+        <h3>Calidad y trazabilidad</h3>
+        <p>Los fabricantes de vehículos exigen una trazabilidad perfecta y una calidad impecable. Cada defecto puede provocar penalizaciones y la pérdida de contratos.</p>
+        <span class="challenge-tag"><i></i>Conformidad</span>
+      </div>
+      <div class="card challenge-card amber reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div>
+          <span class="challenge-num">04</span>
+        </div>
+        <h3>Digitalización</h3>
+        <p>La transformación digital es un imperativo. Los fabricantes deben adoptar herramientas digitales para seguir siendo competitivos y cumplir con las expectativas de los OEM.</p>
+        <span class="challenge-tag"><i></i>Transformación</span>
+      </div>
+      <div class="card challenge-card reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 011 1v1H8V5a1 1 0 011-1z"/><rect x="6" y="6" width="12" height="15" rx="1.5"/><path d="M9 12h6M9 16h4"/></svg></div>
+          <span class="challenge-num">05</span>
+        </div>
+        <h3>Nuevas exigencias</h3>
+        <p>Los pliegos de condiciones de los fabricantes evolucionan constantemente. Los proveedores deben adaptarse rápidamente a exigencias cada vez más estrictas.</p>
+        <span class="challenge-tag"><i></i>Agilidad</span>
+      </div>
+      <div class="card challenge-card amber reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 21l5-3 5 3-2-6.5"/></svg></div>
+          <span class="challenge-num">06</span>
+        </div>
+        <h3>Transición a IATF 16949</h3>
+        <p>La transición hacia la norma IATF 16949 es compleja y costosa. Las pymes necesitan un acompañamiento estructurado para lograr esta certificación.</p>
+        <span class="challenge-tag"><i></i>Certificación</span>
+      </div>
+      <div class="card challenge-card reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2.2"/><path d="M7.6 7.2L10.3 10.3M16.4 7.2L13.7 10.3M7.6 16.8L10.3 13.7M16.4 16.8L13.7 13.7"/></svg></div>
+          <span class="challenge-num">07</span>
+        </div>
+        <h3>Industria 4.0</h3>
+        <p>La fábrica conectada, el IoT y la inteligencia artificial transforman los procesos de fabricación. Los fabricantes deben integrar estas tecnologías.</p>
+        <span class="challenge-tag"><i></i>Innovación</span>
+      </div>
+      <div class="card challenge-card amber reveal">
+        <div class="challenge-top">
+          <div class="challenge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 18l9 5 9-5"/></svg></div>
+          <span class="challenge-num">08</span>
+        </div>
+        <h3>Conformidad normativa</h3>
+        <p>Múltiples normas (IATF, ISO, TISAX, RGPD) que cumplir simultáneamente, lo que requiere un sistema de gestión integrado y de alto rendimiento.</p>
+        <span class="challenge-tag"><i></i>Normativo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ECOSYSTEME ============ -->
+<section class="sec" id="ecosystem">
+  <div class="wrap">
+    <div class="sec-eyebrow gold reveal">El Ecosistema</div>
+    <h2 class="sec-title reveal">El ecosistema completo <b>NOVAQYS</b></h2>
+    <p class="sec-sub reveal">Seis plataformas interconectadas que cubren la totalidad del ciclo de desarrollo de un fabricante de piezas automotrices.</p>
+    <div class="grid cols-3 eco-grid">
+      <div class="card eco-card reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">01</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>AQMI Starter</h3><p>Automotive Quality &amp; Manufacturing Index — evalúa gratis el nivel de madurez de tu empresa. Detecta tus puntos fuertes e identifica tus áreas de mejora en pocos minutos.</p><div class="tag-row"><span class="tag">Autoevaluación</span><span class="tag">Informe</span><span class="tag">Hoja de ruta</span><span class="tag">Recomendaciones</span></div><a class="card-link" href="https://novaqys.com/aqmi-starter.html">Saber más →</a>
+      </div>
+      <div class="card eco-card amber reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">02</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>AQMI Professional</h3><p>Evaluación exhaustiva con análisis detallado de tu sistema de calidad. Plan de progreso personalizado integrado directamente en el ecosistema NOVAQYS.</p><div class="tag-row"><span class="tag">Análisis detallado</span><span class="tag">Plan de progreso</span><span class="tag">Puntuación</span><span class="tag">Comparativa</span></div><a class="card-link" href="#aqmi-pro">Saber más →</a>
+      </div>
+      <div class="card eco-card reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">03</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>NARA</h3><p>NOVAQYS Automotive Readiness Assessment — herramienta profesional de auditoría para fabricantes y proveedores de primer nivel. Realiza evaluaciones directamente en tus proveedores con recopilación de evidencias.</p><div class="tag-row"><span class="tag">Auditoría</span><span class="tag">Evidencias</span><span class="tag">Puntuaciones</span><span class="tag">Paneles de control</span></div><a class="card-link" href="#nara">Saber más →</a>
+      </div>
+      <div class="card eco-card amber reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">04</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>NOVAQYS LMS</h3><p>Automotive Learning Platform — plataforma de formación dedicada a las normas y métodos de la industria automotriz. Forma a tus equipos en los estándares IATF, Core Tools y Lean Manufacturing.</p><div class="tag-row"><span class="tag">IATF 16949</span><span class="tag">Core Tools</span><span class="tag">APQP/PPAP</span><span class="tag">FMEA</span><span class="tag">8D</span><span class="tag">QRQC</span></div><a class="card-link" href="https://novaqys.com/lms.html">Saber más →</a>
+      </div>
+      <div class="card eco-card reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">05</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>NOVAQYS QMS</h3><p>Automotive Manufacturing Management Platform — plataforma central de gestión de la producción, calidad, mantenimiento y cadena de suministro. Solución completa con IA integrada y BI en tiempo real.</p><div class="tag-row"><span class="tag">Producción</span><span class="tag">Calidad</span><span class="tag">ERP/MES</span><span class="tag">OEE</span><span class="tag">BI</span><span class="tag">IA</span></div><a class="card-link" href="#qms">Saber más →</a>
+      </div>
+      <div class="card eco-card amber reveal">
+        <div class="eco-top">
+          <div class="eco-ring"><svg viewBox="0 0 52 52"><circle class="eco-ring-track" cx="26" cy="26" r="22"/><circle class="eco-ring-fill" cx="26" cy="26" r="22"/></svg><span class="eco-ring-num">06</span></div>
+          <div class="eco-live"><i></i>Activo</div>
+        </div>
+        <h3>ASIN</h3><p>Automotive Supplier Intelligence Network — marketplace B2B global dedicado a la cadena de suministro automotriz. El LinkedIn + Alibaba + ThomasNet de la industria automotriz.</p><div class="tag-row"><span class="tag">Marketplace</span><span class="tag">RFQ</span><span class="tag">Pasaporte Industrial</span><span class="tag">Búsqueda con IA</span></div><a class="card-link" href="#asin">Saber más →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AQMI STARTER (detail) ============ -->
+<section class="sec tight">
+  <div class="wrap">
+    <div class="platform-block reveal">
+      <div>
+        <div class="platform-head">
+          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></div>
+          <div>
+            <div class="platform-eyebrow">AQMI Starter</div>
+            <h3 style="margin-bottom:0">Automotive Quality &amp; Manufacturing Index</h3>
+          </div>
+        </div>
+        <p class="desc">Evalúa gratis tu nivel de madurez. AQMI Starter te permite detectar las buenas prácticas ya aplicadas en tu empresa, incluso cuando no están documentadas. Las pymes pueden identificar sus puntos fuertes y sus áreas de mejora de forma autónoma.</p>
+        <div class="pfact-row">
+          <span class="challenge-stat"><i></i>Gratis</span>
+          <span class="challenge-stat"><i></i>5 minutos</span>
+          <span class="challenge-stat"><i></i>Sin compromiso</span>
+        </div>
+        <ul class="check-list">
+          <li>Autoevaluación gratuita de tu madurez en calidad</li>
+          <li>Informe detallado con puntuación por área</li>
+          <li>Hoja de ruta personalizada hacia el cumplimiento</li>
+          <li>Recomendaciones aplicables de inmediato</li>
+        </ul>
+        <a class="card-link" href="https://novaqys.com/aqmi-starter.html">Iniciar mi autoevaluación →</a>
+      </div>
+      <div class="platform-visual reveal">
+        <div class="pmock-head">
+          <div class="pmock-label"><i></i>Sesión en curso</div>
+          <div class="pmock-chip">Paso 4/4</div>
+        </div>
+        <div class="pmock-gauge-row" style="--pct:78">
+          <div class="pmock-gauge">
+            <svg viewBox="0 0 92 92"><circle class="pmock-gauge-track" cx="46" cy="46" r="38"/><circle class="pmock-gauge-fill" cx="46" cy="46" r="38"/></svg>
+            <div class="pmock-gauge-num"><b>78</b><span>SCORE&nbsp;/&nbsp;100</span></div>
+          </div>
+          <div class="pmock-gauge-side"><b>Madurez global</b><span>Nivel: Avanzado<br>4 áreas analizadas</span></div>
+        </div>
+        <div class="pmock-metrics">
+          <div class="pmock-metric"><div class="pmock-metric-top"><span>Calidad</span><b>82%</b></div><div class="pmock-bar" style="--w:82%"><i></i></div></div>
+          <div class="pmock-metric"><div class="pmock-metric-top"><span>Proceso</span><b>75%</b></div><div class="pmock-bar" style="--w:75%"><i></i></div></div>
+          <div class="pmock-metric"><div class="pmock-metric-top"><span>Documentación</span><b>68%</b></div><div class="pmock-bar" style="--w:68%"><i></i></div></div>
+          <div class="pmock-metric"><div class="pmock-metric-top"><span>Trazabilidad</span><b>88%</b></div><div class="pmock-bar" style="--w:88%"><i></i></div></div>
+        </div>
+        <div class="pmock-foot"><span class="chk">✓</span>Informe PDF generado automáticamente</div>
+      </div>
+    </div>
+
+    <!-- ============ AQMI PROFESSIONAL (detail) ============ -->
+    <div class="platform-block rev reveal" id="aqmi-pro">
+      <div>
+        <div class="platform-head">
+          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20V13M20 20V8"/><path d="M4 20h16"/></svg></div>
+          <div>
+            <div class="platform-eyebrow">AQMI Professional</div>
+            <h3 style="margin-bottom:0">La evolución natural de tu evaluación</h3>
+          </div>
+        </div>
+        <p class="desc">Evaluación exhaustiva · Análisis detallado. AQMI Professional es la evolución natural de AQMI Starter. Después de la autoevaluación, obtén un análisis exhaustivo con un plan de progreso detallado, integrado directamente en el ecosistema NOVAQYS.</p>
+        <div class="pfact-row">
+          <span class="challenge-stat"><i></i>Multicriterio</span>
+          <span class="challenge-stat"><i></i>Comparativa sectorial</span>
+          <span class="challenge-stat"><i></i>Seguimiento guiado</span>
+        </div>
+        <ul class="check-list">
+          <li>Evaluación detallada multicriterio</li>
+          <li>Análisis de brechas con comparativa sectorial</li>
+          <li>Plan de progreso personalizado y guiado</li>
+          <li>Integración directa en NOVAQYS QMS</li>
+        </ul>
+        <a class="card-link" href="#contact">Solicitar acceso Professional →</a>
+      </div>
+      <div class="platform-visual reveal">
+        <div class="pmock-head">
+          <div class="pmock-label"><i></i>Comparativa sectorial</div>
+          <div class="pmock-chip">Automotriz · Repuestos</div>
+        </div>
+        <div class="pmock-legend"><span class="you"><i></i>Tú</span><span class="sector"><i></i>Promedio del sector</span></div>
+        <div class="pmock-compare" style="--wy:84%;--ws:71%">
+          <div class="pmock-compare-top"><span>Calidad</span><b>84 / 100</b></div>
+          <div class="pmock-compare-track"><i class="you"></i><i class="sector"></i></div>
+        </div>
+        <div class="pmock-compare" style="--wy:79%;--ws:65%">
+          <div class="pmock-compare-top"><span>Proceso</span><b>79 / 100</b></div>
+          <div class="pmock-compare-track"><i class="you"></i><i class="sector"></i></div>
+        </div>
+        <div class="pmock-compare" style="--wy:91%;--ws:74%">
+          <div class="pmock-compare-top"><span>Trazabilidad</span><b>91 / 100</b></div>
+          <div class="pmock-compare-track"><i class="you"></i><i class="sector"></i></div>
+        </div>
+        <div class="pmock-plan">
+          <div class="pmock-plan-item"><span>Mapeo de procesos</span><span class="pmock-plan-status done">Completado</span></div>
+          <div class="pmock-plan-item"><span>Plan de acciones correctivas</span><span class="pmock-plan-status progress">En curso</span></div>
+          <div class="pmock-plan-item"><span>Auditoría de seguimiento</span><span class="pmock-plan-status planned">Planificado</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ NARA (detail) ============ -->
+    <div class="platform-block reveal" id="nara">
+      <div>
+        <div class="platform-head">
+          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="11" height="15" rx="1.5"/><path d="M8 8h5M8 11h5"/><circle cx="16.5" cy="16.5" r="3.2"/><path d="M19 19l2 2"/></svg></div>
+          <div>
+            <div class="platform-eyebrow">NARA</div>
+            <h3 style="margin-bottom:0">NOVAQYS Automotive Readiness Assessment</h3>
+          </div>
+        </div>
+        <p class="desc">Herramienta profesional de auditoría de proveedores. NARA permite a fabricantes, proveedores de primer nivel y auditores realizar evaluaciones directamente en los proveedores. Recopila evidencias, genera puntuaciones y gestiona el rendimiento de tu cadena de suministro.</p>
+        <div class="pfact-row">
+          <span class="challenge-stat"><i></i>Multisede</span>
+          <span class="challenge-stat"><i></i>Evidencias con marca de tiempo</span>
+          <span class="challenge-stat"><i></i>Sin conexión</span>
+        </div>
+        <ul class="check-list">
+          <li>Realización de auditorías en proveedores</li>
+          <li>Recopilación y gestión de evidencias de auditoría</li>
+          <li>Informes detallados con puntuación automática</li>
+          <li>Paneles consolidados multiproveedor</li>
+        </ul>
+        <a class="card-link" href="#contact">Solicitar una demo de NARA →</a>
+      </div>
+      <div class="platform-visual reveal">
+        <div class="pmock-head">
+          <div class="pmock-label"><i></i>Auditoría en vivo</div>
+          <div class="pmock-chip">Campaña T3</div>
+        </div>
+        <div class="pmock-audit">
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>FR</i>Proveedor Alsace SA</div><span class="pmock-badge ok">Conforme</span></div>
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>MA</i>Atlas Componentes</div><span class="pmock-badge warn">Acción requerida</span></div>
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>DE</i>Rheintal Präzision</div><span class="pmock-badge ok">Conforme</span></div>
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>ES</i>Ibérica Metal</div><span class="pmock-badge bad">No conforme</span></div>
+        </div>
+        <div class="pmock-evidence"><span>Evidencias recopiladas</span><b>128</b></div>
+      </div>
+    </div>
+
+    <!-- ============ LMS (detail) ============ -->
+    <div class="platform-block rev reveal">
+      <div>
+        <div class="platform-head">
+          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11.5v4.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/><path d="M22 9v6"/></svg></div>
+          <div>
+            <div class="platform-eyebrow">NOVAQYS LMS</div>
+            <h3 style="margin-bottom:0">Automotive Learning Platform</h3>
+          </div>
+        </div>
+        <p class="desc">Formación en normas y métodos de la industria automotriz. Forma a tus equipos en los exigentes estándares del sector. Videos, cuestionarios y certificaciones que cubren la totalidad de los referenciales IATF 16949 y las Core Tools.</p>
+        <div class="pfact-row">
+          <span class="challenge-stat"><i></i>40+ módulos</span>
+          <span class="challenge-stat"><i></i>Certificante</span>
+          <span class="challenge-stat"><i></i>100% en línea</span>
+        </div>
+        <ul class="check-list">
+          <li>Normas: IATF 16949, ISO 9001, VDA</li>
+          <li>Core Tools: APQP, PPAP, FMEA, SPC, MSA</li>
+          <li>Métodos: 8D, QRQC, Lean Manufacturing</li>
+          <li>Videos interactivos, cuestionarios y certificación</li>
+        </ul>
+        <a class="card-link" href="https://novaqys.com/lms.html">Descubrir la plataforma LMS →</a>
+      </div>
+      <div class="platform-visual reveal">
+        <div class="pmock-head">
+          <div class="pmock-label"><i></i>Mi progreso</div>
+          <div class="pmock-chip">Ruta IATF</div>
+        </div>
+        <div class="pmock-module"><div class="pmock-module-top"><span>IATF 16949 · Fundamentos</span><span>100%</span></div><div class="pmock-bar" style="--w:100%"><i></i></div></div>
+        <div class="pmock-module"><div class="pmock-module-top"><span>APQP / PPAP</span><span>64%</span></div><div class="pmock-bar" style="--w:64%"><i></i></div></div>
+        <div class="pmock-module"><div class="pmock-module-top"><span>FMEA &amp; SPC</span><span>30%</span></div><div class="pmock-bar" style="--w:30%"><i></i></div></div>
+        <div class="pmock-cert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 21l5-3 5 3-2-6.5"/></svg>
+          <div><b>Certificación IATF 16949</b><span>Emitida al 100% de finalización</span></div>
+        </div>
+        <div class="pmock-quiz"><span>Cuestionario de fundamentos</span><b>Pregunta 8/10</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOVAQYS QMS (modules) ============ -->
+<section class="sec" id="qms">
+  <div class="wrap">
+    <div class="qms-head reveal">
+      <div>
+        <div class="sec-eyebrow">Plataforma Central</div>
+        <h2 class="sec-title">NOVAQYS Automotive <b>Manufacturing Management</b> Platform</h2>
+        <p class="sec-sub">La plataforma central de gestión de tu empresa. Módulos interconectados que cubren todos los aspectos de tu producción.</p>
+      </div>
+      <div class="qms-legend">
+        <span><i class="dot-production"></i>Producción</span>
+        <span><i class="dot-qualite"></i>Calidad</span>
+        <span><i class="dot-gestion"></i>Gestión y cadena de suministro</span>
+        <span><i class="dot-pilotage"></i>Gestión estratégica e IA</span>
+      </div>
+    </div>
+    <div class="challenge-intro reveal">
+      <div class="challenge-stat"><i></i>18 módulos</div>
+      <div class="challenge-stat"><i></i>4 áreas</div>
+      <div class="challenge-stat"><i></i>1 plataforma unificada</div>
+    </div>
+    <div class="qms-filters reveal">
+      <button class="qms-filter active" data-filter="all">Todos<b>18</b></button>
+      <button class="qms-filter" data-filter="production">Producción<b>5</b></button>
+      <button class="qms-filter" data-filter="qualite">Calidad<b>5</b></button>
+      <button class="qms-filter" data-filter="gestion">Gestión y cadena de suministro<b>5</b></button>
+      <button class="qms-filter" data-filter="pilotage">Gestión estratégica e IA<b>3</b></button>
+    </div>
+    <div class="module-grid">
+      <div class="module-card reveal" data-cat="production" style="--i:0"><span class="module-idx">01</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l5 3v-3l5 3v-3l6 3v7H3z"/><path d="M7 21v-4M12 21v-4M16 21v-4"/></svg></div><span class="module-cat">Producción</span></div><h4>Producción y MES</h4><p>Gestión de órdenes de fabricación, seguimiento en planta y OEE en tiempo real.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:1"><span class="module-idx">02</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div><span class="module-cat">Calidad</span></div><h4>Calidad</h4><p>CAPA, FMEA, SPC, plan de control. Control de calidad integral.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:2"><span class="module-idx">03</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 005.4-5.4l-2.3 2.3-2-2 2.3-2.3z"/></svg></div><span class="module-cat">Producción</span></div><h4>Mantenimiento</h4><p>GMAO preventivo y correctivo. Historial de intervenciones y alertas.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:3"><span class="module-idx">04</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="11" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="16" cy="18" r="1.6"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Supply Chain</h4><p>Gestión de inventarios, compras y logística. Abastecimiento optimizado.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:4"><span class="module-idx">05</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 2v18M4 6.5l8 4.5 8-4.5"/></svg></div><span class="module-cat">Gestión</span></div><h4>ERP Integrado</h4><p>Gestión integral de recursos: RR. HH., ventas, finanzas y planificación.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:5"><span class="module-idx">06</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16M7 4v16M10 4v16M14 4v16M17 4v16M20 4v16"/></svg></div><span class="module-cat">Producción</span></div><h4>MES y Trazabilidad</h4><p>Manufacturing Execution System con trazabilidad completa por lote.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:6"><span class="module-idx">07</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></div><span class="module-cat">Producción</span></div><h4>OEE y Rendimiento</h4><p>Tasa de rendimiento global, indicadores de rendimiento en tiempo real.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:7"><span class="module-idx">08</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18" stroke-dasharray="2 3"/><path d="M3 17l4-6 4 3 4-8 4 5"/></svg></div><span class="module-cat">Calidad</span></div><h4>SPC &amp; FMEA</h4><p>Control estadístico de procesos y análisis de modos de falla.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:8"><span class="module-idx">09</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/></svg></div><span class="module-cat">Calidad</span></div><h4>APQP &amp; PPAP</h4><p>Gestión de proyectos, fases APQP y entregables PPAP.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:9"><span class="module-idx">10</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a1 1 0 011-1h5l2 2h9a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V7z"/></svg></div><span class="module-cat">Calidad</span></div><h4>Gestión documental</h4><p>Gestión documental. Procedimientos, procesos y manual de calidad.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="qualite" style="--i:10"><span class="module-idx">11</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114-5.3M20 12a8 8 0 01-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg></div><span class="module-cat">Calidad</span></div><h4>CAPA y Auditorías</h4><p>Acciones correctivas, auditoría interna y revisión por la dirección.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="production" style="--i:11"><span class="module-idx">12</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><span class="module-cat">Producción</span></div><h4>Planificación</h4><p>Planificación de la producción, programación y gestión de capacidades.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:12"><span class="module-idx">13</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13V22"/></svg></div><span class="module-cat">Supply Chain</span></div><h4>Inventarios y Compras</h4><p>Gestión de inventarios, abastecimiento y reabastecimiento.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:13"><span class="module-idx">14</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M16 11l2 2 4-4"/></svg></div><span class="module-cat">Gestión</span></div><h4>Ventas y CRM</h4><p>Gestión de clientes, cotizaciones, pedidos y facturación.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="gestion" style="--i:14"><span class="module-idx">15</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 21v-2a6 6 0 0112 0v2"/><path d="M14.5 21v-1.5a5 5 0 015-5"/></svg></div><span class="module-cat">Gestión</span></div><h4>RR. HH. y Competencias</h4><p>Matriz de competencias, plan de formación y habilitaciones.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:15"><span class="module-idx">16</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V5M16 20V13M20 20V8"/><path d="M4 20h16"/></svg></div><span class="module-cat">Gestión estratégica</span></div><h4>BI &amp; Reporting</h4><p>Business Intelligence, paneles de control e informes automatizados.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:16"><span class="module-idx">17</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div><span class="module-cat">Gestión estratégica</span></div><h4>Inteligencia Artificial</h4><p>Análisis predictivo, detección de anomalías y recomendaciones de IA.</p><span class="module-arrow">→</span></div>
+      <div class="module-card reveal" data-cat="pilotage" style="--i:17"><span class="module-idx">18</span><div class="module-top"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 01-.5-8.97A5.5 5.5 0 0117 8.5a4 4 0 01-.5 7.98"/><path d="M7 18h10"/></svg></div><span class="module-cat">Gestión estratégica</span></div><h4>Digitalización</h4><p>Transformación digital completa de tus procesos industriales.</p><span class="module-arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ASIN (detail) ============ -->
+<section class="sec tight" id="asin">
+  <div class="wrap">
+    <div class="platform-block reveal">
+      <div>
+        <div class="platform-head">
+          <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M8 12l-2.5 2.5a3 3 0 004.24 4.24L12 16.5"/><path d="M16 12l2.5-2.5a3 3 0 00-4.24-4.24L12 7.5"/></svg></div>
+          <div>
+            <div class="platform-eyebrow">ASIN</div>
+            <h3 style="margin-bottom:0">Automotive Supplier Intelligence Network</h3>
+          </div>
+        </div>
+        <p class="desc">El LinkedIn + Alibaba + ThomasNet de la industria automotriz. ASIN es el marketplace B2B global dedicado a la cadena de suministro automotriz. Conéctate con los fabricantes, publica tu oferta y desarrolla tu red internacional de subcontratación.</p>
+        <div class="pfact-row">
+          <span class="challenge-stat"><i></i>2400+ proveedores</span>
+          <span class="challenge-stat"><i></i>142 países</span>
+          <span class="challenge-stat"><i></i>RFQ en tiempo real</span>
+        </div>
+        <ul class="check-list">
+          <li>Pasaporte Industrial inteligente con puntuación AQMI</li>
+          <li>Marketplace de productos, máquinas y materias primas</li>
+          <li>Sistema de RFQ y mensajería integrada</li>
+          <li>Búsqueda inteligente por procesos y capacidades</li>
+        </ul>
+        <a class="card-link" href="#contact">Unirse a la red ASIN →</a>
+      </div>
+      <div class="platform-visual reveal">
+        <div class="pmock-head">
+          <div class="pmock-label"><i></i>Red activa</div>
+          <div class="pmock-chip">142 países</div>
+        </div>
+        <div class="pmock-passport">
+          <div class="pmock-passport-id">NQ</div>
+          <div class="pmock-passport-info"><b>NovaTech Componentes</b><span>Inyección de plástico · Mecanizado CNC</span></div>
+          <div class="pmock-passport-score">84<i>AQMI</i></div>
+        </div>
+        <div class="pmock-audit">
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Arneses eléctricos — 50k uds/año</div><span class="pmock-badge ok">Nuevo</span></div>
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Piezas mecanizadas de aluminio — serie B</div><span class="pmock-badge warn">Negociación</span></div>
+          <div class="pmock-audit-row"><div class="pmock-audit-name"><i>RFQ</i>Inyección de plástico — utillaje</div><span class="pmock-badge ok">Aceptado</span></div>
+        </div>
+        <div class="pmock-evidence"><span>Proveedores conectados</span><b>2400+</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE PARCOURS ============ -->
+<section class="sec" id="parcours-sec">
+  <div class="wrap">
+    <div class="sec-eyebrow reveal">El Recorrido</div>
+    <h2 class="sec-title reveal">El recorrido de una empresa en el ecosistema <b>NOVAQYS</b></h2>
+    <p class="sec-sub reveal">Desde el diagnóstico inicial hasta la integración en la cadena de suministro global, cada etapa está estructurada para garantizar tu éxito.</p>
+
+    <div class="ptl" id="ptl">
+      <div class="ptl-spine"><div class="ptl-spine-fill" id="ptlFill"></div></div>
+
+      <div class="ptl-item reveal" data-step="01">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><h4>Descubrimiento</h4><p>La empresa descubre el ecosistema NOVAQYS y evalúa su madurez con AQMI Starter. Una primera visión clara de su potencial.</p></div>
+        <div class="ptl-dot"><span>01</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal milestone" data-step="02">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M11 19V5M18 19v-7"/><path d="M3 19h18"/></svg></div><h4>AQMI Starter</h4><p>Autoevaluación gratuita. La empresa identifica sus fortalezas y sus áreas de mejora con una primera puntuación de madurez.</p>
+          <div class="ptl-metric-bar"><div class="ptl-metric-fill" data-fill="52"></div></div>
+          <div class="metric">Puntuación de madurez — <b>52%</b></div>
+        </div>
+        <div class="ptl-dot gold"><span>02</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal" data-step="03">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></div><h4>Formación LMS</h4><p>Los equipos se forman en la norma IATF 16949, los métodos Lean y los estándares de calidad de la industria automotriz a través de nuestra plataforma LMS.</p></div>
+        <div class="ptl-dot"><span>03</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal" data-step="04">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></div><h4>Digitalización QMS</h4><p>La empresa implementa NOVAQYS QMS para estructurar y digitalizar sus procesos de calidad, producción y cadena de suministro.</p></div>
+        <div class="ptl-dot"><span>04</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal milestone" data-step="05">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><h4>AQMI Professional</h4><p>Evaluación exhaustiva con análisis detallado, plan de progreso personalizado y seguimiento del avance.</p>
+          <div class="ptl-progression">
+            <div class="ptl-prog-step"><i data-fill="52"></i><b>52%</b></div>
+            <div class="ptl-prog-arrow">→</div>
+            <div class="ptl-prog-step"><i data-fill="78"></i><b>78%</b></div>
+            <div class="ptl-prog-arrow">→</div>
+            <div class="ptl-prog-step"><i data-fill="95"></i><b>95%</b></div>
+          </div>
+          <div class="metric">Evolución de la puntuación de madurez</div>
+        </div>
+        <div class="ptl-dot gold"><span>05</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal" data-step="06">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Evaluación NARA</h4><p>Auditoría profesional realizada por un fabricante o un proveedor de primer nivel a través de NARA. Validación oficial e informe detallado.</p></div>
+        <div class="ptl-dot"><span>06</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal" data-step="07">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/></svg></div><h4>Visibilidad ASIN</h4><p>La empresa se une a ASIN y publica su pasaporte industrial internacional. Visibilidad global ante los contratistas principales.</p></div>
+        <div class="ptl-dot"><span>07</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal milestone" data-step="08">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V8l6-4 6 4v13"/><path d="M15 21V11l6-3v13"/><path d="M9 9h.01M9 13h.01M9 17h.01"/></svg></div><h4>Acceso a fabricantes</h4><p>Conexión directa con los compradores de los principales fabricantes de automóviles del mundo.</p>
+          <div class="oem-row"><span>Stellantis</span><span>Renault</span><span>Volkswagen</span><span>Toyota</span><span>BMW</span><span>Hyundai</span></div>
+        </div>
+        <div class="ptl-dot gold"><span>08</span></div><div class="ptl-side"></div>
+      </div>
+
+      <div class="ptl-item reveal" data-step="09">
+        <div class="ptl-card"><div class="ptl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div><h4>Desarrollo</h4><p>Nuevos contratos, crecimiento internacional, desarrollo comercial acelerado. La empresa se convierte en un proveedor de talla mundial.</p></div>
+        <div class="ptl-dot"><span>09</span></div><div class="ptl-side"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BENEFICES ============ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-eyebrow gold reveal">Beneficios</div>
+    <h2 class="sec-title reveal">Los beneficios del ecosistema <b>NOVAQYS</b></h2>
+    <p class="sec-sub reveal">Una transformación integral para convertir tu empresa en un actor clave de la cadena de suministro automotriz mundial.</p>
+    <div class="grid cols-4">
+      <div class="card benefit-card reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M10 20V7M16 20V14M18.5 5.5h4.5v4.5"/><path d="M23 5.5L18 10.5"/></svg></div></div>
+        <div class="benefit-stat">-<span class="reveal" data-count-to="30" data-suffix="%">0</span></div>
+        <h3>Reducción de costos</h3>
+        <p>Optimiza tus procesos y reduce tus costos de producción hasta un 30% gracias a la digitalización y la eliminación del desperdicio.</p>
+      </div>
+      <div class="card benefit-card amber reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div></div>
+        <div class="benefit-stat">+<span class="reveal" data-count-to="45" data-suffix="%">0</span></div>
+        <h3>Mejora de la calidad</h3>
+        <p>Alcanza un nivel de calidad conforme a las exigencias de los principales fabricantes con un sistema QMS de alto rendimiento.</p>
+      </div>
+      <div class="card benefit-card reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5L7 21l5-3 5 3-2-6.5"/></svg></div></div>
+        <div class="benefit-stat"><span class="reveal" data-count-to="100" data-suffix="%">0</span></div>
+        <h3>Conformidad IATF</h3>
+        <p>Domina los requisitos de IATF 16949 y obtén tu certificación con un acompañamiento estructurado y progresivo.</p>
+      </div>
+      <div class="card benefit-card amber reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11.5v4.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/><path d="M22 9v6"/></svg></div></div>
+        <div class="benefit-stat"><span class="reveal" data-count-to="40" data-suffix="+">0</span></div>
+        <h3>Desarrollo de competencias</h3>
+        <p>Forma a tus equipos en los estándares automotrices internacionales gracias a nuestra plataforma LMS especializada.</p>
+      </div>
+      <div class="card benefit-card reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.2 2.2M18.5 5.5l-2.2 2.2M5.5 18.5l2.2-2.2M18.5 18.5l-2.2-2.2"/></svg></div></div>
+        <div class="benefit-stat"><span class="reveal" data-count-to="100" data-suffix="%">0</span></div>
+        <h3>Transformación digital</h3>
+        <p>Digitaliza la totalidad de tus procesos de calidad, producción y cadena de suministro con una plataforma unificada.</p>
+      </div>
+      <div class="card benefit-card amber reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div></div>
+        <div class="benefit-stat"><span class="reveal" data-count-to="142" data-suffix="">0</span></div>
+        <h3>Visibilidad internacional</h3>
+        <p>Accede al mercado mundial de la subcontratación automotriz a través de ASIN, el marketplace B2B dedicado, presente en 142 países.</p>
+      </div>
+      <div class="card benefit-card reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M8 12l-2.5 2.5a3 3 0 004.24 4.24L12 16.5"/><path d="M16 12l2.5-2.5a3 3 0 00-4.24-4.24L12 7.5"/></svg></div></div>
+        <div class="benefit-stat"><span class="reveal" data-count-to="2400" data-suffix="+">0</span></div>
+        <h3>Nueva red</h3>
+        <p>Intégrate a una nueva red de subcontratación de alto rendimiento y conéctate directamente con los contratistas principales.</p>
+      </div>
+      <div class="card benefit-card amber reveal">
+        <div class="benefit-top"><div class="benefit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></div></div>
+        <div class="benefit-stat">+<span class="reveal" data-count-to="25" data-suffix="%">0</span></div>
+        <h3>Competitividad</h3>
+        <p>Refuerza tu posición competitiva gracias a una mejor eficiencia operativa y una mayor visibilidad.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RAPPORT AQMI ============ -->
+<section class="sec tight">
+  <div class="wrap">
+    <div class="sec-eyebrow reveal">Informe AQMI</div>
+    <h2 class="sec-title reveal">Ejemplo de informe de evaluación <b>AQMI</b></h2>
+    <p class="sec-sub reveal">Descubre un adelanto del informe detallado que recibirás tras tu evaluación. Puntuación global, análisis por área, fortalezas, debilidades y recomendaciones personalizadas.</p>
+    <div class="report-block reveal">
+      <div class="report-frame">
+        <img src="/assets/pdf/rapport-aqmi-exemple.png" alt="Vista previa del informe AQMI">
+      </div>
+      <div>
+        <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:16px;">Qué contiene el informe</h3>
+        <ul class="check-list">
+          <li>Puntuación global de madurez</li>
+          <li>Análisis detallado por área</li>
+          <li>Fortalezas y áreas de mejora</li>
+          <li>Comparativa sectorial</li>
+          <li>Recomendaciones personalizadas</li>
+          <li>Plan de acción prioritario</li>
+        </ul>
+        <div class="btn-row" style="justify-content:flex-start;margin-top:28px;">
+          <a class="btn ghost" href="/assets/pdf/rapport-aqmi-exemple.png" download>Descargar el ejemplo</a>
+          <a class="btn primary" href="https://novaqys.com/user/login">Hacer mi evaluación</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUCCESS STORY ============ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-eyebrow gold reveal">Caso de Éxito</div>
+    <h2 class="sec-title reveal">Lograron su transformación <b>AQMI</b></h2>
+    <p class="sec-sub reveal">Descubre cómo las empresas del sector automotriz alcanzan la excelencia operativa gracias al ecosistema NOVAQYS.</p>
+    <div class="success-card reveal">
+      <div class="success-score" data-count-to="87" data-suffix="">0<span>PUNTAJE AQMI · EXCELENCIA</span></div>
+      <div>
+        <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:10px;">Líder Industrial Certificado</h3>
+        <p style="color:var(--steel);font-size:14px;line-height:1.7;">Esta empresa alcanzó una puntuación de madurez AQMI del 87%, lo que demuestra un dominio excepcional de los procesos de calidad y una notable capacidad de innovación en el sector automotriz.</p>
+        <div class="success-stats">
+          <div><b>87%</b><span>PUNTAJE GLOBAL</span></div>
+          <div><b>6/6</b><span>ÁREAS DOMINADAS</span></div>
+          <div><b>Top 5%</b><span>COMPARATIVA SECTORIAL</span></div>
+        </div>
+        <a class="btn primary" style="margin-top:24px;display:inline-block;" href="https://novaqys.com/user/login">Obtén tu puntaje AQMI</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA BAND ============ -->
+<section class="sec tight cta-band">
+  <div class="wrap" style="text-align:center;">
+    <h2 class="sec-title reveal">¿Listo para transformar tu empresa?</h2>
+    <p class="sec-sub reveal">Únete al ecosistema NOVAQYS e intégrate a la nueva red mundial de subcontratación automotriz.</p>
+    <div class="btn-row reveal">
+      <a class="btn ghost" href="#ecosystem">Descubrir NOVAQYS</a>
+      <a class="btn ghost" href="https://novaqys.com/user/login">Acceso de Usuario</a>
+      <a class="btn ghost" href="https://novaqys.com/login">Acceso de Administrador</a>
+      <a class="btn primary" href="#account-request">Solicitar una demostración</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="sec" id="contact">
+  <div class="wrap">
+    <div class="sec-eyebrow reveal">Contacto</div>
+    <h2 class="sec-title reveal">Hablemos de tu <b>proyecto</b></h2>
+    <p class="sec-sub reveal">¿Tienes una pregunta, un proyecto de certificación o quieres unirte al ecosistema? Nuestro equipo te responde en un plazo de 48 horas.</p>
+    <div class="contact-grid">
+      <div class="contact-card reveal">
+        <div class="contact-avatar">BE</div>
+        <div class="contact-person">
+          <b>BENSAFI Mohammed El Bachir</b>
+          <span>Consultor del Ecosistema NOVAQYS</span>
+        </div>
+        <div class="contact-status pmock-label"><i></i>Disponible para una consulta</div>
+        <div class="contact-links">
+          <a class="contact-link-item" href="tel:+213552609955"><div class="cli-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 4h3.2l1.6 4.2-2 1.6c1.1 2.6 3.1 4.6 5.7 5.7l1.6-2 4.2 1.6v3.2c0 1-.8 1.8-1.8 1.7C9.7 19.4 4.6 14.3 4 7.8 3.9 6.8 4.7 4 4.5 4z"/></svg></div><div><span>Teléfono</span><b>+213 552 60 99 55</b></div></a>
+          <a class="contact-link-item" href="mailto:contact@novaqys.com"><div class="cli-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div><div><span>Correo electrónico</span><b>contact@novaqys.com</b></div></a>
+          <a class="contact-link-item" href="https://novaqys.com"><div class="cli-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.8 2.6 4.2 5.7 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.7-4.2-9s1.4-6.4 4.2-9z"/></svg></div><div><span>Sitio web</span><b>novaqys.com</b></div></a>
+        </div>
+        <div class="contact-foot">
+          <span class="challenge-stat"><i></i>Respuesta en 48h</span>
+          <span class="challenge-stat"><i></i>Sin compromiso</span>
+        </div>
+      </div>
+      <div class="form-panel reveal" id="account-request">
+        <h3 style="font-family:var(--font-display);font-size:19px;margin-bottom:8px;">Solicitud de cuenta — Únete al ecosistema NOVAQYS</h3>
+        <p style="color:var(--steel);font-size:13.5px;margin-bottom:22px;line-height:1.6;">Nuestro equipo te contactará en un plazo de 48 horas para activar tu cuenta y acompañarte.</p>
+        <div class="form-progress-row"><span>Progreso</span><b id="formProgressLabel">0/8 campos completados</b></div>
+        <div class="form-progress-track"><div class="form-progress-fill" id="formProgressFill"></div></div>
+        <form class="form-grid" id="accountForm" novalidate>
+          <div class="form-section-label">Tu empresa</div>
+          <div class="field">
+            <label for="f-company">Empresa <span class="req">*</span></label>
+            <input id="f-company" name="company" type="text" placeholder="Nombre de tu empresa" required>
+            <span class="field-error">Indica el nombre de tu empresa, por favor.</span>
+          </div>
+          <div class="field">
+            <label for="f-sector">Sector de actividad <span class="req">*</span></label>
+            <input id="f-sector" name="sector" type="text" placeholder="Ej. proveedor de autopartes" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-country">País <span class="req">*</span></label>
+            <input id="f-country" name="country" type="text" placeholder="Ej. Argelia" required>
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-size">Tamaño de la empresa <span class="req">*</span></label>
+            <select id="f-size" name="size" required>
+              <option value="">Seleccionar...</option>
+              <option>1-10 empleados</option>
+              <option>11-50 empleados</option>
+              <option>51-200 empleados</option>
+              <option>201-500 empleados</option>
+              <option>500+ empleados</option>
+            </select>
+            <span class="field-error">Selecciona un tamaño de empresa, por favor.</span>
+          </div>
+
+          <div class="form-section-label">Tus datos de contacto</div>
+          <div class="field">
+            <label for="f-name">Nombre completo <span class="req">*</span></label>
+            <input id="f-name" name="fullname" type="text" placeholder="Nombre y apellido" required autocomplete="name">
+            <span class="field-error">Indica tu nombre, por favor.</span>
+          </div>
+          <div class="field">
+            <label for="f-role">Cargo <span class="req">*</span></label>
+            <input id="f-role" name="role" type="text" placeholder="Ej. Responsable de Calidad" required autocomplete="organization-title">
+            <span class="field-error">Ce champ est requis.</span>
+          </div>
+          <div class="field">
+            <label for="f-email">Correo electrónico profesional <span class="req">*</span></label>
+            <input id="f-email" name="email" type="email" placeholder="tu@empresa.com" required autocomplete="email">
+            <span class="field-error">Indica una dirección de correo válida, por favor.</span>
+          </div>
+          <div class="field">
+            <label for="f-phone">Teléfono <span class="req">*</span></label>
+            <input id="f-phone" name="phone" type="tel" placeholder="+213 5XX XX XX XX" required autocomplete="tel">
+            <span class="field-error">Indica un número de teléfono, por favor.</span>
+          </div>
+
+          <div class="form-section-label">Tu proyecto</div>
+          <div class="field full">
+            <label for="chip-0">Plataformas que te interesan <span class="opt">(opcional, selección múltiple)</span></label>
+            <div class="chip-row" role="group" aria-label="Plataformas que te interesan">
+              <span class="chip" id="chip-0" role="checkbox" aria-checked="false" tabindex="0">AQMI Starter</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">AQMI Professional</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NARA</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS LMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS QMS</span>
+              <span class="chip" role="checkbox" aria-checked="false" tabindex="0">ASIN</span>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="f-message">Mensaje <span class="opt">(opcional)</span></label>
+            <textarea id="f-message" name="message" placeholder="Describe brevemente tu proyecto o tu necesidad..."></textarea>
+          </div>
+
+          <div class="submit-row">
+            <button class="btn primary submit-btn" type="submit" id="submitBtn">Enviar mi solicitud</button>
+            <span class="submit-note" id="submitNote">✓ Solicitud enviada — te contactaremos en un plazo de 48 horas</span>
+          </div>
+          <div class="form-privacy-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Tus datos permanecen confidenciales y se utilizan únicamente para procesar tu solicitud.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="position:static;"><b>NOVAQYS</b></div>
+        <p>Ecosistema completo de desarrollo para fabricantes de piezas de repuesto automotrices. De la evaluación a la integración en la cadena de suministro global.</p>
+      </div>
+      <div>
+        <h5>Ecosistema</h5>
+        <a href="https://novaqys.com/">NOVAQYS</a>
+        <a href="https://novaqys.com/user/login">AQMI</a>
+        <a href="#nara">NARA</a>
+        <a href="https://novaqys.com/lms.html">Automotive Learning</a>
+        <a href="#asin">ASIN</a>
+      </div>
+      <div>
+        <h5>Soluciones</h5>
+        <a href="#qms">QMS</a>
+        <a href="https://novaqys.com/aqmi-starter.html">AQMI Starter</a>
+        <a href="#aqmi-pro">AQMI Pro</a>
+        <a href="#pourquoi">Por qué NOVAQYS</a>
+        <a href="#contact">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NOVAQYS. Todos los derechos reservados.</span>
+      <span>Aviso legal · Política de privacidad</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+
+<script>
+// ---------- STARFIELD (twinkling stars over the fixed aurora background) ----------
+(function(){
+  const container = document.getElementById('bgStars');
+  if(!container) return;
+  const REDUCE_MOTION_STARS = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tints = [
+    {c:'#eaf3ff', s:'rgba(59,147,240,.6)'},   // cyan
+    {c:'#fff3dc', s:'rgba(217,164,65,.55)'},  // amber
+    {c:'#f1eaff', s:'rgba(155,127,224,.55)'}, // violet
+    {c:'#ffffff', s:'rgba(255,255,255,.6)'}   // plain white (most common)
+  ];
+  // Fewer concurrently-animating star nodes: each one is a continuously
+  // running CSS animation the browser has to keep compositing, so this
+  // count trades a bit of density for noticeably smoother scrolling.
+  const COUNT = window.innerWidth < 760 ? 30 : 55;
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<COUNT;i++){
+    const star = document.createElement('span');
+    const tinted = Math.random() < 0.18;
+    const bright = !tinted && Math.random() < 0.1;
+    star.className = tinted ? 'star tinted' : (bright ? 'star bright' : 'star');
+    const size = (Math.random() * 1.6 + 0.8).toFixed(2) + 'px';
+    const glow = (Math.random() * 2 + 2).toFixed(1) + 'px';
+    const x = (Math.random() * 100).toFixed(2) + '%';
+    const y = (Math.random() * 100).toFixed(2) + '%';
+    const dur = (Math.random() * 3.5 + 2.5).toFixed(2) + 's';
+    const delay = (-Math.random() * 6).toFixed(2) + 's';
+    const oMax = (Math.random() * 0.35 + 0.6).toFixed(2);
+    const oMin = (Math.random() * 0.15 + 0.05).toFixed(2);
+    star.style.setProperty('--s', size);
+    star.style.setProperty('--glow', glow);
+    star.style.setProperty('--x', x);
+    star.style.setProperty('--y', y);
+    star.style.setProperty('--dur', dur);
+    star.style.setProperty('--delay', delay);
+    star.style.setProperty('--o-max', oMax);
+    star.style.setProperty('--o-min', oMin);
+    star.style.setProperty('--o', REDUCE_MOTION_STARS ? oMax : oMin);
+    if(tinted){
+      const t = tints[Math.floor(Math.random()*3)];
+      star.style.setProperty('--tint', t.c);
+      star.style.setProperty('--tint-soft', t.s);
+    }
+    frag.appendChild(star);
+  }
+  container.appendChild(frag);
+})();
+
+// ---------- STAGE SCALING (pixel-faithful 1536x1024 canvas) ----------
+const stage = document.getElementById('stage');
+const stageWrap = document.getElementById('stageWrap');
+const MOBILE_BREAKPOINT = 760;
+function fitStage(){
+  const w = stageWrap.clientWidth;
+  if(w < MOBILE_BREAKPOINT){
+    stage.classList.add('mobile-flow');
+    stage.style.transform = 'none';
+    stageWrap.style.height = 'auto';
+    return;
+  }
+  stage.classList.remove('mobile-flow');
+  const scale = w/1536;
+  stage.style.transform = 'scale('+scale+')';
+  stageWrap.style.height = (1024*scale)+'px';
+}
+fitStage();
+window.addEventListener('resize', fitStage);
+
+const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- BEFORE/AFTER TOGGLE + DRAGGABLE DIVIDER ----------
+(function(){
+  const toggle = document.getElementById('baToggle');
+  const pumpImg = document.getElementById('pumpImg');
+  const dividerLine = document.getElementById('dividerLine');
+  const dividerHandle = document.getElementById('dividerHandle');
+  const pumpStage = document.getElementById('pumpStage'); // left:250 width:750 (stage coords)
+  const callouts = document.querySelectorAll('.callout');
+
+  // pos: 0 = full BEFORE, 100 = full AFTER. Native split in the source
+  // photo sits at ~35% of the pump crop width (the vertical accent line).
+  let pos = 100; // start in AFTER state, matching the reference image
+  const splitPct = 35.3; // where the image's own before/after line sits, within pump-stage
+
+  function apply(){
+    // divider (stage-space px, pump-stage spans left:250 width:750)
+    const xInStage = 250 + 750*(splitPct/100) + (pos-100)*0; // divider itself stays visually anchored to the artwork's own seam;
+    // dragging instead blends a filter across the BEFORE portion so the whole
+    // interaction is real, not just cosmetic repositioning of a static line.
+    const beforeAmount = Math.max(0, Math.min(1, (100-pos)/100));
+    pumpImg.style.filter = beforeAmount>0
+      ? `grayscale(${(beforeAmount*0.85).toFixed(2)}) brightness(${(1-beforeAmount*0.2).toFixed(2)}) saturate(${(1-beforeAmount*0.7).toFixed(2)})`
+      : 'none';
+    callouts.forEach(c=>{ c.style.opacity = (1-beforeAmount*0.85); });
+    dividerLine.style.opacity = 1;
+    toggle.classList.toggle('state-after', pos>=50);
+  }
+  apply();
+
+  toggle.addEventListener('click', ()=>{
+    pos = pos>=50 ? 0 : 100;
+    animateTo(pos);
+  });
+
+  function animateTo(target){
+    const start = pos, startT = performance.now();
+    function step(ts){
+      const p = Math.min((ts-startT)/450, 1);
+      pos = start + (target-start)*p;
+      apply();
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // draggable handle — scrubs the before/after blend by horizontal position
+  let dragging = false;
+  function stageRect(){ return document.getElementById('stage').getBoundingClientRect(); }
+  function scaleFactor(){ return stageRect().width/1536; }
+  function xFromEvent(e){
+    const r = stageRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const localX = (clientX - r.left)/scaleFactor(); // in 1536-space
+    const stageX = pumpStage.offsetLeft, stageW = pumpStage.offsetWidth;
+    return Math.max(0, Math.min(100, ((localX-stageX)/stageW)*100));
+  }
+  dividerHandle.addEventListener('pointerdown', (e)=>{ dragging=true; e.preventDefault(); });
+  window.addEventListener('pointerup', ()=>{ dragging=false; });
+  window.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    pos = xFromEvent(e); apply();
+  });
+  dividerHandle.addEventListener('touchstart', ()=>{ dragging=true; }, {passive:true});
+  window.addEventListener('touchend', ()=>{ dragging=false; });
+  window.addEventListener('touchmove', (e)=>{ if(dragging){ pos = xFromEvent(e); apply(); } }, {passive:true});
+
+  // ---- scan-cycle: highlight each callout in turn ----
+  if(!REDUCE_MOTION){
+    const order = ['bearing','housing','outlet','shaft','seal','impeller'];
+    let i=0;
+    setInterval(()=>{
+      callouts.forEach(c=>c.classList.remove('active'));
+      document.querySelectorAll('.connector').forEach(c=>c.classList.remove('active'));
+      const k = order[i%order.length];
+      const el = document.querySelector(`.callout[data-key="${k}"]`);
+      if(el) el.classList.add('active');
+      i++;
+    }, 1900);
+  }
+})();
+
+// ---------- ASSEMBLED / EXPLODED TOGGLE ----------
+(function(){
+  const toggle = document.getElementById('aeToggle');
+  const stageEl = document.getElementById('evStage');
+  const thumbs = document.querySelectorAll('.thumb-card');
+  toggle.addEventListener('click', ()=>{
+    const exploded = !toggle.classList.contains('state-exploded');
+    toggle.classList.toggle('state-exploded', exploded);
+    stageEl.classList.toggle('state-assembled', !exploded);
+  });
+  thumbs.forEach(t=>{
+    t.addEventListener('click', ()=>{
+      thumbs.forEach(o=>o.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+})();
+
+// ---------- AMBIENT PARTICLES (always-on, so motion never depends on scroll) ----------
+(function(){
+  const field = document.getElementById('particleField');
+  const n = REDUCE_MOTION ? 0 : 14;
+  for(let i=0;i<n;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 2 + Math.random()*2.5;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.left = (40+Math.random()*670)+'px';
+    p.style.top = (280+Math.random()*80)+'px';
+    p.style.opacity = '0';
+    p.style.boxShadow = '0 0 6px rgba(59,147,240,.8)';
+    p.style.animation = `drift ${5+Math.random()*4}s ease-in-out ${Math.random()*5}s infinite`;
+    field.appendChild(p);
+  }
+})();
+
+// Falls back to firing immediately if IntersectionObserver never reports the
+// element visible (e.g. inside a preview iframe with unusual layout/scrolling),
+// so the reveal always plays instead of silently never triggering.
+function onVisible(el, cb){
+  let done = false;
+  function fire(){ if(done) return; done = true; cb(); }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) fire(); });
+  }, {threshold:.01});
+  io.observe(el);
+  setTimeout(fire, 900); // safety net: never wait forever for a scroll event
+}
+
+onVisible(document.querySelector('.score-card'), ()=>{
+  const ring = document.getElementById('scoreRing');
+  const circumference = 169.6;
+  ring.style.strokeDashoffset = circumference - (circumference*87/100);
+  let n=0;
+  const counter = document.getElementById('scoreCounter');
+  const mini = document.getElementById('scoreMini');
+  const tick=()=>{ n+=2; if(n>87)n=87; counter.textContent=n; mini.textContent=n; if(n<87) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  document.querySelectorAll('.rp-row').forEach(row=>{
+    const bar = row.querySelector('.mtrack i');
+    const b = row.querySelector('b');
+    const target = parseInt(b.dataset.target);
+    bar.style.width = bar.dataset.w+'%';
+    let v=0;
+    const step=()=>{ v+=2; if(v>target)v=target; b.textContent=v+'%'; if(v<target) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+});
+
+onVisible(document.querySelector('.scan-panel'), ()=>{
+  const items = document.querySelectorAll('.scan-item');
+  items.forEach((it,i)=>{ setTimeout(()=>it.classList.add('show'), i*260); });
+  setTimeout(()=>document.querySelector('.scan-complete').classList.add('show'), items.length*260+300);
+});
+
+onVisible(document.getElementById('journeyRow'), ()=>{
+  document.querySelectorAll('.jstep').forEach((s,i)=>{ setTimeout(()=>s.classList.add('show'), i*140); });
+});
+
+/* ---- Parcours: scroll-linked spine fill + item reveal + metric visuals ---- */
+(function(){
+  const ptl = document.getElementById('ptl');
+  const ptlFill = document.getElementById('ptlFill');
+  if(!ptl || !ptlFill) return;
+
+  function updateSpine(){
+    const rect = ptl.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const total = rect.height;
+    const progressed = Math.min(total, Math.max(0, vh*0.75 - rect.top));
+    const pct = total>0 ? (progressed/total)*100 : 0;
+    ptlFill.style.height = pct + '%';
+  }
+  if(REDUCE_MOTION){
+    ptlFill.style.height = '100%';
+  } else {
+    // Throttle to one measurement per animation frame instead of once per
+    // scroll event (which can fire dozens of times a second and force a
+    // synchronous layout/reflow each time via getBoundingClientRect()).
+    let ticking = false;
+    function onScrollOrResize(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(()=>{ updateSpine(); ticking = false; });
+    }
+    window.addEventListener('scroll', onScrollOrResize, {passive:true});
+    window.addEventListener('resize', onScrollOrResize);
+    updateSpine();
+  }
+
+  const items = ptl.querySelectorAll('.ptl-item');
+  function fillItem(item){
+    item.classList.add('in');
+    const bar = item.querySelector('.ptl-metric-fill');
+    if(bar) bar.style.width = bar.getAttribute('data-fill') + '%';
+    item.querySelectorAll('.ptl-prog-step i').forEach(i=>{
+      i.style.setProperty('--fillH', i.getAttribute('data-fill') + '%');
+      i.classList.add('go');
+    });
+  }
+  if(REDUCE_MOTION){
+    items.forEach(fillItem);
+  } else {
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ fillItem(e.target); io.unobserve(e.target); } });
+    }, {threshold:0.3});
+    items.forEach(i=>io.observe(i));
+  }
+})();
+
+function animateCount(el){
+  const target = parseInt(el.getAttribute('data-count-to'), 10);
+  const suffix = el.getAttribute('data-suffix') || '';
+  const labelNode = el.querySelector('span');
+  const duration = 1400;
+  const start = performance.now();
+  function tick(now){
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.firstChild.nodeValue = Math.round(eased * target) + suffix;
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---- Hero subtitle: rotate through AQMI evaluation criteria to make the "evaluation tool" message explicit ---- */
+(function(){
+  const el = document.getElementById('heroSubText');
+  if(!el) return;
+  const phrases = [
+    'Descubre cómo AQMI transforma una pieza automotriz física en inteligencia industrial medible',
+    'AQMI evalúa la fiabilidad del RODAMIENTO — 92% de puntaje',
+    'AQMI evalúa la calidad de fabricación de la CARCASA — 94% de puntaje',
+    'AQMI evalúa el control de calidad del SELLO — 96% de puntaje',
+    'AQMI evalúa la precisión del EJE — 91% de puntaje',
+    'Cada criterio medido. Cada puntaje trazable.'
+  ];
+  if(REDUCE_MOTION) return;
+  let i = 0;
+  setInterval(()=>{
+    i = (i+1) % phrases.length;
+    el.style.opacity = '0';
+    setTimeout(()=>{ el.textContent = phrases[i]; el.style.opacity = '1'; }, 500);
+  }, 3400);
+})();
+
+if(REDUCE_MOTION){
+  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  document.querySelectorAll('[data-count-to]').forEach(el=>{
+    el.firstChild.nodeValue = el.getAttribute('data-count-to') + (el.getAttribute('data-suffix')||'');
+  });
+} else {
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        if(entry.target.hasAttribute('data-count-to')) animateCount(entry.target);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+}
+
+/* ---- Écosystème: magnetic tilt + cursor spotlight, settled after entrance flip ---- */
+(function(){
+  const cards = document.querySelectorAll('.eco-card');
+  if(!cards.length) return;
+  cards.forEach(card=>{
+    card.addEventListener('transitionend', function handler(e){
+      if(e.propertyName === 'transform' && card.classList.contains('in')){
+        card.classList.add('settled');
+        card.removeEventListener('transitionend', handler);
+      }
+    });
+    if(REDUCE_MOTION){ card.classList.add('settled'); return; }
+    card.addEventListener('mousemove', (e)=>{
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const rotY = ((x - r.width/2) / (r.width/2)) * 6;
+      const rotX = -((y - r.height/2) / (r.height/2)) * 6;
+      card.style.setProperty('--tiltX', rotX.toFixed(2) + 'deg');
+      card.style.setProperty('--tiltY', rotY.toFixed(2) + 'deg');
+      card.style.setProperty('--spotX', x + 'px');
+      card.style.setProperty('--spotY', y + 'px');
+    });
+    card.addEventListener('mouseleave', ()=>{
+      card.style.setProperty('--tiltX', '0deg');
+      card.style.setProperty('--tiltY', '0deg');
+    });
+  });
+})();
+
+/* ---- Plateforme Centrale: category filter tabs + last-row balancing ---- */
+(function(){
+  const grid = document.querySelector('.module-grid');
+  const filters = document.querySelectorAll('.qms-filter');
+  const cards = document.querySelectorAll('.module-card');
+  if(!filters.length || !cards.length || !grid) return;
+
+  function currentCols(){
+    const w = window.innerWidth;
+    if(w <= 640) return 1;
+    if(w <= 980) return 2;
+    return 4;
+  }
+
+  function balanceGrid(cat){
+    cards.forEach(c=>{ c.style.gridColumn = ''; });
+    const cols = currentCols();
+    if(cols <= 1) return;
+    const visible = Array.from(cards).filter(c => cat === 'all' || c.dataset.cat === cat);
+    const total = visible.length;
+    const rem = total % cols;
+    if(rem === 0) return;
+    const lastRow = visible.slice(total - rem);
+    if(cols % rem === 0){
+      // split the last row evenly across the full row width
+      const span = cols / rem;
+      lastRow.forEach(c => c.style.gridColumn = 'span ' + span);
+    }else{
+      // uneven remainder: widen the final card to close the gap
+      lastRow[lastRow.length - 1].style.gridColumn = 'span ' + (cols - rem + 1);
+    }
+  }
+
+  function activeFilter(){
+    const btn = document.querySelector('.qms-filter.active');
+    return btn ? btn.dataset.filter : 'all';
+  }
+
+  filters.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.classList.contains('active')) return;
+      filters.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.filter;
+      cards.forEach(card=>{
+        const match = cat === 'all' || card.dataset.cat === cat;
+        if(match){
+          card.classList.add('hide');
+          card.style.display = '';
+          void card.offsetWidth;
+          requestAnimationFrame(()=>{ card.classList.remove('hide'); });
+        }else{
+          card.classList.add('hide');
+          setTimeout(()=>{ if(card.classList.contains('hide')) card.style.display = 'none'; }, REDUCE_MOTION ? 0 : 320);
+        }
+      });
+      balanceGrid(cat);
+    });
+  });
+
+  balanceGrid('all');
+  let resizeTimer;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=> balanceGrid(activeFilter()), 150);
+  });
+})();
+
+/* Chip toggle in the account-request form (multi-select, keyboard accessible) */
+document.querySelectorAll('.chip').forEach(chip=>{
+  function toggle(){
+    chip.classList.toggle('active');
+    chip.setAttribute('aria-checked', chip.classList.contains('active') ? 'true' : 'false');
+  }
+  chip.addEventListener('click', toggle);
+  chip.addEventListener('keydown', (e)=>{
+    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
+  });
+});
+
+/* ---- Contact form: live completion progress, inline validation, fake send/success state ---- */
+(function(){
+  const form = document.getElementById('accountForm');
+  if(!form) return;
+  const requiredFields = Array.from(form.querySelectorAll('[required]'));
+  const fill = document.getElementById('formProgressFill');
+  const label = document.getElementById('formProgressLabel');
+
+  function updateProgress(){
+    const filled = requiredFields.filter(f=>f.value && f.value.trim() !== '').length;
+    const pct = Math.round((filled/requiredFields.length)*100);
+    fill.style.width = pct+'%';
+    label.textContent = filled+'/'+requiredFields.length+' campos completados';
+    label.classList.toggle('complete', filled === requiredFields.length);
+  }
+
+  function validateField(f, showError){
+    const wrap = f.closest('.field');
+    if(!wrap) return true;
+    const ok = f.checkValidity();
+    if(ok){
+      wrap.classList.remove('invalid');
+      if(f.value.trim() !== '') wrap.classList.add('valid'); else wrap.classList.remove('valid');
+    } else if(showError){
+      wrap.classList.add('invalid');
+      wrap.classList.remove('valid');
+    }
+    return ok;
+  }
+
+  requiredFields.forEach(f=>{
+    f.addEventListener('input', ()=>{ updateProgress(); validateField(f, false); });
+    f.addEventListener('change', ()=>{ updateProgress(); validateField(f, false); });
+    f.addEventListener('blur', ()=> validateField(f, true));
+  });
+  updateProgress();
+
+  const submitBtn = document.getElementById('submitBtn');
+  const submitNote = document.getElementById('submitNote');
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    if(submitBtn.classList.contains('sending') || submitBtn.classList.contains('sent')) return;
+
+    let firstInvalid = null;
+    requiredFields.forEach(f=>{
+      const ok = validateField(f, true);
+      if(!ok && !firstInvalid) firstInvalid = f;
+    });
+    if(firstInvalid){
+      firstInvalid.focus();
+      firstInvalid.closest('.field')?.scrollIntoView({behavior: REDUCE_MOTION ? 'auto' : 'smooth', block:'center'});
+      return;
+    }
+
+    submitBtn.classList.add('sending');
+    submitBtn.textContent = 'Enviando…';
+    setTimeout(()=>{
+      submitBtn.classList.remove('sending');
+      submitBtn.classList.add('sent');
+      submitBtn.textContent = '✓ Enviada';
+      submitNote.classList.add('show');
+    }, REDUCE_MOTION ? 0 : 1100);
+  });
+})();
+</script>
+</body>
+</html>
