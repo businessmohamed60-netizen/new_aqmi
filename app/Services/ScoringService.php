@@ -10,6 +10,38 @@ use App\Models\ScoreLevel;
 
 class ScoringService
 {
+    private string $lang;
+
+    public function __construct()
+    {
+        $this->lang = $_SESSION['lang'] ?? 'fr';
+    }
+
+    private function domainName(array $domain): string
+    {
+        if ($this->lang === 'ar' && !empty($domain['name_ar'])) {
+            return $domain['name_ar'];
+        }
+        if (!empty($domain['name_fr'])) {
+            return $domain['name_fr'];
+        }
+        return $domain['name'];
+    }
+
+    private function levelName(?array $level): ?string
+    {
+        if ($level === null) {
+            return null;
+        }
+        if ($this->lang === 'ar' && !empty($level['name_ar'])) {
+            return $level['name_ar'];
+        }
+        if (!empty($level['name_fr'])) {
+            return $level['name_fr'];
+        }
+        return $level['name'];
+    }
+
     public function calculateDomainScores(int $assessmentId): array
     {
         $assessment = Assessment::find($assessmentId);
@@ -39,12 +71,15 @@ class ScoringService
                     'domain_id' => $domain['id'],
                     'domain_name' => $domain['name'],
                     'domain_name_fr' => $domain['name_fr'],
+                    'domain_name_ar' => $domain['name_ar'] ?? '',
+                    'domain_label' => $this->domainName($domain),
                     'icon' => $domain['icon'],
                     'weight' => (float)$domain['weight'],
                     'avg_score' => round($avgScore, 2),
                     'max_score' => $maxScore,
                     'percent_score' => round($percentScore, 1),
                     'level' => $level,
+                    'level_label' => $this->levelName($level),
                     'question_count' => (int)$domainScore['question_count'],
                 ];
             } else {
@@ -52,12 +87,15 @@ class ScoringService
                     'domain_id' => $domain['id'],
                     'domain_name' => $domain['name'],
                     'domain_name_fr' => $domain['name_fr'],
+                    'domain_name_ar' => $domain['name_ar'] ?? '',
+                    'domain_label' => $this->domainName($domain),
                     'icon' => $domain['icon'],
                     'weight' => (float)$domain['weight'],
                     'avg_score' => 0,
                     'max_score' => 5,
                     'percent_score' => 0,
                     'level' => null,
+                    'level_label' => null,
                     'question_count' => 0,
                 ];
             }
@@ -136,6 +174,7 @@ class ScoringService
                 'domain_id' => $w['domain_id'],
                 'domain_name' => $w['domain_name'],
                 'domain_name_fr' => $w['domain_name_fr'],
+                'domain_label' => $w['domain_label'],
                 'score' => $w['percent_score'],
                 'gap' => round(100 - $w['percent_score'], 1),
                 'priority' => $w['percent_score'] < 30 ? 'critical' : ($w['percent_score'] < 50 ? 'high' : 'medium'),

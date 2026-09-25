@@ -20,8 +20,7 @@ class RecommendationService
             if ($field === null || $field === '') continue;
             $score = $this->getFieldValue($field, $analysis);
             if ($score !== null && $this->compare($score, $rule['condition_operator'], (float)$rule['condition_value'])) {
-                $textKey = "recommendation_text_" . ($lang === 'fr' ? 'fr' : ($lang === 'ar' ? 'ar' : ''));
-                $text = $rule[$textKey] ?: $rule['recommendation_text'];
+                $text = $this->pickRecommendationText($rule, $lang);
                 $recommendations[] = [
                     'id' => $rule['id'],
                     'text' => $text,
@@ -37,9 +36,8 @@ class RecommendationService
         usort($recommendations, fn($a, $b) => ($priorityOrder[$a['priority']] ?? 99) <=> ($priorityOrder[$b['priority']] ?? 99));
 
         foreach ($analysis['priorities'] as $p) {
-            $text = $lang === 'fr'
-                ? "Action prioritaire requise pour {$p['domain_name_fr']}. Score: {$p['score']}%. Plan d'action recommandé."
-                : "Priority action required for {$p['domain_name']}. Score: {$p['score']}%. Action plan recommended.";
+            $domainLabel = $p['domain_label'] ?? $p['domain_name_fr'] ?? $p['domain_name'];
+            $text = $this->autoPriorityText($domainLabel, $p['score'], $lang);
             $recommendations[] = [
                 'id' => 0, 'text' => $text, 'priority' => $p['priority'],
                 'domain_id' => $p['domain_id'], 'is_auto' => true,
@@ -47,6 +45,28 @@ class RecommendationService
         }
 
         return $recommendations;
+    }
+
+    private function pickRecommendationText(array $rule, string $lang): string
+    {
+        if ($lang === 'ar' && !empty($rule['recommendation_text_ar'])) {
+            return $rule['recommendation_text_ar'];
+        }
+        if (!empty($rule['recommendation_text_fr'])) {
+            return $rule['recommendation_text_fr'];
+        }
+        return $rule['recommendation_text'];
+    }
+
+    private function autoPriorityText(string $domainLabel, float $score, string $lang): string
+    {
+        $templates = [
+            'fr' => "Action prioritaire requise pour {$domainLabel}. Score: {$score}%. Plan d'action recommandé.",
+            'en' => "Priority action required for {$domainLabel}. Score: {$score}%. Action plan recommended.",
+            'ar' => "إجراء ذو أولوية مطلوب لـ {$domainLabel}. النتيجة: {$score}%. يُوصى بوضع خطة عمل.",
+            'es' => "Acción prioritaria requerida para {$domainLabel}. Puntuación: {$score}%. Se recomienda un plan de acción.",
+        ];
+        return $templates[$lang] ?? $templates['fr'];
     }
 
     private function getFieldValue(string $field, array $analysis): ?float
