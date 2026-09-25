@@ -1,8 +1,10 @@
 <?php
-$title = 'Rapport AQMI Premium';
+$lang = $_SESSION['lang'] ?? 'fr';
+$isRtl = $lang === 'ar';
+$title = __('results.report_title');
 $globalScore = $analysis['global_score'];
 $level = $analysis['maturity_level'] ?? null;
-$levelName = $level['name_fr'] ?? $level['name'] ?? 'Non défini';
+$levelName = $level ? ($isRtl && !empty($level['name_ar']) ? $level['name_ar'] : (!empty($level['name_fr']) ? $level['name_fr'] : ($level['name'] ?? ''))) : '';
 $levelColor = $level['color'] ?? '#1F6FEB';
 $lead = \App\Models\Lead::findByAssessment($assessment['id']);
 $currentUser = $assessment['user_id'] ? \App\Models\User::find($assessment['user_id']) : null;
@@ -48,11 +50,11 @@ $benchmark = $analysis['benchmark'] ?? ['global_avg' => 0, 'domain_avgs' => []];
 $hasBenchmark = $benchmark['global_avg'] > 0;
 
 $maturityInfo = [
-    ['max' => 30, 'label' => 'Débutant', 'color' => '#6c757d', 'desc' => 'Processus non structurés'],
-    ['max' => 50, 'label' => 'En Développement', 'color' => '#fd7e14', 'desc' => 'Processus en construction'],
-    ['max' => 70, 'label' => 'Structuré', 'color' => '#1a56db', 'desc' => 'Processus définis et documentés'],
-    ['max' => 85, 'label' => 'Performant', 'color' => '#059669', 'desc' => 'Processus maîtrisés et mesurés'],
-    ['max' => 100, 'label' => 'Excellence', 'color' => '#d97706', 'desc' => 'Excellence opérationnelle'],
+    ['max' => 30, 'label' => __('maturity.beginner'), 'color' => '#6c757d', 'desc' => __('maturity.beginner_desc')],
+    ['max' => 50, 'label' => __('maturity.developing'), 'color' => '#fd7e14', 'desc' => __('maturity.developing_desc')],
+    ['max' => 70, 'label' => __('maturity.structured'), 'color' => '#1a56db', 'desc' => __('maturity.structured_desc')],
+    ['max' => 85, 'label' => __('maturity.performing'), 'color' => '#059669', 'desc' => __('maturity.performing_desc')],
+    ['max' => 100, 'label' => __('maturity.excellence'), 'color' => '#d97706', 'desc' => __('maturity.excellence_desc')],
 ];
 $currentLevel = null;
 foreach ($maturityInfo as $m) { if ($globalScore <= $m['max']) { $currentLevel = $m; break; } }
@@ -61,17 +63,17 @@ if (!$currentLevel) $currentLevel = $maturityInfo[count($maturityInfo)-1];
 if ($level) {
     $currentLevel = [
         'max' => (float)($level['max_percent'] ?? 100),
-        'label' => $level['name_fr'] ?: $level['name'],
+        'label' => $isRtl && !empty($level['name_ar']) ? $level['name_ar'] : (!empty($level['name_fr']) ? $level['name_fr'] : $level['name']),
         'color' => $level['color'] ?? $currentLevel['color'],
         'desc' => $currentLevel['desc'],
     ];
 }
 
 $projected = [
-    ['label' => "Aujourd'hui", 'score' => $globalScore],
-    ['label' => '6 Mois', 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.35))],
-    ['label' => '12 Mois', 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.60))],
-    ['label' => '24 Mois', 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.82))],
+    ['label' => __('results.today'), 'score' => $globalScore],
+    ['label' => __('results.months_6'), 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.35))],
+    ['label' => __('results.months_12'), 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.60))],
+    ['label' => __('results.months_24'), 'score' => min(100, round($globalScore + (100 - $globalScore) * 0.82))],
 ];
 
 $shortTerm = []; $mediumTerm = []; $longTerm = [];
@@ -85,9 +87,9 @@ if (empty($shortTerm)) $shortTerm = array_slice($recommendations, 0, 3);
 if (empty($mediumTerm) && count($recommendations) > 3) $mediumTerm = array_slice($recommendations, 3, 3);
 if (empty($longTerm) && count($recommendations) > 6) $longTerm = array_slice($recommendations, 6, 3);
 
-$defaultShort = ['Établir un système de management qualité (QMS)', 'Former les équipes aux exigences qualité', 'Mettre en place des indicateurs de performance (KPI)'];
-$defaultMedium = ['Développer un système d\'audit interne structuré', 'Mettre en place un processus CAPA', 'Déployer la gestion des risques fournisseurs'];
-$defaultLong = ['Viser la certification IATF 16949', 'Développer une culture d\'amélioration continue', 'Automatiser les processus qualité'];
+$defaultShort = [__('results.default_short_1'), __('results.default_short_2'), __('results.default_short_3')];
+$defaultMedium = [__('results.default_medium_1'), __('results.default_medium_2'), __('results.default_medium_3')];
+$defaultLong = [__('results.default_long_1'), __('results.default_long_2'), __('results.default_long_3')];
 
 // Calculate radius for SVG circle
 $circumference = 2 * pi() * 70; // r=70
@@ -107,13 +109,13 @@ ob_start();
         </svg>
         <div class="aqmi-results-score-value">
           <div class="num" id="scoreValue" style="color:<?= $currentLevel['color'] ?>;">0%</div>
-          <div class="lbl">Score Global</div>
+          <div class="lbl"><?= __('results.global_score') ?></div>
         </div>
       </div>
-      <h1 class="aqmi-results-title">Rapport de Maturité Qualité</h1>
-      <p class="aqmi-results-subtitle"><?= e($companyName) ?> — Évaluation complète de votre système qualité selon les exigences IATF 16949</p>
+      <h1 class="aqmi-results-title"><?= __('results.report_title') ?></h1>
+      <p class="aqmi-results-subtitle"><?= e($companyName) ?> <?= __('results.report_subtitle') ?></p>
       <div class="aqmi-results-level" style="background:<?= $currentLevel['color'] ?>0d;border:1px solid <?= $currentLevel['color'] ?>20;color:<?= $currentLevel['color'] ?>;">
-        <i class="fas fa-crown" style="font-size:0.55rem;"></i> Niveau <?= e($currentLevel['label']) ?>
+        <i class="fas fa-crown" style="font-size:0.55rem;"></i> <?= __('results.level_label') ?> <?= e($currentLevel['label']) ?>
       </div>
     </div>
 
@@ -134,7 +136,7 @@ ob_start();
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.02);border:1px solid var(--aqmi-border);border-radius:100px;padding:0.35rem 0.85rem 0.35rem 0.65rem;">
         <div style="width:6px;height:6px;border-radius:50%;background:var(--aqmi-success);box-shadow:0 0 8px rgba(46,196,182,0.5);"></div>
-        <span style="font-size:0.65rem;font-weight:500;color:var(--aqmi-text-tertiary);">Rapport du <?= date('d/m/Y') ?></span>
+        <span style="font-size:0.65rem;font-weight:500;color:var(--aqmi-text-tertiary);"><?= __('results.report_date') ?> <?= date('d/m/Y') ?></span>
       </div>
     </div>
 
@@ -143,8 +145,8 @@ ob_start();
       <div class="aqmi-results-section-title">
         <div class="marker" style="background:var(--aqmi-accent);"></div>
         <div>
-          <h3>Scores par Domaine</h3>
-          <p>Répartition détaillée par pilier de performance qualité</p>
+          <h3><?= __('results.section_domains') ?></h3>
+          <p><?= __('results.section_domains_desc') ?></p>
         </div>
       </div>
       <div class="aqmi-results-card">
@@ -155,7 +157,7 @@ ob_start();
           ?>
             <div class="aqmi-domain-item">
               <div class="aqmi-domain-score" style="color:<?= $c ?>;"><?= $pct ?>%</div>
-              <div class="aqmi-domain-name"><?= e($ds['domain_name_fr'] ?: $ds['domain_name']) ?></div>
+              <div class="aqmi-domain-name"><?= e($ds['domain_label'] ?? $ds['domain_name_fr'] ?? $ds['domain_name']) ?></div>
               <div class="aqmi-domain-bar">
                 <div class="aqmi-domain-bar-fill" style="width:<?= $pct ?>%;background:<?= $c ?>;"></div>
               </div>
@@ -166,7 +168,7 @@ ob_start();
       <div class="aqmi-split-grid" style="margin-top:1rem;">
         <div class="aqmi-results-card">
           <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
-            <i class="fas fa-chart-area" style="color:var(--aqmi-accent);"></i> Vue radar
+            <i class="fas fa-chart-area" style="color:var(--aqmi-accent);"></i> <?= __('results.radar_view') ?>
           </h4>
           <div style="position:relative;height:280px;">
             <canvas id="domainRadarChart"></canvas>
@@ -174,7 +176,7 @@ ob_start();
         </div>
         <div class="aqmi-results-card">
           <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
-            <i class="fas fa-chart-column" style="color:var(--aqmi-accent);"></i> Comparaison par domaine
+            <i class="fas fa-chart-column" style="color:var(--aqmi-accent);"></i> <?= __('results.bar_compare') ?>
           </h4>
           <div style="position:relative;height:280px;">
             <canvas id="domainBarChart"></canvas>
@@ -188,15 +190,15 @@ ob_start();
       <div class="aqmi-results-section-title">
         <div class="marker" style="background:var(--aqmi-info);"></div>
         <div>
-          <h3>Comparaison &amp; Benchmark</h3>
-          <p>Positionnement par rapport à la moyenne du marché</p>
+          <h3><?= __('results.section_benchmark') ?></h3>
+          <p><?= __('results.section_benchmark_desc') ?></p>
         </div>
       </div>
       <div class="aqmi-results-card">
         <div class="aqmi-split-grid">
           <div>
             <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
-              <i class="fas fa-chart-simple" style="color:var(--aqmi-accent);"></i> Mes scores
+              <i class="fas fa-chart-simple" style="color:var(--aqmi-accent);"></i> <?= __('results.my_scores') ?>
             </h4>
             <?php foreach ($domainScores as $ds):
               $pct = round($ds['percent_score']);
@@ -204,7 +206,7 @@ ob_start();
             ?>
               <div style="margin-bottom:0.5rem;">
                 <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.2rem;">
-                  <span style="color:var(--aqmi-text-secondary);font-weight:500;"><?= e($ds['domain_name_fr'] ?: $ds['domain_name']) ?></span>
+                  <span style="color:var(--aqmi-text-secondary);font-weight:500;"><?= e($ds['domain_label'] ?? $ds['domain_name_fr'] ?? $ds['domain_name']) ?></span>
                   <span style="font-weight:700;color:<?= $c ?>;"><?= $pct ?>%</span>
                 </div>
                 <div style="height:4px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;">
@@ -215,7 +217,7 @@ ob_start();
           </div>
           <div>
             <h4 style="font-size:0.75rem;font-weight:700;color:var(--aqmi-text);margin:0 0 0.75rem;display:flex;align-items:center;gap:0.4rem;">
-              <i class="fas fa-building-columns" style="color:var(--aqmi-info);"></i> Benchmark marché
+              <i class="fas fa-building-columns" style="color:var(--aqmi-info);"></i> <?= __('results.market_benchmark') ?>
             </h4>
             <?php if ($hasBenchmark):
               foreach ($domainScores as $ds):
@@ -224,7 +226,7 @@ ob_start();
             ?>
               <div style="margin-bottom:0.5rem;">
                 <div style="display:flex;justify-content:space-between;font-size:0.65rem;margin-bottom:0.2rem;">
-                  <span style="color:var(--aqmi-text-secondary);font-weight:500;"><?= e($ds['domain_name_fr'] ?: $ds['domain_name']) ?></span>
+                  <span style="color:var(--aqmi-text-secondary);font-weight:500;"><?= e($ds['domain_label'] ?? $ds['domain_name_fr'] ?? $ds['domain_name']) ?></span>
                   <span style="font-weight:700;color:<?= $diff >= 0 ? '#2EC4B6' : '#E5484D' ?>;">
                     <?= round($db) ?>% <?php if ($diff != 0): ?><small>(<?= $diff >= 0 ? '+' : '' ?><?= $diff ?>)</small><?php endif; ?>
                   </span>
@@ -235,14 +237,14 @@ ob_start();
               </div>
             <?php endforeach; ?>
             <?php else: ?>
-              <p style="color:var(--aqmi-text-tertiary);font-size:0.78rem;text-align:center;padding:1.5rem 0;">Données benchmark insuffisantes.</p>
+              <p style="color:var(--aqmi-text-tertiary);font-size:0.78rem;text-align:center;padding:1.5rem 0;"><?= __('results.benchmark_insufficient') ?></p>
             <?php endif; ?>
           </div>
         </div>
         <!-- Leader Comparison -->
         <div style="margin-top:1rem;background:rgba(255,255,255,0.02);border:1px solid var(--aqmi-border);border-radius:var(--aqmi-radius-md);padding:0.85rem 1rem;display:flex;align-items:center;gap:0.75rem;">
           <div style="text-align:center;flex-shrink:0;">
-            <div style="font-size:0.55rem;color:var(--aqmi-text-tertiary);text-transform:uppercase;font-weight:600;">Leader</div>
+            <div style="font-size:0.55rem;color:var(--aqmi-text-tertiary);text-transform:uppercase;font-weight:600;"><?= __('results.leader') ?></div>
             <div style="font-size:1.1rem;font-weight:800;color:var(--aqmi-accent);">88%</div>
           </div>
           <div style="flex:1;height:24px;background:rgba(255,255,255,0.04);border-radius:12px;position:relative;overflow:hidden;">
@@ -251,7 +253,7 @@ ob_start();
             <div style="position:absolute;top:50%;transform:translateY(-50%);font-size:0.55rem;font-weight:700;color:#fff;z-index:3;padding:0 0.5rem;white-space:nowrap;left:<?= min(85, max(2, $globalScore - 6)) ?>%;"><?= e(mb_substr($companyName, 0, 14)) ?> (<?= $globalScore ?>%)</div>
           </div>
           <div style="text-align:center;flex-shrink:0;">
-            <div style="font-size:0.55rem;color:var(--aqmi-text-tertiary);text-transform:uppercase;font-weight:600;">Votre score</div>
+            <div style="font-size:0.55rem;color:var(--aqmi-text-tertiary);text-transform:uppercase;font-weight:600;"><?= __('results.your_score') ?></div>
             <div style="font-size:1.1rem;font-weight:800;color:<?= $currentLevel['color'] ?>;"><?= $globalScore ?>%</div>
           </div>
         </div>
@@ -263,8 +265,8 @@ ob_start();
       <div class="aqmi-results-section-title">
         <div class="marker" style="background:var(--aqmi-success);"></div>
         <div>
-          <h3>Projection de Maturité</h3>
-          <p>Trajectoire estimée selon la roadmap proposée</p>
+          <h3><?= __('results.section_projection') ?></h3>
+          <p><?= __('results.section_projection_desc') ?></p>
         </div>
       </div>
       <div class="aqmi-results-card">
@@ -280,12 +282,12 @@ ob_start();
         <div class="aqmi-results-section-title" style="margin-bottom:0.75rem;">
           <div class="marker" style="background:var(--aqmi-success);"></div>
           <div>
-            <h3 style="font-size:0.85rem;">Points Forts</h3>
+            <h3 style="font-size:0.85rem;"><?= __('results.section_strengths') ?></h3>
           </div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-          <?php $advs = array_map(fn($s) => $s['domain_name_fr'] ?: $s['domain_name'], $strengths);
-          if (count($advs) < 3) $advs = array_merge($advs, ['Processus structurés', 'Conformité réglementaire']);
+          <?php $advs = array_map(fn($s) => $s['domain_label'] ?? $s['domain_name_fr'] ?? $s['domain_name'], $strengths);
+          if (count($advs) < 3) $advs = array_merge($advs, [__('results.default_strength_1'), __('results.default_strength_2')]);
           foreach ($advs as $a): ?>
             <span style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(46,196,182,0.06);border:1px solid rgba(46,196,182,0.12);color:var(--aqmi-success);padding:0.35rem 0.75rem;border-radius:var(--aqmi-radius-sm);font-size:0.68rem;font-weight:600;">
               <i class="fas fa-check-circle" style="font-size:0.55rem;"></i> <?= e($a) ?>
@@ -297,20 +299,20 @@ ob_start();
         <div class="aqmi-results-section-title" style="margin-bottom:0.75rem;">
           <div class="marker" style="background:var(--aqmi-warning);"></div>
           <div>
-            <h3 style="font-size:0.85rem;">Axes de Progrès</h3>
+            <h3 style="font-size:0.85rem;"><?= __('results.section_weaknesses') ?></h3>
           </div>
         </div>
         <?php
         $opps = [];
         foreach ($weaknesses as $w) {
-          $opps[] = ['domain' => $w['domain_name_fr'] ?: $w['domain_name'], 'potential' => min(100, round($w['percent_score'] + 40)), 'invest' => $w['percent_score'] < 30 ? '500K' : ($w['percent_score'] < 50 ? '350K' : '180K')];
+          $opps[] = ['domain' => $w['domain_label'] ?? $w['domain_name_fr'] ?? $w['domain_name'], 'potential' => min(100, round($w['percent_score'] + 40)), 'invest' => $w['percent_score'] < 30 ? '500K' : ($w['percent_score'] < 50 ? '350K' : '180K')];
         }
-        if (count($opps) < 3) $opps = array_merge($opps, [['domain'=>'Digitalisation','potential'=>85,'invest'=>'250K'],['domain'=>'Formation Continue','potential'=>80,'invest'=>'120K']]);
+        if (count($opps) < 3) $opps = array_merge($opps, [['domain'=>__('results.default_weakness_1'),'potential'=>85,'invest'=>'250K'],['domain'=>__('results.default_weakness_2'),'potential'=>80,'invest'=>'120K']]);
         foreach (array_slice($opps, 0, 4) as $o): ?>
           <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--aqmi-border);">
             <div>
               <div style="font-size:0.72rem;font-weight:600;color:var(--aqmi-text);"><?= e($o['domain']) ?></div>
-              <div style="font-size:0.6rem;color:var(--aqmi-text-tertiary);">Invest. <?= e($o['invest']) ?> K</div>
+              <div style="font-size:0.6rem;color:var(--aqmi-text-tertiary);"><?= __('results.invest_label') ?> <?= e($o['invest']) ?> K</div>
             </div>
             <div style="font-size:0.78rem;font-weight:700;color:var(--aqmi-success);">+<?= $o['potential'] ?>%</div>
           </div>
@@ -323,16 +325,16 @@ ob_start();
       <div class="aqmi-results-section-title">
         <div class="marker" style="background:var(--aqmi-warning);"></div>
         <div>
-          <h3>Roadmap d'Amélioration</h3>
-          <p>Plan d'action progressif en trois phases</p>
+          <h3><?= __('results.section_roadmap') ?></h3>
+          <p><?= __('results.section_roadmap_desc') ?></p>
         </div>
       </div>
       <div class="aqmi-results-card">
         <div class="aqmi-roadmap">
           <div class="aqmi-rm-phase aqmi-rm-short">
-            <div class="aqmi-rm-tag">Phase 1</div>
-            <div class="aqmi-rm-title">Court Terme</div>
-            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> 0–3 mois</div>
+            <div class="aqmi-rm-tag"><?= __('results.phase') ?> 1</div>
+            <div class="aqmi-rm-title"><?= __('results.short_term') ?></div>
+            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> <?= __('results.short_term_dur') ?></div>
             <ul class="aqmi-rm-list">
               <?php foreach (($shortTerm ?: $defaultShort) as $k => $r): if ($k >= 3) break; ?>
                 <li><?= e(is_string($r) ? $r : ($r['text'] ?? '')) ?></li>
@@ -340,9 +342,9 @@ ob_start();
             </ul>
           </div>
           <div class="aqmi-rm-phase aqmi-rm-mid">
-            <div class="aqmi-rm-tag">Phase 2</div>
-            <div class="aqmi-rm-title">Moyen Terme</div>
-            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> 3–9 mois</div>
+            <div class="aqmi-rm-tag"><?= __('results.phase') ?> 2</div>
+            <div class="aqmi-rm-title"><?= __('results.medium_term') ?></div>
+            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> <?= __('results.medium_term_dur') ?></div>
             <ul class="aqmi-rm-list">
               <?php foreach (($mediumTerm ?: $defaultMedium) as $k => $r): if ($k >= 3) break; ?>
                 <li><?= e(is_string($r) ? $r : ($r['text'] ?? '')) ?></li>
@@ -350,9 +352,9 @@ ob_start();
             </ul>
           </div>
           <div class="aqmi-rm-phase aqmi-rm-long">
-            <div class="aqmi-rm-tag">Phase 3</div>
-            <div class="aqmi-rm-title">Long Terme</div>
-            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> 9–24 mois</div>
+            <div class="aqmi-rm-tag"><?= __('results.phase') ?> 3</div>
+            <div class="aqmi-rm-title"><?= __('results.long_term') ?></div>
+            <div class="aqmi-rm-dur"><i class="far fa-clock"></i> <?= __('results.long_term_dur') ?></div>
             <ul class="aqmi-rm-list">
               <?php foreach (($longTerm ?: $defaultLong) as $k => $r): if ($k >= 3) break; ?>
                 <li><?= e(is_string($r) ? $r : ($r['text'] ?? '')) ?></li>
@@ -368,8 +370,8 @@ ob_start();
       <div class="aqmi-results-section-title">
         <div class="marker" style="background:var(--aqmi-danger);"></div>
         <div>
-          <h3>Recommandations Prioritaires</h3>
-          <p>Actions clés structurées par niveau de priorité</p>
+          <h3><?= __('results.section_recommendations') ?></h3>
+          <p><?= __('results.section_recommendations_desc') ?></p>
         </div>
       </div>
       <div class="aqmi-results-card">
@@ -378,7 +380,7 @@ ob_start();
             $p = $r['priority'] ?? 'medium';
             $cls = $p === 'critical' ? 'r0' : ($p === 'high' ? 'r1' : ($p === 'medium' ? 'r2' : 'r3'));
             $ico = $p === 'critical' ? 'fa-circle-exclamation' : ($p === 'high' ? 'fa-bolt' : ($p === 'medium' ? 'fa-arrow-right' : 'fa-check'));
-            $lbl = $p === 'critical' ? 'Critique' : ($p === 'high' ? 'Haute' : ($p === 'medium' ? 'Moyenne' : 'Basse'));
+            $lbl = $p === 'critical' ? __('results.priority_critical') : ($p === 'high' ? __('results.priority_high') : ($p === 'medium' ? __('results.priority_medium') : __('results.priority_low')));
             $bg = $p === 'critical' ? '#E5484D' : ($p === 'high' ? '#9d8fd1' : ($p === 'medium' ? '#1F6FEB' : 'var(--aqmi-text-tertiary)'));
           ?>
             <div class="aqmi-rec-item">
@@ -390,7 +392,7 @@ ob_start();
         <?php else: ?>
           <div style="text-align:center;padding:1.25rem;">
             <i class="fas fa-check-circle" style="font-size:1.25rem;color:var(--aqmi-success);display:block;margin-bottom:0.4rem;"></i>
-            <p style="color:var(--aqmi-text-tertiary);font-size:0.78rem;margin:0;">Aucune recommandation générée. Votre progression est sur la bonne voie.</p>
+            <p style="color:var(--aqmi-text-tertiary);font-size:0.78rem;margin:0;"><?= __('results.no_recommendations') ?></p>
           </div>
         <?php endif; ?>
       </div>
@@ -399,49 +401,49 @@ ob_start();
     <!-- Actions -->
     <div class="aqmi-results-actions">
       <a href="/assessment/<?= $assessment['id'] ?>/report" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-warning));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
-        <i class="fas fa-file-contract"></i> Rapport Complet AQMI
+        <i class="fas fa-file-contract"></i> <?= __('results.full_report') ?>
       </a>
       <?php if ($hasNoRequest): ?>
         <a href="/assessment/<?= $assessment['id'] ?>/lead" class="btn btn-primary" style="background:linear-gradient(135deg,var(--aqmi-accent),var(--aqmi-warning));border:none;box-shadow:0 4px 20px var(--aqmi-accent-glow);">
-          <i class="fas fa-certificate"></i> Demander un Rapport AQMI Certifié
+          <i class="fas fa-certificate"></i> <?= __('results.request_certified') ?>
         </a>
       <?php elseif ($isCertRequested || $isUnderReview): ?>
         <span class="btn" style="background:rgba(157,143,209,0.08);border-color:var(--aqmi-warning);color:var(--aqmi-warning);cursor:default;">
-          <i class="fas fa-hourglass-half"></i> En attente de validation
+          <i class="fas fa-hourglass-half"></i> <?= __('results.pending_validation') ?>
         </span>
       <?php elseif ($isApproved): ?>
         <span class="btn" style="background:rgba(31,111,235,0.08);border-color:#1F6FEB;color:#1F6FEB;cursor:default;">
-          <i class="fas fa-cog fa-spin"></i> Approuvé — génération du certificat en cours
+          <i class="fas fa-cog fa-spin"></i> <?= __('results.approved_generating') ?>
         </span>
       <?php elseif ($isRejected): ?>
         <form method="GET" action="/assessment/<?= $assessment['id'] ?>/request-report" style="display:inline;">
           <button type="submit" class="btn" style="background:var(--aqmi-warning);border-color:var(--aqmi-warning);color:#fff;">
-            <i class="fas fa-redo"></i> Renvoyer la demande
+            <i class="fas fa-redo"></i> <?= __('results.resend_request') ?>
           </button>
         </form>
       <?php elseif ($isCertified): ?>
         <a href="/report/<?= $assessment['id'] ?>/download" class="btn btn-primary">
-          <i class="fas fa-file-circle-check"></i> Télécharger le Rapport Certifié
+          <i class="fas fa-file-circle-check"></i> <?= __('results.download_certified') ?>
         </a>
       <?php endif; ?>
 
       <button onclick="window.print()" class="btn" style="border-color:var(--aqmi-accent);color:var(--aqmi-accent);">
-        <i class="fas fa-print"></i> Imprimer le résumé gratuit
+        <i class="fas fa-print"></i> <?= __('results.print_summary') ?>
       </button>
       <a href="/assessment/start" class="btn">
-        <i class="fas fa-redo"></i> Nouvelle évaluation
+        <i class="fas fa-redo"></i> <?= __('results.new_assessment') ?>
       </a>
       <a href="/" class="btn">
-        <i class="fas fa-home"></i> Accueil
+        <i class="fas fa-home"></i> <?= __('results.home') ?>
       </a>
       <a href="/logout" class="btn" style="border-color:var(--aqmi-danger);color:var(--aqmi-danger);">
-        <i class="fas fa-sign-out-alt"></i> Déconnexion
+        <i class="fas fa-sign-out-alt"></i> <?= __('results.logout') ?>
       </a>
     </div>
 
     <div style="text-align:center;padding:1.5rem 0 0;margin-top:2rem;border-top:1px solid var(--aqmi-border);">
       <small style="font-size:0.62rem;color:var(--aqmi-text-tertiary);">
-        AQMI &copy; <?= date('Y') ?> — Automotive Quality Maturity Index — Document confidentiel généré le <?= date('d/m/Y') ?>
+        <?= __('results.confidential_doc') ?> <?= date('d/m/Y') ?>
       </small>
     </div>
   </div>
@@ -451,7 +453,7 @@ ob_start();
 $projLabelsJson = json_encode(array_map(fn($p) => $p['label'], $projected));
 $projScoresJson = json_encode(array_map(fn($p) => $p['score'], $projected));
 
-$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores));
+$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_label'] ?? $d['domain_name_fr'] ?? $d['domain_name'], $domainScores));
 $domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores));
 $domainBenchmarkJson = json_encode(array_map(
     fn($d) => $benchmark['domain_avgs'][$d['domain_id']] ?? null,
@@ -500,7 +502,7 @@ $extraScripts = <<<SCRIPT
       data: {
         labels: {$projLabelsJson},
         datasets: [{
-          label: 'Score projeté',
+          label: '<?= __('results.projected_score') ?>',
           data: {$projScoresJson},
           borderColor: '{$currentLevel['color']}',
           backgroundColor: function(ctx) {
@@ -534,7 +536,7 @@ $extraScripts = <<<SCRIPT
       data: {
         labels: {$domainLabelsJson},
         datasets: [{
-          label: 'Score (%)',
+          label: '<?= __('results.score_label') ?> (%)',
           data: {$domainScoresJson},
           borderColor: '{$currentLevel['color']}',
           backgroundColor: '{$currentLevel['color']}22',
@@ -561,7 +563,7 @@ $extraScripts = <<<SCRIPT
   var barEl = document.getElementById('domainBarChart');
   if (barEl) {
     var barDatasets = [{
-      label: 'Mes scores',
+      label: '<?= __('results.my_scores') ?>',
       data: {$domainScoresJson},
       backgroundColor: '{$currentLevel['color']}',
       borderRadius: 4
@@ -569,7 +571,7 @@ $extraScripts = <<<SCRIPT
     var benchmarkData = {$domainBenchmarkJson};
     if (benchmarkData.some(function(v) { return v !== null; })) {
       barDatasets.push({
-        label: 'Benchmark marché',
+        label: '<?= __('results.market_benchmark') ?>',
         data: benchmarkData,
         backgroundColor: 'rgba(255,255,255,0.15)',
         borderRadius: 4
