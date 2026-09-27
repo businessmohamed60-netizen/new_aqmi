@@ -121,9 +121,9 @@ class Mailer
   .bg{background:radial-gradient(circle at top,#171a35 0%,#0a0b16 55%,#05050a 100%);padding:56px 0}
   .wrapper{width:100%;max-width:520px;margin:0 auto;padding:0 20px}
   .card{background:linear-gradient(180deg,#171a2e 0%,#12131f 100%);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:48px 40px;text-align:center;box-shadow:0 24px 60px -20px rgba(99,102,241,0.35)}
-  .logo{display:inline-flex;align-items:center;height:52px;padding:0 22px;background:linear-gradient(135deg,#818cf8,#6366f1 45%,#a855f7);border-radius:14px;margin:0 0 28px;box-shadow:0 8px 24px -6px rgba(99,102,241,0.6)}
-  .logo-mark{width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;margin-right:8px}
-  .logo-text{font-size:19px;font-weight:800;letter-spacing:1.5px;color:#fff;font-family:'Inter',-apple-system,sans-serif}
+  .logo{display:inline-block;height:52px;line-height:52px;padding:0 22px;background:linear-gradient(135deg,#818cf8,#6366f1 45%,#a855f7);border-radius:14px;margin:0 0 28px;box-shadow:0 8px 24px -6px rgba(99,102,241,0.6);mso-line-height-rule:exactly}
+  .logo-mark{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;margin-right:8px;vertical-align:middle}
+  .logo-text{display:inline-block;vertical-align:middle;font-size:19px;font-weight:800;letter-spacing:1.5px;color:#fff;line-height:1;font-family:'Inter',-apple-system,sans-serif}
   .eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a5b4fc;margin:0 0 12px}
   h1{font-size:22px;font-weight:700;color:#f8fafc;margin:0 0 10px;letter-spacing:-0.3px}
   p{font-size:14px;color:#9ca3af;line-height:1.7;margin:0 0 30px}
