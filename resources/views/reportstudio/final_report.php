@@ -510,9 +510,9 @@ $circumference = 2 * pi() * 70;
     var scoreColor = '<?= $levelColor ?>';
 
     // Domain labels and scores
-    var domainLabels = <?= json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores)) ?>;
-    var domainScoresArr = <?= json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores)) ?>;
-    var benchmarkData = <?= json_encode(array_map(fn($d) => $benchmark['domain_avgs'][$d['domain_id']] ?? null, $domainScores)) ?>;
+    var domainLabels = <?= json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
+    var domainScoresArr = <?= json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
+    var benchmarkData = <?= json_encode(array_map(fn($d) => $benchmark['domain_avgs'][$d['domain_id']] ?? null, $domainScores), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
 
     // Radar chart
     var radarEl = document.getElementById('radarChart');

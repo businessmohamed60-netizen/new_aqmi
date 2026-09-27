@@ -446,8 +446,9 @@ ob_start();
 </div>
 
 <?php
-$configJson = json_encode($config);
-$i18nJson = json_encode($i18n);
+$jsonFlags = JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE;
+$configJson = json_encode($config, $jsonFlags) ?: '[]';
+$i18nJson = json_encode($i18n, $jsonFlags) ?: '{}';
 $jsPath = BASE_PATH . '/public/js/aqmi-premium.js';
 $jsVersion = is_file($jsPath) ? filemtime($jsPath) : time();
 

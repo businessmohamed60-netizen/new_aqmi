@@ -1335,7 +1335,7 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   const ctx = document.getElementById('udScoreChart');
   if (!ctx) return;
 
-  const history = <?= json_encode($scoreHistory) ?>;
+  const history = <?= json_encode($scoreHistory, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
   const labels = history.map(function(h) {
     const d = new Date(h.date);
     return d.toLocaleDateString('<?= $chartLocale ?>', { day: '2-digit', month: 'short' });

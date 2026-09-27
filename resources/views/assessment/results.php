@@ -450,15 +450,25 @@ ob_start();
 </div>
 
 <?php
-$projLabelsJson = json_encode(array_map(fn($p) => $p['label'], $projected));
-$projScoresJson = json_encode(array_map(fn($p) => $p['score'], $projected));
+$jsonFlags = JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE;
 
-$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_label'] ?? $d['domain_name_fr'] ?? $d['domain_name'], $domainScores));
-$domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores));
+$projLabelsJson = json_encode(array_map(fn($p) => $p['label'], $projected), $jsonFlags);
+$projScoresJson = json_encode(array_map(fn($p) => $p['score'], $projected), $jsonFlags);
+
+$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_label'] ?? $d['domain_name_fr'] ?? $d['domain_name'], $domainScores), $jsonFlags);
+$domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores), $jsonFlags);
 $domainBenchmarkJson = json_encode(array_map(
     fn($d) => $benchmark['domain_avgs'][$d['domain_id']] ?? null,
     $domainScores
-));
+), $jsonFlags);
+
+// json_encode returns false on unfixable encoding errors — fall back to '[]'
+// so the inline JS never sees a bare empty token that would break parsing.
+if ($projLabelsJson === false) $projLabelsJson = '[]';
+if ($projScoresJson === false) $projScoresJson = '[]';
+if ($domainLabelsJson === false) $domainLabelsJson = '[]';
+if ($domainScoresJson === false) $domainScoresJson = '[]';
+if ($domainBenchmarkJson === false) $domainBenchmarkJson = '[]';
 
 $extraStyles = '<link rel="stylesheet" href="/css/aqmi-results-print.css">';
 

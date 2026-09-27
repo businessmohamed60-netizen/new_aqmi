@@ -17,8 +17,8 @@ $level = $analysis['maturity_level'] ?? null;
 $levelColor = $level['color'] ?? '#7367f0';
 $domainScores = $analysis['domain_scores'] ?? [];
 
-$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores));
-$domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores));
+$domainLabelsJson = json_encode(array_map(fn($d) => $d['domain_name_fr'] ?: $d['domain_name'], $domainScores), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]';
+$domainScoresJson = json_encode(array_map(fn($d) => round($d['percent_score']), $domainScores), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]';
 ?>
 <style>
 .cert-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1.25rem; flex-wrap:wrap; }
