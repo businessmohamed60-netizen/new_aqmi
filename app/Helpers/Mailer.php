@@ -109,41 +109,46 @@ class Mailer
      */
     public static function otpTemplate(string $otpCode, string $userName): string
     {
-        $codeDigits = implode('', array_map(
-            fn($d) => '<span style="display:inline-block;width:44px;height:56px;line-height:56px;margin:0 4px;background:#181826;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-family:\'SF Mono\',\'Cascadia Code\',Consolas,monospace;font-size:26px;font-weight:700;color:#f8fafc;">' . $d . '</span>',
-            str_split($otpCode)
-        ));
-
         return <<<HTML
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body{margin:0;padding:0;background-color:#07070c;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif}
-  .wrapper{width:100%;max-width:560px;margin:0 auto;padding:48px 20px}
-  .card{background:linear-gradient(180deg,#14141f 0%,#101019 100%);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:44px 36px;text-align:center;box-shadow:0 20px 60px -20px rgba(0,0,0,0.6)}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:999px;padding:6px 14px;margin-bottom:24px}
-  .logo{width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:20px;font-weight:800;color:#fff;box-shadow:0 8px 24px -6px rgba(59,130,246,0.5)}
-  h1{font-size:21px;font-weight:700;color:#f8fafc;margin:0 0 10px;letter-spacing:-0.01em}
-  p{font-size:14px;color:#94a3b8;line-height:1.65;margin:0 0 30px}
-  .code-row{margin:0 auto 20px}
-  .expiry{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#fbbf24;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.18);border-radius:10px;padding:10px 16px;margin:0 0 28px}
-  .footer-text{font-size:12px;color:#64748b;line-height:1.6;margin:0}
-  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);margin:28px 0 20px}
-  .brand{font-size:11px;letter-spacing:0.04em;color:#475569;text-transform:uppercase}
+  @media (prefers-color-scheme: dark){
+    body,.bg{background-color:#05050a !important}
+  }
+  body{margin:0;padding:0;background-color:#f4f5fb;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .bg{background:radial-gradient(circle at top,#171a35 0%,#0a0b16 55%,#05050a 100%);padding:56px 0}
+  .wrapper{width:100%;max-width:520px;margin:0 auto;padding:0 20px}
+  .card{background:linear-gradient(180deg,#171a2e 0%,#12131f 100%);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:48px 40px;text-align:center;box-shadow:0 24px 60px -20px rgba(99,102,241,0.35)}
+  .logo{display:inline-flex;align-items:center;height:52px;padding:0 22px;background:linear-gradient(135deg,#818cf8,#6366f1 45%,#a855f7);border-radius:14px;margin:0 0 28px;box-shadow:0 8px 24px -6px rgba(99,102,241,0.6)}
+  .logo-mark{width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;margin-right:8px}
+  .logo-text{font-size:19px;font-weight:800;letter-spacing:1.5px;color:#fff;font-family:'Inter',-apple-system,sans-serif}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a5b4fc;margin:0 0 12px}
+  h1{font-size:22px;font-weight:700;color:#f8fafc;margin:0 0 10px;letter-spacing:-0.3px}
+  p{font-size:14px;color:#9ca3af;line-height:1.7;margin:0 0 30px}
+  .code{font-size:42px;font-weight:800;letter-spacing:14px;color:#fff;background:linear-gradient(180deg,#1c1f36,#171a2b);border:1px solid rgba(129,140,248,0.35);border-radius:18px;padding:22px 20px;margin:0 auto 24px;font-family:'SF Mono','Cascadia Code',ui-monospace,monospace;text-indent:14px}
+  .code span{background:linear-gradient(135deg,#a5b4fc,#818cf8 50%,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .timer{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:999px;padding:8px 18px;margin:0 0 28px}
+  .footer-text{font-size:12px;color:#6b7280;line-height:1.6;margin:0}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);margin:28px 0 20px}
+  .brand{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#818cf8;font-weight:700;margin:0 0 4px}
 </style></head>
 <body>
-  <div class="wrapper">
-    <div class="card">
-      <div class="badge">🔒 Connexion sécurisée</div>
-      <div class="logo">N</div>
-      <h1>Votre code de vérification</h1>
-      <p>Bonjour <strong style="color:#e2e8f0">{$userName}</strong>, saisissez ce code pour accéder à votre espace AQMI.</p>
-      <div class="code-row">{$codeDigits}</div>
-      <div class="expiry">⏱ Expire dans 5 minutes</div>
-      <p class="footer-text">Ne partagez jamais ce code, même avec le support NOVAQYS.<br>Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
-      <div class="divider"></div>
-      <p class="brand">NOVAQYS · Automotive Quality &amp; Manufacturing Index</p>
+  <div class="bg">
+    <div class="wrapper">
+      <div class="card">
+        <div class="logo"><span class="logo-mark"></span><span class="logo-text">AQMI</span></div>
+        <p class="eyebrow">Secure Sign-in</p>
+        <h1>Your verification code</h1>
+        <p>Hi <strong style="color:#e5e7eb">{$userName}</strong>, use the code below to sign in to your NOVAQYS workspace.</p>
+        <div class="code"><span>{$otpCode}</span></div>
+        <div class="timer">⏱ Expires in 5 minutes</div>
+        <p class="footer-text">Never share this code with anyone — our team will never ask for it.<br>Didn't request this? You can safely ignore this email.</p>
+        <div class="divider"></div>
+        <p class="brand">NOVAQYS</p>
+        <p class="footer-text">Automotive Quality & Manufacturing Index</p>
+      </div>
     </div>
   </div>
 </body>
@@ -161,33 +166,29 @@ HTML;
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body{margin:0;padding:0;background-color:#07070c;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif}
-  .wrapper{width:100%;max-width:560px;margin:0 auto;padding:48px 20px}
-  .card{background:linear-gradient(180deg,#14141f 0%,#101019 100%);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:44px 36px;text-align:center;box-shadow:0 20px 60px -20px rgba(0,0,0,0.6)}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:999px;padding:6px 14px;margin-bottom:24px}
-  .logo{width:48px;height:48px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:20px;font-weight:800;color:#fff;box-shadow:0 8px 24px -6px rgba(59,130,246,0.5)}
-  h1{font-size:21px;font-weight:700;color:#f8fafc;margin:0 0 10px;letter-spacing:-0.01em}
-  p{font-size:14px;color:#94a3b8;line-height:1.65;margin:0 0 30px}
-  .btn{display:inline-block;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff !important;font-size:15px;font-weight:600;padding:15px 36px;border-radius:12px;text-decoration:none;margin:0 auto 24px;box-shadow:0 10px 30px -8px rgba(59,130,246,0.55)}
-  .link-fallback{font-size:11px;color:#475569;word-break:break-all;margin:0 0 24px;padding:0 8px}
-  .expiry{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#fbbf24;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.18);border-radius:10px;padding:10px 16px;margin:0 0 28px}
-  .footer-text{font-size:12px;color:#64748b;line-height:1.6;margin:0}
-  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);margin:28px 0 20px}
-  .brand{font-size:11px;letter-spacing:0.04em;color:#475569;text-transform:uppercase}
+  body{margin:0;padding:0;background-color:#0a0a0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrapper{width:100%;max-width:600px;margin:0 auto;padding:40px 20px}
+  .card{background:#14141f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:48px 40px;text-align:center}
+  .logo{width:52px;height:52px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
+  h1{font-size:20px;font-weight:700;color:#f1f5f9;margin:0 0 8px}
+  p{font-size:14px;color:#94a3b8;line-height:1.6;margin:0 0 28px}
+  .btn{display:inline-block;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:12px;text-decoration:none;margin:0 auto 28px}
+  .btn:hover{background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+  .footer-text{font-size:12px;color:#64748b;line-height:1.5;margin:0}
+  .divider{height:1px;background:rgba(255,255,255,0.06);margin:24px 0}
+  .alert{font-size:12px;color:#f59e0b;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:12px 16px;margin:0 0 24px}
 </style></head>
 <body>
   <div class="wrapper">
     <div class="card">
-      <div class="badge">🔑 Sécurité du compte</div>
       <div class="logo">N</div>
       <h1>Réinitialisation de mot de passe</h1>
-      <p>Bonjour <strong style="color:#e2e8f0">{$userName}</strong>, vous avez demandé la réinitialisation de votre mot de passe NOVAQYS.</p>
+      <p>Bonjour <strong style="color:#f1f5f9">{$userName}</strong>,<br>Vous avez demandé la réinitialisation de votre mot de passe.</p>
       <a href="{$resetLink}" class="btn">Réinitialiser mon mot de passe</a>
-      <p class="link-fallback">Ou copiez ce lien dans votre navigateur :<br>{$resetLink}</p>
-      <div class="expiry">⏱ Ce lien expire dans 30 minutes</div>
-      <p class="footer-text">Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.<br>Votre mot de passe restera inchangé.</p>
+      <div class="alert">⏱ Ce lien expire dans 30 minutes</div>
+      <p class="footer-text">Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email.<br>Votre mot de passe reste inchangé.</p>
       <div class="divider"></div>
-      <p class="brand">NOVAQYS · Automotive Quality &amp; Manufacturing Index</p>
+      <p class="footer-text" style="color:#64748b">NOVAQYS · Automotive Quality & Manufacturing Index</p>
     </div>
   </div>
 </body>
@@ -213,17 +214,10 @@ HTML;
             ['Message', $data['message'] ?: 'Aucun message'],
         ];
 
-        $icons = [
-            'Entreprise' => '🏢', 'Contact' => '👤', 'Fonction' => '💼', 'Email' => '✉️',
-            'Téléphone' => '📞', 'Pays' => '🌍', 'Taille entreprise' => '📊',
-            'Activité' => '⚙️', 'Plateformes intéressées' => '🧩', 'Message' => '💬',
-        ];
-
         $rowsHtml = '';
         foreach ($rows as [$label, $value]) {
             $safeValue = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-            $icon = $icons[$label] ?? '•';
-            $rowsHtml .= "<tr><td style=\"padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.05)\"><table style=\"width:100%;border-collapse:collapse\"><tr><td style=\"width:28px;font-size:15px;vertical-align:top\">{$icon}</td><td style=\"vertical-align:top\"><div style=\"font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:#64748b;margin-bottom:3px\">{$label}</div><div style=\"font-size:14px;font-weight:500;color:#f1f5f9;line-height:1.5\">{$safeValue}</div></td></tr></table></td></tr>";
+            $rowsHtml .= "<tr><td style=\"padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#94a3b8;font-size:13px;white-space:nowrap\">{$label}</td><td style=\"padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:#f1f5f9;font-size:13px;font-weight:500\">{$safeValue}</td></tr>";
         }
 
         return <<<HTML
@@ -231,36 +225,25 @@ HTML;
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body{margin:0;padding:0;background-color:#07070c;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,sans-serif}
-  .wrapper{width:100%;max-width:600px;margin:0 auto;padding:48px 20px}
-  .card{background:linear-gradient(180deg,#14141f 0%,#101019 100%);border:1px solid rgba(255,255,255,0.07);border-radius:24px;padding:0;overflow:hidden;box-shadow:0 20px 60px -20px rgba(0,0,0,0.6)}
-  .header{padding:36px 40px 28px;text-align:center;background:radial-gradient(120% 100% at 50% 0%,rgba(0,207,232,0.12),transparent 60%)}
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#22d3ee;background:rgba(0,207,232,0.1);border:1px solid rgba(0,207,232,0.22);border-radius:999px;padding:6px 14px;margin-bottom:18px}
-  .logo{width:48px;height:48px;background:linear-gradient(135deg,#00cfe8,#ff9f43);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:20px;font-weight:800;color:#fff;box-shadow:0 8px 24px -6px rgba(0,207,232,0.4)}
-  h1{font-size:20px;font-weight:700;color:#f8fafc;margin:0 0 6px;letter-spacing:-0.01em}
-  .subtitle{font-size:13px;color:#94a3b8;margin:0}
-  .body-pad{padding:8px 24px 32px}
+  body{margin:0;padding:0;background-color:#0a0a0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .wrapper{width:100%;max-width:600px;margin:0 auto;padding:40px 20px}
+  .card{background:#14141f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:40px}
+  .logo{width:52px;height:52px;background:linear-gradient(135deg,#00cfe8,#ff9f43);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:22px;font-weight:800;color:#fff}
+  h1{font-size:20px;font-weight:700;color:#f1f5f9;margin:0 0 8px;text-align:center}
+  .subtitle{font-size:13px;color:#94a3b8;text-align:center;margin:0 0 28px}
   table{width:100%;border-collapse:collapse}
-  .footer{padding:20px 40px 32px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)}
-  .footer-text{font-size:11px;color:#64748b;line-height:1.6;margin:0}
-  .brand{font-size:11px;letter-spacing:0.04em;color:#94a3b8;text-transform:uppercase;font-weight:600;margin:0 0 4px}
+  .footer-text{font-size:12px;color:#64748b;line-height:1.5;margin:0;text-align:center}
+  .divider{height:1px;background:rgba(255,255,255,0.06);margin:24px 0}
 </style></head>
 <body>
   <div class="wrapper">
     <div class="card">
-      <div class="header">
-        <div class="badge">🆕 Nouveau lead</div>
-        <div class="logo">N</div>
-        <h1>Nouvelle demande de compte</h1>
-        <p class="subtitle">Un nouveau prospect souhaite rejoindre l'écosystème NOVAQYS</p>
-      </div>
-      <div class="body-pad">
-        <table>{$rowsHtml}</table>
-      </div>
-      <div class="footer">
-        <p class="brand">NOVAQYS</p>
-        <p class="footer-text">Automotive Quality &amp; Manufacturing Index<br>Email généré automatiquement depuis le formulaire de demande de compte</p>
-      </div>
+      <div class="logo">N</div>
+      <h1>Nouvelle demande de compte</h1>
+      <p class="subtitle">Un nouveau prospect souhaite rejoindre l'écosystème NOVAQYS</p>
+      <table>{$rowsHtml}</table>
+      <div class="divider"></div>
+      <p class="footer-text">NOVAQYS · Automotive Quality & Manufacturing Index<br>Email généré automatiquement depuis le formulaire de demande de compte</p>
     </div>
   </div>
 </body>
