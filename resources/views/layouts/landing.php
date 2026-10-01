@@ -6,7 +6,8 @@
     <meta name="csrf-token" content="<?= csrf_token() ?>">
     <title><?= e($title ?? 'NOVAQYS - Quality Management Suite Industrielle') ?></title>
     <meta name="description" content="NOVAQYS - Écosystème complet de développement des fabricants de pièces de rechange automobiles. Évaluation, formation, digitalisation et mise en relation industrielle.">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= asset('favicon.png') ?>">
+    <link rel="apple-touch-icon" href="<?= asset('favicon.png') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
