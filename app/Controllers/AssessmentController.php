@@ -96,7 +96,7 @@ class AssessmentController
 
         $modelId = (int)$assessment['model_id'];
         $modelDomains = EvaluationModel::getDomains($modelId);
-        $domainIds = array_column($modelDomains, 'id');
+        $domainIds = array_values(array_unique(array_column($modelDomains, 'id')));
 
         if (empty($domainIds)) {
             $domains = Domain::allActive();

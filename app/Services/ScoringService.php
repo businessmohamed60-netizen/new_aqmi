@@ -54,6 +54,17 @@ class ScoringService
         } else {
             $domains = Domain::allActive();
         }
+
+        // Deduplicate by domain id in case the pivot table has duplicate rows.
+        $seen = [];
+        $uniqueDomains = [];
+        foreach ($domains as $domain) {
+            if (in_array($domain['id'], $seen)) continue;
+            $seen[] = $domain['id'];
+            $uniqueDomains[] = $domain;
+        }
+        $domains = $uniqueDomains;
+
         $result = [];
 
         foreach ($domains as $domain) {
@@ -62,7 +73,7 @@ class ScoringService
                 if ($score['domain_id'] == $domain['id']) { $domainScore = $score; break; }
             }
 
-            if ($domainScore) {
+            if ($domainScore && $domainScore['weighted_score'] !== null) {
                 $avgScore = (float)$domainScore['weighted_score'];
                 $maxScore = 5;
                 $percentScore = ($maxScore > 0) ? ($avgScore / $maxScore) * 100 : 0;
@@ -74,7 +85,7 @@ class ScoringService
                     'domain_name_ar' => $domain['name_ar'] ?? '',
                     'domain_label' => $this->domainName($domain),
                     'icon' => $domain['icon'],
-                    'weight' => (float)$domain['weight'],
+                    'weight' => (float)($domain['weight'] ?? 1),
                     'avg_score' => round($avgScore, 2),
                     'max_score' => $maxScore,
                     'percent_score' => round($percentScore, 1),
@@ -90,7 +101,7 @@ class ScoringService
                     'domain_name_ar' => $domain['name_ar'] ?? '',
                     'domain_label' => $this->domainName($domain),
                     'icon' => $domain['icon'],
-                    'weight' => (float)$domain['weight'],
+                    'weight' => (float)($domain['weight'] ?? 1),
                     'avg_score' => 0,
                     'max_score' => 5,
                     'percent_score' => 0,
@@ -107,8 +118,10 @@ class ScoringService
     {
         $totalWeight = 0; $weightedSum = 0;
         foreach ($domainScores as $domain) {
-            $totalWeight += $domain['weight'];
-            $weightedSum += $domain['percent_score'] * $domain['weight'];
+            $w = (float)($domain['weight'] ?? 1);
+            if ($w <= 0) $w = 1;
+            $totalWeight += $w;
+            $weightedSum += $domain['percent_score'] * $w;
         }
         return $totalWeight > 0 ? round($weightedSum / $totalWeight, 1) : 0;
     }

@@ -45,14 +45,39 @@ class UserController
         $completedCount = 0;
         $completedScores = [];
         $scoreHistory = [];
+        $scoringService = new \App\Services\ScoringService();
+
         foreach ($assessments as $a) {
             if ($a['status'] === 'completed') {
                 $completedCount++;
-                if ($a['total_score'] !== null) {
-                    $completedScores[] = (float)$a['total_score'];
+
+                // Recalculate the real score from the answers, so the dashboard
+                // never shows stale or broken values. Persist the corrected
+                // score so other pages (results, reports, consolidated) are
+                // also fixed.
+                $realScore = null;
+                $realLevel = null;
+                try {
+                    $analysis = $scoringService->analyzeAssessment((int)$a['id']);
+                    $realScore = round($analysis['global_score'], 1);
+                    $realLevel = $analysis['maturity_level']['name'] ?? null;
+                } catch (\Throwable $e) {
+                    $realScore = $a['total_score'] !== null ? round((float)$a['total_score'], 1) : null;
+                    $realLevel = $a['maturity_level'] ?? null;
+                }
+
+                if ($realScore !== null) {
+                    // Update stored value if it drifted
+                    if ($a['total_score'] === null || abs((float)$a['total_score'] - $realScore) >= 0.05) {
+                        Assessment::updateScore((int)$a['id'], $realScore, $realLevel ?? 'N/A');
+                        $a['total_score'] = $realScore;
+                        $a['maturity_level'] = $realLevel;
+                    }
+
+                    $completedScores[] = $realScore;
                     $scoreHistory[] = [
                         'date' => date('Y-m-d', strtotime($a['completed_at'] ?? $a['created_at'])),
-                        'score' => round((float)$a['total_score'], 1),
+                        'score' => $realScore,
                         'company' => $a['company'] ?? ($a['lead_firstname'] ?? '') . ' ' . ($a['lead_lastname'] ?? ''),
                     ];
                 }
@@ -87,7 +112,6 @@ class UserController
 
         // ===== Per-evaluation-model statistics with domain scores =====
         $langCode = $_SESSION['lang'] ?? 'fr';
-        $scoringService = new \App\Services\ScoringService();
         $modelStats = [];
 
         // Get all evaluation models the user has interacted with
@@ -248,12 +272,23 @@ class UserController
 
         $totalScore = 0;
         $count = 0;
+        $scoring = new \App\Services\ScoringService();
         foreach ($validAssessments as $a) {
             $model = Database::fetch("SELECT name, name_fr FROM evaluation_models WHERE id = ?", [$a['model_id'] ?? 0]);
             $modelName = $model ? ($model['name_fr'] ?: $model['name']) : 'Modèle';
-            $score = (float)($a['total_score'] ?? 0);
+
+            // Use the real recalculated score, not the stale stored value
+            try {
+                $analysis = $scoring->analyzeAssessment((int)$a['id']);
+                $score = round($analysis['global_score'], 2);
+                $level = $analysis['maturity_level']['name'] ?? null;
+            } catch (\Throwable $e) {
+                $score = (float)($a['total_score'] ?? 0);
+                $level = $a['maturity_level'] ?? null;
+            }
+
             \App\Models\ConsolidatedReport::addItem(
-                $consolidatedId, $a['id'], $a['model_id'] ?? null, $modelName, $score, $a['maturity_level'] ?? null
+                $consolidatedId, $a['id'], $a['model_id'] ?? null, $modelName, $score, $level
             );
             $totalScore += $score;
             $count++;

@@ -44,7 +44,7 @@ class Answer
         return Database::fetchAll(
             "SELECT d.id as domain_id, d.name as domain_name, d.name_fr as domain_name_fr, d.icon, d.weight as domain_weight, d.sort_order,
                     AVG(aa.score) as avg_score, COUNT(aa.id) as question_count,
-                    SUM(aa.score * q.weight) / SUM(q.weight) as weighted_score
+                    SUM(aa.score * COALESCE(q.weight, 1)) / NULLIF(SUM(COALESCE(q.weight, 1)), 0) as weighted_score
              FROM assessment_answers aa
              JOIN questions q ON aa.question_id = q.id
              JOIN domains d ON q.domain_id = d.id

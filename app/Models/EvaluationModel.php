@@ -47,7 +47,11 @@ class EvaluationModel
     public static function getDomains(int $modelId): array
     {
         return Database::fetchAll(
-            "SELECT d.*, md.sort_order as pivot_order FROM model_domains md JOIN domains d ON md.domain_id = d.id WHERE md.model_id = ? ORDER BY md.sort_order",
+            "SELECT DISTINCT d.*, MIN(md.sort_order) as pivot_order
+             FROM model_domains md JOIN domains d ON md.domain_id = d.id
+             WHERE md.model_id = ?
+             GROUP BY d.id
+             ORDER BY pivot_order",
             [$modelId]
         );
     }
