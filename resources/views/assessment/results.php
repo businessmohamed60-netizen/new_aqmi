@@ -2,7 +2,12 @@
 $lang = $_SESSION['lang'] ?? 'fr';
 $isRtl = $lang === 'ar';
 $title = __('results.report_title');
-$globalScore = $analysis['global_score'];
+// Score AQMI global : source unique = $analysis['global_score'] (calcul existant, inchangé).
+// Valeur sécurisée : numérique et bornée entre 0 et 100.
+// NB : ne JAMAIS utiliser $completionPercent ici (progression du questionnaire, pas le score AQMI).
+$globalScore = isset($analysis['global_score']) ? (float)$analysis['global_score'] : 0.0;
+$globalScore = max(0, min(100, $globalScore));
+$displayScore = $globalScore;
 $level = $analysis['maturity_level'] ?? null;
 $levelName = $level ? ($isRtl && !empty($level['name_ar']) ? $level['name_ar'] : (!empty($level['name_fr']) ? $level['name_fr'] : ($level['name'] ?? ''))) : '';
 $levelColor = $level['color'] ?? '#1F6FEB';
@@ -93,6 +98,8 @@ $defaultLong = [__('results.default_long_1'), __('results.default_long_2'), __('
 
 // Calculate radius for SVG circle
 $circumference = 2 * pi() * 70; // r=70
+$scoreRatio = $displayScore / 100;
+$initialOffset = $circumference * (1 - $scoreRatio);
 
 ob_start();
 ?>
@@ -104,11 +111,11 @@ ob_start();
         <svg viewBox="0 0 160 160">
           <circle class="bg" cx="80" cy="80" r="70"/>
           <circle class="fg" id="scoreCircle" cx="80" cy="80" r="70"
-            stroke-dasharray="<?= $circumference ?>" stroke-dashoffset="<?= $circumference ?>"
+            stroke-dasharray="<?= $circumference ?>" stroke-dashoffset="<?= $initialOffset ?>"
             style="stroke:<?= $currentLevel['color'] ?>;"/>
         </svg>
         <div class="aqmi-results-score-value">
-          <div class="num" id="scoreValue" style="color:<?= $currentLevel['color'] ?>;">0%</div>
+          <div class="num" id="scoreValue" style="color:<?= $currentLevel['color'] ?>;"><?= round($displayScore) ?>%</div>
           <div class="lbl"><?= __('results.global_score') ?></div>
         </div>
       </div>
@@ -470,30 +477,73 @@ if ($domainLabelsJson === false) $domainLabelsJson = '[]';
 if ($domainScoresJson === false) $domainScoresJson = '[]';
 if ($domainBenchmarkJson === false) $domainBenchmarkJson = '[]';
 
+// Libellés traduits pour les graphiques : calculés ici car les balises PHP courtes
+// ne sont PAS interprétées dans le heredoc ci-dessous (et leurs apostrophes cassaient le JS).
+$jsStrFlags = $jsonFlags | JSON_HEX_TAG;
+$lblProjectedScore = json_encode((string)__('results.projected_score'), $jsStrFlags) ?: '""';
+$lblScoreLabel     = json_encode(__('results.score_label') . ' (%)', $jsStrFlags) ?: '""';
+$lblMyScores       = json_encode((string)__('results.my_scores'), $jsStrFlags) ?: '""';
+$lblMarketBenchmark = json_encode((string)__('results.market_benchmark'), $jsStrFlags) ?: '""';
+$finalScoreJs      = json_encode($displayScore);
+$circumferenceJs   = json_encode($circumference);
+
 $extraStyles = '<link rel="stylesheet" href="/css/aqmi-results-print.css">';
 
 $extraScripts = <<<SCRIPT
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
+// Score AQMI : bloc isolé. Le score est déjà rendu par PHP ; GSAP n'est qu'un bonus visuel.
+// Une erreur dans le script des graphiques ci-dessous ne peut pas l'affecter.
 (function() {
-  var finalScore = {$globalScore};
-  var scoreColor = '{$currentLevel['color']}';
-  var circumference = {$circumference};
+  var finalScore = {$finalScoreJs};
+  var circumference = {$circumferenceJs};
 
-  // Animate score counter
-  var scoreObj = { val: 0 };
-  gsap.to(scoreObj, {
-    val: finalScore,
-    duration: 2.5,
-    ease: 'power3.out',
-    onUpdate: function() {
-      var v = Math.round(scoreObj.val);
-      document.getElementById('scoreValue').textContent = v + '%';
-      var offset = circumference - (v / 100) * circumference;
-      document.getElementById('scoreCircle').style.strokeDashoffset = offset;
+  function updateScore(value) {
+    try {
+      var v = Math.round(value);
+      var scoreElement = document.getElementById('scoreValue');
+      var circleElement = document.getElementById('scoreCircle');
+      if (scoreElement) {
+        scoreElement.textContent = v + '%';
+      }
+      if (circleElement) {
+        var offset = circumference - (v / 100) * circumference;
+        circleElement.style.strokeDashoffset = offset;
+      }
+    } catch (e) {}
+  }
+
+  // Valeur finale immédiate (au cas où GSAP est absent ou échoue)
+  updateScore(finalScore);
+
+  if (window.gsap) {
+    try {
+      var scoreObj = { val: 0 };
+      gsap.to(scoreObj, {
+        val: finalScore,
+        duration: 2.5,
+        ease: 'power3.out',
+        onUpdate: function() {
+          updateScore(scoreObj.val);
+        },
+        onComplete: function() {
+          updateScore(finalScore);
+        }
+      });
+      // Filet de sécurité : le score final reste visible même si l'animation est interrompue
+      setTimeout(function() { updateScore(finalScore); }, 3200);
+    } catch (e) {
+      updateScore(finalScore);
     }
-  });
+  } else {
+    updateScore(finalScore);
+  }
+})();
+</script>
+<script>
+(function() {
+  var scoreColor = '{$currentLevel['color']}';
 
   // Animate benchmark bars
   setTimeout(function() {
@@ -512,7 +562,7 @@ $extraScripts = <<<SCRIPT
       data: {
         labels: {$projLabelsJson},
         datasets: [{
-          label: '<?= __('results.projected_score') ?>',
+          label: {$lblProjectedScore},
           data: {$projScoresJson},
           borderColor: '{$currentLevel['color']}',
           backgroundColor: function(ctx) {
@@ -546,7 +596,7 @@ $extraScripts = <<<SCRIPT
       data: {
         labels: {$domainLabelsJson},
         datasets: [{
-          label: '<?= __('results.score_label') ?> (%)',
+          label: {$lblScoreLabel},
           data: {$domainScoresJson},
           borderColor: '{$currentLevel['color']}',
           backgroundColor: '{$currentLevel['color']}22',
@@ -573,7 +623,7 @@ $extraScripts = <<<SCRIPT
   var barEl = document.getElementById('domainBarChart');
   if (barEl) {
     var barDatasets = [{
-      label: '<?= __('results.my_scores') ?>',
+      label: {$lblMyScores},
       data: {$domainScoresJson},
       backgroundColor: '{$currentLevel['color']}',
       borderRadius: 4
@@ -581,7 +631,7 @@ $extraScripts = <<<SCRIPT
     var benchmarkData = {$domainBenchmarkJson};
     if (benchmarkData.some(function(v) { return v !== null; })) {
       barDatasets.push({
-        label: '<?= __('results.market_benchmark') ?>',
+        label: {$lblMarketBenchmark},
         data: benchmarkData,
         backgroundColor: 'rgba(255,255,255,0.15)',
         borderRadius: 4
