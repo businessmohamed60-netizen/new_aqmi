@@ -177,12 +177,12 @@ class AuthController
         LoginHistory::record($user['id'], $user['email'], 'success', $ip, $ua['browser'], $ua['os']);
         Database::execute("UPDATE users SET last_login_at = NOW() WHERE id = ?", [$user['id']]);
 
-        // Envoyer une notification de connexion par email
+        // Envoyer une notification de connexion à l'administrateur
         $fullname = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
         $deviceInfo = $ua['browser'] . ' · ' . $ua['os'];
         $loginDate = date('d/m/Y à H:i');
-        $notificationBody = Mailer::loginNotificationTemplate($fullname, $deviceInfo, $ip, $loginDate);
-        Mailer::send($user['email'], 'Connexion à votre compte NOVAQYS', $notificationBody);
+        $adminNotifBody = Mailer::adminLoginTemplate($fullname, $user['email'], $deviceInfo, $ip, $loginDate);
+        Mailer::notifyAdmin('Connexion utilisateur - ' . $fullname, $adminNotifBody);
 
         // Nettoyer la session OTP
         Session::remove('otp_user_id');
@@ -473,6 +473,11 @@ class AuthController
 
         // Connexion automatique
         Auth::attempt($email, $password);
+
+        // Notifier l'administrateur de la nouvelle inscription
+        $fullname = trim($firstname . ' ' . $lastname);
+        $adminBody = Mailer::adminNewUserTemplate($fullname, $email, $company, $phone);
+        Mailer::notifyAdmin('Nouvelle inscription - ' . $fullname, $adminBody);
 
         Session::setFlash('success', 'Bienvenue ' . $firstname . ' ! Votre compte a été créé avec succès.');
         redirect('/user/dashboard');

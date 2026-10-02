@@ -207,15 +207,13 @@ class UserController
         \App\Models\ConsolidatedReport::updateStatus($id, 'certification_requested');
 
         $adminEmail = Database::fetch("SELECT email FROM users u JOIN roles r ON u.role_id = r.id WHERE r.slug = 'admin' LIMIT 1");
-        if ($adminEmail) {
-            $user = Auth::user();
-            $body = "<h2>Nouvelle demande de rapport consolidé certifié</h2>"
-                  . "<p><strong>Utilisateur:</strong> " . e($user['firstname'] . ' ' . $user['lastname']) . "</p>"
-                  . "<p><strong>Titre:</strong> " . e($report['title']) . "</p>"
-                  . "<p><strong>Score consolidé:</strong> " . round((float)$report['consolidated_score']) . "/100</p>"
-                  . "<p><a href=\"" . ($_ENV['APP_URL'] ?? '') . "/admin/consolidated/" . $id . "\"> Examiner la demande</a></p>";
-            Mailer::send($adminEmail['email'], 'Nouvelle demande de rapport consolidé - NOVAQYS', $body);
-        }
+        $user = Auth::user();
+        $body = "<h2>Nouvelle demande de rapport consolidé certifié</h2>"
+              . "<p><strong>Utilisateur:</strong> " . e($user['firstname'] . ' ' . $user['lastname']) . "</p>"
+              . "<p><strong>Titre:</strong> " . e($report['title']) . "</p>"
+              . "<p><strong>Score consolidé:</strong> " . round((float)$report['consolidated_score']) . "/100</p>"
+              . "<p><a href=\"" . ($_ENV['APP_URL'] ?? '') . "/admin/consolidated/" . $id . "\"> Examiner la demande</a></p>";
+        Mailer::notifyAdmin('Nouvelle demande de rapport consolidé - NOVAQYS', $body);
 
         $_SESSION['success'] = 'Demande de certification envoyée à l\'administration.';
         redirect('/user/consolidated/' . $id);

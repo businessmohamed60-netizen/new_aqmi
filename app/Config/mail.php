@@ -8,4 +8,5 @@ return [
     'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',
     'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@aqmi.com',
     'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'AQMI',
+    'admin_email' => $_ENV['ADMIN_EMAIL'] ?? 'business.mohamed60@gmail.com',
 ];

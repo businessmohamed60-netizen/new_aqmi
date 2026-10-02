@@ -58,8 +58,7 @@ class HomeController
         $platformsList = is_array($data['platforms']) ? implode(', ', $data['platforms']) : '';
         $body = \App\Helpers\Mailer::accountRequestTemplate($data, $platformsList);
 
-        $sent = \App\Helpers\Mailer::send(
-            'contact@novaqys.com',
+        $sent = \App\Helpers\Mailer::notifyAdmin(
             'Nouvelle demande de compte — ' . $data['company'],
             $body
         );

@@ -29,8 +29,7 @@ class EmailService
 
     public function sendAdminNotification(string $leadName, string $company): bool
     {
-        $adminEmail = Database::fetch("SELECT setting_value FROM settings WHERE setting_key = 'admin_email'");
-        $to = $adminEmail['setting_value'] ?? $this->config['from_address'];
+        $to = Mailer::getAdminEmail();
         $subject = 'Nouveau Lead AQMI';
         $body = "<html><body><h2>Nouveau Lead</h2><p><strong>Nom:</strong> {$leadName}</p><p><strong>Entreprise:</strong> {$company}</p></body></html>";
         return Mailer::send($to, $subject, $body);
@@ -38,8 +37,7 @@ class EmailService
 
     public function sendAdminReportRequest(string $leadName, string $company, int $assessmentId, string $reportUrl): bool
     {
-        $adminEmail = Database::fetch("SELECT setting_value FROM settings WHERE setting_key = 'admin_email'");
-        $to = $adminEmail['setting_value'] ?? $this->config['from_address'];
+        $to = Mailer::getAdminEmail();
         $subject = 'Demande de validation de rapport - ' . $company;
         $body = "<html><body style='font-family:Arial,sans-serif;'>
             <h2 style='color:#1a56db;'>Demande de validation de rapport</h2>

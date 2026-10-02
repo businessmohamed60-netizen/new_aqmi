@@ -309,6 +309,14 @@ class AssessmentController
             'status' => 'certification_requested',
         ]);
 
+        // Notifier l'administrateur du nouveau lead
+        $leadName = ($currentUser['firstname'] ?? '') . ' ' . ($currentUser['lastname'] ?? '');
+        $leadEmail = $currentUser['email'] ?? '';
+        $leadPhone = $currentUser['phone'] ?? '';
+        $leadCompany = $_POST['company'] ?? '';
+        $adminLeadBody = Mailer::adminNewLeadTemplate($leadName, $leadCompany, $leadEmail, $leadPhone, $assessmentId);
+        Mailer::notifyAdmin('Nouveau lead - ' . $leadCompany, $adminLeadBody);
+
         $_SESSION['lead_id'] = $leadId;
         $_SESSION['success'] = 'Votre demande a été transmise à l\'administrateur.';
 
