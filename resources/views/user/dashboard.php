@@ -689,6 +689,321 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   font-size: 0.8rem;
 }
 
+/* ====== Per-Model Score Cards Section ====== */
+.ud-models-section {
+  margin-bottom: 1.5rem;
+}
+.ud-models-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.ud-models-header h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--vx-text-primary);
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+.ud-models-header h3 i {
+  color: var(--vx-primary);
+  margin-right: 0.4rem;
+}
+.ud-models-header .ud-models-sub {
+  font-size: 0.68rem;
+  color: var(--vx-text-muted);
+}
+
+.ud-models-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 768px) {
+  .ud-models-grid { grid-template-columns: 1fr; }
+}
+
+/* ====== Model Score Card ====== */
+.ud-model-card {
+  background: var(--vx-card-bg);
+  border: 1px solid var(--vx-card-border);
+  border-radius: var(--vx-radius-xl);
+  box-shadow: var(--vx-shadow-md);
+  overflow: hidden;
+  transition: all var(--vx-transition);
+  position: relative;
+}
+.ud-model-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--vx-shadow-lg);
+  border-color: var(--vx-card-border-hover);
+}
+
+/* Card header strip */
+.ud-model-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--vx-divider);
+  position: relative;
+}
+.ud-model-card-top::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 0;
+}
+.ud-model-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--vx-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+}
+.ud-model-title {
+  flex: 1;
+  min-width: 0;
+}
+.ud-model-title h4 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--vx-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.15px;
+}
+.ud-model-title .ud-model-meta {
+  font-size: 0.65rem;
+  color: var(--vx-text-muted);
+  margin-top: 0.15rem;
+}
+.ud-model-level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.3rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Card body */
+.ud-model-card-body {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1rem;
+  padding: 1.25rem;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  .ud-model-card-body {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+/* Radar chart wrapper */
+.ud-model-radar-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto;
+}
+.ud-model-radar-wrap canvas {
+  max-width: 140px;
+  max-height: 140px;
+}
+
+/* Right side: mini KPIs + domain bars */
+.ud-model-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.ud-model-kpis {
+  display: flex;
+  gap: 0.5rem;
+}
+.ud-model-kpi {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem 0.4rem;
+  border-radius: var(--vx-radius-md);
+  background: rgba(99,102,241,0.04);
+  border: 1px solid rgba(99,102,241,0.06);
+}
+.ud-model-kpi-label {
+  font-size: 0.55rem;
+  color: var(--vx-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+}
+.ud-model-kpi-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--vx-text-primary);
+  line-height: 1.1;
+  margin-top: 0.15rem;
+}
+.ud-model-kpi-value small {
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: var(--vx-text-muted);
+}
+
+/* Domain bars */
+.ud-model-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.ud-domain-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ud-domain-name {
+  font-size: 0.625rem;
+  color: var(--vx-text-secondary);
+  font-weight: 600;
+  width: 90px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ud-domain-bar {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(99,102,241,0.08);
+  overflow: hidden;
+}
+.ud-domain-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.ud-domain-pct {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--vx-text-muted);
+  width: 30px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Card footer */
+.ud-model-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--vx-divider);
+  background: rgba(99,102,241,0.02);
+}
+.ud-model-footer-info {
+  font-size: 0.65rem;
+  color: var(--vx-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.ud-model-footer-info .ud-model-count {
+  font-weight: 700;
+  color: var(--vx-text-secondary);
+}
+.ud-model-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+.ud-model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--vx-radius-sm);
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--ud-font);
+  text-decoration: none;
+  transition: all var(--vx-transition);
+  cursor: pointer;
+  border: none;
+}
+.ud-model-btn--primary {
+  color: #fff;
+}
+.ud-model-btn--primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  color: #fff;
+}
+.ud-model-btn--outline {
+  background: transparent;
+  color: var(--vx-text-secondary);
+  border: 1px solid var(--vx-card-border);
+}
+.ud-model-btn--outline:hover {
+  background: rgba(99,102,241,0.06);
+  border-color: var(--vx-card-border-hover);
+  color: var(--vx-text-primary);
+}
+
+/* No-score placeholder in model card */
+.ud-model-no-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 140px;
+  gap: 0.5rem;
+}
+.ud-model-no-score i {
+  font-size: 1.5rem;
+  color: var(--vx-text-muted);
+  opacity: 0.4;
+}
+.ud-model-no-score span {
+  font-size: 0.65rem;
+  color: var(--vx-text-muted);
+  text-align: center;
+}
+
+/* Models empty state */
+.ud-models-empty {
+  background: var(--vx-card-bg);
+  border: 1px solid var(--vx-card-border);
+  border-radius: var(--vx-radius-lg);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+.ud-models-empty i {
+  font-size: 2rem;
+  color: var(--vx-text-muted);
+  opacity: 0.4;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.ud-models-empty p {
+  font-size: 0.8rem;
+  color: var(--vx-text-muted);
+  margin: 0;
+}
+
 /* ====== Assessment List ====== */
 .user-assessment-card {
   background: var(--vx-card-bg);
@@ -1181,6 +1496,134 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
       </div>
     <?php endif; ?>
 
+    <!-- ====== Per-Model Score Cards ====== -->
+    <div class="ud-models-section">
+      <div class="ud-models-header">
+        <h3><i class="fas fa-layer-group"></i><?= __('dashboard.models.title') ?></h3>
+        <span class="ud-models-sub"><?= __('dashboard.models.subtitle') ?></span>
+      </div>
+
+      <?php if (!empty($modelStats)): ?>
+        <div class="ud-models-grid">
+          <?php foreach ($modelStats as $idx => $ms):
+            $mColor = $ms['color'] ?: '#1a56db';
+            $mLevelName = '';
+            $mLevelColor = $mColor;
+            if ($ms['maturity_level']) {
+              $mLevelName = $ms['maturity_level'][$levelNameField] ?? $ms['maturity_level']['name'] ?? '';
+              $mLevelColor = $ms['maturity_level']['color'] ?? $mColor;
+            }
+            $hasScore = $ms['latest_score'] !== null;
+            $radarId = 'modelRadar_' . $ms['id'];
+          ?>
+            <div class="ud-model-card">
+              <!-- Card Top: Model name + level badge -->
+              <div class="ud-model-card-top" style="border-left:4px solid <?= htmlspecialchars($mColor) ?>;">
+                <div class="ud-model-icon" style="background:<?= htmlspecialchars($mColor) ?>;">
+                  <i class="fas <?= htmlspecialchars($ms['icon'] ?: 'fa-clipboard-check') ?>"></i>
+                </div>
+                <div class="ud-model-title">
+                  <h4><?= htmlspecialchars($ms['display_name'] ?: $ms['name']) ?></h4>
+                  <div class="ud-model-meta">
+                    <?= $ms['completed'] ?> <?= __('dashboard.models.completed') ?> / <?= $ms['total'] ?> <?= __('dashboard.models.assessments') ?>
+                  </div>
+                </div>
+                <?php if ($hasScore && $mLevelName): ?>
+                  <span class="ud-model-level-badge" style="background:<?= htmlspecialchars($mLevelColor) ?>20;color:<?= htmlspecialchars($mLevelColor) ?>;">
+                    <i class="fas fa-medal" style="font-size:0.55rem;"></i>
+                    <?= htmlspecialchars($mLevelName) ?>
+                  </span>
+                <?php endif; ?>
+              </div>
+
+              <!-- Card Body: Radar + KPIs + Domain bars -->
+              <div class="ud-model-card-body">
+                <!-- Radar Chart -->
+                <div class="ud-model-radar-wrap">
+                  <?php if ($hasScore): ?>
+                    <canvas id="<?= $radarId ?>"></canvas>
+                  <?php else: ?>
+                    <div class="ud-model-no-score">
+                      <i class="fas fa-chart-radar"></i>
+                      <span><?= __('dashboard.models.no_score') ?></span>
+                    </div>
+                  <?php endif; ?>
+                </div>
+
+                <!-- Detail: KPIs + Domain bars -->
+                <div class="ud-model-detail">
+                  <!-- Mini KPIs -->
+                  <div class="ud-model-kpis">
+                    <div class="ud-model-kpi">
+                      <div class="ud-model-kpi-label"><?= __('dashboard.models.latest') ?></div>
+                      <div class="ud-model-kpi-value" style="color:<?= htmlspecialchars($mLevelColor) ?>;">
+                        <?= $hasScore ? round($ms['latest_score']) : '—' ?><small>/100</small>
+                      </div>
+                    </div>
+                    <div class="ud-model-kpi">
+                      <div class="ud-model-kpi-label"><?= __('dashboard.models.best') ?></div>
+                      <div class="ud-model-kpi-value">
+                        <?= $ms['best_score'] !== null ? round($ms['best_score']) : '—' ?><small>/100</small>
+                      </div>
+                    </div>
+                    <div class="ud-model-kpi">
+                      <div class="ud-model-kpi-label"><?= __('dashboard.models.avg') ?></div>
+                      <div class="ud-model-kpi-value">
+                        <?= $ms['avg_score'] !== null ? round($ms['avg_score']) : '—' ?><small>/100</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Domain Score Bars -->
+                  <?php if (!empty($ms['domain_scores'])): ?>
+                    <div class="ud-model-domains">
+                      <?php foreach ($ms['domain_scores'] as $ds):
+                        $dsColor = $ds['level']['color'] ?? $mColor;
+                        $dsPct = round($ds['percent_score']);
+                        $dsLabel = $ds['domain_label'] ?: ($ds['domain_name_fr'] ?: $ds['domain_name']);
+                      ?>
+                        <div class="ud-domain-row">
+                          <span class="ud-domain-name" title="<?= htmlspecialchars($dsLabel) ?>"><?= htmlspecialchars($dsLabel) ?></span>
+                          <div class="ud-domain-bar">
+                            <div class="ud-domain-bar-fill" style="width:<?= $dsPct ?>%;background:<?= htmlspecialchars($dsColor) ?>;"></div>
+                          </div>
+                          <span class="ud-domain-pct"><?= $dsPct ?>%</span>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php endif; ?>
+                </div>
+              </div>
+
+              <!-- Card Footer -->
+              <div class="ud-model-card-footer">
+                <div class="ud-model-footer-info">
+                  <i class="fas fa-chart-pie" style="font-size:0.6rem;"></i>
+                  <span class="ud-model-count"><?= $ms['completed'] ?></span> / <?= $ms['total'] ?> <?= __('dashboard.models.assessments') ?>
+                </div>
+                <div class="ud-model-actions">
+                  <?php if ($hasScore && $ms['latest_assessment_id']): ?>
+                    <a href="/assessment/<?= $ms['latest_assessment_id'] ?>/results" class="ud-model-btn ud-model-btn--primary" style="background:<?= htmlspecialchars($mColor) ?>;">
+                      <i class="fas fa-file-alt" style="font-size:0.6rem;"></i><?= __('dashboard.models.view_results') ?>
+                    </a>
+                  <?php else: ?>
+                    <a href="/assessment/start" class="ud-model-btn ud-model-btn--outline">
+                      <i class="fas fa-play" style="font-size:0.6rem;"></i><?= __('dashboard.models.start') ?>
+                    </a>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php else: ?>
+        <div class="ud-models-empty">
+          <i class="fas fa-layer-group"></i>
+          <p><?= __('dashboard.models.empty') ?></p>
+        </div>
+      <?php endif; ?>
+    </div>
+
     <!-- Assessment List -->
     <div class="user-assessment-card">
       <div class="card-header d-flex justify-content-between align-items-center">
@@ -1412,6 +1855,98 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
         easing: 'easeOutQuart'
       }
     }
+  });
+})();
+</script>
+<?php endif; ?>
+
+<!-- ====== Per-Model Radar Charts ====== -->
+<?php
+  $radarModels = [];
+  foreach ($modelStats as $m) {
+    if ($m['latest_score'] !== null && !empty($m['chart_labels'])) {
+      $radarModels[] = [
+        'id' => $m['id'],
+        'labels' => $m['chart_labels'],
+        'values' => $m['chart_values'],
+        'color' => $m['color'],
+      ];
+    }
+  }
+?>
+<?php if (!empty($radarModels)): ?>
+<script>
+(function() {
+  const modelStats = <?= json_encode($radarModels, JSON_UNESCAPED_UNICODE) ?: '[]' ?>;
+
+  const chartLocale = '<?= $chartLocale ?>';
+
+  modelStats.forEach(function(ms) {
+    const canvas = document.getElementById('modelRadar_' + ms.id);
+    if (!canvas) return;
+
+    const color = ms.color || '#1a56db';
+
+    new Chart(canvas, {
+      type: 'radar',
+      data: {
+        labels: ms.labels,
+        datasets: [{
+          data: ms.values,
+          backgroundColor: color + '25',
+          borderColor: color,
+          borderWidth: 2,
+          pointBackgroundColor: color,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 1.5,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(23,33,43,0.95)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            titleFont: { family: 'Manrope', size: 10, weight: '700' },
+            bodyFont: { family: 'Manrope', size: 11, weight: '600' },
+            padding: 8,
+            cornerRadius: 6,
+            displayColors: false,
+            callbacks: {
+              label: function(ctx) {
+                return ctx.parsed.r + '%';
+              }
+            }
+          }
+        },
+        scales: {
+          r: {
+            min: 0,
+            max: 100,
+            beginAtZero: true,
+            angleLines: { color: 'rgba(80,64,42,0.08)' },
+            grid: { color: 'rgba(80,64,42,0.06)' },
+            pointLabels: {
+              font: { family: 'Manrope', size: 7, weight: '600' },
+              color: '#7d8794',
+            },
+            ticks: {
+              display: false,
+              stepSize: 25,
+            }
+          }
+        },
+        animation: {
+          duration: 900,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
   });
 })();
 </script>

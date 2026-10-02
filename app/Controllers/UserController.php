@@ -85,11 +85,110 @@ class UserController
             $assessmentsRemaining = max(0, $assessmentLimit - $assessmentsUsed);
         }
 
+        // ===== Per-evaluation-model statistics with domain scores =====
+        $langCode = $_SESSION['lang'] ?? 'fr';
+        $scoringService = new \App\Services\ScoringService();
+        $modelStats = [];
+
+        // Get all evaluation models the user has interacted with
+        $userModels = Database::fetchAll(
+            "SELECT DISTINCT em.id, em.name, em.name_fr, em.name_ar, em.icon, em.color,
+                    em.description, em.description_fr, em.description_ar
+             FROM evaluation_models em
+             INNER JOIN assessments a ON a.model_id = em.id
+             WHERE a.user_id = ?
+             ORDER BY em.sort_order",
+            [$userId]
+        );
+
+        foreach ($userModels as $em) {
+            $modelId = (int)$em['id'];
+
+            // Count assessments for this model
+            $modelAssessments = array_filter($assessments, fn($a) => (int)($a['model_id'] ?? 0) === $modelId);
+            $modelTotal = count($modelAssessments);
+            $modelCompleted = 0;
+            $modelScores = [];
+            $modelLatestScore = null;
+            $modelLatestAssessmentId = null;
+            $modelLatestDate = null;
+
+            foreach ($modelAssessments as $a) {
+                if ($a['status'] === 'completed') {
+                    $modelCompleted++;
+                    if ($a['total_score'] !== null) {
+                        $modelScores[] = (float)$a['total_score'];
+                        $aDate = $a['completed_at'] ?? $a['created_at'];
+                        if ($modelLatestDate === null || strtotime($aDate) > strtotime($modelLatestDate)) {
+                            $modelLatestDate = $aDate;
+                            $modelLatestScore = round((float)$a['total_score'], 1);
+                            $modelLatestAssessmentId = (int)$a['id'];
+                        }
+                    }
+                }
+            }
+
+            $modelBestScore = !empty($modelScores) ? round(max($modelScores), 1) : null;
+            $modelAvgScore = !empty($modelScores) ? round(array_sum($modelScores) / count($modelScores), 1) : null;
+            $modelMaturityLevel = null;
+            $modelDomainScores = [];
+
+            if ($modelLatestAssessmentId !== null) {
+                $modelMaturityLevel = \App\Models\ScoreLevel::findByScore($modelLatestScore);
+                $modelDomainScores = $scoringService->calculateDomainScores($modelLatestAssessmentId);
+            }
+
+            // Get domain names for this model (even if no completed assessment)
+            $modelDomains = \App\Models\EvaluationModel::getDomains($modelId);
+            $domainLabels = [];
+            foreach ($modelDomains as $d) {
+                $labelName = $langCode === 'ar' ? ($d['name_ar'] ?? '') : ($d['name_fr'] ?? $d['name']);
+                $domainLabels[] = $labelName ?: $d['name'];
+            }
+
+            // If we have domain scores, use those labels (they come from ScoringService which already localizes)
+            $chartLabels = [];
+            $chartValues = [];
+            foreach ($modelDomainScores as $ds) {
+                $chartLabels[] = $ds['domain_label'];
+                $chartValues[] = round($ds['percent_score'], 1);
+            }
+            // If no completed assessment, still provide domain names for the empty radar
+            if (empty($chartLabels)) {
+                $chartLabels = $domainLabels;
+                $chartValues = array_fill(0, count($domainLabels), 0);
+            }
+
+            $modelStats[] = [
+                'id' => $modelId,
+                'name' => $em['name'],
+                'name_fr' => $em['name_fr'] ?? '',
+                'name_ar' => $em['name_ar'] ?? '',
+                'display_name' => $langCode === 'ar' ? ($em['name_ar'] ?? '') : ($em['name_fr'] ?: $em['name']),
+                'icon' => $em['icon'] ?? 'fa-clipboard-check',
+                'color' => $em['color'] ?? '#1a56db',
+                'description' => $em['description'] ?? '',
+                'description_fr' => $em['description_fr'] ?? '',
+                'description_ar' => $em['description_ar'] ?? '',
+                'total' => $modelTotal,
+                'completed' => $modelCompleted,
+                'best_score' => $modelBestScore,
+                'avg_score' => $modelAvgScore,
+                'latest_score' => $modelLatestScore,
+                'latest_assessment_id' => $modelLatestAssessmentId,
+                'maturity_level' => $modelMaturityLevel,
+                'domain_scores' => $modelDomainScores,
+                'chart_labels' => $chartLabels,
+                'chart_values' => $chartValues,
+            ];
+        }
+
         view('user.dashboard', compact(
             'assessments', 'totalAssessments', 'completedCount', 'user', 'consolidatedReports',
             'bestScore', 'avgScore', 'latestScore', 'progressDelta', 'maturityLevel',
             'completionRate', 'scoreHistory', 'scoreLevels',
-            'assessmentLimit', 'assessmentsRemaining', 'assessmentsUsed'
+            'assessmentLimit', 'assessmentsRemaining', 'assessmentsUsed',
+            'modelStats'
         ));
     }
 
