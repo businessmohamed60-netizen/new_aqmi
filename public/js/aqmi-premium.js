@@ -332,14 +332,14 @@
       { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check', cls: 'yes' },
       { value: 3, label: tr('partial_label'), sublabel: tr('partial_sub'), icon: 'fa-circle-half-stroke', cls: 'partial' },
       { value: 0, label: tr('no_label'), sublabel: tr('no_sub'), icon: 'fa-xmark', cls: 'no' },
-      { value: 0, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-dash', cls: 'na' },
+      { value: -1, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-dash', cls: 'na' },
     ];
 
     var html = '';
     for (var i = 0; i < options.length; i++) {
       var opt = options[i];
       var selected = q.answered && q.score === opt.value && opt.cls !== 'na';
-      var selectedNA = q.answered && q.score === 0 && opt.cls === 'na' && q.answer_text === 'N/A';
+      var selectedNA = q.answered && opt.cls === 'na' && (q.score === null || q.score === -1);
       var selClass = '';
       if (selected) selClass = 'selected-' + opt.cls;
       if (selectedNA) selClass = 'selected-na';
@@ -535,7 +535,8 @@
         card.classList.contains('selected-no') ||
         card.classList.contains('selected-na')) return;
 
-    var score = parseInt(card.getAttribute('data-score'), 10);
+    var rawScore = card.getAttribute('data-score');
+    var score = (rawScore === 'null' || rawScore === '-1') ? null : parseInt(rawScore, 10);
     var qid = parseInt(card.getAttribute('data-qid'), 10);
     var idx = parseInt(card.getAttribute('data-idx'), 10);
     var cls = card.getAttribute('data-cls');
@@ -560,10 +561,11 @@
     if (questions[idx]) {
       questions[idx].answered = true;
       questions[idx].score = score;
+      if (cls === 'na') questions[idx].answer_text = 'N/A';
     }
 
     // Auto-save
-    saveAnswer(qid, score);
+    saveAnswer(qid, score, cls === 'na' ? 'N/A' : '');
 
     // Update progress
     if (idx === currentIdx) {
@@ -601,16 +603,23 @@
   }
 
   // ── Save answer ──
-  function saveAnswer(questionId, score) {
+  function saveAnswer(questionId, score, answerText) {
     el.saveIndicator.classList.remove('show');
+    var ajaxData = {
+        assessment_id: assessmentId,
+        question_id: questionId
+    };
+    if (score === null) {
+        ajaxData.score = '';
+        if (answerText) ajaxData.answer_text = answerText;
+    } else {
+        ajaxData.score = score;
+        if (answerText) ajaxData.answer_text = answerText;
+    }
     jQuery.ajax({
       url: '/assessment/save-answer',
       method: 'GET',
-      data: {
-        assessment_id: assessmentId,
-        question_id: questionId,
-        score: score
-      },
+      data: ajaxData,
       success: function() {
         el.saveIndicator.classList.add('show');
         setTimeout(function() { el.saveIndicator.classList.remove('show'); }, 2000);
@@ -706,7 +715,7 @@
     for (var i = 0; i < questions.length; i++) {
       if (questions[i].answered) {
         var s = questions[i].score;
-        if (s >= 0 && s <= 5) {
+        if (s !== null && s >= 0 && s <= 5) {
           totalScore += s * questions[i].weight;
           totalWeight += questions[i].weight;
         }
@@ -764,10 +773,18 @@
 
   function updateMainGauge(qIdx) {
     var q = questions[qIdx];
-    var score = (q && q.answered && q.score != null) ? q.score : 0;
-    var pct = Math.round((score / 5) * 100);
+    var score = (q && q.answered && q.score != null && q.score >= 0) ? q.score : null;
+    var pct = (score !== null) ? Math.round((score / 5) * 100) : 0;
 
     if (!el.mainGaugeCircle) return;
+
+    if (score === null) {
+      el.mainGaugeValue.textContent = 'N/A';
+      el.mainGaugeIcon.style.color = '#6c757d';
+      el.mainGaugeIcon.innerHTML = '<i class="fas fa-dash"></i>';
+      el.mainGaugeLabel.textContent = tr('na_label');
+      return;
+    }
 
     var mainOffset = MAIN_GAUGE_CIRCUMFERENCE - (pct / 100) * MAIN_GAUGE_CIRCUMFERENCE;
     var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;

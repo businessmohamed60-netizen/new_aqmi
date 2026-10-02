@@ -168,7 +168,8 @@ class AssessmentController
         Auth::requireAuth();
         $assessmentId = (int)($_GET['assessment_id'] ?? 0);
         $questionId = (int)($_GET['question_id'] ?? 0);
-        $score = isset($_GET['score']) && $_GET['score'] !== '' ? (int)$_GET['score'] : null;
+        $rawScore = $_GET['score'] ?? '';
+        $score = ($rawScore !== '' && $rawScore !== null) ? (int)$rawScore : null;
         $answerText = $_GET['answer_text'] ?? '';
         $answerValue = $_GET['answer_value'] ?? '';
 
