@@ -47,7 +47,7 @@ class UserController
         $scoreHistory = [];
         $scoringService = new \App\Services\ScoringService();
 
-        foreach ($assessments as $a) {
+        foreach ($assessments as $idx => $a) {
             if ($a['status'] === 'completed') {
                 $completedCount++;
 
@@ -70,9 +70,10 @@ class UserController
                     // Update stored value if it drifted
                     if ($a['total_score'] === null || abs((float)$a['total_score'] - $realScore) >= 0.05) {
                         Assessment::updateScore((int)$a['id'], $realScore, $realLevel ?? 'N/A');
-                        $a['total_score'] = $realScore;
-                        $a['maturity_level'] = $realLevel;
                     }
+
+                    $assessments[$idx]['total_score'] = $realScore;
+                    $assessments[$idx]['maturity_level'] = $realLevel;
 
                     $completedScores[] = $realScore;
                     $scoreHistory[] = [

@@ -118,6 +118,7 @@ class ScoringService
     {
         $totalWeight = 0; $weightedSum = 0;
         foreach ($domainScores as $domain) {
+            if ($domain['question_count'] < 1) continue;
             $w = (float)($domain['weight'] ?? 1);
             if ($w <= 0) $w = 1;
             $totalWeight += $w;
