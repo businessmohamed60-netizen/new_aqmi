@@ -70,22 +70,53 @@ try {
 </style>
 
 <div class="auto-questions-wrap auto-fade-in">
-  <div class="auto-questions-header d-flex justify-content-between align-items-center flex-wrap" style="gap:0.75rem;">
-    <div class="d-flex gap-2 align-items-center flex-wrap">
-      <input type="text" id="tableSearch" class="auto-input" placeholder="Rechercher..." style="width:200px;">
-      <select id="filterType" class="auto-select">
+  <div class="auto-questions-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap:0.75rem; margin-bottom:0.75rem;">
+      <h5><i class="fas fa-filter me-1" style="color:var(--auto-cyan);"></i>Filtres multiples</h5>
+      <div class="d-flex gap-2 flex-wrap">
+        <button type="button" id="resetFilters" class="auto-btn auto-btn-secondary auto-btn-sm"><i class="fas fa-rotate-left me-1"></i>Réinitialiser</button>
+        <a href="/admin/questions/export" class="auto-btn auto-btn-secondary auto-btn-sm"><i class="fas fa-file-export me-1"></i>Export</a>
+        <button type="button" class="auto-btn auto-btn-secondary auto-btn-sm" data-bs-toggle="modal" data-bs-target="#importModal"><i class="fas fa-file-import me-1"></i>Import</button>
+        <a href="/admin/questions/create" class="auto-btn auto-btn-primary auto-btn-sm"><i class="fas fa-plus me-1"></i>Nouvelle question</a>
+      </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap auto-filter-bar" style="gap:0.5rem;">
+      <div class="auto-filter-field" style="position:relative;">
+        <i class="fas fa-search auto-filter-icon"></i>
+        <input type="text" id="tableSearch" class="auto-input auto-filter-input" placeholder="Rechercher..." style="width:200px; padding-left:2rem;">
+      </div>
+      <select id="filterType" class="auto-select" data-filter="type">
         <option value="">Tous types</option>
         <option value="rating_scale">Notation 1-5</option>
         <option value="yes_no">Oui/Non</option>
         <option value="multiple_choice">Choix multiple</option>
         <option value="text_input">Texte libre</option>
         <option value="numeric">Numérique</option>
+        <option value="date_input">Date</option>
       </select>
-    </div>
-    <div class="d-flex gap-2 flex-wrap">
-      <a href="/admin/questions/export" class="auto-btn auto-btn-secondary auto-btn-sm"><i class="fas fa-file-export me-1"></i>Export</a>
-      <button type="button" class="auto-btn auto-btn-secondary auto-btn-sm" data-bs-toggle="modal" data-bs-target="#importModal"><i class="fas fa-file-import me-1"></i>Import</button>
-      <a href="/admin/questions/create" class="auto-btn auto-btn-primary auto-btn-sm"><i class="fas fa-plus me-1"></i>Nouvelle question</a>
+      <select id="filterDomain" class="auto-select" data-filter="domain">
+        <option value="">Tous les domaines</option>
+        <?php foreach ($domains ?? [] as $d): ?>
+          <option value="<?= (int)$d['id'] ?>"><?= e($d['name_fr'] ?: $d['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+      <select id="filterModel" class="auto-select" data-filter="model">
+        <option value="">Tous les modèles</option>
+        <?php foreach ($evalModels ?? [] as $em): ?>
+          <option value="<?= (int)$em['id'] ?>"><?= e($em['name_fr'] ?: $em['name']) ?></option>
+        <?php endforeach; ?>
+      </select>
+      <select id="filterActive" class="auto-select" data-filter="active">
+        <option value="">Actif & inactif</option>
+        <option value="1">Actif uniquement</option>
+        <option value="0">Inactif uniquement</option>
+      </select>
+      <select id="filterRequired" class="auto-select" data-filter="required">
+        <option value="">Requis & optionnel</option>
+        <option value="1">Requis uniquement</option>
+        <option value="0">Optionnel uniquement</option>
+      </select>
+      <span id="filterCount" class="auto-filter-count"></span>
     </div>
   </div>
 
@@ -138,7 +169,7 @@ try {
               $tl = $typeLabels[$qt]['label'] ?? $qt;
               $modelName = isset($q['model_id']) && isset($evalModelsById[$q['model_id']]) ? $evalModelsById[$q['model_id']] : '';
               ?>
-              <tr data-type="<?= e($qt) ?>">
+              <tr data-type="<?= e($qt) ?>" data-domain="<?= (int)($q['domain_id'] ?? 0) ?>" data-model="<?= (int)($q['model_id'] ?? 0) ?>" data-active="<?= (int)($q['is_active'] ?? 0) ?>" data-required="<?= (int)($q['is_required'] ?? 0) ?>">
                 <td style="color:var(--auto-text-muted);font-size:0.7rem;"><?= $q['id'] ?></td>
                 <td>
                   <div class="q-title-cell"><?= e($q['title_fr'] ?: $q['title']) ?></div>
@@ -200,18 +231,68 @@ try {
 
 <?php
 $extraScripts = <<<SCRIPTS
+<style>
+.auto-filter-bar { padding: 0.6rem 0.8rem; background: var(--auto-bg-card-solid); border: 1px solid var(--auto-border); border-radius: var(--auto-radius-sm); }
+.auto-filter-icon { position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: var(--auto-text-muted); font-size: 0.7rem; }
+.auto-filter-input { padding-left: 2rem !important; }
+.auto-filter-count { font-size: 0.7rem; color: var(--auto-text-muted); font-weight: 500; margin-left: auto; white-space: nowrap; }
+.auto-filter-count .count-num { color: var(--auto-cyan); font-weight: 700; }
+#resetFilters:hover { color: var(--auto-cyan); border-color: var(--auto-cyan-glow); }
+</style>
 <script>
 $(document).ready(function() {
-    $('#filterType').on('change', function() {
-        var type = $(this).val();
+    var filters = { type: '', domain: '', model: '', active: '', required: '', search: '' };
+
+    function applyFilters() {
+        var visible = 0;
+        var total = 0;
         $('#questionsTable tbody tr[data-type]').each(function() {
-            if (!type || $(this).data('type') === type) {
-                $(this).show();
-            } else {
-                $(this).hide();
+            total++;
+            var \$row = $(this);
+            var show = true;
+            if (filters.type && \$row.data('type') !== filters.type) show = false;
+            if (show && filters.domain && String(\$row.data('domain')) !== String(filters.domain)) show = false;
+            if (show && filters.model && String(\$row.data('model')) !== String(filters.model)) show = false;
+            if (show && filters.active !== '' && String(\$row.data('active')) !== String(filters.active)) show = false;
+            if (show && filters.required !== '' && String(\$row.data('required')) !== String(filters.required)) show = false;
+            if (show && filters.search) {
+                var text = \$row.find('.q-title-cell').text().toLowerCase();
+                if (text.indexOf(filters.search) === -1) show = false;
             }
+            if (show) { \$row.show(); visible++; } else { \$row.hide(); }
         });
+        var \$count = $('#filterCount');
+        if (total > 0) {
+            \$count.html('<span class="count-num">' + visible + '</span> / ' + total + ' question(s)');
+        } else {
+            \$count.html('');
+        }
+    }
+
+    $('#filterType, #filterDomain, #filterModel, #filterActive, #filterRequired').on('change', function() {
+        var key = $(this).data('filter');
+        filters[key] = $(this).val();
+        applyFilters();
     });
+
+    var searchTimer;
+    $('#tableSearch').on('input', function() {
+        clearTimeout(searchTimer);
+        var val = $(this).val();
+        searchTimer = setTimeout(function() {
+            filters.search = val.toLowerCase().trim();
+            applyFilters();
+        }, 150);
+    });
+
+    $('#resetFilters').on('click', function() {
+        filters = { type: '', domain: '', model: '', active: '', required: '', search: '' };
+        $('#filterType, #filterDomain, #filterModel, #filterActive, #filterRequired').val('');
+        $('#tableSearch').val('');
+        applyFilters();
+    });
+
+    applyFilters();
 
     $(document).on('change', '.toggle-status', function() {
         var cb = $(this);

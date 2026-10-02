@@ -7,11 +7,17 @@ $options = $question ? json_decode($question['options'] ?? '[]', true) : [];
 $modelDomainsJson = json_encode($modelDomains ?? []);
 $currentDomainId = e($question['domain_id'] ?? '');
 $optIndex = count($options);
+$langs = [
+    'fr' => ['label' => 'Français', 'flag' => '🇫🇷', 'code' => 'FR'],
+    'en' => ['label' => 'English', 'flag' => '🇬🇧', 'code' => 'EN'],
+    'ar' => ['label' => 'العربية', 'flag' => '🇸🇦', 'code' => 'AR'],
+    'es' => ['label' => 'Español', 'flag' => '🇪🇸', 'code' => 'ES'],
+];
 ?>
 <style>
-.auto-form-wrap { max-width: 1000px; }
+.auto-form-wrap { max-width: 1400px; }
 .auto-form-header { margin-bottom: 1.5rem; }
-.auto-form-header h5 { color: var(--auto-text-primary); font-weight: 700; font-size: 0.95rem; margin-bottom: 0; }
+.auto-form-header h5 { color: var(--auto-text-primary); font-weight: 700; font-size: 1rem; margin-bottom: 0; }
 .auto-form-section-title { color: var(--auto-text-primary); font-weight: 700; font-size: 0.8rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--auto-border); }
 .auto-form-section-title i { color: var(--auto-cyan); margin-right: 0.5rem; }
 .form-switch .form-check-input { background-color: var(--auto-border); border-color: var(--auto-border); cursor: pointer; }
@@ -52,6 +58,43 @@ $optIndex = count($options);
 .auto-preview-inner .preview-option .lbl { font-size: 0.55rem; color: var(--auto-text-muted); }
 .auto-preview-inner .form-check-label { color: var(--auto-text-secondary); font-size: 0.75rem; }
 .auto-preview-inner textarea.auto-input, .auto-preview-inner input.auto-input { background: rgba(0,0,0,0.3); }
+
+/* Language tabs */
+.auto-lang-tabs { display: flex; gap: 0.25rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--auto-border); }
+.auto-lang-tab {
+  padding: 0.45rem 0.9rem; font-size: 0.72rem; font-weight: 600; cursor: pointer;
+  border: none; background: transparent; color: var(--auto-text-muted);
+  border-bottom: 2px solid transparent; transition: var(--auto-transition);
+  display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
+}
+.auto-lang-tab:hover { color: var(--auto-text-secondary); }
+.auto-lang-tab.active { color: var(--auto-cyan); border-bottom-color: var(--auto-cyan); }
+.auto-lang-tab .lang-flag { font-size: 0.85rem; }
+.auto-lang-pane { display: none; }
+.auto-lang-pane.active { display: block; animation: auto-fade-in 0.2s ease; }
+.auto-lang-pane .auto-label { display: flex; align-items: center; gap: 0.35rem; }
+.auto-lang-pane .auto-label .lang-flag { font-size: 0.8rem; }
+
+/* RTL for Arabic */
+.auto-lang-pane[data-lang="ar"] textarea,
+.auto-lang-pane[data-lang="ar"] input { direction: rtl; text-align: right; }
+
+.auto-field-group {
+  background: var(--auto-bg-card-solid);
+  border: 1px solid var(--auto-border);
+  border-radius: var(--auto-radius-sm);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.auto-sticky-actions {
+  position: sticky; bottom: 0; z-index: 10;
+  background: linear-gradient(to top, var(--auto-bg-card-solid) 60%, transparent);
+  padding: 1rem 0 0.5rem;
+}
+@media (max-width: 768px) {
+  .auto-lang-tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .auto-lang-tab { flex-shrink: 0; }
+}
 </style>
 
 <div class="auto-form-wrap auto-fade-in">
@@ -65,105 +108,116 @@ $optIndex = count($options);
       <?php if ($question): ?><input type="hidden" name="id" value="<?= $question['id'] ?>"><?php endif; ?>
 
       <div class="row g-4">
-        <!-- Left Column -->
-        <div class="col-md-6">
-          <div class="auto-form-section-title"><i class="fas fa-cog"></i>Contexte de la question</div>
+        <!-- Left Column - Settings -->
+        <div class="col-lg-4">
+          <div class="auto-field-group">
+            <div class="auto-form-section-title"><i class="fas fa-cog"></i>Configuration</div>
 
-          <div class="mb-3">
-            <label class="auto-label">Modèle d'évaluation</label>
-            <select name="model_id" class="auto-select">
-              <option value="">Tous les modèles</option>
-              <?php foreach ($evaluationModels as $em): ?>
-                <option value="<?= $em['id'] ?>" <?= ($question['model_id'] ?? '') == $em['id'] ? 'selected' : '' ?>>
-                  <?= e($em['name_fr'] ?: $em['name']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-            <small style="color:var(--auto-text-muted);font-size:0.65rem;">Liez cette question à un modèle d'évaluation spécifique</small>
-          </div>
-
-          <div class="mb-3">
-            <label class="auto-label">Domaine *</label>
-            <select name="domain_id" class="auto-select" id="domainSelect" required>
-              <option value="">Sélectionnez un domaine</option>
-              <?php foreach ($domains as $d): ?>
-                <option value="<?= $d['id'] ?>" <?= ($question['domain_id'] ?? '') == $d['id'] ? 'selected' : '' ?>>
-                  <?= e($d['name_fr'] ?: $d['name']) ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-            <small style="color:var(--auto-text-muted);font-size:0.65rem;" id="domainHint">La liste se filtre selon le modèle choisi</small>
-          </div>
-
-          <div class="mb-3">
-            <label class="auto-label">Type de question</label>
-            <select name="question_type" class="auto-select" id="questionType">
-              <option value="rating_scale" <?= $questionType === 'rating_scale' ? 'selected' : '' ?>>Échelle de notation (1-5)</option>
-              <option value="yes_no" <?= $questionType === 'yes_no' ? 'selected' : '' ?>>Oui / Non</option>
-              <option value="multiple_choice" <?= $questionType === 'multiple_choice' ? 'selected' : '' ?>>Choix multiple</option>
-              <option value="text_input" <?= $questionType === 'text_input' ? 'selected' : '' ?>>Texte libre</option>
-              <option value="numeric" <?= $questionType === 'numeric' ? 'selected' : '' ?>>Valeur numérique</option>
-              <option value="date_input" <?= $questionType === 'date_input' ? 'selected' : '' ?>>Date</option>
-            </select>
-            <small style="color:var(--auto-text-muted);font-size:0.65rem;">Le type détermine comment le candidat répondra à cette question</small>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-4">
-              <label class="auto-label">Poids</label>
-              <input type="number" name="weight" class="auto-input" step="0.1" min="0" max="100" value="<?= e($question['weight'] ?? '1') ?>">
+            <div class="mb-3">
+              <label class="auto-label">Modèle d'évaluation</label>
+              <select name="model_id" class="auto-select">
+                <option value="">Tous les modèles</option>
+                <?php foreach ($evaluationModels as $em): ?>
+                  <option value="<?= $em['id'] ?>" <?= ($question['model_id'] ?? '') == $em['id'] ? 'selected' : '' ?>>
+                    <?= e($em['name_fr'] ?: $em['name']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+              <small style="color:var(--auto-text-muted);font-size:0.65rem;">Liez cette question à un modèle d'évaluation spécifique</small>
             </div>
-            <div class="col-4">
-              <label class="auto-label">Ordre</label>
-              <input type="number" name="sort_order" class="auto-input" value="<?= e($question['sort_order'] ?? '0') ?>">
+
+            <div class="mb-3">
+              <label class="auto-label">Domaine *</label>
+              <select name="domain_id" class="auto-select" id="domainSelect" required>
+                <option value="">Sélectionnez un domaine</option>
+                <?php foreach ($domains as $d): ?>
+                  <option value="<?= $d['id'] ?>" <?= ($question['domain_id'] ?? '') == $d['id'] ? 'selected' : '' ?>>
+                    <?= e($d['name_fr'] ?: $d['name']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+              <small style="color:var(--auto-text-muted);font-size:0.65rem;" id="domainHint">La liste se filtre selon le modèle choisi</small>
             </div>
-            <div class="col-4">
-              <label class="auto-label">Requis</label>
-              <div class="form-check form-switch" style="padding-left:2.5rem;padding-top:0.2rem;">
-                <input type="hidden" name="is_required" value="0">
-                <input class="form-check-input" type="checkbox" name="is_required" value="1" <?= (isset($question['is_required']) ? $question['is_required'] : 1) ? 'checked' : '' ?>>
+
+            <div class="mb-3">
+              <label class="auto-label">Type de question</label>
+              <select name="question_type" class="auto-select" id="questionType">
+                <option value="rating_scale" <?= $questionType === 'rating_scale' ? 'selected' : '' ?>>Échelle de notation (1-5)</option>
+                <option value="yes_no" <?= $questionType === 'yes_no' ? 'selected' : '' ?>>Oui / Non</option>
+                <option value="multiple_choice" <?= $questionType === 'multiple_choice' ? 'selected' : '' ?>>Choix multiple</option>
+                <option value="text_input" <?= $questionType === 'text_input' ? 'selected' : '' ?>>Texte libre</option>
+                <option value="numeric" <?= $questionType === 'numeric' ? 'selected' : '' ?>>Valeur numérique</option>
+                <option value="date_input" <?= $questionType === 'date_input' ? 'selected' : '' ?>>Date</option>
+              </select>
+              <small style="color:var(--auto-text-muted);font-size:0.65rem;">Le type détermine comment le candidat répondra à cette question</small>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="auto-label">Poids</label>
+                <input type="number" name="weight" class="auto-input" step="0.1" min="0" max="100" value="<?= e($question['weight'] ?? '1') ?>">
+              </div>
+              <div class="col-6">
+                <label class="auto-label">Ordre</label>
+                <input type="number" name="sort_order" class="auto-input" value="<?= e($question['sort_order'] ?? '0') ?>">
               </div>
             </div>
-          </div>
 
-          <div class="mb-3">
-            <label class="auto-label">Actif</label>
-            <div class="form-check form-switch" style="padding-left:2.5rem;">
-              <input type="hidden" name="is_active" value="0">
-              <input class="form-check-input" type="checkbox" name="is_active" value="1" <?= !isset($question['is_active']) || $question['is_active'] ? 'checked' : '' ?>>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="auto-label">Requis</label>
+                <div class="form-check form-switch" style="padding-left:2.5rem;padding-top:0.2rem;">
+                  <input type="hidden" name="is_required" value="0">
+                  <input class="form-check-input" type="checkbox" name="is_required" value="1" <?= (isset($question['is_required']) ? $question['is_required'] : 1) ? 'checked' : '' ?>>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="auto-label">Actif</label>
+                <div class="form-check form-switch" style="padding-left:2.5rem;padding-top:0.2rem;">
+                  <input type="hidden" name="is_active" value="0">
+                  <input class="form-check-input" type="checkbox" name="is_active" value="1" <?= !isset($question['is_active']) || $question['is_active'] ? 'checked' : '' ?>>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Right Column -->
-        <div class="col-md-6">
-          <div class="auto-form-section-title"><i class="fas fa-pen"></i>Contenu de la question</div>
+        <!-- Right Column - Multilingual Content -->
+        <div class="col-lg-8">
+          <div class="auto-field-group">
+            <div class="auto-form-section-title"><i class="fas fa-language"></i>Contenu multilingue</div>
 
-          <div class="mb-3">
-            <label class="auto-label">Titre (FR) *</label>
-            <textarea name="title_fr" class="auto-textarea" rows="2" required><?= e($question['title_fr'] ?? '') ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="auto-label">Titre (EN)</label>
-            <textarea name="title" class="auto-textarea" rows="2"><?= e($question['title'] ?? '') ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="auto-label">Titre (AR)</label>
-            <textarea name="title_ar" class="auto-textarea" rows="2"><?= e($question['title_ar'] ?? '') ?></textarea>
-          </div>
+            <!-- Language Tabs -->
+            <div class="auto-lang-tabs" role="tablist">
+              <?php foreach ($langs as $code => $lang): ?>
+                <button type="button" class="auto-lang-tab <?= $code === 'fr' ? 'active' : '' ?>" data-lang="<?= $code ?>">
+                  <span class="lang-flag"><?= $lang['flag'] ?></span><?= $lang['code'] ?>
+                </button>
+              <?php endforeach; ?>
+            </div>
 
-          <div class="mb-3">
-            <label class="auto-label">Texte d'aide (FR)</label>
-            <textarea name="help_text_fr" class="auto-textarea" rows="2" placeholder="Sélectionnez le niveau qui correspond le mieux à votre situation..."><?= e($question['help_text_fr'] ?? '') ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="auto-label">Texte d'aide (EN)</label>
-            <textarea name="help_text" class="auto-textarea" rows="2"><?= e($question['help_text'] ?? '') ?></textarea>
+            <!-- Title fields per language -->
+            <?php foreach ($langs as $code => $lang): ?>
+              <div class="auto-lang-pane <?= $code === 'fr' ? 'active' : '' ?>" data-lang="<?= $code ?>" data-section="title">
+                <div class="mb-2">
+                  <label class="auto-label"><span><?= $lang['flag'] ?></span> Titre <?= $lang['label'] ?> <?= $code === 'fr' ? '*' : '' ?></label>
+                  <textarea name="title_<?= $code === 'en' ? '' : $code ?>" class="auto-textarea" rows="2" <?= $code === 'fr' ? 'required' : '' ?>><?= e($question["title_{$code}"] ?? ($code === 'en' ? ($question['title'] ?? '') : '')) ?></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="auto-label"><span><?= $lang['flag'] ?></span> Texte d'aide <?= $lang['label'] ?></label>
+                  <textarea name="help_text_<?= $code === 'en' ? '' : $code ?>" class="auto-textarea" rows="2" placeholder="<?= $code === 'fr' ? 'Sélectionnez le niveau qui correspond le mieux...' : '' ?>"><?= e($question["help_text_{$code}"] ?? ($code === 'en' ? ($question['help_text'] ?? '') : '')) ?></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="auto-label"><span><?= $lang['flag'] ?></span> Description / Instructions <?= $lang['label'] ?></label>
+                  <textarea name="description_<?= $code === 'en' ? '' : $code ?>" class="auto-textarea" rows="2"><?= e($question["description_{$code}"] ?? ($code === 'en' ? ($question['description'] ?? '') : '')) ?></textarea>
+                </div>
+              </div>
+            <?php endforeach; ?>
           </div>
 
           <!-- Options for multiple choice -->
-          <div class="mb-3" id="optionsSection" style="display:<?= in_array($questionType, ['multiple_choice', 'yes_no']) ? 'block' : 'none' ?>;">
-            <label class="auto-label">Options de réponse</label>
+          <div class="auto-field-group" id="optionsSection" style="display:<?= in_array($questionType, ['multiple_choice', 'yes_no']) ? 'block' : 'none' ?>;">
+            <div class="auto-form-section-title"><i class="fas fa-list-ul"></i>Options de réponse</div>
             <div id="optionsContainer">
               <?php if (!empty($options)): ?>
                 <?php foreach ($options as $i => $opt): ?>
@@ -193,23 +247,10 @@ $optIndex = count($options);
             </div>
             <button type="button" class="btn-action-sm" id="addOption" style="margin-top:0.35rem;"><i class="fas fa-plus me-1"></i>Ajouter une option</button>
           </div>
-
-          <div class="mb-3">
-            <label class="auto-label">Description / Instructions (FR)</label>
-            <textarea name="description_fr" class="auto-textarea" rows="2"><?= e($question['description_fr'] ?? '') ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="auto-label">Description / Instructions (EN)</label>
-            <textarea name="description" class="auto-textarea" rows="2"><?= e($question['description'] ?? '') ?></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="auto-label">Description / Instructions (AR)</label>
-            <textarea name="description_ar" class="auto-textarea" rows="2"><?= e($question['description_ar'] ?? '') ?></textarea>
-          </div>
         </div>
       </div>
 
-      <div style="border-top:1px solid var(--auto-border);padding-top:1.25rem;margin-top:1rem;display:flex;gap:0.75rem;">
+      <div class="auto-sticky-actions" style="border-top:1px solid var(--auto-border);padding-top:1.25rem;margin-top:1rem;display:flex;gap:0.75rem;">
         <button type="submit" class="auto-btn auto-btn-primary"><i class="fas fa-save me-1"></i>Enregistrer</button>
         <a href="/admin/questions" class="auto-btn auto-btn-secondary"><i class="fas fa-times me-1"></i>Annuler</a>
       </div>
@@ -268,6 +309,15 @@ $(document).ready(function() {
     var modelDomains = {$modelDomainsJson};
     var allDomainOptions = $('#domainSelect').children('option').clone();
     var currentDomainId = '{$currentDomainId}';
+
+    // Language tabs
+    $('.auto-lang-tab').on('click', function() {
+        var lang = $(this).data('lang');
+        $('.auto-lang-tab').removeClass('active');
+        $(this).addClass('active');
+        $('.auto-lang-pane').removeClass('active');
+        $('.auto-lang-pane[data-lang="' + lang + '"]').addClass('active');
+    });
 
     function filterDomains() {
         var modelId = $('select[name="model_id"]').val();

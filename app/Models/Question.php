@@ -28,16 +28,16 @@ class Question
     public static function create(array $data): int
     {
         return Database::insert(
-            "INSERT INTO questions (domain_id, model_id, question_type, title, title_fr, title_ar, options, is_required, help_text, help_text_fr, help_text_ar, description, description_fr, description_ar, weight, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (domain_id, model_id, question_type, title, title_fr, title_ar, title_es, options, is_required, help_text, help_text_fr, help_text_ar, help_text_es, description, description_fr, description_ar, description_es, weight, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 $data['domain_id'],
                 $data['model_id'] ?? null,
                 $data['question_type'] ?? 'rating_scale',
-                $data['title'] ?? '', $data['title_fr'] ?? '', $data['title_ar'] ?? '',
+                $data['title'] ?? '', $data['title_fr'] ?? '', $data['title_ar'] ?? '', $data['title_es'] ?? '',
                 $data['options'] ?? null,
                 $data['is_required'] ?? 1,
-                $data['help_text'] ?? '', $data['help_text_fr'] ?? '', $data['help_text_ar'] ?? '',
-                $data['description'] ?? '', $data['description_fr'] ?? '', $data['description_ar'] ?? '',
+                $data['help_text'] ?? '', $data['help_text_fr'] ?? '', $data['help_text_ar'] ?? '', $data['help_text_es'] ?? '',
+                $data['description'] ?? '', $data['description_fr'] ?? '', $data['description_ar'] ?? '', $data['description_es'] ?? '',
                 $data['weight'] ?? 1, $data['sort_order'] ?? 0, $data['is_active'] ?? 1
             ]
         );
@@ -46,7 +46,7 @@ class Question
     public static function update(int $id, array $data): int
     {
         $sets = []; $params = [];
-        $allowed = ['domain_id', 'model_id', 'question_type', 'title', 'title_fr', 'title_ar', 'options', 'is_required', 'help_text', 'help_text_fr', 'help_text_ar', 'description', 'description_fr', 'description_ar', 'weight', 'sort_order', 'is_active'];
+        $allowed = ['domain_id', 'model_id', 'question_type', 'title', 'title_fr', 'title_ar', 'title_es', 'options', 'is_required', 'help_text', 'help_text_fr', 'help_text_ar', 'help_text_es', 'description', 'description_fr', 'description_ar', 'description_es', 'weight', 'sort_order', 'is_active'];
         foreach ($allowed as $key) {
             if (array_key_exists($key, $data)) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
         }
