@@ -1023,6 +1023,30 @@
   padding: 0 0.5rem;
 }
 
+/* ── Date input ── */
+.aqmi-date-input-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+.aqmi-date-display {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.25rem; border-radius: var(--aqmi-radius-md, 12px);
+  background: var(--aqmi-bg-elevated, rgba(255,255,255,0.03));
+  border: 1px solid var(--aqmi-border, rgba(255,255,255,0.08));
+}
+.aqmi-date-icon { font-size: 1.25rem; color: var(--aqmi-accent, #1F6FEB); }
+.aqmi-date-value { font-size: 1.1rem; font-weight: 600; color: var(--aqmi-text-primary, #fff); }
+.aqmi-date-value.empty { color: var(--aqmi-text-tertiary, #6b7280); font-weight: 400; }
+.aqmi-date-input {
+  width: 100%; padding: 0.75rem 1rem; font-size: 1rem;
+  background: var(--aqmi-bg-elevated, rgba(255,255,255,0.03));
+  border: 1px solid var(--aqmi-border, rgba(255,255,255,0.08));
+  border-radius: var(--aqmi-radius-sm, 8px);
+  color: var(--aqmi-text-primary, #fff);
+  font-family: inherit;
+}
+.aqmi-date-input:focus {
+  outline: none; border-color: var(--aqmi-accent, #1F6FEB);
+  box-shadow: 0 0 0 3px rgba(31,111,235,0.15);
+}
+
 /* ── Type badge in question header ── */
 .aqmi-question-type-badge {
   display: inline-flex;

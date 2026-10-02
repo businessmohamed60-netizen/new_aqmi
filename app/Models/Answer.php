@@ -48,7 +48,7 @@ class Answer
              FROM assessment_answers aa
              JOIN questions q ON aa.question_id = q.id
              JOIN domains d ON q.domain_id = d.id
-             WHERE aa.assessment_id = ? AND aa.score IS NOT NULL AND q.question_type IN ('rating_scale', 'yes_no')
+             WHERE aa.assessment_id = ? AND aa.score IS NOT NULL
              GROUP BY d.id, d.name, d.name_fr, d.icon, d.weight, d.sort_order
              ORDER BY d.sort_order",
             [$assessmentId]

@@ -294,6 +294,9 @@
     } else if (qt === 'numeric') {
       el.answers.setAttribute('data-qtype', 'numeric');
       renderNumericInput(q, index);
+    } else if (qt === 'date_input') {
+      el.answers.setAttribute('data-qtype', 'date_input');
+      renderDateInput(q, index);
     } else {
       renderRatingScale(q, index);
     }
@@ -472,6 +475,34 @@
         input.value = newVal;
         updateDisplay(newVal);
         input.dispatchEvent(new Event('blur'));
+      });
+    }
+  }
+
+  function renderDateInput(q, index) {
+    el.ratingGrid.style.display = 'none';
+    el.answers.style.display = '';
+    var val = q.answered && q.answer_value ? q.answer_value : '';
+    var html = '<div class="aqmi-date-input-wrap">';
+    html += '<div class="aqmi-date-display">';
+    html += '  <i class="fas fa-calendar-days aqmi-date-icon"></i>';
+    html += '  <span class="aqmi-date-value ' + (val === '' ? 'empty' : '') + '" id="aqmiDateDisplay">' + (val !== '' ? val : (tr('text_placeholder') || 'Select date...')) + '</span>';
+    html += '</div>';
+    html += '<input type="date" class="aqmi-date-input" data-qid="' + q.id + '" data-idx="' + index + '" value="' + val + '" style="margin-top:0.75rem;">';
+    html += '</div>';
+    el.answers.innerHTML = html;
+
+    var input = el.answers.querySelector('.aqmi-date-input');
+    var display = el.answers.querySelector('#aqmiDateDisplay');
+    if (input && display) {
+      input.addEventListener('input', function() {
+        if (input.value) {
+          display.textContent = input.value;
+          display.classList.remove('empty');
+        } else {
+          display.textContent = tr('text_placeholder') || 'Select date...';
+          display.classList.add('empty');
+        }
       });
     }
   }
@@ -932,6 +963,9 @@
       if (!input) {
         input = e.target.closest('.aqmi-numeric-input');
       }
+      if (!input) {
+        input = e.target.closest('.aqmi-date-input');
+      }
       if (!input) return;
 
       var qid = parseInt(input.getAttribute('data-qid'), 10);
@@ -964,7 +998,7 @@
           question_id: qid,
           score: 3,
           answer_text: input.classList.contains('aqmi-text-input') ? val : '',
-          answer_value: input.classList.contains('aqmi-numeric-input') ? val : ''
+          answer_value: (input.classList.contains('aqmi-numeric-input') || input.classList.contains('aqmi-date-input')) ? val : ''
         }
       });
     }, true);
