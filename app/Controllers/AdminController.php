@@ -52,10 +52,8 @@ class AdminController
     public function dashboard(): void
     {
         Auth::requireAuth();
-        $stats = $this->statsService->getOverview();
-        $chartData = $this->statsService->getChartData();
-        $domainAverages = $this->statsService->getDomainAverages();
-        view('admin.dashboard.index', compact('stats', 'chartData', 'domainAverages'));
+        $adminStats = $this->statsService->getAdminOverview();
+        view('admin.dashboard.index', compact('adminStats'));
     }
 
     // === QUESTIONS ===

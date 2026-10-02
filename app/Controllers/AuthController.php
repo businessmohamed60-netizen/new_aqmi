@@ -177,6 +177,13 @@ class AuthController
         LoginHistory::record($user['id'], $user['email'], 'success', $ip, $ua['browser'], $ua['os']);
         Database::execute("UPDATE users SET last_login_at = NOW() WHERE id = ?", [$user['id']]);
 
+        // Envoyer une notification de connexion par email
+        $fullname = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
+        $deviceInfo = $ua['browser'] . ' · ' . $ua['os'];
+        $loginDate = date('d/m/Y à H:i');
+        $notificationBody = Mailer::loginNotificationTemplate($fullname, $deviceInfo, $ip, $loginDate);
+        Mailer::send($user['email'], 'Connexion à votre compte NOVAQYS', $notificationBody);
+
         // Nettoyer la session OTP
         Session::remove('otp_user_id');
         Session::remove('otp_email');

@@ -94,16 +94,16 @@ $initials = strtoupper(substr($lead['firstname'] ?? '', 0, 1)) . strtoupper(subs
   /* ── Score Card ── */
   .fiche-score-card { text-align: center; padding: 1.75rem 1.5rem; }
   .fiche-score-circle {
-    width: 130px; height: 130px; border-radius: 50%;
+    width: 110px; height: 110px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     margin: 0 auto 1rem; position: relative;
-    background: conic-gradient(<?= $scoreColor ?> <?= ($assessment['total_score'] ?? 0) * 3.6 ?>deg, <?= $scoreBg ?> 0deg);
+    background: conic-gradient(<?= $scoreColor ?> <?= min(100, max(0, (float)($assessment['total_score'] ?? 0))) * 3.6 ?>deg, <?= $scoreBg ?> 0deg);
   }
   .fiche-score-circle::before {
-    content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--auto-bg-card);
+    content: ''; position: absolute; inset: 7px; border-radius: 50%; background: var(--auto-bg-card);
   }
   .fiche-score-circle .fiche-score-num {
-    position: relative; font-size: 2.2rem; font-weight: 800;
+    position: relative; font-size: 1.6rem; font-weight: 800;
     color: <?= $scoreColor ?>; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.02em;
   }
   .fiche-score-label { font-size: 0.72rem; color: var(--auto-text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
@@ -255,7 +255,7 @@ $initials = strtoupper(substr($lead['firstname'] ?? '', 0, 1)) . strtoupper(subs
           <i class="fas fa-chart-pie"></i> Évaluation AQMI
         </div>
         <div class="fiche-score-circle">
-          <span class="fiche-score-num"><?= (float)$assessment['total_score'] ?>%</span>
+          <span class="fiche-score-num"><?= min(100, round((float)$assessment['total_score'], 1)) ?>%</span>
         </div>
         <div class="fiche-score-label">Score Global</div>
         <?php if ($assessment['maturity_level']): ?>

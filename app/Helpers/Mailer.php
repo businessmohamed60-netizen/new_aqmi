@@ -252,6 +252,67 @@ HTML;
     }
 
     /**
+     * Génère le template HTML pour une notification de connexion
+     */
+    public static function loginNotificationTemplate(string $userName, string $deviceInfo, string $ipAddress, string $loginDate): string
+    {
+        $safeName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+        $safeDevice = htmlspecialchars($deviceInfo, ENT_QUOTES, 'UTF-8');
+        $safeIp = htmlspecialchars($ipAddress, ENT_QUOTES, 'UTF-8');
+        $safeDate = htmlspecialchars($loginDate, ENT_QUOTES, 'UTF-8');
+
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;padding:0;background-color:#f4f5fb;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+  .bg{background:radial-gradient(circle at top,#171a35 0%,#0a0b16 55%,#05050a 100%);padding:56px 0}
+  .wrapper{width:100%;max-width:520px;margin:0 auto;padding:0 20px}
+  .card{background:linear-gradient(180deg,#171a2e 0%,#12131f 100%);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:48px 40px;text-align:center;box-shadow:0 24px 60px -20px rgba(99,102,241,0.35)}
+  .logo{display:inline-block;height:52px;line-height:52px;padding:0 22px;background:linear-gradient(135deg,#818cf8,#6366f1 45%,#a855f7);border-radius:14px;margin:0 0 28px;box-shadow:0 8px 24px -6px rgba(99,102,241,0.6);mso-line-height-rule:exactly}
+  .logo-mark{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;opacity:0.9;margin-right:8px;vertical-align:middle}
+  .logo-text{display:inline-block;vertical-align:middle;font-size:19px;font-weight:800;letter-spacing:1.5px;color:#fff;line-height:1;font-family:'Inter',-apple-system,sans-serif}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a5b4fc;margin:0 0 12px}
+  h1{font-size:22px;font-weight:700;color:#f8fafc;margin:0 0 10px;letter-spacing:-0.3px}
+  p{font-size:14px;color:#9ca3af;line-height:1.7;margin:0 0 20px}
+  .info-box{background:linear-gradient(180deg,#1c1f36,#171a2b);border:1px solid rgba(129,140,248,0.25);border-radius:16px;padding:24px 20px;margin:0 auto 24px;text-align:left}
+  .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .info-row:last-child{border-bottom:none}
+  .info-label{font-size:12px;color:#818cf8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  .info-value{font-size:14px;color:#f1f5f9;font-weight:500}
+  .footer-text{font-size:12px;color:#6b7280;line-height:1.6;margin:0}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);margin:28px 0 20px}
+  .brand{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#818cf8;font-weight:700;margin:0 0 4px}
+  .alert-icon{display:inline-block;width:48px;height:48px;border-radius:50%;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);line-height:48px;font-size:24px;margin:0 0 16px}
+</style></head>
+<body>
+  <div class="bg">
+    <div class="wrapper">
+      <div class="card">
+        <div class="logo"><span class="logo-mark"></span><span class="logo-text">AQMI</span></div>
+        <div class="alert-icon">✓</div>
+        <p class="eyebrow">New Sign-in</p>
+        <h1>Connexion réussie</h1>
+        <p>Bonjour <strong style="color:#e5e7eb">{$safeName}</strong>, une nouvelle connexion à votre compte NOVAQYS vient d'avoir lieu.</p>
+        <div class="info-box">
+          <div class="info-row"><span class="info-label">Appareil</span><span class="info-value">{$safeDevice}</span></div>
+          <div class="info-row"><span class="info-label">Adresse IP</span><span class="info-value">{$safeIp}</span></div>
+          <div class="info-row"><span class="info-label">Date</span><span class="info-value">{$safeDate}</span></div>
+        </div>
+        <p class="footer-text">Si vous êtes à l'origine de cette connexion, aucune action n'est requise.<br>Si vous ne reconnaissez pas cette activité, contactez immédiatement l'administrateur.</p>
+        <div class="divider"></div>
+        <p class="brand">NOVAQYS</p>
+        <p class="footer-text">Automotive Quality & Manufacturing Index</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+HTML;
+    }
+
+    /**
      * Détecte les infos navigateur et OS
      */
     public static function detectUserAgent(): array

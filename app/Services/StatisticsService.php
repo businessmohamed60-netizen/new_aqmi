@@ -27,6 +27,78 @@ class StatisticsService
         ];
     }
 
+    /**
+     * Données orientées administration : utilisateurs, utilisateurs en ligne,
+     * modèles d'évaluation, domaines, questions.
+     */
+    public function getAdminOverview(): array
+    {
+        return [
+            'total_users' => \App\Models\User::count(),
+            'online_users' => $this->getOnlineUsers(),
+            'online_users_count' => count($this->getOnlineUsers()),
+            'recent_users' => \App\Models\User::getRecent(8),
+            'evaluation_models' => $this->getModelsStats(),
+            'domains' => $this->getDomainsList(),
+            'questions' => $this->getQuestionsList(),
+            'total_domains' => \App\Models\Domain::count(),
+            'total_questions' => \App\Models\Question::getActiveCount(),
+            'total_models' => EvaluationModel::count(),
+            'total_assessments' => Assessment::count(),
+            'total_leads' => Lead::count(),
+            'pending_certifications' => Report::pendingCertifications(),
+            'pending_certifications_count' => count(Report::pendingCertifications()),
+        ];
+    }
+
+    /**
+     * Utilisateurs "en ligne" : sessions actives dans les 15 dernières minutes.
+     */
+    public function getOnlineUsers(): array
+    {
+        return Database::fetchAll(
+            "SELECT u.id, u.firstname, u.lastname, u.email, r.name as role_name,
+                    MAX(lh.login_date) as last_login
+             FROM users u
+             JOIN roles r ON u.role_id = r.id
+             LEFT JOIN login_history lh ON lh.user_id = u.id AND lh.result = 'success'
+             WHERE u.is_active = 1
+               AND (lh.login_date IS NOT NULL AND lh.login_date > DATE_SUB(NOW(), INTERVAL 15 MINUTE))
+             GROUP BY u.id
+             ORDER BY lh.login_date DESC"
+        );
+    }
+
+    /**
+     * Liste des domaines avec le nombre de questions par domaine.
+     */
+    public function getDomainsList(): array
+    {
+        return Database::fetchAll(
+            "SELECT d.id, d.name, d.name_fr, d.icon, d.is_active, d.sort_order,
+                    (SELECT COUNT(*) FROM questions q WHERE q.domain_id = d.id) as questions_count
+             FROM domains d
+             ORDER BY d.sort_order"
+        );
+    }
+
+    /**
+     * Liste des questions avec domaine et modèle associés.
+     */
+    public function getQuestionsList(): array
+    {
+        return Database::fetchAll(
+            "SELECT q.id, q.title, q.title_fr, q.question_type, q.is_active, q.sort_order,
+                    d.name_fr as domain_name_fr, d.name as domain_name,
+                    em.name_fr as model_name_fr, em.name as model_name
+             FROM questions q
+             JOIN domains d ON q.domain_id = d.id
+             LEFT JOIN evaluation_models em ON q.model_id = em.id
+             ORDER BY d.sort_order, q.sort_order
+             LIMIT 50"
+        );
+    }
+
     public function getModelsStats(): array
     {
         $models = EvaluationModel::allActive();
