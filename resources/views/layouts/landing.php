@@ -41,8 +41,8 @@
           <a href="/">Accueil</a>
           <a href="/login">Connexion</a>
           <a href="/forgot">Mot de passe</a>
-          <a href="/cgu">CGU</a>
-          <a href="/privacy">Protection des données</a>
+          <a href="/cgu"><?= e(__('nav.cgu')) ?></a>
+          <a href="/privacy"><?= e(__('nav.privacy')) ?></a>
         </div>
       </div>
     </footer>
