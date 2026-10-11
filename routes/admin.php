@@ -109,6 +109,7 @@ $router->get('/admin/reportstudio/templates/{id}', 'TemplateController@show', $a
 $router->get('/admin/reportstudio/templates/{id}/edit', 'TemplateController@edit', $adminMiddleware);
 $router->post('/admin/reportstudio/templates/{id}', 'TemplateController@update', $adminMiddleware);
 $router->post('/admin/reportstudio/templates/{id}/delete', 'TemplateController@destroy', $adminMiddleware);
+$router->get('/admin/reportstudio/builder', 'TemplateController@index', $adminMiddleware);
 $router->get('/admin/reportstudio/builder/{id}/edit', 'BuilderController@edit', $adminMiddleware);
 $router->post('/admin/reportstudio/builder/{id}', 'BuilderController@update', $adminMiddleware);
 

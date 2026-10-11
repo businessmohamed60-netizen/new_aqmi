@@ -1,7 +1,8 @@
 <?php
 $title = $field ? 'Modifier le champ : ' . e($field['label_fr'] ?: $field['label']) : 'Nouveau champ personnalisé';
 ob_start();
-$options = $field ? json_decode($field['options'] ?? '[]', true) : [];
+$rawOptions = $field ? ($field['options'] ?? '[]') : '[]';
+$options = is_array($rawOptions) ? $rawOptions : (json_decode($rawOptions, true) ?? []);
 ?>
 <style>
 .auto-form-wrap { max-width: 800px; }
@@ -137,10 +138,11 @@ $options = $field ? json_decode($field['options'] ?? '[]', true) : [];
 </div>
 
 <?php
+$optCount = count($options);
 $extraScripts = <<<SCRIPTS
 <script>
 $(document).ready(function() {
-    var optIndex = <?= json_encode(count($options)) ?>;
+    var optIndex = {$optCount};
     if (typeof optIndex !== 'number' || isNaN(optIndex)) optIndex = 0;
 
     $('#fieldType').on('change', function() {
