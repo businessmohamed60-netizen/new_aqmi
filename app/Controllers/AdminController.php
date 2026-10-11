@@ -338,6 +338,7 @@ class AdminController
             'recommendation_text' => $_POST['recommendation_text'] ?? '',
             'recommendation_text_fr' => $_POST['recommendation_text_fr'] ?? '',
             'recommendation_text_ar' => $_POST['recommendation_text_ar'] ?? '',
+            'recommendation_text_es' => $_POST['recommendation_text_es'] ?? '',
             'priority' => $_POST['priority'] ?? 'medium',
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
         ];

@@ -52,6 +52,12 @@ class RecommendationService
         if ($lang === 'ar' && !empty($rule['recommendation_text_ar'])) {
             return $rule['recommendation_text_ar'];
         }
+        if ($lang === 'es' && !empty($rule['recommendation_text_es'])) {
+            return $rule['recommendation_text_es'];
+        }
+        if ($lang === 'fr' && !empty($rule['recommendation_text_fr'])) {
+            return $rule['recommendation_text_fr'];
+        }
         if (!empty($rule['recommendation_text_fr'])) {
             return $rule['recommendation_text_fr'];
         }

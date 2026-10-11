@@ -23,15 +23,15 @@ class Recommendation
     public static function create(array $data): int
     {
         return Database::insert(
-            "INSERT INTO recommendations (domain_id, condition_field, condition_operator, condition_value, recommendation_text, recommendation_text_fr, recommendation_text_ar, priority, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [$data['domain_id'] ?? null, $data['condition_field'], $data['condition_operator'] ?? '<', $data['condition_value'], $data['recommendation_text'], $data['recommendation_text_fr'] ?? '', $data['recommendation_text_ar'] ?? '', $data['priority'] ?? 'medium', $data['is_active'] ?? 1]
+            "INSERT INTO recommendations (domain_id, condition_field, condition_operator, condition_value, recommendation_text, recommendation_text_fr, recommendation_text_ar, recommendation_text_es, priority, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [$data['domain_id'] ?? null, $data['condition_field'], $data['condition_operator'] ?? '<', $data['condition_value'], $data['recommendation_text'], $data['recommendation_text_fr'] ?? '', $data['recommendation_text_ar'] ?? '', $data['recommendation_text_es'] ?? '', $data['priority'] ?? 'medium', $data['is_active'] ?? 1]
         );
     }
 
     public static function update(int $id, array $data): int
     {
         $sets = []; $params = [];
-        foreach (['domain_id', 'condition_field', 'condition_operator', 'condition_value', 'recommendation_text', 'recommendation_text_fr', 'recommendation_text_ar', 'priority', 'is_active'] as $key) {
+        foreach (['domain_id', 'condition_field', 'condition_operator', 'condition_value', 'recommendation_text', 'recommendation_text_fr', 'recommendation_text_ar', 'recommendation_text_es', 'priority', 'is_active'] as $key) {
             if (isset($data[$key])) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
         }
         if (empty($sets)) return 0;
