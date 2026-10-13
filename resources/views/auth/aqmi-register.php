@@ -31,6 +31,11 @@ ob_start();
     <!-- Register Form -->
     <form method="POST" action="/register" class="aqmi-form" autocomplete="off" id="registerForm">
       <?= csrf_field() ?>
+      <!-- Honeypot anti-robot : champ invisible que les robots remplissent -->
+      <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+        <label>Ne pas remplir ce champ</label>
+        <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
 
       <div class="aqmi-register-name">
         <div class="aqmi-field">

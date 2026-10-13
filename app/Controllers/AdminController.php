@@ -24,22 +24,7 @@ class AdminController
     public function login(): void
     {
         if (Auth::check()) { redirect('/admin'); return; }
-
-        // Handle GET-based login (proxy workaround: Cloudflare blocks POST)
-        $email = $_GET['email'] ?? '';
-        $password = $_GET['password'] ?? '';
-
-        if (!empty($email) && !empty($password)) {
-            if (Auth::login($email, $password)) {
-                redirect('/admin');
-            } else {
-                $_SESSION['error'] = 'Email ou mot de passe incorrect.';
-                redirect('/admin/login');
-            }
-            return;
-        }
-
-        view('auth.login');
+        redirect('/login');
     }
 
     public function logout(): void

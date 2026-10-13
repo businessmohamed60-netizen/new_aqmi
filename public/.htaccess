@@ -3,6 +3,20 @@ DirectoryIndex index.php index.html
 RewriteEngine On
 Options -Indexes
 
+# --- Bot protection: block known crawlers/scanners from auth endpoints ---
+RewriteCond %{HTTP_USER_AGENT} (bot|crawl|spider|scrap|curl|wget|python-requests|libwww|httpclient|httpunit|nikto|nmap|masscan|sqlmap|nikto|acunetix|nessus|w3af|hydra|burp|zap|fuzzer|semrush|ahrefs|dotbot|petalbot|bytespider|dataforseo|mj12bot|yandexbot|baiduspider|sogou|exabot|zombie) [NC]
+RewriteCond %{REQUEST_URI} ^/(login|otp|register|forgot|reset|admin) [NC]
+RewriteRule ^ - [F,L]
+
+# Block empty User-Agent on auth endpoints
+RewriteCond %{HTTP_USER_AGENT} ^$ [NC]
+RewriteCond %{REQUEST_URI} ^/(login|otp|register|forgot|reset|admin) [NC]
+RewriteRule ^ - [F,L]
+
+# Block requests from known Tor exit nodes (common proxy header)
+RewriteCond %{HTTP:X-Tor-Network} ^1$ [NC]
+RewriteRule ^ - [F,L]
+
 # Serve real static files directly
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule \.(css|js|png|jpe?g|gif|ico|svg|woff2?|ttf|eot|webp|pdf)$ - [L]
@@ -15,3 +29,18 @@ RewriteRule \.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Rate limit login attempts (max 10 requests/min to /login and /otp)
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_URI} ^/(login|otp) [NC]
+  RewriteCond %{REQUEST_METHOD} POST
+</IfModule>

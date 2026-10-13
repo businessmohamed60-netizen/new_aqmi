@@ -28,6 +28,11 @@ ob_start();
 
     <form method="POST" action="/forgot" class="aqmi-form">
       <?= csrf_field() ?>
+      <!-- Honeypot anti-robot : champ invisible que les robots remplissent -->
+      <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true">
+        <label>Ne pas remplir ce champ</label>
+        <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
       <div class="aqmi-field">
         <label class="aqmi-label">Adresse email</label>
         <div class="aqmi-input-wrap">

@@ -6,6 +6,7 @@ use App\Helpers\Database;
 use App\Helpers\Mailer;
 use App\Helpers\Security;
 use App\Helpers\Session;
+use App\Helpers\BotProtection;
 use App\Models\User;
 use App\Models\OtpCode;
 use App\Models\LoginHistory;
@@ -44,6 +45,17 @@ class AuthController
     public function doLogin(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('/login');
+        }
+
+        // Protection anti-robots : User-Agent + honeypot + rate limiting
+        $blockReason = BotProtection::guard('login');
+        if ($blockReason !== null) {
+            if (http_response_code() === 403) {
+                Session::setFlash('error', 'Accès refusé.');
+            } else {
+                Session::setFlash('error', $blockReason);
+            }
             redirect('/login');
         }
 
@@ -140,6 +152,17 @@ class AuthController
             redirect('/login');
         }
 
+        // Protection anti-robots sur la vérification OTP
+        $blockReason = BotProtection::guard('otp');
+        if ($blockReason !== null) {
+            if (http_response_code() === 403) {
+                Session::setFlash('error', 'Accès refusé.');
+            } else {
+                Session::setFlash('error', $blockReason);
+            }
+            redirect('/otp');
+        }
+
         $userId = Session::get('otp_user_id');
         if (!$userId) {
             Session::setFlash('error', 'Session expirée. Veuillez vous reconnecter.');
@@ -213,6 +236,22 @@ class AuthController
             redirect('/login');
         }
 
+        // Protection anti-robots sur le renvoi d'OTP (limite 3 par 10 min)
+        $ip = BotProtection::getClientIp();
+        $rateLimit = BotProtection::checkRateLimit($ip, 'resend_otp');
+        if (!$rateLimit['allowed']) {
+            BotProtection::recordAttempt($ip, 'resend_otp', 'rate_limited');
+            Session::setFlash('error', $rateLimit['message']);
+            redirect('/otp');
+        }
+        if (BotProtection::isBot()) {
+            BotProtection::recordAttempt($ip, 'resend_otp', 'bot_blocked');
+            Session::setFlash('error', 'Accès refusé.');
+            redirect('/otp');
+        }
+
+        BotProtection::recordAttempt($ip, 'resend_otp', 'sent');
+
         $user = User::find($userId);
         $ua = Mailer::detectUserAgent();
         $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
@@ -249,6 +288,17 @@ class AuthController
     public function doForgot(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('/forgot');
+        }
+
+        // Protection anti-robots sur la demande de réinitialisation
+        $blockReason = BotProtection::guard('forgot');
+        if ($blockReason !== null) {
+            if (http_response_code() === 403) {
+                Session::setFlash('error', 'Accès refusé.');
+            } else {
+                Session::setFlash('error', $blockReason);
+            }
             redirect('/forgot');
         }
 
@@ -403,6 +453,17 @@ class AuthController
     public function doRegister(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('/register');
+        }
+
+        // Protection anti-robots sur l'inscription
+        $blockReason = BotProtection::guard('register');
+        if ($blockReason !== null) {
+            if (http_response_code() === 403) {
+                Session::setFlash('error', 'Accès refusé.');
+            } else {
+                Session::setFlash('error', $blockReason);
+            }
             redirect('/register');
         }
 
