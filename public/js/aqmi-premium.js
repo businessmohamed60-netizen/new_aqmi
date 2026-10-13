@@ -9,6 +9,8 @@
 
   var cfg = window.AQMI_CONFIG;
   if (!cfg) return;
+  var hasGsap = typeof window.gsap !== 'undefined';
+  var hasJQuery = typeof window.jQuery !== 'undefined';
 
   var i18nData = window.AQMI_I18N || {};
   var currentLang = cfg.lang || 'fr';
@@ -174,12 +176,16 @@
 
     // Animate scene transition
     if (el.scene) {
-      gsap.timeline()
-        .to(el.scene, { opacity: 0, scale: 0.9, duration: 0.2, ease: 'power2.in' })
-        .call(function() {
-          el.scene.innerHTML = html;
-        })
-        .to(el.scene, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+      if (hasGsap) {
+        gsap.timeline()
+          .to(el.scene, { opacity: 0, scale: 0.9, duration: 0.2, ease: 'power2.in' })
+          .call(function() {
+            el.scene.innerHTML = html;
+          })
+          .to(el.scene, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+      } else {
+        el.scene.innerHTML = html;
+      }
     }
   }
 
@@ -195,34 +201,42 @@
       '</div>'
     ].join('');
 
-    var tl = gsap.timeline({
-      onComplete: function() {
-        el.domainTransition.style.display = 'none';
-      }
-    });
     el.domainTransition.style.display = '';
-    tl.fromTo(el.domainTransition, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' })
-      .to(el.domainTransition, { opacity: 0, duration: 0.3, ease: 'power2.in' }, '+=0.8');
+    if (hasGsap) {
+      var tl = gsap.timeline({
+        onComplete: function() {
+          el.domainTransition.style.display = 'none';
+        }
+      });
+      tl.fromTo(el.domainTransition, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' })
+        .to(el.domainTransition, { opacity: 0, duration: 0.3, ease: 'power2.in' }, '+=0.8');
+    } else {
+      setTimeout(function() { el.domainTransition.style.display = 'none'; }, 1200);
+    }
   }
 
   // ── Stagger Answer Cards Entrance ──
   function animateAnswerEntrance() {
     var cards = document.querySelectorAll('.aqmi-answer-card, .aqmi-rating-card');
     if (cards.length === 0) return;
-    gsap.fromTo(cards,
-      { opacity: 0, y: 20, scale: 0.97 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.35,
-        stagger: 0.06,
-        ease: 'power2.out',
-        onComplete: function() {
-          isTransitioning = false;
+    if (hasGsap) {
+      gsap.fromTo(cards,
+        { opacity: 0, y: 20, scale: 0.97 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.35,
+          stagger: 0.06,
+          ease: 'power2.out',
+          onComplete: function() {
+            isTransitioning = false;
+          }
         }
-      }
-    );
+      );
+    } else {
+      isTransitioning = false;
+    }
   }
 
   // ── Render question ──
@@ -582,19 +596,20 @@
     el.nextBtn.style.display = '';
 
     // Animate selection with spring
-    gsap.fromTo(card, { scale: 0.95 }, { scale: 1, duration: 0.3, ease: 'back.out(2.5)' });
+    if (hasGsap) {
+      gsap.fromTo(card, { scale: 0.95 }, { scale: 1, duration: 0.3, ease: 'back.out(2.5)' });
 
-    // Ripple effect on card
-    var ripple = document.createElement('div');
-    ripple.className = 'aqmi-ripple';
-    card.appendChild(ripple);
-    gsap.to(ripple, {
-      scale: 4,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power2.out',
-      onComplete: function() { ripple.remove(); }
-    });
+      var ripple = document.createElement('div');
+      ripple.className = 'aqmi-ripple';
+      card.appendChild(ripple);
+      gsap.to(ripple, {
+        scale: 4,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        onComplete: function() { ripple.remove(); }
+      });
+    }
 
     // NOTE: la complétion n'est plus déclenchée automatiquement ici.
     // Elle est désormais uniquement pilotée par le clic sur le bouton "Suivant"
@@ -616,18 +631,26 @@
         ajaxData.score = score;
         if (answerText) ajaxData.answer_text = answerText;
     }
-    jQuery.ajax({
-      url: '/assessment/save-answer',
-      method: 'GET',
-      data: ajaxData,
-      success: function() {
+    if (hasJQuery) {
+      jQuery.ajax({
+        url: '/assessment/save-answer',
+        method: 'GET',
+        data: ajaxData,
+        success: function() {
+          el.saveIndicator.classList.add('show');
+          setTimeout(function() { el.saveIndicator.classList.remove('show'); }, 2000);
+        },
+        error: function() {
+          // Silent fail
+        }
+      });
+    } else if (window.fetch) {
+      var params = new URLSearchParams(ajaxData).toString();
+      fetch('/assessment/save-answer?' + params, { method: 'GET' }).then(function() {
         el.saveIndicator.classList.add('show');
         setTimeout(function() { el.saveIndicator.classList.remove('show'); }, 2000);
-      },
-      error: function() {
-        // Silent fail
-      }
-    });
+      }).catch(function() {});
+    }
   }
 
   // ── Navigation ──
@@ -642,25 +665,30 @@
     var inner = el.questionInner;
     var duration = 0.35;
 
-    gsap.to(inner, {
-      opacity: 0,
-      y: -15,
-      duration: duration,
-      ease: 'power2.in',
-      onComplete: function() {
-        renderQuestion(currentIdx);
-        gsap.set(inner, { opacity: 0, y: 20 });
-        gsap.to(inner, {
-          opacity: 1,
-          y: 0,
-          duration: duration,
-          ease: 'power2.out',
-          onComplete: function() {
-            isTransitioning = false;
-          }
-        });
-      }
-    });
+    if (hasGsap) {
+      gsap.to(inner, {
+        opacity: 0,
+        y: -15,
+        duration: duration,
+        ease: 'power2.in',
+        onComplete: function() {
+          renderQuestion(currentIdx);
+          gsap.set(inner, { opacity: 0, y: 20 });
+          gsap.to(inner, {
+            opacity: 1,
+            y: 0,
+            duration: duration,
+            ease: 'power2.out',
+            onComplete: function() {
+              isTransitioning = false;
+            }
+          });
+        }
+      });
+    } else {
+      renderQuestion(currentIdx);
+      isTransitioning = false;
+    }
   }
 
   var completionShown = false;
@@ -690,7 +718,7 @@
     el.percentLabel.textContent = pct + '%';
     el.progressFill.style.width = pct + '%';
 
-    gsap.fromTo(el.progressFill, { opacity: 0.7 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+    if (hasGsap) gsap.fromTo(el.progressFill, { opacity: 0.7 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
 
     var remaining = totalQ - answeredCount;
     var mins = Math.max(1, Math.ceil(remaining * 0.35));
@@ -732,16 +760,20 @@
       gaugeInitialized = true;
     }
 
-    var startOffset = parseFloat(el.gaugeCircle.style.strokeDashoffset) || GAUGE_CIRCUMFERENCE;
-    var proxy = { offset: startOffset };
-    gsap.to(proxy, {
-      offset: offset,
-      duration: 0.8,
-      ease: 'power2.out',
-      onUpdate: function() {
-        el.gaugeCircle.style.strokeDashoffset = proxy.offset;
-      }
-    });
+    if (hasGsap) {
+      var startOffset = parseFloat(el.gaugeCircle.style.strokeDashoffset) || GAUGE_CIRCUMFERENCE;
+      var proxy = { offset: startOffset };
+      gsap.to(proxy, {
+        offset: offset,
+        duration: 0.8,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.gaugeCircle.style.strokeDashoffset = proxy.offset;
+        }
+      });
+    } else {
+      el.gaugeCircle.style.strokeDashoffset = String(offset);
+    }
 
     var color = pct >= 70 ? '#2EC4B6' : (pct >= 40 ? '#9d8fd1' : '#E5484D');
     el.gaugeCircle.style.stroke = color;
@@ -759,15 +791,19 @@
       setTimeout(function() { pulse.style.display = 'none'; }, 1500);
     }
 
-    var numProxy = { val: parseInt(el.gaugeValue.textContent) || 0 };
-    gsap.to(numProxy, {
-      val: pct,
-      duration: 0.6,
-      ease: 'power2.out',
-      onUpdate: function() {
-        el.gaugeValue.textContent = Math.round(numProxy.val) + '%';
-      }
-    });
+    if (hasGsap) {
+      var numProxy = { val: parseInt(el.gaugeValue.textContent) || 0 };
+      gsap.to(numProxy, {
+        val: pct,
+        duration: 0.6,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.gaugeValue.textContent = Math.round(numProxy.val) + '%';
+        }
+      });
+    } else {
+      el.gaugeValue.textContent = pct + '%';
+    }
 
   }
 
@@ -779,6 +815,7 @@
     if (!el.mainGaugeCircle) return;
 
     if (score === null) {
+      el.mainGaugeCircle.style.strokeDashoffset = String(MAIN_GAUGE_CIRCUMFERENCE);
       el.mainGaugeValue.textContent = 'N/A';
       el.mainGaugeIcon.style.color = '#6c757d';
       el.mainGaugeIcon.innerHTML = '<i class="fas fa-dash"></i>';
@@ -787,29 +824,37 @@
     }
 
     var mainOffset = MAIN_GAUGE_CIRCUMFERENCE - (pct / 100) * MAIN_GAUGE_CIRCUMFERENCE;
-    var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;
-    var mainProxy = { offset: mainStart };
-    gsap.to(mainProxy, {
-      offset: mainOffset,
-      duration: 0.8,
-      ease: 'power2.out',
-      onUpdate: function() {
-        el.mainGaugeCircle.style.strokeDashoffset = mainProxy.offset;
-      }
-    });
+    if (hasGsap) {
+      var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;
+      var mainProxy = { offset: mainStart };
+      gsap.to(mainProxy, {
+        offset: mainOffset,
+        duration: 0.8,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.mainGaugeCircle.style.strokeDashoffset = mainProxy.offset;
+        }
+      });
+    } else {
+      el.mainGaugeCircle.style.strokeDashoffset = String(mainOffset);
+    }
 
     var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#9d8fd1' : score === 3 ? '#1F6FEB' : '#2EC4B6';
     el.mainGaugeIcon.style.color = color;
 
-    var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
-    gsap.to(mainNumProxy, {
-      val: pct,
-      duration: 0.6,
-      ease: 'power2.out',
-      onUpdate: function() {
-        el.mainGaugeValue.textContent = Math.round(mainNumProxy.val) + '%';
-      }
-    });
+    if (hasGsap) {
+      var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
+      gsap.to(mainNumProxy, {
+        val: pct,
+        duration: 0.6,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.mainGaugeValue.textContent = Math.round(mainNumProxy.val) + '%';
+        }
+      });
+    } else {
+      el.mainGaugeValue.textContent = pct + '%';
+    }
 
     var icon = 'fa-gauge-high';
     var label = tr('gauge_waiting');
@@ -870,18 +915,20 @@
 
       container.appendChild(piece);
 
-      gsap.to(piece, {
-        y: window.innerHeight + 20,
-        x: (Math.random() - 0.5) * 200,
-        opacity: 1,
-        rotation: rotation + 360 + Math.random() * 360,
-        duration: dur,
-        delay: delay,
-        ease: 'power1.out',
-        onComplete: function() {
-          if (piece.parentNode) piece.remove();
-        }
-      });
+      if (hasGsap) {
+        gsap.to(piece, {
+          y: window.innerHeight + 20,
+          x: (Math.random() - 0.5) * 200,
+          opacity: 1,
+          rotation: rotation + 360 + Math.random() * 360,
+          duration: dur,
+          delay: delay,
+          ease: 'power1.out',
+          onComplete: function() {
+            if (piece.parentNode) piece.remove();
+          }
+        });
+      }
     }
 
     setTimeout(function() {
@@ -913,12 +960,14 @@
     // affiché mais non cliquable (pointer-events: none par défaut).
     overlay.classList.add('show');
 
-    var tl = gsap.timeline();
-    tl.to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.out' })
-      .fromTo(overlay.querySelector('.aqmi-completion-check'), { scale: 0, rotation: -180 }, { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' }, '-=0.2')
-      .fromTo(overlay.querySelector('.aqmi-completion-title'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.3')
-      .fromTo(overlay.querySelector('.aqmi-completion-desc'), { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.2')
-      .fromTo(overlay.querySelector('.aqmi-completion-btn'), { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.2');
+    if (hasGsap) {
+      var tl = gsap.timeline();
+      tl.to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.out' })
+        .fromTo(overlay.querySelector('.aqmi-completion-check'), { scale: 0, rotation: -180 }, { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' }, '-=0.2')
+        .fromTo(overlay.querySelector('.aqmi-completion-title'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.3')
+        .fromTo(overlay.querySelector('.aqmi-completion-desc'), { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.2')
+        .fromTo(overlay.querySelector('.aqmi-completion-btn'), { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.2');
+    }
   }
 
   // ── Keyboard Navigation ──
@@ -1007,17 +1056,18 @@
 
       el.nextBtn.style.display = '';
 
-      jQuery.ajax({
-        url: '/assessment/save-answer',
-        method: 'GET',
-        data: {
-          assessment_id: assessmentId,
-          question_id: qid,
-          score: 3,
-          answer_text: input.classList.contains('aqmi-text-input') ? val : '',
-          answer_value: (input.classList.contains('aqmi-numeric-input') || input.classList.contains('aqmi-date-input')) ? val : ''
-        }
-      });
+      var blurData = {
+        assessment_id: assessmentId,
+        question_id: qid,
+        score: 3,
+        answer_text: input.classList.contains('aqmi-text-input') ? val : '',
+        answer_value: (input.classList.contains('aqmi-numeric-input') || input.classList.contains('aqmi-date-input')) ? val : ''
+      };
+      if (hasJQuery) {
+        jQuery.ajax({ url: '/assessment/save-answer', method: 'GET', data: blurData });
+      } else if (window.fetch) {
+        fetch('/assessment/save-answer?' + new URLSearchParams(blurData).toString(), { method: 'GET' }).catch(function() {});
+      }
     }, true);
   }
 
@@ -1041,7 +1091,7 @@
     updateProgress();
     updateRightGauge();
     updateMainGauge(currentIdx);
-    gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
+    if (hasGsap) gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
   }
 
   // ── Unified Model + Language Selection Screen ──
@@ -1081,9 +1131,10 @@
 
   function dismissSelectScreen() {
     if (!selectScreen) return;
-    gsap.to(selectScreen, {
-      opacity: 0, duration: 0.5, ease: 'power2.inOut',
-      onComplete: function() {
+    if (hasGsap) {
+      gsap.to(selectScreen, {
+        opacity: 0, duration: 0.5, ease: 'power2.inOut',
+        onComplete: function() {
         selectScreen.style.display = 'none';
         selectScreenVisible = false;
         if (cfg.isModelSelection && selectedModelId) {
