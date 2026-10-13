@@ -44,6 +44,7 @@ $router->get('/admin/logout', 'AdminController@logout');
 
 // Client Auth — single login at /login, dashboard at /user/dashboard
 $router->get('/user/dashboard', 'UserController@dashboard', $auth);
+$router->get('/user/models', 'UserController@models', $auth);
 $router->get('/user/logout', 'UserController@logout');
 
 // Legacy redirects (keep old links working)

@@ -1,4 +1,10 @@
-<?php $title = 'Consolider mes rapports'; ob_start(); ?>
+<?php
+$activeSection = 'consolidated';
+$pageTitle = 'Rapports consolidés';
+$pageSubtitle = 'Sélectionnez plusieurs évaluations terminées pour générer un rapport consolidé.';
+$title = 'Consolider mes rapports';
+ob_start();
+?>
 <style>
 :root {
   --vx-primary: #6366f1;
@@ -26,7 +32,6 @@
   --vx-shadow-lg: 0 12px 48px rgba(80,64,42,0.11);
   --vx-transition: 0.25s ease;
 }
-.consolidated-page { min-height: 100vh; background: var(--vx-body-bg); padding: 2rem 1rem 5rem; }
 .consolidated-wrap { max-width: 900px; margin: 0 auto; }
 .consolidated-header { margin-bottom: 2rem; }
 .consolidated-header h1 { font-size: 1.5rem; font-weight: 800; color: var(--vx-text-primary); margin-bottom: 0.25rem; }
@@ -66,8 +71,6 @@
 
 <div class="consolidated-page">
   <div class="consolidated-wrap">
-    <a href="/user/dashboard" class="back-link"><i class="fas fa-arrow-left"></i> Retour au tableau de bord</a>
-
     <div class="consolidated-header">
       <h1><i class="fas fa-layer-group" style="color:var(--vx-primary);"></i> Consolider mes rapports</h1>
       <p>Sélectionnez plusieurs évaluations terminées pour générer un rapport consolidé. Vous pourrez ensuite demander la certification officielle.</p>
@@ -166,5 +169,5 @@
 </div>
 <?php
 $content = ob_get_clean();
-require BASE_PATH . '/resources/views/layouts/landing.php';
+require BASE_PATH . '/resources/views/layouts/user_dashboard.php';
 ?>

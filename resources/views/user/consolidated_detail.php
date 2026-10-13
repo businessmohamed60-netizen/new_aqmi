@@ -1,4 +1,9 @@
-<?php $title = 'Rapport consolidé'; ob_start(); ?>
+<?php
+$activeSection = 'consolidated';
+$pageTitle = 'Rapport consolidé';
+$title = 'Rapport consolidé';
+ob_start();
+?>
 <style>
 :root {
   --vx-primary: #6366f1;
@@ -25,7 +30,6 @@
   --vx-shadow-lg: 0 12px 48px rgba(80,64,42,0.11);
   --vx-transition: 0.25s ease;
 }
-.detail-page { min-height: 100vh; background: var(--vx-body-bg); padding: 2rem 1rem 5rem; }
 .detail-wrap { max-width: 800px; margin: 0 auto; }
 .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--vx-text-secondary); font-size: 0.8rem; text-decoration: none; margin-bottom: 1rem; transition: color var(--vx-transition); }
 .back-link:hover { color: var(--vx-primary); }
@@ -55,8 +59,6 @@
 
 <div class="detail-page">
   <div class="detail-wrap">
-    <a href="/user/consolidated" class="back-link"><i class="fas fa-arrow-left"></i> Retour</a>
-
     <?php if (isset($_SESSION['success'])): ?>
       <div style="background:var(--vx-success-light);color:var(--vx-success);padding:0.75rem 1rem;border-radius:var(--vx-radius-md);margin-bottom:1rem;font-size:0.85rem;font-weight:600;">
         <i class="fas fa-check-circle"></i> <?= e($_SESSION['success']) ?>
@@ -166,5 +168,5 @@
 </div>
 <?php
 $content = ob_get_clean();
-require BASE_PATH . '/resources/views/layouts/landing.php';
+require BASE_PATH . '/resources/views/layouts/user_dashboard.php';
 ?>
