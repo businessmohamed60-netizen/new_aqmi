@@ -21,6 +21,7 @@ $navItems = [
     'models'      => ['icon' => 'fa-layer-group',     'label' => __('dashboard.nav.models')      ?: 'Modèles & Analyses', 'href' => '/user/models'],
     'assessments' => ['icon' => 'fa-clipboard-list',  'label' => __('dashboard.nav.assessments') ?: 'Évaluations',       'href' => '/assessment/start'],
     'consolidated'=> ['icon' => 'fa-diagram-project', 'label' => __('dashboard.nav.consolidated')?: 'Rapports consolidés','href' => '/user/consolidated'],
+    'profile'     => ['icon' => 'fa-user-gear',        'label' => __('dashboard.nav.profile')     ?: 'Mon profil',        'href' => '/user/profile'],
 ];
 ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">

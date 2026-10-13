@@ -111,7 +111,7 @@ class UserController
             $assessmentsRemaining = max(0, $assessmentLimit - $assessmentsUsed);
         }
 
-        $modelStats = $this->buildModelStats($userId, $assessments, $scoringService)
+        $modelStats = $this->buildModelStats($userId, $assessments, $scoringService);
 
         view('user.dashboard', compact(
             'assessments', 'totalAssessments', 'completedCount', 'user', 'consolidatedReports',
@@ -411,6 +411,125 @@ class UserController
         }
 
         return $modelStats;
+    }
+
+    public function profile(): void
+    {
+        if (!Auth::check()) {
+            $_SESSION['error'] = 'Veuillez vous connecter pour accéder à votre espace.';
+            redirect('/login');
+            return;
+        }
+        $user = Auth::user();
+        if (!$user || $user['role_slug'] !== 'client') {
+            $_SESSION['error'] = 'Accès non autorisé.';
+            redirect('/');
+            return;
+        }
+
+        $loginHistory = Database::fetchAll(
+            "SELECT * FROM login_logs WHERE user_id = ? ORDER BY created_at DESC LIMIT 10",
+            [Auth::id()]
+        );
+
+        view('user.profile', compact('user', 'loginHistory'));
+    }
+
+    public function updateProfile(): void
+    {
+        if (!Auth::check()) { redirect('/login'); return; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/user/profile'); return; }
+
+        $user = Auth::user();
+        if (!$user || $user['role_slug'] !== 'client') {
+            $_SESSION['error'] = 'Accès non autorisé.';
+            redirect('/');
+            return;
+        }
+
+        $firstname = trim($_POST['firstname'] ?? '');
+        $lastname = trim($_POST['lastname'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+
+        if (empty($firstname) || empty($lastname) || empty($email)) {
+            $_SESSION['error'] = __('profile.error.required');
+            redirect('/user/profile');
+            return;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = __('profile.error.invalid_email');
+            redirect('/user/profile');
+            return;
+        }
+
+        $existing = \App\Models\User::findByEmail($email);
+        if ($existing && $existing['id'] !== Auth::id()) {
+            $_SESSION['error'] = __('profile.error.email_taken');
+            redirect('/user/profile');
+            return;
+        }
+
+        \App\Models\User::update(Auth::id(), [
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'email' => $email,
+            'phone' => $phone ?: null,
+        ]);
+
+        $updatedUser = \App\Models\User::find(Auth::id());
+
+        $_SESSION['success'] = __('profile.success.updated');
+        redirect('/user/profile');
+    }
+
+    public function updatePassword(): void
+    {
+        if (!Auth::check()) { redirect('/login'); return; }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { redirect('/user/profile'); return; }
+
+        $user = Auth::user();
+        if (!$user || $user['role_slug'] !== 'client') {
+            $_SESSION['error'] = 'Accès non autorisé.';
+            redirect('/');
+            return;
+        }
+
+        $current = $_POST['current_password'] ?? '';
+        $new = $_POST['new_password'] ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+
+        if (empty($current) || empty($new) || empty($confirm)) {
+            $_SESSION['error'] = __('profile.error.password_required');
+            redirect('/user/profile');
+            return;
+        }
+
+        if (!\App\Helpers\Security::verifyPassword($current, $user['password'])) {
+            $_SESSION['error'] = __('profile.error.wrong_password');
+            redirect('/user/profile');
+            return;
+        }
+
+        if (strlen($new) < 8) {
+            $_SESSION['error'] = __('profile.error.password_short');
+            redirect('/user/profile');
+            return;
+        }
+
+        if ($new !== $confirm) {
+            $_SESSION['error'] = __('profile.error.password_mismatch');
+            redirect('/user/profile');
+            return;
+        }
+
+        \App\Models\User::update(Auth::id(), [
+            'password' => \App\Helpers\Security::hashPassword($new),
+        ]);
+
+        $_SESSION['success'] = __('profile.success.password_changed');
+        redirect('/user/profile');
     }
 
     public function logout(): void
