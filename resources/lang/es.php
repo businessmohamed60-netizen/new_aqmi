@@ -327,6 +327,12 @@ return [
     'dashboard.models.domain_chart' => 'Puntuaciones por dominio',
     'dashboard.models.empty' => 'Aún no se ha utilizado ningún modelo de evaluación',
     'dashboard.models.maturity' => 'Nivel',
+    'dashboard.models.comparison' => 'Comparación de modelos',
+    'dashboard.models.comparison_sub' => 'Puntuaciones por dominio',
+    'dashboard.models.filter_all' => 'Todos',
+    'dashboard.models.filter_completed' => 'Completados',
+    'dashboard.models.filter_pending' => 'En progreso',
+    'dashboard.models.no_domains' => 'Sin puntuaciones por dominio',
 
     'cgu.title' => 'Condiciones Generales de Uso',
     'cgu.updated' => 'Última actualización: 11 de septiembre de 2026',

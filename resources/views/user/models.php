@@ -183,10 +183,15 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   <div class="ud-models-count">
     <strong><?= count($modelStats) ?></strong> <?= __('dashboard.models.subtitle') ?>
   </div>
-  <div class="ud-filter-chips">
-    <button class="ud-chip is-active" data-filter="all"><?= __('dashboard.models.filter_all') ?: 'Tous' ?></button>
-    <button class="ud-chip" data-filter="completed"><?= __('dashboard.models.filter_completed') ?: 'Terminés' ?></button>
-    <button class="ud-chip" data-filter="pending"><?= __('dashboard.models.filter_pending') ?: 'En cours' ?></button>
+  <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+    <a href="/user/dashboard" class="nova-btn nova-btn-outline" style="font-size:0.72rem;padding:0.4rem 0.9rem;">
+      <i class="fas fa-arrow-left" style="font-size:0.65rem;margin-right:0.25rem;"></i><?= __('dashboard.nav.overview') ?: 'Tableau de bord' ?>
+    </a>
+    <div class="ud-filter-chips">
+      <button class="ud-chip is-active" data-filter="all"><?= __('dashboard.models.filter_all') ?></button>
+      <button class="ud-chip" data-filter="completed"><?= __('dashboard.models.filter_completed') ?></button>
+      <button class="ud-chip" data-filter="pending"><?= __('dashboard.models.filter_pending') ?></button>
+    </div>
   </div>
 </div>
 
@@ -208,8 +213,8 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   <?php if (count($compareModels) >= 2): ?>
   <div class="ud-compare-card">
     <div class="ud-compare-header">
-      <h3><i class="fas fa-chart-radar" style="color:var(--vx-primary);margin-right:0.5rem;"></i><?= __('dashboard.models.comparison') ?: 'Comparaison des modèles' ?></h3>
-      <span style="font-size:0.68rem;color:var(--vx-text-muted);"><?= __('dashboard.models.comparison_sub') ?: 'Scores par domaine' ?></span>
+      <h3><i class="fas fa-chart-radar" style="color:var(--vx-primary);margin-right:0.5rem;"></i><?= __('dashboard.models.comparison') ?></h3>
+      <span style="font-size:0.68rem;color:var(--vx-text-muted);"><?= __('dashboard.models.comparison_sub') ?></span>
     </div>
     <div class="ud-compare-container">
       <canvas id="udCompareChart"></canvas>
@@ -302,7 +307,7 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
               </div>
             <?php elseif ($hasScore): ?>
               <div style="font-size:0.65rem;color:var(--vx-text-muted);text-align:center;padding:0.5rem;">
-                <?= __('dashboard.models.no_domains') ?: 'Aucun score par domaine disponible' ?>
+                <?= __('dashboard.models.no_domains') ?>
               </div>
             <?php endif; ?>
           </div>

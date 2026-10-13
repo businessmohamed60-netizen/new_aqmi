@@ -327,6 +327,12 @@ return [
     'dashboard.models.domain_chart' => 'النتائج حسب المجال',
     'dashboard.models.empty' => 'لم يتم استخدام أي نموذج تقييم بعد',
     'dashboard.models.maturity' => 'المستوى',
+    'dashboard.models.comparison' => 'مقارنة النماذج',
+    'dashboard.models.comparison_sub' => 'النتائج حسب المجال',
+    'dashboard.models.filter_all' => 'الكل',
+    'dashboard.models.filter_completed' => 'مكتمل',
+    'dashboard.models.filter_pending' => 'قيد التقدم',
+    'dashboard.models.no_domains' => 'لا توجد نتائج حسب المجال',
 
     'cgu.title' => 'الشروط العامة للاستخدام',
     'cgu.updated' => 'آخر تحديث: 11 سبتمبر 2026',

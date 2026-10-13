@@ -327,6 +327,12 @@ return [
     'dashboard.models.domain_chart' => 'Scores by domain',
     'dashboard.models.empty' => 'No evaluation model used yet',
     'dashboard.models.maturity' => 'Level',
+    'dashboard.models.comparison' => 'Model comparison',
+    'dashboard.models.comparison_sub' => 'Scores by domain',
+    'dashboard.models.filter_all' => 'All',
+    'dashboard.models.filter_completed' => 'Completed',
+    'dashboard.models.filter_pending' => 'In progress',
+    'dashboard.models.no_domains' => 'No domain scores available',
 
     'cgu.title' => 'Terms of Use',
     'cgu.updated' => 'Last updated: September 11, 2026',

@@ -327,6 +327,12 @@ return [
     'dashboard.models.domain_chart' => 'Scores par domaine',
     'dashboard.models.empty' => 'Aucun modèle d\'évaluation utilisé pour le moment',
     'dashboard.models.maturity' => 'Niveau',
+    'dashboard.models.comparison' => 'Comparaison des modèles',
+    'dashboard.models.comparison_sub' => 'Scores par domaine',
+    'dashboard.models.filter_all' => 'Tous',
+    'dashboard.models.filter_completed' => 'Terminés',
+    'dashboard.models.filter_pending' => 'En cours',
+    'dashboard.models.no_domains' => 'Aucun score par domaine disponible',
 
     'cgu.title' => 'Conditions Générales d\'Utilisation',
     'cgu.updated' => 'Dernière mise à jour : 11 septembre 2026',

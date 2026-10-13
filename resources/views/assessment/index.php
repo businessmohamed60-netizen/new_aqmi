@@ -236,8 +236,26 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
     . '<style>'
     . '.aqmi-premium { --aqmi-font: "Inter", "Manrope", sans-serif; }'
-    . '.ud-content { max-width: 100%; padding: 0; }'
+    . '.ud-content { max-width: 100%; padding: 0; margin: 0; width: 100%; }'
     . '.ud-page-title-bar { display: none; }'
+    . '.ud-shell { overflow: hidden; }'
+    // Override fixed positioning to work inside dashboard layout
+    . '.aqmi-premium { position: relative !important; inset: auto !important; z-index: 1 !important; height: calc(100vh - 60px); overflow: hidden; }'
+    // Hide the AQMI-specific topbar (dashboard already provides navigation)
+    . '.aqmi-topbar { display: none !important; }'
+    // Adjust progress wrap padding since topbar is hidden
+    . '.aqmi-progress-wrap { padding-top: 1rem; }'
+    // Select screen: absolute within .aqmi-premium instead of fixed to viewport
+    . '.aqmi-select-screen { position: absolute !important; inset: 0 !important; z-index: 50 !important; overflow-y: auto; }'
+    // Floating gauge: absolute within .aqmi-premium
+    . '.aqmi-gauge { position: absolute !important; }'
+    // Domain transition: absolute within container
+    . '.aqmi-domain-transition { position: absolute !important; }'
+    // Mobile: leave room for bottom nav
+    . '@media (max-width: 768px) {'
+    . '.aqmi-premium { height: calc(100vh - 120px) !important; }'
+    . '.ud-content { padding-bottom: 0 !important; }'
+    . '}'
     . '</style>';
 
 ob_start();
