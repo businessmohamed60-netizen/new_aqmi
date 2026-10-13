@@ -176,7 +176,7 @@
 
     // Animate scene transition
     if (el.scene) {
-      if (hasGsap) {
+      if (hasGsap && window.gsap) {
         gsap.timeline()
           .to(el.scene, { opacity: 0, scale: 0.9, duration: 0.2, ease: 'power2.in' })
           .call(function() {
@@ -261,39 +261,43 @@
     lastDomainId = domain ? domain.id : null;
 
     // Update top bar
-    el.currentNum.textContent = index + 1;
-    el.domainLabel.textContent = domainName;
-    el.domainBadgeText.textContent = domainName;
-    el.domainLabel.textContent = domainName;
-    if (domain && domain.icon) {
+    if (el.currentNum) el.currentNum.textContent = index + 1;
+    if (el.domainLabel) el.domainLabel.textContent = domainName;
+    if (el.domainBadgeText) el.domainBadgeText.textContent = domainName;
+    if (domain && domain.icon && el.domainIcon) {
       el.domainIcon.className = 'fas ' + domain.icon;
     }
 
     // Question header
-    el.questionNumber.textContent = tr('question').toUpperCase() + ' ' + (index + 1);
-    el.questionTitle.textContent = localized(q, 'title');
+    if (el.questionNumber) el.questionNumber.textContent = tr('question').toUpperCase() + ' ' + (index + 1);
+    if (el.questionTitle) el.questionTitle.textContent = localized(q, 'title');
 
     // Description
     var qDesc = localized(q, 'description');
-    if (qDesc) {
-      el.questionDesc.textContent = qDesc;
-      el.questionDesc.style.display = '';
-    } else {
-      el.questionDesc.style.display = 'none';
+    if (el.questionDesc) {
+      if (qDesc) {
+        el.questionDesc.textContent = qDesc;
+        el.questionDesc.style.display = '';
+      } else {
+        el.questionDesc.style.display = 'none';
+      }
     }
 
     // Learn more
     var qHelp = localized(q, 'help_text');
-    if (qHelp) {
-      el.learnMore.style.display = '';
-      el.learnMoreBody.innerHTML = '<p>' + qHelp.replace(/\n/g, '</p><p>') + '</p>';
-      el.learnMoreContent.classList.remove('open');
-      el.learnMoreBtn.classList.remove('open');
-    } else {
-      el.learnMore.style.display = 'none';
+    if (el.learnMore) {
+      if (qHelp) {
+        el.learnMore.style.display = '';
+        if (el.learnMoreBody) el.learnMoreBody.innerHTML = '<p>' + qHelp.replace(/\n/g, '</p><p>') + '</p>';
+        if (el.learnMoreContent) el.learnMoreContent.classList.remove('open');
+        if (el.learnMoreBtn) el.learnMoreBtn.classList.remove('open');
+      } else {
+        el.learnMore.style.display = 'none';
+      }
     }
 
     // Render answers
+    if (!el.answers) return;
     var qt = q.question_type || 'rating_scale';
     el.answers.removeAttribute('data-qtype');
     if (qt === 'yes_no') {
@@ -338,8 +342,8 @@
 
   // ── Answer renderers ──
   function renderYesNo(q, index) {
-    el.ratingGrid.style.display = 'none';
-    el.answers.style.display = '';
+    if (el.ratingGrid) el.ratingGrid.style.display = 'none';
+    if (el.answers) el.answers.style.display = '';
 
     var options = [
       { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check', cls: 'yes' },
@@ -365,8 +369,8 @@
   }
 
   function renderMultipleChoice(q, index) {
-    el.ratingGrid.style.display = 'none';
-    el.answers.style.display = '';
+    if (el.ratingGrid) el.ratingGrid.style.display = 'none';
+    if (el.answers) el.answers.style.display = '';
 
     var opts = [];
     try { opts = JSON.parse(q.options_json || '[]'); } catch(e) { opts = []; }
@@ -393,8 +397,8 @@
   }
 
   function renderTextInput(q, index) {
-    el.ratingGrid.style.display = 'none';
-    el.answers.style.display = '';
+    if (el.ratingGrid) el.ratingGrid.style.display = 'none';
+    if (el.answers) el.answers.style.display = '';
     var val = q.answered && q.answer_text ? q.answer_text : '';
     var maxLen = 1000;
     var html = '<div class="aqmi-text-input-wrap">';
@@ -418,8 +422,8 @@
   }
 
   function renderNumericInput(q, index) {
-    el.ratingGrid.style.display = 'none';
-    el.answers.style.display = '';
+    if (el.ratingGrid) el.ratingGrid.style.display = 'none';
+    if (el.answers) el.answers.style.display = '';
     var val = q.answered && q.answer_value ? q.answer_value : '';
     var unit = '';
     var minVal = null, maxVal = null, step = 1;
@@ -493,8 +497,8 @@
   }
 
   function renderDateInput(q, index) {
-    el.ratingGrid.style.display = 'none';
-    el.answers.style.display = '';
+    if (el.ratingGrid) el.ratingGrid.style.display = 'none';
+    if (el.answers) el.answers.style.display = '';
     var val = q.answered && q.answer_value ? q.answer_value : '';
     var html = '<div class="aqmi-date-input-wrap">';
     html += '<div class="aqmi-date-display">';
@@ -521,7 +525,8 @@
   }
 
   function renderRatingScale(q, index) {
-    el.answers.style.display = 'none';
+    if (!el.ratingGrid) return;
+    if (el.answers) el.answers.style.display = 'none';
     el.ratingGrid.style.display = '';
 
     var colors = ['#E5484D', '#9d8fd1', '#9d8fd1', '#2EC4B6', '#1F6FEB', '#1F6FEB'];
@@ -630,7 +635,7 @@
         ajaxData.score = score;
         if (answerText) ajaxData.answer_text = answerText;
     }
-    if (hasJQuery) {
+    if (hasJQuery && window.jQuery) {
       jQuery.ajax({
         url: '/assessment/save-answer',
         method: 'GET',
@@ -714,14 +719,14 @@
   // ── Progress with Shine Animation ──
   function updateProgress() {
     var pct = totalQ > 0 ? Math.round((answeredCount / totalQ) * 100) : 0;
-    el.percentLabel.textContent = pct + '%';
-    el.progressFill.style.width = pct + '%';
+    if (el.percentLabel) el.percentLabel.textContent = pct + '%';
+    if (el.progressFill) el.progressFill.style.width = pct + '%';
 
     if (hasGsap && window.gsap && el.progressFill) gsap.fromTo(el.progressFill, { opacity: 0.7 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
 
     var remaining = totalQ - answeredCount;
     var mins = Math.max(1, Math.ceil(remaining * 0.35));
-    el.timeRemaining.textContent = '~' + mins + ' min';
+    if (el.timeRemaining) el.timeRemaining.textContent = '~' + mins + ' min';
   }
 
   // ── Maturity Gauge with GSAP Animation ──
@@ -812,7 +817,7 @@
     var score = (q && q.answered && q.score != null && q.score >= 0) ? q.score : null;
     var pct = (score !== null) ? Math.round((score / 5) * 100) : 0;
 
-    if (!el.mainGauge || !el.mainGaugeCircle) return;
+    if (!el.mainGauge || !el.mainGaugeCircle || !el.mainGaugeValue || !el.mainGaugeIcon || !el.mainGaugeLabel) return;
 
     if (score === null) {
       el.mainGaugeCircle.style.strokeDashoffset = String(MAIN_GAUGE_CIRCUMFERENCE);
@@ -994,7 +999,7 @@
   });
 
   // ── Learn More toggle ──
-  if (el.learnMoreBtn) {
+  if (el.learnMoreBtn && el.learnMoreContent) {
     el.learnMoreBtn.addEventListener('click', function() {
       var isOpen = el.learnMoreContent.classList.contains('open');
       if (isOpen) {
