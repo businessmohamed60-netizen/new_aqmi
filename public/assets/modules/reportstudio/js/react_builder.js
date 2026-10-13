@@ -7,6 +7,7 @@
  */
 (function () {
   'use strict';
+  console.info('RS-BUILDER-BUILD 2026-10-11 fix456 loaded');
 
   const { useState, useEffect, useRef, useCallback, useMemo, useReducer } = React;
   const h = React.createElement;
@@ -453,7 +454,7 @@
                   h('span', { style: { display: 'block', fontSize: '0.72rem', fontWeight: '700', color: accent, marginTop: '2px' } }, '—')) : null,
                 h('div', { className: 'text-end' },
                   h('span', { style: { display: 'block', fontSize: '0.58rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8298b5', fontWeight: '600' } }, 'AQMI · NOVAQYS'),
-                  h('span', { style: { display: 'block', fontSize: '0.55rem', color: '#a0afbf', marginTop: '2px' } }, 'Document confidentiel')))));
+                  h('span', { style: { display: 'block', fontSize: '0.55rem', color: '#a0afbf', marginTop: '2px' } }, 'Document confidentiel'))))));
       }
       case 'kpi_card':
         return h('div', { className: 'd-flex align-items-center gap-2 p-2', style: { border: '1px solid #EEF2F7', borderRadius: '8px' } },
