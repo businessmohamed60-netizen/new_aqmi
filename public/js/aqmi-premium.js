@@ -202,7 +202,7 @@
     ].join('');
 
     el.domainTransition.style.display = '';
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var tl = gsap.timeline({
         onComplete: function() {
           el.domainTransition.style.display = 'none';
@@ -219,7 +219,7 @@
   function animateAnswerEntrance() {
     var cards = document.querySelectorAll('.aqmi-answer-card, .aqmi-rating-card');
     if (cards.length === 0) return;
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       gsap.fromTo(cards,
         { opacity: 0, y: 20, scale: 0.97 },
         {
@@ -319,9 +319,8 @@
     renderScene(domainName);
 
     // Update navigation
-    el.prevBtn.style.display = index > 0 ? '' : 'none';
-    el.nextBtn.style.display = 'none';
-    el.nextBtn.className = 'aqmi-nav-btn primary';
+    if (el.prevBtn) el.prevBtn.style.display = index > 0 ? '' : 'none';
+    if (el.nextBtn) { el.nextBtn.style.display = 'none'; el.nextBtn.className = 'aqmi-nav-btn primary'; }
 
     // Check if all answered
     updateProgress();
@@ -593,10 +592,10 @@
     }
 
     // Show next button
-    el.nextBtn.style.display = '';
+    if (el.nextBtn) el.nextBtn.style.display = '';
 
     // Animate selection with spring
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       gsap.fromTo(card, { scale: 0.95 }, { scale: 1, duration: 0.3, ease: 'back.out(2.5)' });
 
       var ripple = document.createElement('div');
@@ -619,7 +618,7 @@
 
   // ── Save answer ──
   function saveAnswer(questionId, score, answerText) {
-    el.saveIndicator.classList.remove('show');
+    if (el.saveIndicator) el.saveIndicator.classList.remove('show');
     var ajaxData = {
         assessment_id: assessmentId,
         question_id: questionId
@@ -637,8 +636,8 @@
         method: 'GET',
         data: ajaxData,
         success: function() {
-          el.saveIndicator.classList.add('show');
-          setTimeout(function() { el.saveIndicator.classList.remove('show'); }, 2000);
+          if (el.saveIndicator) el.saveIndicator.classList.add('show');
+          setTimeout(function() { if (el.saveIndicator) el.saveIndicator.classList.remove('show'); }, 2000);
         },
         error: function() {
           // Silent fail
@@ -647,8 +646,8 @@
     } else if (window.fetch) {
       var params = new URLSearchParams(ajaxData).toString();
       fetch('/assessment/save-answer?' + params, { method: 'GET' }).then(function() {
-        el.saveIndicator.classList.add('show');
-        setTimeout(function() { el.saveIndicator.classList.remove('show'); }, 2000);
+        if (el.saveIndicator) el.saveIndicator.classList.add('show');
+        setTimeout(function() { if (el.saveIndicator) el.saveIndicator.classList.remove('show'); }, 2000);
       }).catch(function() {});
     }
   }
@@ -660,12 +659,12 @@
 
     isTransitioning = true;
     currentIdx = index;
-    console.log('[AQMI DEBUG] goToQuestion -> currentIdx =', currentIdx, '/ questions.length =', questions.length);
 
     var inner = el.questionInner;
+    if (!inner) { renderQuestion(currentIdx); isTransitioning = false; return; }
     var duration = 0.35;
 
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       gsap.to(inner, {
         opacity: 0,
         y: -15,
@@ -718,7 +717,7 @@
     el.percentLabel.textContent = pct + '%';
     el.progressFill.style.width = pct + '%';
 
-    if (hasGsap) gsap.fromTo(el.progressFill, { opacity: 0.7 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+    if (hasGsap && window.gsap && el.progressFill) gsap.fromTo(el.progressFill, { opacity: 0.7 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
 
     var remaining = totalQ - answeredCount;
     var mins = Math.max(1, Math.ceil(remaining * 0.35));
@@ -731,6 +730,7 @@
   var gaugeInitialized = false;
 
   function updateRightGauge() {
+    if (!el.gauge || !el.gaugeCircle || !el.gaugeValue) return;
     if (answeredCount === 0) {
       el.gauge.classList.remove('show');
       gaugeInitialized = false;
@@ -760,7 +760,7 @@
       gaugeInitialized = true;
     }
 
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var startOffset = parseFloat(el.gaugeCircle.style.strokeDashoffset) || GAUGE_CIRCUMFERENCE;
       var proxy = { offset: startOffset };
       gsap.to(proxy, {
@@ -780,7 +780,7 @@
     el.gaugeValue.style.color = color;
 
     // Pulse ring on update
-    var pulse = document.getElementById('aqmiGaugePulse');
+    var pulse = el.gaugePulse || document.getElementById('aqmiGaugePulse');
     if (pulse) {
       pulse.style.borderColor = color;
       pulse.style.display = 'block';
@@ -791,7 +791,7 @@
       setTimeout(function() { pulse.style.display = 'none'; }, 1500);
     }
 
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var numProxy = { val: parseInt(el.gaugeValue.textContent) || 0 };
       gsap.to(numProxy, {
         val: pct,
@@ -812,7 +812,7 @@
     var score = (q && q.answered && q.score != null && q.score >= 0) ? q.score : null;
     var pct = (score !== null) ? Math.round((score / 5) * 100) : 0;
 
-    if (!el.mainGaugeCircle) return;
+    if (!el.mainGauge || !el.mainGaugeCircle) return;
 
     if (score === null) {
       el.mainGaugeCircle.style.strokeDashoffset = String(MAIN_GAUGE_CIRCUMFERENCE);
@@ -824,7 +824,7 @@
     }
 
     var mainOffset = MAIN_GAUGE_CIRCUMFERENCE - (pct / 100) * MAIN_GAUGE_CIRCUMFERENCE;
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var mainStart = parseFloat(el.mainGaugeCircle.style.strokeDashoffset) || MAIN_GAUGE_CIRCUMFERENCE;
       var mainProxy = { offset: mainStart };
       gsap.to(mainProxy, {
@@ -842,7 +842,7 @@
     var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#9d8fd1' : score === 3 ? '#1F6FEB' : '#2EC4B6';
     el.mainGaugeIcon.style.color = color;
 
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
       gsap.to(mainNumProxy, {
         val: pct,
@@ -915,7 +915,7 @@
 
       container.appendChild(piece);
 
-      if (hasGsap) {
+      if (hasGsap && window.gsap) {
         gsap.to(piece, {
           y: window.innerHeight + 20,
           x: (Math.random() - 0.5) * 200,
@@ -960,7 +960,7 @@
     // affiché mais non cliquable (pointer-events: none par défaut).
     overlay.classList.add('show');
 
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       var tl = gsap.timeline();
       tl.to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.out' })
         .fromTo(overlay.querySelector('.aqmi-completion-check'), { scale: 0, rotation: -180 }, { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' }, '-=0.2')
@@ -1054,7 +1054,7 @@
       updateRightGauge();
       updateMainGauge(currentIdx);
 
-      el.nextBtn.style.display = '';
+    if (el.nextBtn) el.nextBtn.style.display = '';
 
       var blurData = {
         assessment_id: assessmentId,
@@ -1063,7 +1063,7 @@
         answer_text: input.classList.contains('aqmi-text-input') ? val : '',
         answer_value: (input.classList.contains('aqmi-numeric-input') || input.classList.contains('aqmi-date-input')) ? val : ''
       };
-      if (hasJQuery) {
+      if (hasJQuery && window.jQuery) {
         jQuery.ajax({ url: '/assessment/save-answer', method: 'GET', data: blurData });
       } else if (window.fetch) {
         fetch('/assessment/save-answer?' + new URLSearchParams(blurData).toString(), { method: 'GET' }).catch(function() {});
@@ -1091,7 +1091,7 @@
     updateProgress();
     updateRightGauge();
     updateMainGauge(currentIdx);
-    if (hasGsap) gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
+    if (hasGsap && window.gsap && el.questionInner) gsap.from(el.questionInner, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
   }
 
   // ── Unified Model + Language Selection Screen ──
@@ -1131,7 +1131,7 @@
 
   function dismissSelectScreen() {
     if (!selectScreen) return;
-    if (hasGsap) {
+    if (hasGsap && window.gsap) {
       gsap.to(selectScreen, {
         opacity: 0, duration: 0.5, ease: 'power2.inOut',
         onComplete: function() {

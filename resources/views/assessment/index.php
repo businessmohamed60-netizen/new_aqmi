@@ -488,6 +488,8 @@ $jsPath = BASE_PATH . '/public/js/aqmi-premium.js';
 $jsVersion = is_file($jsPath) ? filemtime($jsPath) : time();
 
 $extraScripts = <<<SCRIPT
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 var AQMI_CONFIG = {$configJson};
 var AQMI_I18N = {$i18nJson};
