@@ -1,5 +1,9 @@
 <?php
-$title = 'AQMI - Questionnaire Premium';
+$user = \App\Helpers\Auth::user();
+$activeSection = 'assessments';
+$pageTitle = __('dashboard.nav.assessments') ?: 'Évaluations';
+$pageSubtitle = __('assessment.title');
+$title = 'AQMI - ' . __('assessment.title');
 $isModelSelection = isset($models) && !isset($domainQuestions);
 $totalQuestions = 0;
 $questionsFlat = [];
@@ -222,6 +226,19 @@ $i18n = [
         'start_assessment' => 'Comenzar la evaluación',
     ],
 ];
+
+$premiumCssPath = BASE_PATH . '/public/css/aqmi-premium.css';
+$premiumCssVersion = is_file($premiumCssPath) ? filemtime($premiumCssPath) : time();
+$extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">'
+    . '<link rel="stylesheet" href="/css/aqmi-premium.css?v=' . $premiumCssVersion . '">'
+    . '<link rel="preconnect" href="https://fonts.googleapis.com">'
+    . '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+    . '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
+    . '<style>'
+    . '.aqmi-premium { --aqmi-font: "Inter", "Manrope", sans-serif; }'
+    . '.ud-content { max-width: 100%; padding: 0; }'
+    . '.ud-page-title-bar { display: none; }'
+    . '</style>';
 
 ob_start();
 ?>
@@ -482,5 +499,5 @@ document.addEventListener('DOMContentLoaded', function () {
 SCRIPT;
 
 $content = ob_get_clean();
-require BASE_PATH . '/resources/views/layouts/app-premium.php';
+require BASE_PATH . '/resources/views/layouts/user_dashboard.php';
 ?>
