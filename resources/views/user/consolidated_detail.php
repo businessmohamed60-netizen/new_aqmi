@@ -59,6 +59,7 @@ ob_start();
 
 <div class="detail-page">
   <div class="detail-wrap">
+    <a href="/user/consolidated" class="back-link"><i class="fas fa-arrow-left"></i> Retour aux rapports consolidés</a>
     <?php if (isset($_SESSION['success'])): ?>
       <div style="background:var(--vx-success-light);color:var(--vx-success);padding:0.75rem 1rem;border-radius:var(--vx-radius-md);margin-bottom:1rem;font-size:0.85rem;font-weight:600;">
         <i class="fas fa-check-circle"></i> <?= e($_SESSION['success']) ?>

@@ -117,7 +117,7 @@ ob_start();
 
             <div style="margin-top:1rem;display:flex;gap:0.75rem;">
               <button type="submit" class="btn-primary"><i class="fas fa-layer-group me-1"></i> Créer le rapport consolidé</button>
-              <a href="/user/dashboard" class="btn-outline">Annuler</a>
+              <a href="/user/consolidated" class="btn-outline">Annuler</a>
             </div>
           </form>
         </div>

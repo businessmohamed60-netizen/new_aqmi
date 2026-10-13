@@ -1,6 +1,6 @@
 <?php
 /**
- * Shared sidebar dashboard layout for the user area.
+ * Shared horizontal-nav dashboard layout for the user area.
  *
  * Variables expected:
  *   $user           - current user array (from Auth::user())
@@ -17,7 +17,6 @@ $chartLocale = $chartLocale ?? ($langCode === 'ar' ? 'ar' : ($langCode === 'en' 
 $userInitials = strtoupper(mb_substr($user['firstname'] ?? 'U', 0, 1));
 $userName = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
 $navItems = [
-    'overview'    => ['icon' => 'fa-gauge-high',      'label' => __('dashboard.nav.overview')    ?: 'Vue d\'ensemble', 'href' => '/user/dashboard'],
     'models'      => ['icon' => 'fa-layer-group',     'label' => __('dashboard.nav.models')      ?: 'Modèles & Analyses', 'href' => '/user/models'],
     'assessments' => ['icon' => 'fa-clipboard-list',  'label' => __('dashboard.nav.assessments') ?: 'Évaluations',       'href' => '/assessment/start'],
     'consolidated'=> ['icon' => 'fa-diagram-project', 'label' => __('dashboard.nav.consolidated')?: 'Rapports consolidés','href' => '/user/consolidated'],
@@ -62,12 +61,10 @@ $navItems = [
   --vx-shadow-lg: 0 12px 48px rgba(80,64,42,0.11);
   --vx-transition: 0.25s ease;
   --ud-font: 'Manrope', 'Inter', system-ui, sans-serif;
-  --ud-sidebar-w: 256px;
 }
 
 /* ====== Shell ====== */
 .ud-shell {
-  display: flex;
   min-height: 100vh;
   background: var(--vx-body-bg);
   background-image:
@@ -75,35 +72,42 @@ $navItems = [
     radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 60%);
   background-attachment: fixed;
   font-family: var(--ud-font);
-}
-
-/* ====== Sidebar ====== */
-.ud-sidebar {
-  width: var(--ud-sidebar-w);
-  flex-shrink: 0;
-  background: var(--vx-card-bg);
-  border-right: 1px solid var(--vx-card-border);
   display: flex;
   flex-direction: column;
+}
+
+/* ====== Top navigation bar ====== */
+.ud-topbar {
+  background: rgba(255,253,248,0.92);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid var(--vx-card-border);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: sticky;
   top: 0;
-  height: 100vh;
-  z-index: 200;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  z-index: 100;
+  box-shadow: 0 1px 12px rgba(80,64,42,0.04);
+  min-height: 60px;
+  gap: 1rem;
 }
-.ud-sidebar-brand {
+
+/* Brand */
+.ud-topbar-brand {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 1.25rem 1.5rem;
   font-weight: 800;
   font-size: 1rem;
   color: var(--vx-text-primary);
   letter-spacing: -0.3px;
   text-decoration: none;
-  border-bottom: 1px solid var(--vx-divider);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.ud-sidebar-brand .brand-icon {
+.ud-topbar-brand .brand-icon {
   width: 34px; height: 34px;
   background: var(--vx-primary-gradient);
   border-radius: 0.5rem;
@@ -112,31 +116,23 @@ $navItems = [
   box-shadow: 0 4px 16px var(--vx-primary-glow);
   transition: transform 0.3s ease;
 }
-.ud-sidebar-brand:hover .brand-icon { transform: scale(1.05) rotate(-3deg); }
+.ud-topbar-brand:hover .brand-icon { transform: scale(1.05) rotate(-3deg); }
 
-.ud-sidebar-nav {
-  flex: 1;
-  padding: 1rem 0.75rem;
+/* Horizontal nav */
+.ud-topbar-nav {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  overflow-y: auto;
-}
-.ud-nav-section-label {
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--vx-text-muted);
-  padding: 0.75rem 0.75rem 0.35rem;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 1;
+  justify-content: center;
 }
 .ud-nav-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0.85rem;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
   border-radius: var(--vx-radius-md);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--vx-text-secondary);
   text-decoration: none;
@@ -144,7 +140,7 @@ $navItems = [
   position: relative;
   white-space: nowrap;
 }
-.ud-nav-item i { font-size: 0.9rem; width: 20px; text-align: center; flex-shrink: 0; }
+.ud-nav-item i { font-size: 0.85rem; width: 18px; text-align: center; flex-shrink: 0; }
 .ud-nav-item:hover {
   background: var(--vx-primary-light);
   color: var(--vx-primary);
@@ -153,17 +149,17 @@ $navItems = [
   background: var(--vx-primary-light);
   color: var(--vx-primary);
 }
-.ud-nav-item.is-active::before {
+.ud-nav-item.is-active::after {
   content: '';
   position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 4px; height: 60%;
+  bottom: -2px; left: 50%;
+  transform: translateX(-50%);
+  width: 50%; height: 3px;
   background: var(--vx-primary);
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px 4px 0 0;
 }
 .ud-nav-item .ud-nav-badge {
-  margin-left: auto;
+  margin-left: 0.2rem;
   font-size: 0.6rem;
   font-weight: 700;
   padding: 0.1rem 0.4rem;
@@ -172,41 +168,42 @@ $navItems = [
   color: var(--vx-primary);
 }
 
-/* Sidebar footer */
-.ud-sidebar-foot {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--vx-divider);
-}
-.ud-sidebar-user {
+/* Right side: user + lang + logout */
+.ud-topbar-right {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  gap: 0.65rem;
+  flex-shrink: 0;
 }
-.ud-sidebar-avatar {
-  width: 36px; height: 36px;
+.ud-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ud-topbar-avatar {
+  width: 32px; height: 32px;
   border-radius: 50%;
   background: var(--vx-primary-gradient);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.8rem; font-weight: 800; color: #fff;
+  font-size: 0.75rem; font-weight: 800; color: #fff;
   flex-shrink: 0;
   box-shadow: 0 4px 12px var(--vx-primary-glow);
 }
-.ud-sidebar-user-info {
-  flex: 1; min-width: 0;
-}
-.ud-sidebar-user-name {
+.ud-topbar-user-name {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--vx-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 140px;
 }
-.ud-sidebar-user-role {
+.ud-topbar-user-role {
   font-size: 0.62rem;
   color: var(--vx-text-muted);
 }
+
+/* Language dropdown */
 .ud-lang-dropdown { position: relative; }
 .ud-lang-btn {
   display: flex; align-items: center; gap: 0.4rem;
@@ -220,16 +217,14 @@ $navItems = [
   font-weight: 600;
   color: var(--vx-text-secondary);
   transition: all var(--vx-transition);
-  width: 100%;
-  justify-content: center;
-  margin-bottom: 0.5rem;
+  white-space: nowrap;
 }
 .ud-lang-btn:hover { background: var(--vx-primary-light); border-color: rgba(99,102,241,0.20); color: var(--vx-primary); }
 .ud-lang-current { font-weight: 800; color: var(--vx-primary); }
 .ud-lang-menu {
   position: absolute;
-  bottom: calc(100% + 0.4rem);
-  left: 0; right: 0;
+  top: calc(100% + 0.4rem);
+  right: 0;
   min-width: 140px;
   background: var(--vx-card-bg);
   border: 1px solid var(--vx-card-border);
@@ -237,7 +232,7 @@ $navItems = [
   box-shadow: var(--vx-shadow-lg);
   padding: 0.3rem;
   opacity: 0; visibility: hidden;
-  transform: translateY(6px);
+  transform: translateY(-6px);
   transition: all 0.2s ease;
   z-index: 300;
 }
@@ -264,8 +259,7 @@ $navItems = [
 
 .ud-logout-btn {
   display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-  width: 100%;
-  padding: 0.45rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem; font-weight: 600;
   font-family: var(--ud-font);
@@ -275,6 +269,7 @@ $navItems = [
   text-decoration: none;
   transition: all var(--vx-transition);
   cursor: pointer;
+  white-space: nowrap;
 }
 .ud-logout-btn:hover {
   background: rgba(239,68,68,0.15);
@@ -284,87 +279,54 @@ $navItems = [
   color: var(--vx-danger);
 }
 
-/* ====== Main area ====== */
-.ud-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+/* Page title row below topbar */
+.ud-page-title-bar {
+  padding: 1rem 1.5rem 0;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
 }
-.ud-topbar {
-  background: rgba(255,253,248,0.92);
-  backdrop-filter: blur(24px) saturate(1.8);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  border-bottom: 1px solid var(--vx-card-border);
-  padding: 0.625rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 12px rgba(80,64,42,0.04);
-  min-height: 56px;
-}
-.ud-topbar-title {
+.ud-page-title {
   font-size: 1rem;
   font-weight: 800;
   color: var(--vx-text-primary);
   letter-spacing: -0.2px;
 }
-.ud-topbar-sub {
+.ud-page-subtitle {
   font-size: 0.7rem;
   color: var(--vx-text-muted);
   font-weight: 500;
 }
-.ud-topbar-right { display: flex; align-items: center; gap: 0.65rem; }
-.ud-menu-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--vx-card-border);
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.55rem;
-  cursor: pointer;
-  color: var(--vx-text-secondary);
-  font-size: 0.9rem;
-  transition: all var(--vx-transition);
-}
-.ud-menu-toggle:hover { background: var(--vx-primary-light); color: var(--vx-primary); }
 
+/* ====== Main content ====== */
 .ud-content {
   flex: 1;
-  padding: 2rem;
+  padding: 1.5rem 2rem 2rem;
   max-width: 1140px;
   width: 100%;
   margin: 0 auto;
 }
 
-/* ====== Backdrop for mobile sidebar ====== */
-.ud-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(23,33,43,0.4);
-  z-index: 190;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.ud-backdrop.is-visible { display: block; opacity: 1; }
-
 /* ====== Responsive ====== */
 @media (max-width: 1024px) {
-  .ud-sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    transform: translateX(-100%);
-    box-shadow: var(--vx-shadow-lg);
-  }
-  .ud-sidebar.is-open { transform: translateX(0); }
-  .ud-menu-toggle { display: inline-flex; }
+  .ud-topbar { flex-wrap: wrap; padding: 0 1rem; }
+  .ud-topbar-nav { order: 3; width: 100%; justify-content: flex-start; overflow-x: auto; padding: 0.25rem 0 0.5rem; gap: 0.1rem; }
+  .ud-nav-item { padding: 0.4rem 0.65rem; font-size: 0.75rem; }
+  .ud-nav-item span { display: inline; }
 }
 @media (max-width: 768px) {
+  .ud-topbar-user-name, .ud-topbar-user-role { display: none; }
+  .ud-topbar-user { gap: 0; }
   .ud-content { padding: 1rem; }
-  .ud-topbar { padding: 0.5rem 1rem; }
+  .ud-page-title-bar { padding: 0.75rem 1rem 0; }
+  .ud-lang-btn span:not(.ud-lang-current) { display: none; }
+  .ud-logout-btn span { display: none; }
+  .ud-logout-btn { padding: 0.4rem 0.55rem; }
+}
+@media (max-width: 480px) {
+  .ud-nav-item span { display: none; }
+  .ud-nav-item { padding: 0.45rem 0.6rem; gap: 0; }
+  .ud-nav-item i { font-size: 1rem; }
 }
 
 /* ====== Mobile bottom nav ====== */
@@ -396,14 +358,14 @@ $navItems = [
 </style>
 
 <div class="ud-shell">
-  <!-- Sidebar -->
-  <aside class="ud-sidebar" id="udSidebar">
-    <a href="/user/dashboard" class="ud-sidebar-brand">
+  <!-- Top navigation bar -->
+  <header class="ud-topbar">
+    <a href="/user/models" class="ud-topbar-brand">
       <span class="brand-icon">N</span>
       <span><?= e(__('dashboard.brand')) ?></span>
     </a>
-    <nav class="ud-sidebar-nav">
-      <div class="ud-nav-section-label"><?= e(__('dashboard.nav.menu') ?: 'Menu') ?></div>
+
+    <nav class="ud-topbar-nav">
       <?php foreach ($navItems as $key => $item): ?>
         <a href="<?= $item['href'] ?>" class="ud-nav-item <?= ($activeSection ?? '') === $key ? 'is-active' : '' ?>">
           <i class="fas <?= $item['icon'] ?>"></i>
@@ -414,12 +376,13 @@ $navItems = [
         </a>
       <?php endforeach; ?>
     </nav>
-    <div class="ud-sidebar-foot">
-      <div class="ud-sidebar-user">
-        <div class="ud-sidebar-avatar"><?= $userInitials ?></div>
-        <div class="ud-sidebar-user-info">
-          <div class="ud-sidebar-user-name"><?= e($userName) ?></div>
-          <div class="ud-sidebar-user-role"><?= e(__('dashboard.nav.client') ?: 'Client') ?></div>
+
+    <div class="ud-topbar-right">
+      <div class="ud-topbar-user">
+        <div class="ud-topbar-avatar"><?= $userInitials ?></div>
+        <div>
+          <div class="ud-topbar-user-name"><?= e($userName) ?></div>
+          <div class="ud-topbar-user-role"><?= e(__('dashboard.nav.client') ?: 'Client') ?></div>
         </div>
       </div>
       <div class="ud-lang-dropdown" id="udLangDropdown">
@@ -445,48 +408,34 @@ $navItems = [
         <span><?= e(__('dashboard.logout')) ?></span>
       </a>
     </div>
-  </aside>
+  </header>
 
-  <!-- Backdrop -->
-  <div class="ud-backdrop" id="udBackdrop"></div>
-
-  <!-- Main -->
-  <div class="ud-main">
-    <!-- Topbar -->
-    <header class="ud-topbar">
-      <div style="display:flex;align-items:center;gap:0.75rem;">
-        <button class="ud-menu-toggle" id="udMenuToggle" type="button" aria-label="Menu">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div>
-          <div class="ud-topbar-title"><?= e($pageTitle ?? $title ?? '') ?></div>
-          <?php if (!empty($pageSubtitle)): ?>
-            <div class="ud-topbar-sub"><?= e($pageSubtitle) ?></div>
-          <?php endif; ?>
-        </div>
-      </div>
-      <div class="ud-topbar-right">
-        <?php if (!empty($topbarActions)) echo $topbarActions; ?>
-      </div>
-    </header>
-
-    <!-- Content -->
-    <div class="ud-content">
-      <?= $content ?? '' ?>
+  <!-- Page title -->
+  <?php if (!empty($pageTitle) || !empty($title)): ?>
+    <div class="ud-page-title-bar">
+      <div class="ud-page-title"><?= e($pageTitle ?? $title ?? '') ?></div>
+      <?php if (!empty($pageSubtitle)): ?>
+        <div class="ud-page-subtitle"><?= e($pageSubtitle) ?></div>
+      <?php endif; ?>
     </div>
+  <?php endif; ?>
+
+  <!-- Content -->
+  <div class="ud-content">
+    <?= $content ?? '' ?>
   </div>
 </div>
 
 <!-- Mobile bottom nav -->
 <nav class="ud-bottom-nav">
-  <a href="/user/dashboard" style="color:<?= ($activeSection??'')==='overview'?'var(--vx-primary)':'var(--vx-text-muted)' ?>">
-    <i class="fas fa-gauge-high"></i><span><?= e(__('dashboard.nav.home') ?: 'Accueil') ?></span>
-  </a>
   <a href="/user/models" style="color:<?= ($activeSection??'')==='models'?'var(--vx-primary)':'var(--vx-text-muted)' ?>">
     <i class="fas fa-layer-group"></i><span><?= e(__('dashboard.nav.models') ?: 'Modèles') ?></span>
   </a>
   <a href="/assessment/start" style="color:var(--vx-text-muted);">
     <i class="fas fa-plus-circle"></i><span><?= e(__('dashboard.nav.new') ?: 'Nouveau') ?></span>
+  </a>
+  <a href="/user/consolidated" style="color:<?= ($activeSection??'')==='consolidated'?'var(--vx-primary)':'var(--vx-text-muted)' ?>">
+    <i class="fas fa-diagram-project"></i><span><?= e(__('dashboard.nav.consolidated') ?: 'Consolidés') ?></span>
   </a>
   <a href="/" style="color:var(--vx-text-muted);">
     <i class="fas fa-globe"></i><span><?= e(__('dashboard.nav.site') ?: 'Site') ?></span>
@@ -498,17 +447,6 @@ $navItems = [
 
 <script>
 (function() {
-  var sidebar = document.getElementById('udSidebar');
-  var backdrop = document.getElementById('udBackdrop');
-  var toggle = document.getElementById('udMenuToggle');
-  if (!sidebar || !toggle) return;
-  function openSidebar() { sidebar.classList.add('is-open'); backdrop.classList.add('is-visible'); }
-  function closeSidebar() { sidebar.classList.remove('is-open'); backdrop.classList.remove('is-visible'); }
-  toggle.addEventListener('click', function() {
-    if (sidebar.classList.contains('is-open')) { closeSidebar(); } else { openSidebar(); }
-  });
-  if (backdrop) backdrop.addEventListener('click', closeSidebar);
-
   var dropdown = document.getElementById('udLangDropdown');
   var btn = document.getElementById('udLangBtn');
   if (dropdown && btn) {
