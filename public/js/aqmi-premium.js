@@ -1136,31 +1136,43 @@
 
   function dismissSelectScreen() {
     if (!selectScreen) return;
+
+    function performModelSave() {
+      if (cfg.isModelSelection && selectedModelId) {
+        var formData = new FormData();
+        formData.append('assessment_id', assessmentId);
+        formData.append('model_id', selectedModelId);
+        fetch('/assessment/select-model', { method: 'POST', body: formData })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.success && data.redirect) {
+              window.location.href = data.redirect;
+            } else {
+              window.location.reload();
+            }
+          })
+          .catch(function() { window.location.reload(); });
+      } else {
+        init();
+      }
+    }
+
+    function hideAndProceed() {
+      selectScreen.style.display = 'none';
+      selectScreenVisible = false;
+      performModelSave();
+    }
+
     if (hasGsap && window.gsap) {
       gsap.to(selectScreen, {
-        opacity: 0, duration: 0.5, ease: 'power2.inOut',
-        onComplete: function() {
-        selectScreen.style.display = 'none';
-        selectScreenVisible = false;
-        if (cfg.isModelSelection && selectedModelId) {
-          var formData = new FormData();
-          formData.append('assessment_id', assessmentId);
-          formData.append('model_id', selectedModelId);
-          fetch('/assessment/select-model', { method: 'POST', body: formData })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-              if (data.success && data.redirect) {
-                window.location.href = data.redirect;
-              } else {
-                window.location.reload();
-              }
-            })
-            .catch(function() { window.location.reload(); });
-        } else {
-          init();
-        }
-      }
-    });
+        opacity: 0, duration: 0.4, ease: 'power2.inOut',
+        onComplete: hideAndProceed
+      });
+    } else {
+      selectScreen.style.opacity = '0';
+      selectScreen.style.transition = 'opacity 0.3s ease';
+      setTimeout(hideAndProceed, 300);
+    }
   }
 
   if (selectScreen) {
@@ -1183,7 +1195,7 @@
       btn.addEventListener('click', function() {
         modelCards.forEach(function(b) { b.classList.remove('selected'); });
         btn.classList.add('selected');
-        selectedModelId = btn.getAttribute('data-model');
+        selectedModelId = parseInt(btn.getAttribute('data-model'), 10);
         updateSelectButton();
       });
     });
@@ -1192,6 +1204,7 @@
     if (selectStartBtn) {
       selectStartBtn.addEventListener('click', function() {
         if (selectStartBtn.disabled || !selectedModelId || !selectedLang) return;
+        selectStartBtn.classList.add('loading');
         fetch('/lang/' + selectedLang, { method: 'GET', redirect: 'manual' })
           .catch(function() {})
           .finally(function() {

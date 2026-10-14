@@ -299,6 +299,8 @@ ob_start();
         </div>
       </div>
 
+      <div class="aqmi-select-divider"><span></span></div>
+
       <!-- Step 2: Language Selection -->
       <div class="aqmi-select-section" id="aqmiSelectLangSection">
         <div class="aqmi-select-section-header">
@@ -329,8 +331,13 @@ ob_start();
       <!-- Start Button (Footer) -->
       <div class="aqmi-select-card-footer">
         <button class="aqmi-select-start-btn" id="aqmiSelectStartBtn" type="button" disabled>
-          <span id="aqmiSelectStartText">Commencer l'évaluation</span>
-          <i class="fas fa-arrow-right"></i>
+          <span class="aqmi-select-start-btn-content">
+            <span id="aqmiSelectStartText">Commencer l'évaluation</span>
+            <i class="fas fa-arrow-right"></i>
+          </span>
+          <span class="aqmi-select-start-btn-spinner" style="display:none;">
+            <i class="fas fa-circle-notch fa-spin"></i>
+          </span>
         </button>
       </div>
       </div><!-- /.aqmi-select-card -->
@@ -495,27 +502,6 @@ var AQMI_CONFIG = {$configJson};
 var AQMI_I18N = {$i18nJson};
 </script>
 <script src="/js/aqmi-premium.js?v={$jsVersion}"></script>
-<script>
-// Filet de sécurité : garantit la bascule select-screen -> questionnaire
-// même si aqmi-premium.js ne gère pas (encore) ces éléments.
-document.addEventListener('DOMContentLoaded', function () {
-  var startBtn = document.getElementById('aqmiSelectStartBtn');
-  if (!startBtn) return;
-  startBtn.addEventListener('click', function () {
-    if (startBtn.disabled) return;
-    var selectScreen = document.getElementById('aqmiSelectScreen');
-    var topbar = document.getElementById('aqmiTopbar');
-    var progressWrap = document.getElementById('aqmiProgressWrap');
-    var content = document.getElementById('aqmiContent');
-    var gauge = document.getElementById('aqmiGauge');
-    if (selectScreen) selectScreen.style.display = 'none';
-    if (topbar) topbar.style.display = '';
-    if (progressWrap) progressWrap.style.display = '';
-    if (content) content.style.display = '';
-    if (gauge) gauge.style.display = '';
-  });
-});
-</script>
 SCRIPT;
 
 $content = ob_get_clean();
