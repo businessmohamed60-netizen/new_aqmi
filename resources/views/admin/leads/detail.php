@@ -395,6 +395,12 @@ $sections = [
     <div class="fiche-toolbar-actions">
       <a href="/admin/leads" class="f-btn"><i class="fas fa-arrow-left"></i> Retour à la liste</a>
       <button type="button" class="f-btn f-btn-primary" id="ficheBtnPrint"><i class="fas fa-print"></i> Imprimer la fiche</button>
+      <form method="POST" action="/admin/leads/delete/<?= (int)($lead['id'] ?? 0) ?>" style="margin:0;"
+            onsubmit="return confirm('Supprimer définitivement ce prospect (fiche, champs personnalisés et documents joints) ? L\'évaluation et le compte utilisateur ne sont pas supprimés.');">
+        <?= csrf_field() ?>
+        <input type="hidden" name="return_to" value="/admin/leads">
+        <button type="submit" class="f-btn" style="color:#dc2626;border-color:rgba(220,38,38,.4);"><i class="fas fa-trash-can"></i> Supprimer</button>
+      </form>
     </div>
   </div>
 

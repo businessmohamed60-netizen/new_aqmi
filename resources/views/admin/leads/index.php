@@ -213,6 +213,22 @@ if (count($scoredLeads) > 0) {
 
   @media (max-width: 992px) { .leads-stats-row { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 576px) { .leads-stats-row { grid-template-columns: 1fr; } .leads-page-header { flex-direction: column; } }
+
+  /* ── Suppression d'un prospect ── */
+  .lead-actions-cell { display: inline-flex; gap: 0.4rem; align-items: center; justify-content: center; }
+  .lead-action-btn.is-danger { color: #dc2626; border-color: rgba(220,38,38,.35); }
+  .lead-action-btn.is-danger:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+  .lead-del-dialog { border: none; border-radius: 1rem; padding: 0; width: min(92vw, 420px); box-shadow: 0 30px 80px rgba(15,23,42,.35); font-family: 'Plus Jakarta Sans', sans-serif; }
+  .lead-del-dialog::backdrop { background: rgba(15,23,42,.55); backdrop-filter: blur(2px); }
+  .lead-del-head { display: flex; align-items: center; gap: 0.75rem; padding: 1.05rem 1.3rem; background: rgba(220,38,38,.08); border-bottom: 1px solid rgba(220,38,38,.2); }
+  .lead-del-head i { width: 2.3rem; height: 2.3rem; border-radius: 0.7rem; display: grid; place-items: center; background: #dc2626; color: #fff; }
+  .lead-del-head h5 { margin: 0; font-size: 0.98rem; font-weight: 800; color: #991b1b; }
+  .lead-del-body { padding: 1.15rem 1.3rem; font-size: 0.82rem; line-height: 1.6; color: #334155; }
+  .lead-del-body .lead-del-who { margin: 0.2rem 0 0.7rem; padding: 0.6rem 0.8rem; border-radius: 0.6rem; background: #f8fafc; border: 1px solid #e2e8f0; font-weight: 700; color: #0f172a; }
+  .lead-del-body .lead-del-who small { display: block; font-weight: 500; color: #64748b; }
+  .lead-del-actions { display: flex; justify-content: flex-end; gap: 0.6rem; padding: 0 1.3rem 1.15rem; }
+  .lead-del-actions button { padding: 0.55rem 1.15rem; border-radius: 0.65rem; font: 700 0.78rem 'Plus Jakarta Sans', sans-serif; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; }
+  .lead-del-actions .is-danger { background: #dc2626; border-color: #dc2626; color: #fff; }
 </style>
 
 <div class="leads-page auto-fade-in">
@@ -304,7 +320,7 @@ if (count($scoredLeads) > 0) {
             <th>Pays</th>
             <th>Score AQMI</th>
             <th>Date</th>
-            <th style="text-align:center;width:80px;">Fiche</th>
+            <th style="text-align:center;width:110px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -354,9 +370,17 @@ if (count($scoredLeads) > 0) {
                 </td>
                 <td class="lead-date-text"><?= formatDate($l['created_at']) ?></td>
                 <td style="text-align:center;">
-                  <a href="/admin/leads/detail/<?= $l['id'] ?>" class="lead-action-btn" title="Voir la fiche technique" onclick="event.stopPropagation();">
-                    <i class="fas fa-eye"></i>
-                  </a>
+                  <div class="lead-actions-cell">
+                    <a href="/admin/leads/detail/<?= $l['id'] ?>" class="lead-action-btn" title="Voir la fiche technique" onclick="event.stopPropagation();">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <button type="button" class="lead-action-btn is-danger js-lead-delete" title="Supprimer ce prospect"
+                            data-id="<?= (int)$l['id'] ?>"
+                            data-name="<?= e(trim(($l['firstname'] ?? '') . ' ' . ($l['lastname'] ?? ''))) ?>"
+                            data-company="<?= e((string)($l['company'] ?? '')) ?>">
+                      <i class="fas fa-trash-can"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -394,6 +418,52 @@ if (count($scoredLeads) > 0) {
     </div>
   <?php endif; ?>
 </div>
+
+<!-- Confirmation de suppression d'un prospect -->
+<dialog class="lead-del-dialog" id="leadDelDialog">
+  <form method="POST" action="" id="leadDelForm">
+    <?= csrf_field() ?>
+    <input type="hidden" name="return_to" value="<?= e((string)($_SERVER['REQUEST_URI'] ?? '/admin/leads')) ?>">
+    <div class="lead-del-head">
+      <i class="fas fa-trash-can"></i>
+      <h5>Supprimer ce prospect ?</h5>
+    </div>
+    <div class="lead-del-body">
+      <div class="lead-del-who"><span id="leadDelName"></span><small id="leadDelCompany"></small></div>
+      La fiche, ses champs personnalisés et ses documents joints seront supprimés <strong>définitivement</strong>.
+      L'évaluation, le score et le compte utilisateur ne sont pas supprimés.
+    </div>
+    <div class="lead-del-actions">
+      <button type="button" id="leadDelCancel">Annuler</button>
+      <button type="submit" class="is-danger" id="leadDelSubmit"><i class="fas fa-trash-can"></i> Supprimer</button>
+    </div>
+  </form>
+</dialog>
+<script>
+(function () {
+  var dlg = document.getElementById('leadDelDialog');
+  if (!dlg) return;
+  var form = document.getElementById('leadDelForm');
+  var submit = document.getElementById('leadDelSubmit');
+  [].forEach.call(document.querySelectorAll('.js-lead-delete'), function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation(); e.preventDefault();
+      form.action = '/admin/leads/delete/' + btn.getAttribute('data-id');
+      document.getElementById('leadDelName').textContent = btn.getAttribute('data-name') || 'Prospect';
+      document.getElementById('leadDelCompany').textContent = btn.getAttribute('data-company') || '';
+      submit.disabled = false;
+      submit.innerHTML = '<i class="fas fa-trash-can"></i> Supprimer';
+      if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    });
+  });
+  document.getElementById('leadDelCancel').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  form.addEventListener('submit', function () {
+    submit.disabled = true;
+    submit.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Suppression...';
+  });
+})();
+</script>
 <?php
 $content = ob_get_clean();
 require BASE_PATH . '/resources/views/layouts/admin.php';

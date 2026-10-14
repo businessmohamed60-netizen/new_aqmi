@@ -488,13 +488,88 @@ class AdminController
         redirect('/admin/leads/detail/' . $leadId);
     }
 
+    /**
+     * Supprime UN prospect (et ses données liées : documents, valeurs de champs personnalisés, fichiers).
+     * Les évaluations, scores, rapports et comptes utilisateurs ne sont pas touchés.
+     * Route attendue : POST /admin/leads/delete/{id}
+     */
     public function leadDelete(array $params): void
     {
         Auth::requireAuth();
         $id = (int)($params['id'] ?? 0);
-        if ($id > 0) Lead::delete($id);
-        $_SESSION['success'] = 'Lead supprimé.';
-        redirect('/admin/leads');
+
+        // Retour : la liste (avec ses filtres / sa page) ; jamais vers une fiche supprimée
+        $back = (string)($_POST['return_to'] ?? '/admin/leads');
+        if (strpos($back, '/admin/leads') !== 0 || strpos($back, '/admin/leads/') === 0 || strpos($back, '//') !== false) {
+            $back = '/admin/leads';
+        }
+
+        if ($id <= 0 || ($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+            $_SESSION['error'] = 'Suppression invalide.';
+            redirect($back);
+            return;
+        }
+        $lead = Lead::find($id);
+        if (!$lead) {
+            $_SESSION['error'] = 'Prospect introuvable (déjà supprimé ?).';
+            redirect($back);
+            return;
+        }
+
+        try {
+            // 1) Données liées à CE prospect : toute table "lead_*" possédant une colonne lead_id
+            //    (documents joints, valeurs des champs personnalisés...). Les rapports ne sont pas concernés.
+            $children = ['lead_documents'];
+            try {
+                $rows = Database::fetchAll(
+                    "SELECT DISTINCT TABLE_NAME AS t FROM information_schema.COLUMNS
+                     WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME = 'lead_id'"
+                );
+                foreach ($rows as $r) {
+                    $children[] = (string)($r['t'] ?? $r['TABLE_NAME'] ?? '');
+                }
+            } catch (\Throwable $e) {
+                // base sans information_schema : on se limite à lead_documents
+            }
+            foreach (array_unique($children) as $table) {
+                if ($table === 'leads' || strpos($table, 'lead_') !== 0 || !preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+                    continue;
+                }
+                try {
+                    Database::execute("DELETE FROM `$table` WHERE lead_id = ?", [$id]);
+                } catch (\Throwable $e) {
+                    // table sans cette colonne ou déjà vide : on continue
+                }
+            }
+
+            // 2) Le prospect lui-même
+            Lead::delete($id);
+
+            // 3) Fichiers joints : storage/leads/{id}/
+            $base = realpath(BASE_PATH . '/storage/leads');
+            $dir = $base !== false ? $base . DIRECTORY_SEPARATOR . $id : '';
+            $real = ($dir !== '' && is_dir($dir)) ? realpath($dir) : false;
+            if ($real !== false && strpos($real, $base . DIRECTORY_SEPARATOR) === 0) {
+                $this->removeDirectory($real);
+            }
+
+            $name = trim(($lead['firstname'] ?? '') . ' ' . ($lead['lastname'] ?? ''));
+            $_SESSION['success'] = 'Prospect' . ($name !== '' ? ' « ' . $name . ' »' : '') . ' supprimé.';
+        } catch (\Throwable $e) {
+            $_SESSION['error'] = 'Échec de la suppression : ' . $e->getMessage();
+        }
+        redirect($back);
+    }
+
+    private function removeDirectory(string $dir): void
+    {
+        foreach (scandir($dir) ?: [] as $item) {
+            if ($item === '.' || $item === '..') { continue; }
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path) && !is_link($path)) { $this->removeDirectory($path); }
+            else { @unlink($path); }
+        }
+        @rmdir($dir);
     }
 
     // === EVALUATION MODELS ===
