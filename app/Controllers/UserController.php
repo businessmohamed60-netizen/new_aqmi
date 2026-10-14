@@ -452,8 +452,23 @@ class UserController
         $email = trim($_POST['email'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
 
+        $requiredFields = [
+            'company', 'job_title', 'sector', 'country', 'company_size',
+            'website', 'founded_year', 'production_type', 'certifications',
+        ];
+        $missing = [];
+        foreach ($requiredFields as $rf) {
+            if (empty(trim($_POST[$rf] ?? ''))) {
+                $missing[] = $rf;
+            }
+        }
         if (empty($firstname) || empty($lastname) || empty($email)) {
-            $_SESSION['error'] = __('profile.error.required');
+            $missing[] = 'firstname';
+            $missing[] = 'lastname';
+            $missing[] = 'email';
+        }
+        if (!empty($missing)) {
+            $_SESSION['error'] = __('profile.error.required') ?: 'Veuillez remplir tous les champs obligatoires.';
             redirect('/user/profile');
             return;
         }
@@ -471,14 +486,31 @@ class UserController
             return;
         }
 
-        \App\Models\User::update(Auth::id(), [
+        $numFields = ['export_percentage', 'production_sites', 'workforce_production',
+            'workforce_engineering', 'founded_year', 'machine_count', 'ppm_target',
+            'otd_rate', 'fta_rate', 'scrap_rate', 'rd_budget_percent'];
+        $textFields = ['company', 'job_title', 'sector', 'activity_category', 'oem_tier',
+            'product_category', 'main_clients', 'annual_revenue', 'country', 'company_size',
+            'website', 'certifications', 'production_type', 'production_capacity',
+            'machine_types', 'main_materials', 'process_technologies',
+            'traceability_system', 'logistics_system', 'current_erp'];
+
+        $updateData = [
             'firstname' => $firstname,
             'lastname' => $lastname,
             'email' => $email,
             'phone' => $phone ?: null,
-        ]);
+        ];
 
-        $updatedUser = \App\Models\User::find(Auth::id());
+        foreach ($textFields as $f) {
+            $updateData[$f] = trim($_POST[$f] ?? '') !== '' ? trim($_POST[$f]) : null;
+        }
+        foreach ($numFields as $f) {
+            $val = trim($_POST[$f] ?? '');
+            $updateData[$f] = $val !== '' ? (strpos($f, 'rate') !== false || strpos($f, 'percent') !== false ? (float)$val : (int)$val) : null;
+        }
+
+        \App\Models\User::update(Auth::id(), $updateData);
 
         $_SESSION['success'] = __('profile.success.updated');
         redirect('/user/profile');

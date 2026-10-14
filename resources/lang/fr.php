@@ -329,6 +329,7 @@ return [
     'dashboard.models.maturity' => 'Niveau',
     'dashboard.models.comparison' => 'Comparaison des modèles',
     'dashboard.models.comparison_sub' => 'Scores par domaine',
+    'dashboard.models.view_all' => 'Voir tout',
     'dashboard.models.filter_all' => 'Tous',
     'dashboard.models.filter_completed' => 'Terminés',
     'dashboard.models.filter_pending' => 'En cours',

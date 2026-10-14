@@ -31,7 +31,16 @@ class User
     public static function update(int $id, array $data): int
     {
         $sets = []; $params = [];
-        foreach (['role_id', 'firstname', 'lastname', 'email', 'password', 'phone', 'is_active', 'avatar', 'assessment_limit'] as $key) {
+        $keys = ['role_id', 'firstname', 'lastname', 'email', 'password', 'phone', 'is_active', 'avatar', 'assessment_limit',
+            'company', 'job_title', 'sector', 'activity_category', 'oem_tier', 'product_category',
+            'main_clients', 'annual_revenue', 'export_percentage', 'production_sites',
+            'workforce_production', 'workforce_engineering', 'country', 'company_size',
+            'website', 'certifications', 'founded_year', 'production_type', 'production_capacity',
+            'machine_count', 'machine_types', 'main_materials', 'process_technologies',
+            'ppm_target', 'otd_rate', 'fta_rate', 'scrap_rate', 'traceability_system',
+            'logistics_system', 'rd_budget_percent', 'current_erp',
+        ];
+        foreach ($keys as $key) {
             if (array_key_exists($key, $data)) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }
         }
         if (empty($sets)) return 0;

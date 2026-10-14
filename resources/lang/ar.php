@@ -329,6 +329,7 @@ return [
     'dashboard.models.maturity' => 'المستوى',
     'dashboard.models.comparison' => 'مقارنة النماذج',
     'dashboard.models.comparison_sub' => 'النتائج حسب المجال',
+    'dashboard.models.view_all' => 'عرض الكل',
     'dashboard.models.filter_all' => 'الكل',
     'dashboard.models.filter_completed' => 'مكتمل',
     'dashboard.models.filter_pending' => 'قيد التقدم',

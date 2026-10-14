@@ -139,8 +139,8 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 .badge { font-size: 0.625rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: var(--vx-radius-sm); }
 
 /* Quick models preview */
-.ud-models-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-.ud-model-mini { background: var(--vx-card-bg); border: 1px solid var(--vx-card-border); border-radius: var(--vx-radius-lg); padding: 1rem; display: flex; align-items: center; gap: 0.75rem; transition: all var(--vx-transition); text-decoration: none; }
+.ud-models-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; align-items: stretch; }
+.ud-model-mini { background: var(--vx-card-bg); border: 1px solid var(--vx-card-border); border-radius: var(--vx-radius-lg); padding: 1rem; display: flex; align-items: center; gap: 0.75rem; transition: all var(--vx-transition); text-decoration: none; height: 100%; }
 .ud-model-mini:hover { transform: translateY(-3px); box-shadow: var(--vx-shadow-md); border-color: var(--vx-card-border-hover); }
 .ud-model-mini-icon { width: 2.25rem; height: 2.25rem; border-radius: var(--vx-radius-md); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .ud-model-mini-info { flex: 1; min-width: 0; }
@@ -258,7 +258,7 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
     <?= __('dashboard.models.title') ?>
   </h3>
   <a href="/user/models" class="nova-btn nova-btn-outline" style="padding:0.3rem 0.7rem;font-size:0.72rem;">
-    <?= __('dashboard.models.view_all') ?: 'Voir tout' ?> <i class="fas fa-arrow-right" style="margin-left:0.25rem;"></i>
+    <?= __('dashboard.models.view_all') ?> <i class="fas fa-arrow-right" style="margin-left:0.25rem;"></i>
   </a>
 </div>
 <div class="ud-models-preview">
