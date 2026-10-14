@@ -33,31 +33,31 @@ $textFor = function (string $code) use ($recommendation): string {
   --rec-violet-bg:#EFEAFB; --rec-violet-fg:#5B3FB0; --rec-violet-bd:#D3C8F2;
   --rec-rose-bg:#FCE8F1;   --rec-rose-fg:#A8346B;   --rec-rose-bd:#F4C3DA;
   --rec-gray-bg:#EEF1F4;   --rec-gray-fg:#5B6670;   --rec-gray-bd:#D9DEE3;
-  max-width:1100px;
+  max-width:1280px;
 }
 .rec-form-header { margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; }
-.rec-form-header h5 { color:var(--auto-text-primary); font-weight:700; font-size:1rem; margin:0; display:flex; align-items:center; gap:.5rem; }
+.rec-form-header h5 { color:var(--auto-text-primary); font-weight:700; font-size:1.1rem; margin:0; display:flex; align-items:center; gap:.5rem; }
 .rec-form-header h5 i { color:var(--auto-cyan); }
-.rec-back { font-size:.74rem; color:var(--auto-text-secondary); text-decoration:none; }
+.rec-back { font-size:.82rem; color:var(--auto-text-secondary); text-decoration:none; }
 .rec-back:hover { color:var(--auto-cyan); }
 
 .rec-section { background:var(--auto-bg-card-solid); border:1px solid var(--auto-border); border-radius:var(--auto-radius-sm); padding:1.1rem; margin-bottom:1rem; }
-.rec-section-title { color:var(--auto-text-primary); font-weight:700; font-size:.8rem; margin-bottom:.9rem; display:flex; align-items:center; gap:.5rem; }
-.rec-section-title i { width:24px; height:24px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center; font-size:.7rem; }
+.rec-section-title { color:var(--auto-text-primary); font-weight:700; font-size:.9rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+.rec-section-title i { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; }
 .rec-section-title i.blue   { background:var(--rec-blue-bg);   color:var(--rec-blue-fg); }
 .rec-section-title i.violet { background:var(--rec-violet-bg); color:var(--rec-violet-fg); }
 .rec-section-title i.amber  { background:var(--rec-amber-bg);  color:var(--rec-amber-fg); }
-.rec-help { display:block; margin-top:.3rem; color:var(--auto-text-muted); font-size:.66rem; }
+.rec-help { display:block; margin-top:.3rem; color:var(--auto-text-muted); font-size:.74rem; }
 
 /* Priorité */
 .rec-priority-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
 .rec-priority {
-  text-align:left; padding:.6rem .7rem; border:1.5px solid var(--auto-border); border-radius:var(--auto-radius-sm);
+  text-align:left; padding:.75rem .8rem; border:1.5px solid var(--auto-border); border-radius:var(--auto-radius-sm);
   background:transparent; cursor:pointer; display:flex; gap:.55rem; align-items:center; transition:var(--auto-transition);
 }
-.rec-priority .ico { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.72rem; flex-shrink:0; }
-.rec-priority .lbl { font-size:.72rem; font-weight:700; color:var(--auto-text-primary); display:block; line-height:1.2; }
-.rec-priority .sub { font-size:.6rem; color:var(--auto-text-muted); display:block; }
+.rec-priority .ico { width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
+.rec-priority .lbl { font-size:.82rem; font-weight:700; color:var(--auto-text-primary); display:block; line-height:1.2; }
+.rec-priority .sub { font-size:.7rem; color:var(--auto-text-muted); display:block; }
 .rec-priority[data-priority="critical"] .ico { background:var(--rec-red-bg);   color:var(--rec-red-fg); }
 .rec-priority[data-priority="high"] .ico     { background:var(--rec-amber-bg); color:var(--rec-amber-fg); }
 .rec-priority[data-priority="medium"] .ico   { background:var(--rec-blue-bg);  color:var(--rec-blue-fg); }
@@ -72,14 +72,14 @@ $textFor = function (string $code) use ($recommendation): string {
 .rec-priority.selected .sub { color:#52606d; }
 
 /* Aperçu de la condition */
-.rec-preview { margin-top:.9rem; padding:.7rem .8rem; border-radius:var(--auto-radius-sm); background:var(--rec-violet-bg); border:1px solid var(--rec-violet-bd); color:var(--rec-violet-fg); font-size:.74rem; line-height:1.5; }
+.rec-preview { margin-top:.9rem; padding:.7rem .8rem; border-radius:var(--auto-radius-sm); background:var(--rec-violet-bg); border:1px solid var(--rec-violet-bd); color:var(--rec-violet-fg); font-size:.82rem; line-height:1.55; }
 .rec-preview b { color:#3b2a85; }
 .rec-preview code { background:rgba(255,255,255,.7); color:#3b2a85; padding:.05rem .35rem; border-radius:5px; font-size:.7rem; }
 
 /* Onglets de langue */
 .rec-tabs { display:flex; gap:.4rem; margin-bottom:.9rem; flex-wrap:wrap; }
 .rec-tab {
-  display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .8rem; border-radius:999px; font-size:.72rem; font-weight:700; cursor:pointer;
+  display:inline-flex; align-items:center; gap:.4rem; padding:.45rem .9rem; border-radius:999px; font-size:.8rem; font-weight:700; cursor:pointer;
   border:1px solid var(--rec-gray-bd); background:transparent; color:var(--auto-text-secondary); transition:var(--auto-transition);
 }
 .rec-tab .dot { width:8px; height:8px; border-radius:50%; background:var(--rec-gray-bd); }
@@ -95,13 +95,16 @@ $textFor = function (string $code) use ($recommendation): string {
 .rec-pane.active { display:block; }
 .rec-pane[data-lang="ar"] textarea { direction:rtl; text-align:right; }
 .rec-pane label.auto-label { display:flex; align-items:center; gap:.35rem; }
-.rec-counter { display:flex; justify-content:space-between; margin-top:.35rem; font-size:.66rem; color:var(--auto-text-muted); }
-.rec-copy { border:none; background:none; padding:0; font-size:.66rem; color:var(--auto-cyan); cursor:pointer; }
+.rec-counter { display:flex; justify-content:space-between; margin-top:.35rem; font-size:.74rem; color:var(--auto-text-muted); }
+.rec-copy { border:none; background:none; padding:0; font-size:.74rem; color:var(--auto-cyan); cursor:pointer; }
 .rec-copy:hover { text-decoration:underline; }
 
 .form-switch .form-check-input { background-color:var(--auto-border); border-color:var(--auto-border); cursor:pointer; }
 .form-switch .form-check-input:checked { background-color:#3DB57C; border-color:#3DB57C; }
-.form-switch .form-check-label { color:var(--auto-text-secondary); font-size:.8rem; }
+.form-switch .form-check-label { color:var(--auto-text-secondary); font-size:.86rem; }
+.rec-text-input { min-height:200px; font-size:.9rem; line-height:1.6; resize:vertical; }
+.rec-meta { display:inline-flex; align-items:center; gap:.3rem; padding:.2rem .6rem; border-radius:999px; font-size:.72rem; font-weight:600; background:var(--rec-gray-bg); color:var(--rec-gray-fg); border:1px solid var(--rec-gray-bd); }
+.rec-meta.green { background:var(--rec-green-bg); color:var(--rec-green-fg); border-color:var(--rec-green-bd); }
 
 .rec-actions {
   position:sticky; bottom:0; z-index:10; display:flex; gap:.75rem; align-items:center;
@@ -109,7 +112,7 @@ $textFor = function (string $code) use ($recommendation): string {
   background:linear-gradient(to top, var(--auto-bg-card-solid) 70%, transparent);
 }
 .rec-actions .spacer { flex:1; }
-.rec-actions small { color:var(--auto-text-muted); font-size:.68rem; }
+.rec-actions small { color:var(--auto-text-muted); font-size:.74rem; }
 
 @media (min-width:576px) { .rec-priority-grid { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:768px) { .rec-tabs { flex-wrap:nowrap; overflow-x:auto; } .rec-tab { flex-shrink:0; } }
@@ -118,7 +121,13 @@ $textFor = function (string $code) use ($recommendation): string {
 
 <div class="rec-form-wrap auto-fade-in">
   <div class="rec-form-header">
-    <h5><i class="fas fa-lightbulb"></i><?= $recommendation ? 'Modifier la recommandation' : 'Nouvelle recommandation' ?></h5>
+    <h5>
+      <i class="fas fa-lightbulb"></i><?= $recommendation ? 'Modifier la recommandation' : 'Nouvelle recommandation' ?>
+      <?php if ($recommendation): ?>
+        <span class="rec-meta">#<?= (int)$recommendation['id'] ?></span>
+        <span class="rec-meta <?= !empty($recommendation['is_active']) ? 'green' : '' ?>"><?= !empty($recommendation['is_active']) ? 'Active' : 'Inactive' ?></span>
+      <?php endif; ?>
+    </h5>
     <a href="/admin/recommendations" class="rec-back"><i class="fas fa-arrow-left me-1"></i>Retour à la liste</a>
   </div>
 
@@ -129,7 +138,7 @@ $textFor = function (string $code) use ($recommendation): string {
 
       <div class="row g-4">
         <!-- Colonne gauche : configuration -->
-        <div class="col-lg-4">
+        <div class="col-xl-4 col-lg-5">
           <div class="rec-section">
             <div class="rec-section-title"><i class="fas fa-sliders blue"></i>Configuration</div>
 
@@ -201,7 +210,7 @@ $textFor = function (string $code) use ($recommendation): string {
         </div>
 
         <!-- Colonne droite : contenu multilingue -->
-        <div class="col-lg-8">
+        <div class="col-xl-8 col-lg-7">
           <div class="rec-section">
             <div class="rec-section-title"><i class="fas fa-language amber"></i>Contenu multilingue</div>
 
@@ -227,7 +236,7 @@ $textFor = function (string $code) use ($recommendation): string {
                   name="<?= $code === 'en' ? 'recommendation_text' : 'recommendation_text_' . $code ?>"
                   class="auto-textarea rec-text-input"
                   data-lang="<?= $code ?>"
-                  rows="7"
+                  rows="9"
                   dir="<?= $lang['dir'] ?>"
                   <?= $code === 'fr' ? 'required' : '' ?>
                   placeholder="<?= e($lang['placeholder']) ?>"><?= e($textFor($code)) ?></textarea>

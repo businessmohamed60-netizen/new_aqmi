@@ -111,6 +111,29 @@ $opSymbols  = ['<' => '<', '>' => '>', '<=' => '≤', '>=' => '≥', '==' => '='
 .rec-empty i { display:block; font-size:1.4rem; margin-bottom:.6rem; color:var(--auto-cyan); }
 .rec-empty a { color:var(--auto-cyan); font-weight:600; }
 
+
+/* Adaptation à la largeur réellement disponible (menu ouvert ou réduit) */
+.rec-wrap { min-width:0; container-type:inline-size; container-name:rec; }
+.rec-table { width:100%; table-layout:auto; }
+.rec-table th, .rec-table td { vertical-align:top; padding-top:.8rem; padding-bottom:.8rem; }
+.rec-main { width:100%; min-width:0; }
+.rec-main .rec-text, .rec-main .rec-text-secondary { white-space:normal; overflow-wrap:anywhere; }
+.rec-meta-row { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .75rem; margin-top:.5rem; }
+.rec-cond { white-space:normal; }
+.rec-table td:not(.rec-main) { white-space:nowrap; }
+.rec-toolbar { min-width:0; }
+.rec-search { min-width:0; }
+@container rec (max-width:980px) {
+  .rec-table th:nth-child(3), .rec-table td:nth-child(3) { display:none; }  /* langues */
+  .rec-lang-count { display:none; }
+  .rec-chip .fa-circle-check, .rec-chip .fa-circle-pause { display:none; }
+}
+@container rec (max-width:760px) {
+  .rec-table th:nth-child(5), .rec-table td:nth-child(5) { display:none; }  /* statut (ligne atténuée si inactive) */
+  .rec-count { margin-left:0; width:100%; }
+  .rec-search { max-width:none; flex:1 1 100%; }
+}
+
 @media (max-width:768px) {
   .rec-search { max-width:none; }
   .rec-count { margin-left:0; width:100%; }
@@ -158,8 +181,6 @@ $opSymbols  = ['<' => '<', '>' => '>', '<=' => '≤', '>=' => '≥', '==' => '='
             <th>#</th>
             <th>Recommandation</th>
             <th>Langues</th>
-            <th>Domaine</th>
-            <th>Condition</th>
             <th>Priorité</th>
             <th class="text-center">Statut</th>
             <th class="text-center">Actions</th>
@@ -190,11 +211,19 @@ $opSymbols  = ['<' => '<', '>' => '>', '<=' => '≤', '>=' => '≥', '==' => '='
                   data-search="<?= e($haystack) ?>"
                   class="<?= $isActive ? '' : 'is-inactive' ?>">
                 <td class="rec-id"><?= (int)$r['id'] ?></td>
-                <td style="min-width:300px;max-width:460px;">
+                <td class="rec-main">
                   <div class="rec-text"><?= e(truncate($primary, 110)) ?></div>
                   <?php if ($secondary): ?>
                     <div class="rec-text-secondary"><?= e(truncate($secondary, 110)) ?></div>
                   <?php endif; ?>
+                  <div class="rec-meta-row">
+                    <span class="rec-chip <?= $isGlobal ? 'gray' : 'violet' ?>"><i class="fas <?= $isGlobal ? 'fa-globe' : 'fa-layer-group' ?>"></i><?= e($domain) ?></span>
+                    <span class="rec-cond">
+                      <code><?= e($r['condition_field'] ?? '–') ?></code>
+                      <?= e($op) ?>
+                      <strong><?= e($r['condition_value'] ?? '–') ?> %</strong>
+                    </span>
+                  </div>
                 </td>
                 <td>
                   <div class="rec-langs" title="<?= $langCount ?>/4 langues renseignées">
@@ -203,15 +232,6 @@ $opSymbols  = ['<' => '<', '>' => '>', '<=' => '≤', '>=' => '≥', '==' => '='
                     <span class="rec-lang ar <?= $hasAr ? 'on' : '' ?>" title="العربية">AR</span>
                     <span class="rec-lang es <?= $hasEs ? 'on' : '' ?>" title="Español">ES</span>
                   </div>
-                  <span class="rec-lang-count"><?= $langCount ?>/4</span>
-                </td>
-                <td><span class="rec-chip <?= $isGlobal ? 'gray' : 'violet' ?>"><i class="fas <?= $isGlobal ? 'fa-globe' : 'fa-layer-group' ?>"></i><?= e($domain) ?></span></td>
-                <td>
-                  <span class="rec-cond">
-                    <code><?= e($r['condition_field'] ?? '–') ?></code>
-                    <?= e($op) ?>
-                    <strong><?= e($r['condition_value'] ?? '–') ?> %</strong>
-                  </span>
                 </td>
                 <td><span class="rec-chip <?= $pColor ?>"><i class="fas <?= $prioIcons[$prio] ?? 'fa-circle' ?>"></i><?= e($prioLabels[$prio] ?? ucfirst($prio)) ?></span></td>
                 <td class="text-center">
@@ -228,7 +248,7 @@ $opSymbols  = ['<' => '<', '>' => '>', '<=' => '≤', '>=' => '≥', '==' => '='
               </tr>
             <?php endforeach; ?>
           <?php else: ?>
-            <tr><td colspan="8">
+            <tr><td colspan="6">
               <div class="rec-empty">
                 <i class="fas fa-lightbulb"></i>
                 Aucune règle pour le moment.<br>
