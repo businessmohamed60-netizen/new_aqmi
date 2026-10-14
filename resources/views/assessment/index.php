@@ -236,7 +236,7 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">'
     . '<style>'
     . '.aqmi-premium { --aqmi-font: "Inter", "Manrope", sans-serif; }'
-    . '.ud-shell { overflow: hidden; }'
+    . '.ud-shell { overflow: visible; }'
     . '.ud-content { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }'
     . '.ud-page-title-bar { display: none; }'
     // Override fixed positioning: embed inside dashboard, below the 60px sticky topbar
@@ -249,7 +249,8 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '  inset: auto !important;'
     . '  z-index: 10 !important;'
     . '  height: auto !important;'
-    . '  overflow: hidden;'
+    . '  overflow-y: auto;'
+    . '  overflow-x: hidden;'
     . '}'
     // Hide the AQMI-specific topbar (dashboard already provides navigation)
     . '.aqmi-topbar { display: none !important; }'

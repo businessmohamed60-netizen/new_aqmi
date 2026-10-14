@@ -211,7 +211,7 @@
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 }
 
@@ -338,7 +338,7 @@
   justify-content: flex-start;
   padding: 2rem 2.5rem 2rem 1.5rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .aqmi-question-inner::-webkit-scrollbar {
@@ -1460,7 +1460,7 @@
     padding: 1.25rem 1.5rem;
     justify-content: flex-start;
     padding-top: 1rem;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .aqmi-question {
