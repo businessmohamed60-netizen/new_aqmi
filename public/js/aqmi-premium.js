@@ -1204,6 +1204,7 @@
   var selectModelDesc = document.getElementById('aqmiSelectModelDesc');
   var selectLangTitle = document.getElementById('aqmiSelectLangTitle');
   var selectLangDesc = document.getElementById('aqmiSelectLangDesc');
+  var selectLangEval = document.getElementById('aqmiSelectLangEvalText');
   var selectTitle = document.getElementById('aqmiSelectTitle');
   var selectDesc = document.getElementById('aqmiSelectDesc');
   var selectedModelId = null;
@@ -1220,6 +1221,7 @@
     if (selectModelDesc && labels.choose_model_desc) selectModelDesc.textContent = labels.choose_model_desc;
     if (selectLangTitle && labels.choose_lang) selectLangTitle.textContent = labels.choose_lang;
     if (selectLangDesc && labels.choose_lang_desc) selectLangDesc.textContent = labels.choose_lang_desc;
+    if (selectLangEval && labels.choose_lang_eval) selectLangEval.textContent = labels.choose_lang_eval;
     if (selectStartText && labels.start_assessment) selectStartText.textContent = labels.start_assessment;
   }
 

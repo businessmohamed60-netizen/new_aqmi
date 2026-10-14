@@ -40,6 +40,7 @@ return [
     'assessment.domain' => 'المجال',
     'assessment.question' => 'السؤال',
     'assessment.weight' => 'الوزن',
+    'assessment.choose_language' => 'اختر لغة التقييم',
 
     'lead.title' => 'طلب التقرير المعتمد',
     'lead.subtitle' => 'أدخل معلوماتك لإرسال طلب تقرير مؤشر نضج الجودة المعتمد إلى فريقنا.',

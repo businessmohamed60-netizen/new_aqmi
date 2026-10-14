@@ -139,14 +139,18 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 .badge { font-size: 0.625rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: var(--vx-radius-sm); }
 
 /* Quick models preview */
-.ud-models-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; align-items: stretch; }
-.ud-model-mini { background: var(--vx-card-bg); border: 1px solid var(--vx-card-border); border-radius: var(--vx-radius-lg); padding: 1rem; display: flex; align-items: center; gap: 0.75rem; transition: all var(--vx-transition); text-decoration: none; height: 100%; }
+.ud-models-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.ud-models-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; align-items: stretch; clear: both; position: relative; }
+.ud-models-preview *, .ud-models-preview *::before, .ud-models-preview *::after { box-sizing: border-box; }
+.ud-model-mini { box-sizing: border-box; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; background: var(--vx-card-bg); border: 1px solid var(--vx-card-border); border-radius: var(--vx-radius-lg); padding: 1rem 1.1rem; transition: all var(--vx-transition); text-decoration: none; }
 .ud-model-mini:hover { transform: translateY(-3px); box-shadow: var(--vx-shadow-md); border-color: var(--vx-card-border-hover); }
+.ud-model-mini-top { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
 .ud-model-mini-icon { width: 2.25rem; height: 2.25rem; border-radius: var(--vx-radius-md); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.ud-model-mini-info { flex: 1; min-width: 0; }
-.ud-model-mini-name { font-size: 0.78rem; font-weight: 700; color: var(--vx-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ud-model-mini-score { font-size: 0.68rem; color: var(--vx-text-muted); margin-top: 0.1rem; }
-.ud-model-mini-score strong { color: var(--vx-text-primary); font-weight: 800; }
+.ud-model-mini-name { flex: 1; min-width: 0; font-size: 0.8rem; font-weight: 700; line-height: 1.3; color: var(--vx-text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+.ud-model-mini-score { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; font-size: 0.7rem; color: var(--vx-text-muted); margin-top: auto; }
+.ud-model-mini-score strong { color: var(--vx-text-primary); font-weight: 800; font-size: 1.05rem; }
+.ud-model-mini-bar { width: 100%; height: 6px; border-radius: 3px; background: rgba(99,102,241,0.10); overflow: hidden; }
+.ud-model-mini-bar-fill { height: 100%; border-radius: 3px; }
 
 @media (max-width: 768px) {
   .ud-welcome { padding: 1.25rem; }
@@ -252,8 +256,8 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
 
 <!-- Quick Models Preview -->
 <?php if (!empty($modelStats)): ?>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-  <h3 style="font-size:0.95rem;font-weight:800;color:var(--vx-text-primary);margin:0;">
+<div class="ud-models-head">
+  <h3 style="margin:0;font-size:0.95rem;font-weight:800;color:var(--vx-text-primary);">
     <i class="fas fa-layer-group" style="color:var(--vx-primary);margin-right:0.4rem;"></i>
     <?= __('dashboard.models.title') ?>
   </h3>
@@ -265,16 +269,21 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   <?php foreach (array_slice($modelStats, 0, 4) as $ms):
     $mColor = $ms['color'] ?: '#1a56db';
     $hasScore = $ms['latest_score'] !== null;
+    $mPct = $hasScore ? max(0, min(100, round($ms['latest_score']))) : 0;
+    $mPctDone = ($ms['total'] ?? 0) > 0 ? max(0, min(100, round(($ms['completed'] / $ms['total']) * 100))) : 0;
   ?>
     <a href="/user/models" class="ud-model-mini">
-      <div class="ud-model-mini-icon" style="background:<?= htmlspecialchars($mColor) ?>;">
-        <i class="fas <?= htmlspecialchars($ms['icon'] ?: 'fa-clipboard-check') ?>"></i>
-      </div>
-      <div class="ud-model-mini-info">
-        <div class="ud-model-mini-name"><?= htmlspecialchars($ms['display_name'] ?: $ms['name']) ?></div>
-        <div class="ud-model-mini-score">
-          <?= $hasScore ? '<strong>' . round($ms['latest_score']) . '/100</strong>' : ($ms['completed'] . ' / ' . $ms['total'] . ' ' . __('dashboard.models.assessments')) ?>
+      <div class="ud-model-mini-top">
+        <div class="ud-model-mini-icon" style="background:<?= htmlspecialchars($mColor) ?>;">
+          <i class="fas <?= htmlspecialchars($ms['icon'] ?: 'fa-clipboard-check') ?>"></i>
         </div>
+        <div class="ud-model-mini-name" title="<?= htmlspecialchars($ms['display_name'] ?: $ms['name']) ?>"><?= htmlspecialchars($ms['display_name'] ?: $ms['name']) ?></div>
+      </div>
+      <div class="ud-model-mini-score">
+        <?= $hasScore ? '<strong>' . round($ms['latest_score']) . '/100</strong>' : '<span>' . $ms['completed'] . ' / ' . $ms['total'] . ' ' . __('dashboard.models.assessments') . '</span>' ?>
+      </div>
+      <div class="ud-model-mini-bar">
+        <div class="ud-model-mini-bar-fill" style="width:<?= $hasScore ? $mPct : $mPctDone ?>%;background:<?= htmlspecialchars($mColor) ?>;"></div>
       </div>
     </a>
   <?php endforeach; ?>

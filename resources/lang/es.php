@@ -40,6 +40,7 @@ return [
     'assessment.domain' => 'Dominio',
     'assessment.question' => 'Pregunta',
     'assessment.weight' => 'Ponderación',
+    'assessment.choose_language' => 'Elija el idioma de su evaluación',
 
     'lead.title' => 'Solicitud de Informe Certificado',
     'lead.subtitle' => 'Ingrese su información para enviar su solicitud de informe certificado de madurez de calidad a nuestro equipo.',

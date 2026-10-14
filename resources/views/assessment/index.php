@@ -87,6 +87,7 @@ $config = [
 $i18n = [
     'fr' => [
         'choose_lang' => 'Choisissez votre langue',
+        'choose_lang_eval' => 'Choisissez votre langue d\'évaluation',
         'choose_lang_desc' => 'Sélectionnez la langue dans laquelle vous souhaitez répondre au questionnaire',
         'start' => 'Commencer le questionnaire',
         'time_remaining' => 'Temps restant',
@@ -123,6 +124,7 @@ $i18n = [
     ],
     'en' => [
         'choose_lang' => 'Choose your language',
+        'choose_lang_eval' => 'Choose your assessment language',
         'choose_lang_desc' => 'Select the language in which you want to answer the questionnaire',
         'start' => 'Start questionnaire',
         'time_remaining' => 'Time remaining',
@@ -159,6 +161,7 @@ $i18n = [
     ],
     'ar' => [
         'choose_lang' => 'اختر لغتك',
+        'choose_lang_eval' => 'اختر لغة التقييم',
         'choose_lang_desc' => 'اختر اللغة التي تريد الإجابة بها على الاستبيان',
         'start' => 'بدء الاستبيان',
         'time_remaining' => 'الوقت المتبقي',
@@ -195,6 +198,7 @@ $i18n = [
     ],
     'es' => [
         'choose_lang' => 'Elija su idioma',
+        'choose_lang_eval' => 'Elija el idioma de su evaluación',
         'choose_lang_desc' => 'Seleccione el idioma en el que desea responder el cuestionario',
         'start' => 'Comenzar el cuestionario',
         'time_remaining' => 'Tiempo restante',
@@ -231,6 +235,12 @@ $i18n = [
     ],
 ];
 
+// Phrase « Choisissez votre langue d'évaluation » (avant les boutons de langue) : fichiers de langue, repli sur $i18n
+$chooseLangEval = (string)__('assessment.choose_language');
+if ($chooseLangEval === '' || $chooseLangEval === 'assessment.choose_language') {
+    $chooseLangEval = $i18n[$_SESSION['lang'] ?? 'fr']['choose_lang_eval'] ?? $i18n['fr']['choose_lang_eval'];
+}
+
 $premiumCssPath = BASE_PATH . '/public/css/aqmi-premium.css';
 $premiumCssVersion = is_file($premiumCssPath) ? filemtime($premiumCssPath) : time();
 $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">'
@@ -241,15 +251,17 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '<style>'
     . '.aqmi-premium { --aqmi-font: "Inter", "Manrope", sans-serif; }'
     . '.ud-shell { overflow: visible; }'
+    // La page ne doit jamais etre plus grande que l'ecran : pas de scroll de la page derriere l'application
+    . 'html, body { overflow: hidden !important; }'
     . '.ud-content { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }'
     . '.ud-page-title-bar { display: none; }'
     // Override fixed positioning: embed inside dashboard, below the 60px sticky topbar
     . '.aqmi-premium {'
     . '  position: fixed !important;'
-    . '  top: 60px !important;'
+    . '  top: var(--aqmi-top, 60px) !important;'
     . '  left: 0 !important;'
     . '  right: 0 !important;'
-    . '  bottom: 0 !important;'
+    . '  bottom: var(--aqmi-bottom, 0px) !important;'
     . '  z-index: 10 !important;'
     . '  height: auto !important;'
     . '  overflow-y: auto;'
@@ -267,26 +279,31 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '.aqmi-domain-transition { position: absolute !important; }'
     // Mobile: leave room for bottom nav (60px topbar + ~60px bottom nav)
     . '@media (max-width: 768px) {'
-    . '.aqmi-premium { bottom: 60px !important; }'
+    . '.aqmi-premium { bottom: var(--aqmi-bottom, 60px) !important; }'
     . '.ud-content { padding-bottom: 0 !important; }'
     . '}'
     // ===== SELECT v3 (choix langue + modèle) : supprimer ce bloc pour revenir à l'ancien rendu =====
-    . '.aqmi-select-screen-inner { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 7rem; box-sizing: border-box; }'
-    . '.aqmi-select-hero { text-align: center; margin-bottom: 1.5rem; }'
-    . '.aqmi-select-card { display: flex; flex-direction: column; gap: 1.75rem; }'
+    . '.aqmi-select-screen-inner { max-width: 1000px; margin: 0 auto; padding: clamp(1rem, 3vh, 2rem) 1.5rem 5.5rem; box-sizing: border-box; }'
+    . '.aqmi-select-hero { text-align: center; margin-bottom: clamp(0.5rem, 2vh, 1.25rem); }'
+    . '.aqmi-select-screen .aqmi-select-hero-icon { width: 46px; height: 46px; font-size: 1.1rem; margin: 0 auto 0.5rem; }'
+    . '.aqmi-select-screen .aqmi-select-hero-title { font-size: clamp(1.2rem, 3.2vh, 1.75rem); margin: 0 0 0.25rem; line-height: 1.2; }'
+    . '.aqmi-select-screen .aqmi-select-hero-desc { font-size: 0.85rem; margin: 0; }'
+    . '.aqmi-select-card { display: flex; flex-direction: column; gap: clamp(0.75rem, 2.2vh, 1.5rem); }'
     . '.aqmi-select-divider { display: none; }'
-    . '.aqmi-select-section-header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-bottom: 1rem; }'
+    . '.aqmi-select-section-header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-bottom: 0.6rem; }'
     . '.aqmi-select-section-sub { flex-basis: 100%; margin: 0; }'
+    . '.aqmi-select-lang-eval { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem; font-size: 0.95rem; font-weight: 700; color: var(--aqmi-text, #0f172a); }'
+    . '.aqmi-select-lang-eval i { color: var(--aqmi-accent, #1F6FEB); }'
     . '.aqmi-select-lang-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }'
     . '.aqmi-select-lang-card { flex: 1 1 130px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.65rem 1rem; }'
-    . '.aqmi-select-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }'
-    . '.aqmi-select-model-card { display: flex; align-items: flex-start; gap: 1rem; text-align: left; width: 100%; min-height: 96px; }'
+    . '.aqmi-select-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; }'
+    . '.aqmi-select-model-card { display: flex; align-items: flex-start; gap: 1rem; text-align: left; width: 100%; min-height: 84px; }'
     . '.aqmi-select-model-info { flex: 1 1 auto; min-width: 0; }'
     . '.aqmi-select-model-check { margin-left: auto; opacity: 0; transition: opacity 0.2s ease; }'
     . '.aqmi-select-model-card.selected .aqmi-select-model-check { opacity: 1; }'
-    . '.aqmi-select-card-footer { position: sticky; bottom: 0; display: flex; justify-content: flex-end; padding: 1rem 0; z-index: 5; }'
+    . '.aqmi-select-card-footer { position: sticky; bottom: 0; display: flex; justify-content: flex-end; padding: 0.6rem 0; z-index: 5; }'
     . '@media (max-width: 640px) {'
-    . '.aqmi-select-screen-inner { padding: 1.25rem 1rem 7rem; }'
+    . '.aqmi-select-screen-inner { padding: 1rem 1rem 6rem; }'
     . '.aqmi-select-model-grid { grid-template-columns: 1fr; }'
     . '.aqmi-select-start-btn { width: 100%; }'
     . '}'
@@ -415,6 +432,10 @@ ob_start();
           <h2 class="aqmi-select-section-title" id="aqmiSelectLangTitle">Choisissez votre langue</h2>
           <p class="aqmi-select-section-sub" id="aqmiSelectLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre</p>
         </div>
+        <p class="aqmi-select-lang-eval" id="aqmiSelectLangEval">
+          <i class="fas fa-language"></i>
+          <span id="aqmiSelectLangEvalText"><?= e($chooseLangEval) ?></span>
+        </p>
         <div class="aqmi-select-lang-row">
           <button class="aqmi-select-lang-card" data-lang="fr" type="button">
             <span class="aqmi-select-lang-flag">FR</span>
@@ -625,6 +646,95 @@ ob_start();
   <div class="aqmi-domain-transition" id="aqmiDomainTransition"></div>
 
 </div>
+
+<script>
+/* Place l'application exactement sous la barre de navigation horizontale (auto-correction) et ajuste sa taille a l'ecran */
+(function () {
+  var root = document.documentElement;
+  var app = document.getElementById('aqmiApp');
+  if (!app || !document.elementsFromPoint) return;
+  var SEL = 'header, nav, [class*="topbar"], [class*="navbar"], [class*="nav-bar"], [class*="hnav"], [class*="top-nav"], [class*="header"]';
+
+  function isPinned(el) {
+    var cs = window.getComputedStyle(el);
+    return cs.position === 'fixed' || cs.position === 'sticky';
+  }
+  // Remonte jusqu'a l'element fixe/sticky qui contient el (la barre elle-meme)
+  function pinnedAnchor(el) {
+    var n = el;
+    while (n && n !== document.body && n !== document.documentElement) {
+      if (isPinned(n)) return n;
+      n = n.parentElement;
+    }
+    return null;
+  }
+  function apply(top, bottom) {
+    root.style.setProperty('--aqmi-top', Math.max(0, Math.ceil(top)) + 'px');
+    if (bottom > 0) root.style.setProperty('--aqmi-bottom', Math.ceil(bottom) + 'px');
+    else root.style.removeProperty('--aqmi-bottom');
+  }
+
+  function place() {
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var top = 60, bottom = 0;
+
+    // 1) estimation par selecteurs (barres epinglees ou en haut de page)
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (app.contains(el) || el.contains(app)) return;
+      var cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      var r = el.getBoundingClientRect();
+      if (r.width < vw * 0.4 || r.height < 20 || r.height > 260) return;
+      if (!(isPinned(el) || window.pageYOffset === 0)) return;
+      if (r.top < 160 && r.bottom > 0) top = Math.max(top, r.bottom);
+      else if (r.bottom > vh - 4 && r.top > vh * 0.5) bottom = Math.max(bottom, vh - r.top);
+    });
+    apply(top, bottom);
+
+    // 2) verification reelle : si autre chose que l'application est au premier plan sur son bord haut/bas, on pousse
+    var xs = [vw * 0.2, vw * 0.5, vw * 0.8];
+    for (var n = 0; n < 8; n++) {
+      var moved = false;
+      for (var i = 0; i < xs.length; i++) {
+        var hit = document.elementsFromPoint(xs[i], top + 3)[0];
+        if (!hit || app.contains(hit) || hit === document.documentElement || hit === document.body) continue;
+        var anc = pinnedAnchor(hit) || hit;
+        var r2 = anc.getBoundingClientRect();
+        if (r2.width >= vw * 0.3 && r2.bottom > top && r2.bottom < 280) { top = Math.ceil(r2.bottom); moved = true; }
+      }
+      if (!moved) break;
+      apply(top, bottom);
+    }
+    if (window.innerWidth <= 768 || bottom > 0) {
+      var b = bottom || 60;
+      for (var m = 0; m < 4; m++) {
+        var hitB = document.elementsFromPoint(vw * 0.5, vh - b - 3)[0];
+        if (!hitB || app.contains(hitB) || hitB === document.documentElement || hitB === document.body) break;
+        var ancB = pinnedAnchor(hitB) || hitB;
+        var rb = ancB.getBoundingClientRect();
+        if (rb.top < vh - b && rb.top > vh * 0.5) { b = Math.ceil(vh - rb.top); } else break;
+      }
+      bottom = b;
+      apply(top, bottom);
+    }
+  }
+
+  var timer = null;
+  function schedule() { clearTimeout(timer); timer = setTimeout(place, 60); }
+  place();
+  window.addEventListener('DOMContentLoaded', place);
+  window.addEventListener('load', place);
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', schedule);
+  setTimeout(place, 150);
+  setTimeout(place, 600);
+  setTimeout(place, 1500);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(schedule);
+    document.querySelectorAll(SEL).forEach(function (el) { if (!app.contains(el) && !el.contains(app)) ro.observe(el); });
+  }
+})();
+</script>
 
 <?php
 $jsonFlags = JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE;

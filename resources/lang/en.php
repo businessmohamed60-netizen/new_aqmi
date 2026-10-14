@@ -40,6 +40,7 @@ return [
     'assessment.domain' => 'Domain',
     'assessment.question' => 'Question',
     'assessment.weight' => 'Weight',
+    'assessment.choose_language' => 'Choose your assessment language',
 
     'lead.title' => 'Certified Report Request',
     'lead.subtitle' => 'Enter your information to submit your certified quality maturity report request to our team.',
