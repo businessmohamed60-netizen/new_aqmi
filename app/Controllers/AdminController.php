@@ -361,9 +361,32 @@ class AdminController
 
         $total = (int)Database::fetch("SELECT COUNT(*) as total FROM leads l $whereClause", $params)['total'];
         $leads = Database::fetchAll(
-            "SELECT l.*, a.total_score, a.maturity_level FROM leads l LEFT JOIN assessments a ON l.assessment_id = a.id $whereClause ORDER BY l.created_at DESC LIMIT ? OFFSET ?",
+            "SELECT l.*, a.total_score, a.maturity_level, a.status AS assessment_status FROM leads l LEFT JOIN assessments a ON l.assessment_id = a.id $whereClause ORDER BY l.created_at DESC LIMIT ? OFFSET ?",
             array_merge($params, [$perPage, $offset])
         );
+
+        // Scores manquants : on les calcule avec le même service que la page résultats (source unique)
+        // puis on les enregistre pour ne plus avoir à les recalculer.
+        $scoring = null;
+        foreach ($leads as &$l) {
+            if (empty($l['assessment_id']) || ($l['assessment_status'] ?? '') !== 'completed') { continue; }
+            $missing = !isset($l['total_score']) || $l['total_score'] === ''
+                || ((float)$l['total_score'] == 0.0 && empty($l['maturity_level']));
+            if (!$missing) { continue; }
+            try {
+                $scoring = $scoring ?? new \App\Services\ScoringService();
+                $analysis = $scoring->analyzeAssessment((int)$l['assessment_id']);
+                if (isset($analysis['global_score'])) {
+                    $levelName = $analysis['maturity_level']['name'] ?? 'N/A';
+                    $l['total_score'] = round((float)$analysis['global_score'], 1);
+                    $l['maturity_level'] = $levelName;
+                    Assessment::updateScore((int)$l['assessment_id'], $analysis['global_score'], $levelName);
+                }
+            } catch (\Throwable $e) {
+                // on laisse « Non évalué » pour cette ligne
+            }
+        }
+        unset($l);
         $sectors = Database::fetchAll("SELECT DISTINCT sector FROM leads WHERE sector IS NOT NULL AND sector != '' ORDER BY sector");
         $countries = Database::fetchAll("SELECT DISTINCT country FROM leads WHERE country IS NOT NULL AND country != '' ORDER BY country");
 
@@ -387,7 +410,32 @@ class AdminController
         $assessment = $lead['assessment_id'] ? Assessment::find($lead['assessment_id']) : null;
         $customFields = \App\Models\LeadCustomField::getValues($id);
         $documents = Database::fetchAll("SELECT * FROM lead_documents WHERE lead_id = ?", [$id]);
-        view('admin.leads.detail', compact('lead', 'assessment', 'customFields', 'documents'));
+
+        // Évaluation : même calcul que la page résultats (score global, scores par domaine, benchmark, niveau)
+        $analysis = null;
+        $profileUser = null;
+        if ($assessment) {
+            try {
+                $analysis = (new \App\Services\ScoringService())->analyzeAssessment((int)$assessment['id']);
+            } catch (\Throwable $e) {
+                $analysis = null;
+            }
+            // Nom du modèle d'évaluation
+            if (!empty($assessment['model_id'])) {
+                try {
+                    $model = EvaluationModel::find((int)$assessment['model_id']);
+                    if ($model) {
+                        $assessment['model_name'] = $model['name_fr'] ?? ($model['name'] ?? '');
+                    }
+                } catch (\Throwable $e) {}
+            }
+            // Profil utilisateur lié à l'évaluation
+            if (!empty($assessment['user_id'])) {
+                $profileUser = User::find((int)$assessment['user_id']) ?: null;
+            }
+        }
+
+        view('admin.leads.detail', compact('lead', 'assessment', 'customFields', 'documents', 'analysis', 'profileUser'));
     }
 
     public function leadSaveFields(array $params): void

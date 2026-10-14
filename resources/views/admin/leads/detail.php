@@ -6,10 +6,9 @@
  * - Sections sélectionnables, prêtes à imprimer (A4)
  *
  * Variables attendues du contrôleur : $lead, $assessment, $customFields, $documents
- * Variables optionnelles (recommandées) :
- *   $analysis       -> même tableau que results.php (domain_scores, global_score, maturity_level, benchmark)
- *   $domainScores   -> alternative directe à $analysis['domain_scores']
- *   $profileUser    -> ligne de la table users liée au prospect (sinon chargée via \App\Models\User::find)
+ * Fournies par AdminController::leadDetail :
+ *   $analysis       -> ScoringService::analyzeAssessment() (domain_scores, global_score, maturity_level, benchmark)
+ *   $profileUser    -> ligne de la table users liée à l'évaluation (assessments.user_id)
  */
 $lead         = $lead ?? [];
 $assessment   = $assessment ?? null;
@@ -35,21 +34,24 @@ $domainScores = is_array($domainScores) ? array_values($domainScores) : [];
 $benchmark    = $benchmark ?? ($analysis['benchmark'] ?? ['global_avg' => 0, 'domain_avgs' => []]);
 $bmDomains    = is_array($benchmark['domain_avgs'] ?? null) ? $benchmark['domain_avgs'] : [];
 
+// Source unique : $analysis['global_score'] (comme results.php), repli sur le score enregistré
 $globalScore = null;
-if ($assessment && isset($assessment['total_score']) && $assessment['total_score'] !== '') {
-    $globalScore = (float)$assessment['total_score'];
-} elseif (isset($analysis['global_score'])) {
+if (isset($analysis['global_score'])) {
     $globalScore = (float)$analysis['global_score'];
+} elseif ($assessment && isset($assessment['total_score']) && $assessment['total_score'] !== '') {
+    $globalScore = (float)$assessment['total_score'];
 }
 if ($globalScore !== null) { $globalScore = max(0, min(100, $globalScore)); }
 
 $levelNameFromData = '';
-if (!empty($assessment['maturity_level'])) {
-    $ml = $assessment['maturity_level'];
-    $levelNameFromData = is_array($ml) ? (string)($ml['name_fr'] ?? $ml['name'] ?? '') : (string)$ml;
-} elseif (!empty($analysis['maturity_level']) && is_array($analysis['maturity_level'])) {
+$levelColorFromData = null;
+if (!empty($analysis['maturity_level']) && is_array($analysis['maturity_level'])) {
     $ml = $analysis['maturity_level'];
     $levelNameFromData = (string)($ml['name_fr'] ?? $ml['name'] ?? '');
+    $levelColorFromData = $ml['color'] ?? null;
+} elseif (!empty($assessment['maturity_level'])) {
+    $ml = $assessment['maturity_level'];
+    $levelNameFromData = is_array($ml) ? (string)($ml['name_fr'] ?? $ml['name'] ?? '') : (string)$ml;
 }
 
 // Palette et libellés alignés sur le tableau de bord (seuils 31 / 51 / 71 / 86)
@@ -67,6 +69,9 @@ $levelLabel = function ($s) {
     return ($t === '' || $t === 'maturity.' . $k) ? ucfirst($k) : $t;
 };
 $globalColor = $tone($globalScore);
+if (is_string($levelColorFromData) && preg_match('/^#[0-9a-fA-F]{6}$/', $levelColorFromData)) {
+    $globalColor = $levelColorFromData; // même couleur que la page résultats
+}
 $globalLevel = $levelNameFromData !== '' ? $levelNameFromData : ($globalScore !== null ? $levelLabel($globalScore) : '');
 $ringCirc    = 2 * M_PI * 52;
 $ringOffset  = $ringCirc * (1 - ($globalScore ?? 0) / 100);
@@ -509,7 +514,7 @@ $sections = [
         <?php else: ?>
           <div class="f-noscore">Le détail par domaine n'est pas disponible.</div>
           <div class="f-noscore no-print" style="font-style:normal;font-size:.7rem;">
-            Administrateur : transmettez <code>$analysis</code> (comme dans results.php) à cette vue depuis le contrôleur pour afficher les scores par domaine.
+            Aucune donnée d'évaluation calculée pour ce prospect (évaluation absente ou non terminée).
           </div>
         <?php endif; ?>
       </section>
