@@ -284,7 +284,7 @@ ob_start();
         <div class="aqmi-select-model-grid" id="aqmiModelChoices">
           <?php foreach (($config['models'] ?? []) as $m): ?>
             <button class="aqmi-select-model-card" data-model="<?= (int)$m['id'] ?>" type="button">
-              <span class="aqmi-select-model-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
+              <span class="aqmi-select-model-icon" style="background:<?= e($m['color'] ?: '#6366f1') ?>1a;color:<?= e($m['color'] ?: '#6366f1') ?>">
                 <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
               </span>
               <div class="aqmi-select-model-info">
@@ -382,11 +382,11 @@ ob_start();
           <svg viewBox="0 0 200 200">
             <defs>
               <linearGradient id="aqmiGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E5484D"/>
-                <stop offset="25%" stop-color="#E8823A"/>
-                <stop offset="50%" stop-color="#9d8fd1"/>
-                <stop offset="75%" stop-color="#1F6FEB"/>
-                <stop offset="100%" stop-color="#2EC4B6"/>
+                <stop offset="0%" stop-color="#ef4444"/>
+                <stop offset="25%" stop-color="#f59e0b"/>
+                <stop offset="50%" stop-color="#06b6d4"/>
+                <stop offset="75%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#10b981"/>
               </linearGradient>
             </defs>
             <circle class="aqmi-main-gauge-bg" cx="100" cy="100" r="85"/>
