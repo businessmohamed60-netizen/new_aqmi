@@ -349,7 +349,7 @@
       { value: 5, label: tr('yes_label'), sublabel: tr('yes_sub'), icon: 'fa-check', cls: 'yes' },
       { value: 3, label: tr('partial_label'), sublabel: tr('partial_sub'), icon: 'fa-circle-half-stroke', cls: 'partial' },
       { value: 0, label: tr('no_label'), sublabel: tr('no_sub'), icon: 'fa-xmark', cls: 'no' },
-      { value: -1, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-dash', cls: 'na' },
+      { value: -1, label: tr('na_label'), sublabel: tr('na_sub'), icon: 'fa-minus', cls: 'na' },
     ];
 
     var html = '';
@@ -820,11 +820,14 @@
     if (!el.mainGauge || !el.mainGaugeCircle || !el.mainGaugeValue || !el.mainGaugeIcon || !el.mainGaugeLabel) return;
 
     if (score === null) {
+      var isNA = !!(q && q.answered);
       el.mainGaugeCircle.style.strokeDashoffset = String(MAIN_GAUGE_CIRCUMFERENCE);
-      el.mainGaugeValue.textContent = 'N/A';
-      el.mainGaugeIcon.style.color = '#6c757d';
-      el.mainGaugeIcon.innerHTML = '<i class="fas fa-dash"></i>';
-      el.mainGaugeLabel.textContent = tr('na_label');
+      el.mainGaugeCircle.style.stroke = '#94a3b8';
+      el.mainGauge.style.setProperty('--gauge-color', 'transparent');
+      el.mainGaugeValue.textContent = isNA ? 'N/A' : '\u2013';
+      el.mainGaugeIcon.style.color = '#94a3b8';
+      el.mainGaugeIcon.innerHTML = '<i class="fas ' + (isNA ? 'fa-minus' : 'fa-gauge-high') + '"></i>';
+      el.mainGaugeLabel.textContent = isNA ? tr('na_label') : tr('gauge_waiting');
       return;
     }
 
@@ -846,6 +849,8 @@
 
     var color = score === 0 ? '#E5484D' : score === 1 ? '#E8823A' : score === 2 ? '#9d8fd1' : score === 3 ? '#1F6FEB' : '#2EC4B6';
     el.mainGaugeIcon.style.color = color;
+    el.mainGaugeCircle.style.stroke = color;
+    el.mainGauge.style.setProperty('--gauge-color', color);
 
     if (hasGsap && window.gsap) {
       var mainNumProxy = { val: parseInt(el.mainGaugeValue.textContent) || 0 };
@@ -945,6 +950,7 @@
   function showCompletion() {
     console.log('[AQMI DEBUG] showCompletion() executed');
     createConfetti();
+    chrono.stop();
 
     var overlay = document.createElement('div');
     overlay.className = 'aqmi-completion-overlay';
@@ -953,6 +959,7 @@
       '  <div class="aqmi-completion-check"><i class="fas fa-check"></i></div>',
       '  <h2 class="aqmi-completion-title">' + tr('completion_title') + '</h2>',
       '  <p class="aqmi-completion-desc">' + tr('completion_desc') + '</p>',
+      '  <div class="aqmi-completion-time"><i class="far fa-clock"></i> ' + chrono.formatted() + '</div>',
       '  <a href="/assessment/' + assessmentId + '/complete" class="aqmi-completion-btn">',
       '    ' + tr('completion_btn') + ' <i class="fas fa-arrow-right"></i>',
       '  </a>',
@@ -1080,9 +1087,97 @@
   if (el.prevBtn) el.prevBtn.addEventListener('click', goPrev);
   if (el.nextBtn) el.nextBtn.addEventListener('click', goNext);
 
+  // ── Chrono (temps écoulé, persistant, en pause si l'onglet est masqué) ──
+  var chrono = (function() {
+    var elBox = $id('aqmiChrono');
+    var elTime = $id('aqmiChronoTime');
+    var hMin = $id('aqmiChronoMin');
+    var hSec = $id('aqmiChronoSec');
+    var key = 'aqmi_chrono_' + assessmentId;
+    var elapsedMs = 0;
+    var last = null;
+    var timer = null;
+    var saveCounter = 0;
+    var running = false;
+
+    try { elapsedMs = parseInt(localStorage.getItem(key), 10) || 0; } catch (e) { elapsedMs = 0; }
+
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+    function format() {
+      var total = Math.floor(elapsedMs / 1000);
+      var h = Math.floor(total / 3600);
+      var m = Math.floor((total % 3600) / 60);
+      var s = total % 60;
+      return (h > 0 ? h + ':' : '') + pad(m) + ':' + pad(s);
+    }
+
+    function render() {
+      if (elTime) elTime.textContent = format();
+      var totalSec = elapsedMs / 1000;
+      if (hSec) hSec.setAttribute('transform', 'rotate(' + ((totalSec % 60) * 6) + ' 60 60)');
+      if (hMin) hMin.setAttribute('transform', 'rotate(' + (((totalSec / 60) % 60) * 6) + ' 60 60)');
+    }
+
+    function save() {
+      try { localStorage.setItem(key, String(Math.round(elapsedMs))); } catch (e) {}
+    }
+
+    function tick() {
+      var now = Date.now();
+      if (last !== null) elapsedMs += (now - last);
+      last = now;
+      render();
+      saveCounter++;
+      if (saveCounter % 5 === 0) save();
+    }
+
+    function onVisibility() {
+      if (!running) return;
+      if (document.hidden) {
+        tick();
+        last = null;
+        save();
+        if (elBox) elBox.classList.add('is-paused');
+      } else {
+        last = Date.now();
+        if (elBox) elBox.classList.remove('is-paused');
+      }
+    }
+
+    function start() {
+      if (running || !elBox) return;
+      running = true;
+      last = document.hidden ? null : Date.now();
+      if (elBox) elBox.title = tr('elapsed_time');
+      render();
+      timer = setInterval(tick, 1000);
+      document.addEventListener('visibilitychange', onVisibility);
+      window.addEventListener('beforeunload', function() { if (running) { tick(); save(); } });
+    }
+
+    function stop() {
+      if (!running) return;
+      tick();
+      running = false;
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      save();
+    }
+
+    return {
+      start: start,
+      stop: stop,
+      seconds: function() { return Math.floor(elapsedMs / 1000); },
+      formatted: format
+    };
+  })();
+  window.AQMI_CHRONO = chrono;
+
   // ── Init ──
   function init() {
     createParticles();
+    chrono.start();
     // Ensure gauge circle starts at the correct circumference before any animation
     if (el.gaugeCircle) {
       el.gaugeCircle.style.strokeDasharray = String(GAUGE_CIRCUMFERENCE);
@@ -1113,7 +1208,7 @@
   var selectDesc = document.getElementById('aqmiSelectDesc');
   var selectedModelId = null;
   var selectedLang = currentLang;
-  var selectScreenVisible = !!selectScreen && selectScreen.offsetParent !== null;
+  var selectScreenVisible = !!selectScreen && !!cfg.isModelSelection;
 
   function applySelectLabels(lang) {
     var labels = i18nData[lang] || i18nData['fr'] || {};

@@ -18,7 +18,7 @@ if (!$isModelSelection) {
 foreach ($domainQuestions as $dq) {
     $domainsFlat[] = [
         'id' => $dq['domain']['id'],
-        'name' => $dq['domain']['name_fr'] ?: $dq['domain']['name'],
+        'name' => ($dq['domain']['name_fr'] ?? null) ?: $dq['domain']['name'],
         'name_en' => $dq['domain']['name'],
         'name_ar' => $dq['domain']['name_ar'] ?? null,
         'name_es' => $dq['domain']['name_es'] ?? null,
@@ -44,11 +44,11 @@ foreach ($domainQuestions as $dq) {
         $questionsFlat[] = [
             'id' => $q['id'],
             'domain_id' => $q['domain_id'],
-            'title' => $q['title_fr'] ?: $q['title'],
+            'title' => ($q['title_fr'] ?? null) ?: $q['title'],
             'title_en' => $q['title'],
             'title_ar' => $q['title_ar'] ?? null,
             'title_es' => $q['title_es'] ?? null,
-            'description' => $q['description_fr'] ?: $q['description'],
+            'description' => ($q['description_fr'] ?? null) ?: ($q['description'] ?? ''),
             'description_ar' => $q['description_ar'] ?? null,
             'description_es' => $q['description_es'] ?? null,
             'help_text' => $q['help_text_fr'] ?? $q['help_text'] ?? null,
@@ -90,6 +90,7 @@ $i18n = [
         'choose_lang_desc' => 'Sélectionnez la langue dans laquelle vous souhaitez répondre au questionnaire',
         'start' => 'Commencer le questionnaire',
         'time_remaining' => 'Temps restant',
+        'elapsed_time' => 'Temps écoulé',
         'question' => 'Question',
         'domain' => 'Domaine',
         'maturity' => 'Maturité',
@@ -125,6 +126,7 @@ $i18n = [
         'choose_lang_desc' => 'Select the language in which you want to answer the questionnaire',
         'start' => 'Start questionnaire',
         'time_remaining' => 'Time remaining',
+        'elapsed_time' => 'Elapsed time',
         'question' => 'Question',
         'domain' => 'Domain',
         'maturity' => 'Maturity',
@@ -160,6 +162,7 @@ $i18n = [
         'choose_lang_desc' => 'اختر اللغة التي تريد الإجابة بها على الاستبيان',
         'start' => 'بدء الاستبيان',
         'time_remaining' => 'الوقت المتبقي',
+        'elapsed_time' => 'الوقت المنقضي',
         'question' => 'سؤال',
         'domain' => 'المجال',
         'maturity' => 'النضج',
@@ -195,6 +198,7 @@ $i18n = [
         'choose_lang_desc' => 'Seleccione el idioma en el que desea responder el cuestionario',
         'start' => 'Comenzar el cuestionario',
         'time_remaining' => 'Tiempo restante',
+        'elapsed_time' => 'Tiempo transcurrido',
         'question' => 'Pregunta',
         'domain' => 'Dominio',
         'maturity' => 'Madurez',
@@ -246,7 +250,6 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '  left: 0 !important;'
     . '  right: 0 !important;'
     . '  bottom: 0 !important;'
-    . '  inset: auto !important;'
     . '  z-index: 10 !important;'
     . '  height: auto !important;'
     . '  overflow-y: auto;'
@@ -267,6 +270,126 @@ $extraStyles = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/l
     . '.aqmi-premium { bottom: 60px !important; }'
     . '.ud-content { padding-bottom: 0 !important; }'
     . '}'
+    // ===== SELECT v3 (choix langue + modèle) : supprimer ce bloc pour revenir à l'ancien rendu =====
+    . '.aqmi-select-screen-inner { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 7rem; box-sizing: border-box; }'
+    . '.aqmi-select-hero { text-align: center; margin-bottom: 1.5rem; }'
+    . '.aqmi-select-card { display: flex; flex-direction: column; gap: 1.75rem; }'
+    . '.aqmi-select-divider { display: none; }'
+    . '.aqmi-select-section-header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin-bottom: 1rem; }'
+    . '.aqmi-select-section-sub { flex-basis: 100%; margin: 0; }'
+    . '.aqmi-select-lang-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }'
+    . '.aqmi-select-lang-card { flex: 1 1 130px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.65rem 1rem; }'
+    . '.aqmi-select-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }'
+    . '.aqmi-select-model-card { display: flex; align-items: flex-start; gap: 1rem; text-align: left; width: 100%; min-height: 96px; }'
+    . '.aqmi-select-model-info { flex: 1 1 auto; min-width: 0; }'
+    . '.aqmi-select-model-check { margin-left: auto; opacity: 0; transition: opacity 0.2s ease; }'
+    . '.aqmi-select-model-card.selected .aqmi-select-model-check { opacity: 1; }'
+    . '.aqmi-select-card-footer { position: sticky; bottom: 0; display: flex; justify-content: flex-end; padding: 1rem 0; z-index: 5; }'
+    . '@media (max-width: 640px) {'
+    . '.aqmi-select-screen-inner { padding: 1.25rem 1rem 7rem; }'
+    . '.aqmi-select-model-grid { grid-template-columns: 1fr; }'
+    . '.aqmi-select-start-btn { width: 100%; }'
+    . '}'
+    // ===== FIN SELECT v3 =====
+    // ===== QUESTION v4 (design moderne) : supprimer ce bloc pour revenir a l ancien rendu =====
+    . '.aqmi-premium { --q-bg:#f3f6fb; --q-card:#ffffff; --q-ink:#0f172a; --q-muted:#64748b; --q-line:rgba(15,23,42,0.09); --q-accent:var(--aqmi-accent,#1F6FEB); --q-radius:22px; --q-shadow:0 1px 2px rgba(15,23,42,0.04), 0 18px 40px -18px rgba(15,23,42,0.22); background: radial-gradient(900px 420px at 90% -8%, rgba(31,111,235,0.12), transparent 62%), radial-gradient(700px 380px at -5% 105%, rgba(46,196,182,0.10), transparent 60%), var(--q-bg); color: var(--q-ink); }'
+    . '.aqmi-progress-wrap { max-width: none; width: 100%; margin: 0; padding: 0.55rem 1.25rem 0.25rem; box-sizing: border-box; }'
+    . '.aqmi-progress-question { font-weight: 600; color: var(--q-ink); }'
+    . '.aqmi-progress-domain { display: inline-block; margin-left: 0.7rem; padding: 0.22rem 0.75rem; border-radius: 999px; background: rgba(31,111,235,0.10); color: var(--q-accent); font-size: 0.78rem; font-weight: 700; }'
+    . '.aqmi-progress-percent { font-size: 1.15rem; font-weight: 800; color: var(--q-accent); }'
+    . '.aqmi-progress-track { height: 8px; border-radius: 999px; background: rgba(15,23,42,0.08); overflow: hidden; }'
+    . '.aqmi-progress-fill { border-radius: 999px; background: linear-gradient(90deg, var(--q-accent), #2EC4B6); }'
+    . '.aqmi-content:not([style*="none"]) { display: grid !important; grid-template-columns: minmax(0, 1fr); gap: 0.9rem; align-items: start; max-width: none; width: 100%; margin: 0; padding: 0.4rem 1.25rem 5rem; box-sizing: border-box; }'
+    . '.aqmi-question-panel { order: 1; min-width: 0; max-width: none; }'
+    . '.aqmi-question { background: var(--q-card); border: 1px solid var(--q-line); border-radius: var(--q-radius); box-shadow: var(--q-shadow); padding: 1.5rem 2rem 1.2rem; width: 100%; box-sizing: border-box; }'
+    . '.aqmi-question-domain-label { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: rgba(31,111,235,0.09); color: var(--q-accent); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em; }'
+    . '.aqmi-question-number { margin: 0.9rem 0 0.35rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: var(--q-muted); }'
+    . '.aqmi-question-title { margin: 0 0 0.6rem; font-size: clamp(1.4rem, 2.2vw, 1.95rem); line-height: 1.28; font-weight: 800; letter-spacing: -0.015em; color: var(--q-ink); }'
+    . '.aqmi-question-desc { max-width: 120ch; font-size: 1rem; line-height: 1.6; color: var(--q-muted); margin-bottom: 1.25rem; }'
+    . '.aqmi-learn-more-btn { border-radius: 999px; }'
+    . '.aqmi-answers:not([style*="none"]) { display: grid; gap: 0.75rem; }'
+    . '.aqmi-answers[data-qtype="yes_no"]:not([style*="none"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }'
+    . '.aqmi-rating-grid:not([style*="none"]) { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }'
+    . '.aqmi-answer-card, .aqmi-rating-card { position: relative; overflow: hidden; display: flex; align-items: center; gap: 1rem; padding: 1.05rem 1.2rem; border-radius: 16px; background: #fff; border: 1.5px solid var(--q-line); box-shadow: 0 1px 2px rgba(15,23,42,0.04); cursor: pointer; transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease; }'
+    . '.aqmi-answer-card:hover, .aqmi-rating-card:hover { border-color: var(--q-accent); box-shadow: 0 8px 22px -10px rgba(31,111,235,0.35); }'
+    . '.aqmi-answer-icon { flex: 0 0 auto; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; background: rgba(15,23,42,0.05); font-weight: 800; color: var(--q-ink); }'
+    . '.aqmi-answer-card[data-cls="yes"] .aqmi-answer-icon { background: rgba(46,196,182,0.16); color: #139488; }'
+    . '.aqmi-answer-card[data-cls="partial"] .aqmi-answer-icon { background: rgba(232,130,58,0.16); color: #c4631a; }'
+    . '.aqmi-answer-card[data-cls="no"] .aqmi-answer-icon { background: rgba(229,72,77,0.14); color: #d0343a; }'
+    . '.aqmi-answer-label { font-weight: 700; font-size: 1rem; color: var(--q-ink); }'
+    . '.aqmi-answer-sublabel { margin-top: 0.15rem; font-weight: 400; font-size: 0.8rem; color: var(--q-muted); }'
+    . '.aqmi-rating-card { flex-direction: column; justify-content: center; gap: 0.25rem; text-align: center; padding: 1.1rem 0.5rem; }'
+    . '.aqmi-rating-score { font-size: 1.9rem; font-weight: 800; line-height: 1; }'
+    . '.aqmi-rating-label { font-size: 0.82rem; font-weight: 600; color: var(--q-muted); }'
+    . '.aqmi-answer-card.selected, .aqmi-rating-card.selected { border-color: var(--q-accent); background: rgba(31,111,235,0.07); box-shadow: 0 0 0 3px rgba(31,111,235,0.16); }'
+    . '.aqmi-answer-card.selected-yes { border-color: #2EC4B6; background: rgba(46,196,182,0.10); box-shadow: 0 0 0 3px rgba(46,196,182,0.20); }'
+    . '.aqmi-answer-card.selected-partial { border-color: #E8823A; background: rgba(232,130,58,0.10); box-shadow: 0 0 0 3px rgba(232,130,58,0.20); }'
+    . '.aqmi-answer-card.selected-no { border-color: #E5484D; background: rgba(229,72,77,0.09); box-shadow: 0 0 0 3px rgba(229,72,77,0.18); }'
+    . '.aqmi-answer-card.selected-na { border-color: #94a3b8; background: rgba(148,163,184,0.14); box-shadow: 0 0 0 3px rgba(148,163,184,0.22); }'
+    . '.aqmi-text-input, .aqmi-numeric-input, .aqmi-date-input { width: 100%; box-sizing: border-box; padding: 0.95rem 1.05rem; border-radius: 14px; border: 1.5px solid var(--q-line); background: #fff; color: var(--q-ink); font: inherit; transition: border-color 0.18s ease, box-shadow 0.18s ease; }'
+    . '.aqmi-text-input:focus, .aqmi-numeric-input:focus, .aqmi-date-input:focus { outline: none; border-color: var(--q-accent); box-shadow: 0 0 0 4px rgba(31,111,235,0.14); }'
+    . '.aqmi-question-footer { position: sticky; bottom: 0; margin-top: 1.25rem; padding-top: 1rem; background: linear-gradient(180deg, rgba(255,255,255,0), var(--q-card) 35%); }'
+    . '.aqmi-nav-btn { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.8rem 1.35rem; border-radius: 14px; font-weight: 700; border: 1.5px solid var(--q-line); background: #fff; color: var(--q-ink); cursor: pointer; transition: box-shadow 0.18s ease, border-color 0.18s ease; }'
+    . '.aqmi-nav-btn:hover { border-color: var(--q-accent); }'
+    . '.aqmi-nav-btn.primary { background: linear-gradient(135deg, var(--q-accent), #3b82f6); border-color: transparent; color: #fff; box-shadow: 0 10px 24px -10px rgba(31,111,235,0.7); }'
+    . '.aqmi-completion-time { margin: 0.25rem 0 1rem; font-size: 1rem; font-weight: 700; opacity: 0.85; font-variant-numeric: tabular-nums; }'
+    . '@media (max-width: 900px) {'
+    . '.aqmi-content:not([style*="none"]) { grid-template-columns: 1fr; gap: 1rem; padding: 0.5rem 1rem 6rem; }'
+    . '.aqmi-question { padding: 1.4rem 1.2rem 1rem; }'
+    . '.aqmi-answers[data-qtype="yes_no"]:not([style*="none"]) { grid-template-columns: 1fr; }'
+    . '.aqmi-rating-grid:not([style*="none"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); }'
+    . '}'
+    . '.aqmi-question, .aqmi-question-stage, .aqmi-question-inner, .aqmi-answers, .aqmi-rating-grid { max-width: none !important; width: 100%; box-sizing: border-box; }'
+    . '@media (min-width: 1100px) {'
+    . '.aqmi-rating-grid:not([style*="none"]) { grid-template-columns: repeat(6, minmax(0, 1fr)); }'
+    . '.aqmi-answers[data-qtype="yes_no"]:not([style*="none"]) { grid-template-columns: repeat(4, minmax(0, 1fr)); }'
+    . '}'
+    . '.aqmi-question-panel { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box; }'
+    . '.aqmi-question { margin: 0 !important; }'
+    // ===== FIN QUESTION v4 =====
+    // ===== HUD v6 (barre horloge + score + maturite au-dessus de la question) : supprimer ce bloc pour revenir a l ancien rendu =====
+    . '@keyframes aqmi-gauge-ping { 0% { transform: scale(0.92); opacity: 0.55; } 100% { transform: scale(1.22); opacity: 0; } }'
+    . '.aqmi-hud { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 1rem; width: 100%; margin-bottom: 0; }'
+    . '.hud-card { display: flex; align-items: center; justify-content: center; min-height: 116px; gap: 1.1rem; min-width: 0; box-sizing: border-box; padding: 0.9rem 1.2rem; background: var(--q-card); border: 1px solid var(--q-line); border-radius: var(--q-radius); box-shadow: var(--q-shadow); color: var(--q-ink); }'
+    . '.hud-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.3; color: var(--q-muted); }'
+    . '.hud-meta { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }'
+    . '.hud-level { display: flex; align-items: center; gap: 0.45rem; min-width: 0; font-size: 1.02rem; font-weight: 800; color: var(--q-ink); }'
+    . '#aqmiMainGaugeLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }'
+    . '.hud-level-icon { flex: 0 0 auto; display: inline-flex; font-size: 0.95rem; }'
+    . '.hud-ring { position: relative; flex: 0 0 auto; width: 92px; height: 92px; container-type: size; }'
+    . '.hud-score .hud-ring { width: 80px; height: 80px; }'
+    . '.hud-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }'
+    . '.hud-ring-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-size: 22cqw; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--q-ink); }'
+    . '.hud-pulse { position: absolute; inset: 0; border-radius: 50%; border: 2px solid; pointer-events: none; }'
+    . '.hud-maturity .hud-ring svg .fg { filter: drop-shadow(0 0 3px var(--gauge-color, transparent)); }'
+    . '.hud-score:not(.show) .hud-ring { opacity: 0.55; }'
+    . '.hud-chrono { background: linear-gradient(145deg, #0b1220 0%, #16233b 100%); border-color: rgba(255,255,255,0.06); box-shadow: 0 18px 40px -16px rgba(11,18,32,0.7); color: #fff; transition: opacity 0.3s ease; }'
+    . '.hud-chrono .hud-label { color: #94a3b8; }'
+    . '.hud-chrono-face { flex: 0 0 auto; width: 86px; height: 86px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 70%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 0 26px rgba(46,196,182,0.20); }'
+    . '.hud-chrono-face svg { width: 100%; height: 100%; display: block; }'
+    . '.hud-chrono-readout { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }'
+    . '.hud-chrono-time { font-size: 2.7rem; font-weight: 800; line-height: 1; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; color: #ffffff; white-space: nowrap; }'
+    . '.hud-chrono.is-paused { opacity: 0.55; }'
+    . '@media (max-width: 1100px) and (min-width: 901px) {'
+    . '.hud-chrono-face { width: 68px; height: 68px; }'
+    . '.hud-chrono-time { font-size: 2.1rem; }'
+    . '.hud-card { gap: 0.8rem; padding: 0.8rem 0.9rem; }'
+    . '.hud-ring, .hud-score .hud-ring { width: 72px; height: 72px; }'
+    . '}'
+    . '@media (max-width: 900px) {'
+    . '.aqmi-hud { grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }'
+    . '.hud-chrono { grid-column: 1 / -1; justify-content: center; padding: 0.65rem 1rem; }'
+    . '.hud-chrono-face { width: 56px; height: 56px; }'
+    . '.hud-chrono-time { font-size: 2.1rem; }'
+    . '.hud-card { padding: 0.65rem 0.85rem; gap: 0.7rem; min-height: 0; }'
+    . '.hud-ring, .hud-score .hud-ring { width: 60px; height: 60px; }'
+    . '.hud-level { font-size: 0.88rem; }'
+    . '}'
+    . '@media (max-width: 480px) {'
+    . '.hud-ring, .hud-score .hud-ring { width: 52px; height: 52px; }'
+    . '.hud-label { font-size: 0.6rem; letter-spacing: 0.08em; }'
+    . '}'
+    // ===== FIN HUD v6 =====
     . '</style>';
 
 ob_start();
@@ -285,37 +408,10 @@ ob_start();
       </div>
 
       <div class="aqmi-select-card">
-      <!-- Step 1: Model Selection -->
-      <div class="aqmi-select-section" id="aqmiSelectModelSection">
-        <div class="aqmi-select-section-header">
-          <span class="aqmi-select-step-badge">01<i class="fas fa-clipboard-list"></i></span>
-          <h2 class="aqmi-select-section-title" id="aqmiSelectModelTitle">Choisissez votre modèle d'évaluation</h2>
-          <p class="aqmi-select-section-sub" id="aqmiSelectModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
-        </div>
-        <div class="aqmi-select-model-grid" id="aqmiModelChoices">
-          <?php foreach (($config['models'] ?? []) as $m): ?>
-            <button class="aqmi-select-model-card" data-model="<?= (int)$m['id'] ?>" type="button">
-              <span class="aqmi-select-model-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
-                <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
-              </span>
-              <div class="aqmi-select-model-info">
-                <span class="aqmi-select-model-name"><?= e($m['name_fr'] ?: $m['name']) ?></span>
-                <?php if (!empty($m['description_fr']) || !empty($m['description'])): ?>
-                  <span class="aqmi-select-model-desc"><?= e($m['description_fr'] ?: $m['description']) ?></span>
-                <?php endif; ?>
-              </div>
-              <span class="aqmi-select-model-check"><i class="fas fa-check-circle"></i></span>
-            </button>
-          <?php endforeach; ?>
-        </div>
-      </div>
-
-      <div class="aqmi-select-divider"><span></span></div>
-
-      <!-- Step 2: Language Selection -->
+      <!-- Step 1: Language Selection -->
       <div class="aqmi-select-section" id="aqmiSelectLangSection">
         <div class="aqmi-select-section-header">
-          <span class="aqmi-select-step-badge">02<i class="fas fa-language"></i></span>
+          <span class="aqmi-select-step-badge">01<i class="fas fa-language"></i></span>
           <h2 class="aqmi-select-section-title" id="aqmiSelectLangTitle">Choisissez votre langue</h2>
           <p class="aqmi-select-section-sub" id="aqmiSelectLangDesc">Sélectionnez la langue dans laquelle vous souhaitez répondre</p>
         </div>
@@ -336,6 +432,33 @@ ob_start();
             <span class="aqmi-select-lang-flag">ES</span>
             <span class="aqmi-select-lang-name">Español</span>
           </button>
+        </div>
+      </div>
+
+      <div class="aqmi-select-divider"><span></span></div>
+
+      <!-- Step 2: Model Selection -->
+      <div class="aqmi-select-section" id="aqmiSelectModelSection">
+        <div class="aqmi-select-section-header">
+          <span class="aqmi-select-step-badge">02<i class="fas fa-clipboard-list"></i></span>
+          <h2 class="aqmi-select-section-title" id="aqmiSelectModelTitle">Choisissez votre modèle d'évaluation</h2>
+          <p class="aqmi-select-section-sub" id="aqmiSelectModelDesc">Sélectionnez le modèle qui correspond à votre contexte</p>
+        </div>
+        <div class="aqmi-select-model-grid" id="aqmiModelChoices">
+          <?php foreach (($config['models'] ?? []) as $m): ?>
+            <button class="aqmi-select-model-card" data-model="<?= (int)$m['id'] ?>" type="button">
+              <span class="aqmi-select-model-icon" style="background:<?= e($m['color'] ?: '#1F6FEB') ?>1a;color:<?= e($m['color'] ?: '#1F6FEB') ?>">
+                <i class="fas <?= e($m['icon'] ?: 'fa-clipboard-check') ?>"></i>
+              </span>
+              <div class="aqmi-select-model-info">
+                <span class="aqmi-select-model-name"><?= e($m['name_fr'] ?: $m['name']) ?></span>
+                <?php if (!empty($m['description_fr']) || !empty($m['description'])): ?>
+                  <span class="aqmi-select-model-desc"><?= e($m['description_fr'] ?: $m['description']) ?></span>
+                <?php endif; ?>
+              </div>
+              <span class="aqmi-select-model-check"><i class="fas fa-check-circle"></i></span>
+            </button>
+          <?php endforeach; ?>
         </div>
       </div>
 
@@ -389,36 +512,55 @@ ob_start();
 
   <!-- Main Content -->
   <div class="aqmi-content"<?= $isModelSelection ? ' style="display:none;"' : '' ?> id="aqmiContent">
-    <!-- Left: Maturity Gauge -->
-    <div class="aqmi-illustration">
-      <div class="aqmi-illustration-inner">
-        <div class="aqmi-illustration-glow"></div>
-        <div class="aqmi-particles" id="aqmiParticles">
-          <!-- Particles rendered by JS -->
-        </div>
-        <div class="aqmi-main-gauge" id="aqmiMainGauge">
-          <svg viewBox="0 0 200 200">
-            <defs>
-              <linearGradient id="aqmiGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E5484D"/>
-                <stop offset="25%" stop-color="#E8823A"/>
-                <stop offset="50%" stop-color="#9d8fd1"/>
-                <stop offset="75%" stop-color="#1F6FEB"/>
-                <stop offset="100%" stop-color="#2EC4B6"/>
-              </linearGradient>
-            </defs>
-            <circle class="aqmi-main-gauge-bg" cx="100" cy="100" r="85"/>
-            <circle class="aqmi-main-gauge-fg" id="aqmiMainGaugeCircle" cx="100" cy="100" r="85"/>
+    <!-- HUD : horloge + score global + maturite (au-dessus de la question) -->
+    <div class="aqmi-hud" id="aqmiHud">
+      <div class="hud-card hud-chrono" id="aqmiChrono" role="timer" aria-live="off">
+        <div class="hud-chrono-face">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="55" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <?php for ($i = 0; $i < 12; $i++): ?>
+            <line x1="60" y1="<?= $i % 3 === 0 ? 9 : 12 ?>" x2="60" y2="18" stroke="rgba(255,255,255,0.6)" stroke-width="<?= $i % 3 === 0 ? 3 : 1.6 ?>" stroke-linecap="round" transform="rotate(<?= $i * 30 ?> 60 60)"/>
+            <?php endfor; ?>
+            <line id="aqmiChronoMin" x1="60" y1="60" x2="60" y2="30" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+            <line id="aqmiChronoSec" x1="60" y1="68" x2="60" y2="16" stroke="#2EC4B6" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="60" cy="60" r="4.5" fill="#2EC4B6"/>
           </svg>
-          <div class="aqmi-main-gauge-center">
-            <div class="aqmi-main-gauge-icon" id="aqmiMainGaugeIcon"><i class="fas fa-gauge-high"></i></div>
-            <div class="aqmi-main-gauge-value" id="aqmiMainGaugeValue">0%</div>
-            <div class="aqmi-main-gauge-label" id="aqmiMainGaugeLabel" data-i18n="maturity">Maturité</div>
-          </div>
-          <div class="aqmi-main-gauge-pulse" id="aqmiMainGaugePulse" style="display:none;"></div>
         </div>
-        <div class="aqmi-illustration-scene" id="aqmiScene" style="display:none;">
-          <!-- Rendered by JS -->
+        <div class="hud-chrono-readout">
+          <span class="hud-label" data-i18n="elapsed_time">Temps écoulé</span>
+          <span class="hud-chrono-time" id="aqmiChronoTime">00:00</span>
+        </div>
+      </div>
+
+      <div class="hud-card hud-score" id="aqmiGauge">
+        <div class="hud-ring">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(15,23,42,0.09)" stroke-width="3.6"/>
+            <circle class="fg" id="aqmiGaugeCircle" cx="20" cy="20" r="17" fill="none" stroke="#94a3b8" stroke-width="3.6" stroke-linecap="round" transform="rotate(-90 20 20)"/>
+          </svg>
+          <div class="hud-ring-value" id="aqmiGaugeValue">0%</div>
+          <div class="hud-pulse" id="aqmiGaugePulse" style="display:none;"></div>
+        </div>
+        <div class="hud-meta">
+          <span class="hud-label" data-i18n="score_label">Score Global</span>
+        </div>
+      </div>
+
+      <div class="hud-card hud-maturity">
+        <div class="hud-ring" id="aqmiMainGauge">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(15,23,42,0.09)" stroke-width="12"/>
+            <circle class="fg" id="aqmiMainGaugeCircle" cx="100" cy="100" r="85" fill="none" stroke="#94a3b8" stroke-width="12" stroke-linecap="round" transform="rotate(-90 100 100)"/>
+          </svg>
+          <div class="hud-ring-value" id="aqmiMainGaugeValue">&ndash;</div>
+          <div class="hud-pulse" id="aqmiMainGaugePulse" style="display:none;"></div>
+        </div>
+        <div class="hud-meta">
+          <span class="hud-label" data-i18n="maturity">Maturité</span>
+          <span class="hud-level">
+            <span class="hud-level-icon" id="aqmiMainGaugeIcon"><i class="fas fa-gauge-high"></i></span>
+            <span id="aqmiMainGaugeLabel">&hellip;</span>
+          </span>
         </div>
       </div>
     </div>
@@ -478,20 +620,6 @@ ob_start();
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Maturity Gauge -->
-  <div class="aqmi-gauge" id="aqmiGauge"<?= $isModelSelection ? ' style="display:none;"' : '' ?>>
-    <div class="aqmi-gauge-ring">
-      <svg viewBox="0 0 40 40">
-        <circle class="bg" cx="20" cy="20" r="17"/>
-        <circle class="fg" id="aqmiGaugeCircle" cx="20" cy="20" r="17"/>
-      </svg>
-      <div class="aqmi-gauge-value" id="aqmiGaugeValue">0%</div>
-      <div class="aqmi-gauge-pulse" id="aqmiGaugePulse" style="display:none;"></div>
-    </div>
-    <div class="aqmi-gauge-label" data-i18n="score_label">Score Global</div>
-  </div>
 
   <!-- Domain Transition Banner -->
   <div class="aqmi-domain-transition" id="aqmiDomainTransition"></div>
