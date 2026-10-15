@@ -50,6 +50,16 @@ $router->post('/user/profile', 'UserController@updateProfile', $auth);
 $router->post('/user/profile/password', 'UserController@updatePassword', $auth);
 $router->get('/user/logout', 'UserController@logout');
 
+// User chat (auth required)
+$router->get('/user/messages', 'ChatController@userMessages', $auth);
+$router->post('/user/messages/send', 'ChatController@userSend', $auth);
+
+// Notifications API (auth required)
+$router->get('/api/notifications/poll', 'NotificationController@poll', $auth);
+$router->post('/api/notifications/mark-read', 'NotificationController@markRead', $auth);
+$router->post('/api/notifications/mark-all-read', 'NotificationController@markAllRead', $auth);
+$router->get('/api/chat/poll', 'ChatController@pollNewMessages', $auth);
+
 // Legacy redirects (keep old links working)
 $router->get('/user/login', 'AuthController@login');
 $router->get('/dashboard', 'AuthController@dashboardRedirect');

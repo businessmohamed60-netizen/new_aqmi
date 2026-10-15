@@ -475,6 +475,55 @@ HTML;
     }
 
     /**
+     * Template HTML — Notification push (copie email pour l'utilisateur)
+     */
+    public static function notificationTemplate(string $title, string $body, string $userName): string
+    {
+        $safeTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        $safeBody  = htmlspecialchars($body, ENT_QUOTES, 'UTF-8');
+        $safeName  = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;padding:0;background-color:#f4f5fb;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .bg{background:radial-gradient(circle at top,#171a35 0%,#0a0b16 55%,#05050a 100%);padding:56px 0}
+  .wrapper{width:100%;max-width:520px;margin:0 auto;padding:0 20px}
+  .card{background:linear-gradient(180deg,#171a2e 0%,#12131f 100%);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:48px 40px;box-shadow:0 24px 60px -20px rgba(99,102,241,0.35)}
+  .logo{display:inline-block;height:52px;line-height:52px;padding:0 22px;background:linear-gradient(135deg,#818cf8,#6366f1 45%,#a855f7);border-radius:14px;margin:0 0 28px}
+  .logo-text{display:inline-block;vertical-align:middle;font-size:19px;font-weight:800;letter-spacing:1.5px;color:#fff}
+  .bell-icon{display:inline-block;width:48px;height:48px;border-radius:50%;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);line-height:48px;font-size:22px;margin:0 0 16px}
+  h1{font-size:20px;font-weight:700;color:#f8fafc;margin:0 0 10px}
+  p{font-size:14px;color:#9ca3af;line-height:1.7;margin:0 0 16px}
+  .notif-body{background:linear-gradient(180deg,#1c1f36,#171a2b);border:1px solid rgba(129,140,248,0.25);border-radius:16px;padding:24px 20px;margin:0 0 24px;font-size:14px;color:#f1f5f9;line-height:1.6}
+  .footer-text{font-size:12px;color:#6b7280;line-height:1.6;margin:0}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);margin:28px 0 20px}
+  .brand{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#818cf8;font-weight:700;margin:0 0 4px}
+</style></head>
+<body>
+  <div class="bg">
+    <div class="wrapper">
+      <div class="card">
+        <div class="logo"><span class="logo-text">AQMI</span></div>
+        <div class="bell-icon">&#128276;</div>
+        <h1>{$safeTitle}</h1>
+        <p>Bonjour <strong style="color:#e5e7eb">{$safeName}</strong>, vous avez reçu une nouvelle notification sur la plateforme NOVAQYS.</p>
+        <div class="notif-body">{$safeBody}</div>
+        <p class="footer-text">Cet email est une copie des notifications de votre compte.<br>Vous pouvez grer cette option dans votre profil.</p>
+        <div class="divider"></div>
+        <p class="brand">NOVAQYS</p>
+        <p class="footer-text">Automotive Quality &amp; Manufacturing Index</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+HTML;
+    }
+
+    /**
      * Template HTML — Notification de nouveau lead à l'admin
      */
     public static function adminNewLeadTemplate(string $leadName, string $company, string $email, string $phone, int $assessmentId): string

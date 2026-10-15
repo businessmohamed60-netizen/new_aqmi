@@ -100,6 +100,15 @@ $router->get('/admin/users/delete/{id}', 'AdminController@userDelete', $adminMid
 $router->get('/admin/settings', 'AdminController@settings', $adminMiddleware);
 $router->post('/admin/settings/save', 'AdminController@settingsSave', $adminMiddleware);
 
+// Chat (admin side)
+$router->get('/admin/chat', 'ChatController@adminChatList', $adminMiddleware);
+$router->get('/admin/chat/{id}', 'ChatController@adminChatView', $adminMiddleware);
+$router->post('/admin/chat/{id}/send', 'ChatController@adminSend', $adminMiddleware);
+
+// Notifications push (admin side)
+$router->get('/admin/notifications', 'NotificationController@adminPushForm', $adminMiddleware);
+$router->post('/admin/notifications/send', 'NotificationController@adminPushSend', $adminMiddleware);
+
 // Report Studio module
 $router->get('/admin/reportstudio', 'ReportStudioController@index', $adminMiddleware);
 $router->get('/admin/reportstudio/templates', 'TemplateController@index', $adminMiddleware);

@@ -6,7 +6,7 @@ return [
     'username' => $_ENV['MAIL_USERNAME'] ?? '',
     'password' => $_ENV['MAIL_PASSWORD'] ?? '',
     'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',
-    'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@aqmi.com',
-    'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'AQMI',
+    'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@novaqys.com',
+    'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'NOVAQYS',
     'admin_email' => $_ENV['ADMIN_EMAIL'] ?? 'business.mohamed60@gmail.com',
 ];
