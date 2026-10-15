@@ -372,6 +372,7 @@ return [
     'nav.cgu' => 'الشروط',
     'nav.privacy' => 'حماية البيانات',
 
+    'dashboard.nav.messages' => 'الرسائل',
     'dashboard.nav.profile' => 'ملفي الشخصي',
 
     'profile.title' => 'ملفي الشخصي',

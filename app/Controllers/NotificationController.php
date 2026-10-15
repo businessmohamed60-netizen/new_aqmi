@@ -97,7 +97,21 @@ class NotificationController
 
         if ($target === 'all') {
             $count = $this->notifService->sendToAllUsers($title, $body, 'admin_push');
-            $_SESSION['success'] = "Notification envoye  {$count} utilisateur(s). Copie email envoye  ceux qui ont l'option active.";
+            $_SESSION['success'] = "Notification envoyée à {$count} utilisateur(s). Copie email envoyée à ceux qui ont l'option active.";
+        } elseif ($target === 'multiple') {
+            $userIds = array_map('intval', $_POST['user_ids'] ?? []);
+            $userIds = array_filter($userIds, fn($id) => $id > 0);
+            if (empty($userIds)) {
+                $_SESSION['error'] = 'Veuillez sélectionner au moins un utilisateur.';
+                redirect('/admin/notifications');
+                return;
+            }
+            $count = 0;
+            foreach ($userIds as $uid) {
+                $this->notifService->sendToUser($uid, $title, $body, 'admin_push');
+                $count++;
+            }
+            $_SESSION['success'] = "Notification envoyée à {$count} utilisateur(s). Copie email envoyée à ceux qui ont l'option active.";
         } else {
             $user = \App\Models\User::find($userId);
             if (!$user) {
@@ -106,7 +120,7 @@ class NotificationController
                 return;
             }
             $this->notifService->sendToUser($userId, $title, $body, 'admin_push');
-            $_SESSION['success'] = 'Notification envoye  l\'utilisateur. Copie email envoye si l\'option est active.';
+            $_SESSION['success'] = 'Notification envoyée à l\'utilisateur. Copie email envoyée si l\'option est active.';
         }
 
         redirect('/admin/notifications');

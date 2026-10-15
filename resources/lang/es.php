@@ -372,6 +372,7 @@ return [
     'nav.cgu' => 'CGU',
     'nav.privacy' => 'Protección de datos',
 
+    'dashboard.nav.messages' => 'Mensajes',
     'dashboard.nav.profile' => 'Mi perfil',
 
     'profile.title' => 'Mi perfil',
