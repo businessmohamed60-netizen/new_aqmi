@@ -16,10 +16,15 @@ $levelNameField = $langCode === 'ar' ? 'name_ar' : ($langCode === 'fr' ? 'name_f
 $chartLocale = $chartLocale ?? ($langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-FR'));
 $userInitials = strtoupper(mb_substr($user['firstname'] ?? 'U', 0, 1));
 $userName = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
+$userUnreadNotif = 0;
+$userUnreadChat = 0;
+try { $userUnreadNotif = \App\Models\Notification::unreadCount(Auth::id()); } catch (\Throwable $e) {}
+try { $userUnreadChat = \App\Models\ChatConversation::unreadCountForUser(Auth::id()); } catch (\Throwable $e) {}
 $navItems = [
     'models'      => ['icon' => 'fa-layer-group',     'label' => __('dashboard.nav.models')      ?: 'Modèles & Analyses', 'href' => '/user/models'],
     'assessments' => ['icon' => 'fa-clipboard-list',  'label' => __('dashboard.nav.assessments') ?: 'Évaluations',       'href' => '/assessment/start'],
     'consolidated'=> ['icon' => 'fa-diagram-project', 'label' => __('dashboard.nav.consolidated')?: 'Rapports consolidés','href' => '/user/consolidated'],
+    'messages'    => ['icon' => 'fa-comment-dots',    'label' => __('dashboard.nav.messages')    ?: 'Messagerie',        'href' => '/user/messages'],
     'profile'     => ['icon' => 'fa-user-gear',        'label' => __('dashboard.nav.profile')     ?: 'Mon profil',        'href' => '/user/profile'],
 ];
 ?>
@@ -27,6 +32,7 @@ $navItems = [
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta name="csrf-token" content="<?= csrf_token() ?>">
 <style>
 :root {
   --vx-primary: #6366f1;
@@ -356,6 +362,54 @@ $navItems = [
   .ud-bottom-nav { display: flex; }
   .ud-content { padding-bottom: 5rem; }
 }
+
+/* Notification bell (user dashboard) */
+.ud-bell-dropdown { position: relative; }
+.ud-bell-btn {
+  position: relative; background: transparent; border: 1px solid var(--vx-card-border);
+  cursor: pointer; width: 36px; height: 36px; border-radius: 0.5rem;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--vx-text-secondary); transition: all var(--vx-transition);
+  font-size: 0.95rem;
+}
+.ud-bell-btn:hover { background: var(--vx-primary-light); border-color: rgba(99,102,241,0.2); color: var(--vx-primary); }
+.ud-bell-badge {
+  position: absolute; top: -3px; right: -3px; min-width: 17px; height: 17px;
+  border-radius: 9px; background: var(--vx-danger); color: #fff;
+  font-size: 0.6rem; font-weight: 700; display: flex; align-items: center;
+  justify-content: center; padding: 0 4px; line-height: 1; border: 2px solid var(--vx-card-bg);
+}
+.ud-bell-menu {
+  position: absolute; top: calc(100% + 0.5rem); right: 0; width: 340px;
+  background: var(--vx-card-bg); border: 1px solid var(--vx-card-border);
+  border-radius: var(--vx-radius-lg); box-shadow: var(--vx-shadow-lg);
+  opacity: 0; visibility: hidden; transform: translateY(-8px);
+  transition: all 0.2s ease; z-index: 400; max-height: 420px; display: flex; flex-direction: column;
+}
+.ud-bell-dropdown.is-open .ud-bell-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.ud-bell-header {
+  padding: 0.85rem 1rem; border-bottom: 1px solid var(--vx-card-border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-weight: 700; font-size: 0.82rem;
+}
+.ud-bell-markall { font-size: 0.68rem; color: var(--vx-primary); text-decoration: none; font-weight: 600; }
+.ud-bell-markall:hover { text-decoration: underline; }
+.ud-bell-list { overflow-y: auto; flex: 1; }
+.ud-bell-empty { padding: 2rem 1rem; text-align: center; color: var(--vx-text-muted); font-size: 0.8rem; }
+.ud-bell-item {
+  display: flex; gap: 0.65rem; padding: 0.75rem 1rem; text-decoration: none;
+  border-bottom: 1px solid var(--vx-divider); transition: background 0.15s ease;
+}
+.ud-bell-item:hover { background: var(--vx-primary-light); }
+.ud-bell-item .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--vx-text-muted); flex-shrink: 0; margin-top: 5px; }
+.ud-bell-item.unread .notif-dot { background: var(--vx-primary); }
+.ud-bell-item .notif-content { flex: 1; min-width: 0; }
+.ud-bell-item .notif-title { font-size: 0.78rem; font-weight: 600; color: var(--vx-text-primary); }
+.ud-bell-item .notif-body { font-size: 0.72rem; color: var(--vx-text-muted); margin-top: 2px; }
+.ud-bell-item .notif-time { font-size: 0.62rem; color: var(--vx-text-muted); margin-top: 4px; }
+@media (max-width: 480px) {
+  .ud-bell-menu { width: calc(100vw - 2rem); right: -0.5rem; }
+}
 </style>
 <?= $extraStyles ?? '' ?>
 
@@ -375,11 +429,35 @@ $navItems = [
           <?php if ($key === 'assessments' && !empty($totalAssessments)): ?>
             <span class="ud-nav-badge"><?= $totalAssessments ?></span>
           <?php endif; ?>
+          <?php if ($key === 'messages' && $userUnreadChat > 0): ?>
+            <span class="ud-nav-badge" style="background:var(--vx-danger);color:#fff;"><?= (int)$userUnreadChat ?></span>
+          <?php endif; ?>
         </a>
       <?php endforeach; ?>
     </nav>
 
     <div class="ud-topbar-right">
+      <!-- Notification Bell -->
+      <div class="ud-bell-dropdown" id="udBellDropdown">
+        <button class="ud-bell-btn" id="udBellBtn" type="button" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <?php if ($userUnreadNotif > 0): ?>
+          <span class="ud-bell-badge" id="udBellBadge"><?= $userUnreadNotif > 99 ? '99+' : (int)$userUnreadNotif ?></span>
+          <?php else: ?>
+          <span class="ud-bell-badge" id="udBellBadge" style="display:none;">0</span>
+          <?php endif; ?>
+        </button>
+        <div class="ud-bell-menu" id="udBellMenu">
+          <div class="ud-bell-header">
+            <span>Notifications</span>
+            <a href="javascript:void(0)" id="udBellMarkAll" class="ud-bell-markall">Tout marquer lu</a>
+          </div>
+          <div class="ud-bell-list" id="udBellList">
+            <div class="ud-bell-empty">Aucune notification</div>
+          </div>
+        </div>
+      </div>
+
       <div class="ud-topbar-user">
         <div class="ud-topbar-avatar"><?= $userInitials ?></div>
         <div>
@@ -439,6 +517,9 @@ $navItems = [
   <a href="/user/consolidated" style="color:<?= ($activeSection??'')==='consolidated'?'var(--vx-primary)':'var(--vx-text-muted)' ?>">
     <i class="fas fa-diagram-project"></i><span><?= e(__('dashboard.nav.consolidated') ?: 'Consolidés') ?></span>
   </a>
+  <a href="/user/messages" style="color:<?= ($activeSection??'')==='messages'?'var(--vx-primary)':'var(--vx-text-muted)' ?>">
+    <i class="fas fa-comment-dots"></i><span>Messages</span>
+  </a>
   <a href="/" style="color:var(--vx-text-muted);">
     <i class="fas fa-globe"></i><span><?= e(__('dashboard.nav.site') ?: 'Site') ?></span>
   </a>
@@ -456,5 +537,64 @@ $navItems = [
     btn.addEventListener('click', function(e) { e.stopPropagation(); dropdown.classList.toggle('is-open'); });
     document.addEventListener('click', function(e) { if (!dropdown.contains(e.target)) dropdown.classList.remove('is-open'); });
   }
+
+  // Notification bell
+  var bellDropdown = document.getElementById('udBellDropdown');
+  var bellBtn = document.getElementById('udBellBtn');
+  if (bellBtn && bellDropdown) {
+    bellBtn.addEventListener('click', function(e) { e.stopPropagation(); bellDropdown.classList.toggle('is-open'); });
+    document.addEventListener('click', function(e) { if (!bellDropdown.contains(e.target)) bellDropdown.classList.remove('is-open'); });
+  }
+
+  var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+  var csrfToken = csrfMeta ? csrfMeta.content : '';
+
+  function pollNotifs() {
+    fetch('/api/notifications/poll', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var badge = document.getElementById('udBellBadge');
+        var list = document.getElementById('udBellList');
+        if (!badge || !list) return;
+        if (data.unread > 0) {
+          badge.textContent = data.unread > 99 ? '99+' : data.unread;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+        if (data.html && data.html.trim()) {
+          list.innerHTML = data.html;
+          list.querySelectorAll('.notif-dropdown-item').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+              e.preventDefault();
+              var id = this.getAttribute('data-id');
+              fetch('/api/notifications/mark-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                body: '_csrf_token=' + csrfToken + '&id=' + id
+              }).then(function() { window.location.href = item.getAttribute('href'); });
+            });
+          });
+        } else {
+          list.innerHTML = '<div class="ud-bell-empty">Aucune notification</div>';
+        }
+      })
+      .catch(function() {});
+  }
+
+  var markAll = document.getElementById('udBellMarkAll');
+  if (markAll) {
+    markAll.addEventListener('click', function(e) {
+      e.preventDefault();
+      fetch('/api/notifications/mark-all-read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+        body: '_csrf_token=' + csrfToken
+      }).then(function() { pollNotifs(); });
+    });
+  }
+
+  pollNotifs();
+  setInterval(pollNotifs, 30000);
 })();
 </script>

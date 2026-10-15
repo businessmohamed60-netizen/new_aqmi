@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\Database;
 use App\Helpers\Mailer;
 use App\Models\Notification;
 use App\Models\User;
