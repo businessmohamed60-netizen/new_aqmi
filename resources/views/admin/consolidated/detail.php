@@ -1,12 +1,24 @@
 <?php
 /**
  * Rapport consolidé — examen et certification (admin)
- * Variables attendues du contrôleur : $report, $user, $items
+ * Variables attendues du contrôleur : $report, $user, $items, $domainBreakdown
  */
 $title  = 'Rapport consolidé';
 $report = is_array($report ?? null) ? $report : [];
 $user   = is_array($user ?? null) ? $user : [];
 $items  = is_array($items ?? null) ? $items : [];
+$domainBreakdown = is_array($domainBreakdown ?? null) ? $domainBreakdown : [];
+
+$methodLabels = [
+    'weighted_average' => 'Moyenne pondérée',
+    'domain_fusion'    => 'Fusion par domaine',
+    'best_of'          => 'Meilleure performance',
+    'latest_only'      => 'Dernière évaluation',
+    'maturity_gap'     => 'Indice d\'écart de maturité',
+    'consensus'        => 'Score de consensus',
+];
+$methodCode = (string)($report['calculation_method'] ?? 'weighted_average');
+$methodLabel = $methodLabels[$methodCode] ?? ucfirst(str_replace('_', ' ', $methodCode));
 ob_start();
 
 /* ───────────── Aides d'affichage ───────────── */
@@ -213,6 +225,10 @@ $steps = [
         </div>
         <div class="cr-level"><?= e((string)($report['maturity_level'] ?? '—')) ?></div>
         <div class="cr-level-sub">Niveau de maturité calculé</div>
+        <div style="margin-top:.85rem;padding:.6rem .8rem;border-radius:10px;background:rgba(100,116,139,.07);text-align:left;">
+          <small style="display:block;font-size:.72rem;color:var(--cr-muted);font-weight:600;margin-bottom:.15rem;">Méthode de calcul</small>
+          <b style="font-size:.82rem;font-weight:800;color:var(--cr-ink);"><?= e($methodLabel) ?></b>
+        </div>
         <?php if (!empty($report['aqmi_level_assigned'])): ?>
           <div class="cr-assigned"><small>Niveau AQMI attribué</small><b><?= e((string)$report['aqmi_level_assigned']) ?></b></div>
         <?php endif; ?>
@@ -251,7 +267,7 @@ $steps = [
           <div class="cr-wrap">
             <table class="cr-table">
               <thead>
-                <tr><th>Modèle</th><th>Entreprise</th><th>Score</th><th>Niveau</th><th>Date</th></tr>
+                <tr><th>Modèle</th><th>Entreprise</th><th>Score</th><th>Poids</th><th>Niveau</th><th>Date</th></tr>
               </thead>
               <tbody>
                 <?php foreach ($items as $item):
@@ -261,6 +277,7 @@ $steps = [
                     <td><strong><?= e((string)($item['model_name'] ?? '—')) ?></strong></td>
                     <td><?= e((string)($item['company'] ?? '—')) ?></td>
                     <td><div class="cr-score"><b style="color:<?= $c ?>;"><?= round($s) ?></b><span class="cr-score-bar"><i style="width:<?= round($s) ?>%;background:<?= $c ?>;"></i></span></div></td>
+                    <td><strong style="font-variant-numeric:tabular-nums;",><?= e(isset($item['weight']) ? rtrim(rtrim(number_format((float)$item['weight'], 2), '0'), '.') : '1') ?></strong></td>
                     <td><?= e((string)($item['maturity_level'] ?? '—')) ?></td>
                     <td class="cr-muted"><?= e($fd($item['created_at'] ?? null) ?? '—') ?></td>
                   </tr>
@@ -270,6 +287,34 @@ $steps = [
           </div>
         <?php endif; ?>
       </section>
+
+      <?php if (!empty($domainBreakdown)): ?>
+      <section class="cr-card">
+        <div class="cr-card-head">
+          <h2><i class="fas fa-layer-group"></i> Découpage par domaine consolidé</h2>
+          <span class="cr-count"><?= count($domainBreakdown) ?></span>
+        </div>
+        <div class="cr-card-body">
+          <?php foreach ($domainBreakdown as $db):
+            $ds = max(0, min(100, (float)($db['fused_score'] ?? 0))); $dc = $tone($ds);
+          ?>
+            <div style="margin-bottom:.85rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+                <span style="font-size:.82rem;font-weight:700;">
+                  <?php if (!empty($db['icon'])): ?><i class="fas <?= e($db['icon']) ?>" style="color:var(--cr-accent);margin-right:.35rem;"></i><?php endif; ?>
+                  <?= e((string)($db['domain_label'] ?? '—')) ?>
+                  <?php if ((int)($db['contributions'] ?? 1) > 1): ?>
+                    <span style="font-size:.68rem;color:var(--cr-muted);margin-left:.3rem;"><?= (int)$db['contributions'] ?> modèles</span>
+                  <?php endif; ?>
+                </span>
+                <span style="font-size:.85rem;font-weight:800;color:<?= $dc ?>;font-variant-numeric:tabular-nums;"><?= round($ds) ?>/100</span>
+              </div>
+              <div class="cr-score-bar" style="height:7px;"><i style="width:<?= round($ds) ?>%;background:<?= $dc ?>;"></i></div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </section>
+      <?php endif; ?>
 
       <?php if ($canReview): ?>
       <section class="cr-card">
