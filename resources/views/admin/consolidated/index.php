@@ -59,6 +59,7 @@ $nCert    = count($certified);
     --cr-accent: var(--auto-cyan, #1F6FEB);
     --cr-accent-soft: var(--auto-cyan-dim, rgba(31,111,235,.09));
     font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif; color: var(--cr-ink);
+    padding-bottom: 6rem; /* évite que le bas de page soit masqué par le gabarit */
   }
   .cr-page *, .cr-page *::before, .cr-page *::after { box-sizing: border-box; }
   .cr-page a:focus-visible, .cr-page input:focus-visible { outline: 2px solid var(--cr-accent); outline-offset: 2px; }

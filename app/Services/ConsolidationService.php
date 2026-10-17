@@ -29,6 +29,24 @@ class ConsolidationService
 {
     private ScoringService $scoring;
 
+    /** Méthodes dont le score dépend réellement des poids d'évaluation. */
+    public const WEIGHT_AWARE_METHODS = ['weighted_average', 'latest_only', 'domain_fusion', 'maturity_gap'];
+
+    public static function usesAssessmentWeights(string $method): bool
+    {
+        return in_array($method, self::WEIGHT_AWARE_METHODS, true);
+    }
+
+    /**
+     * Poids d'une évaluation : 1.0 par défaut, jamais négatif
+     * (règle unique pour toutes les méthodes ; 0 = évaluation exclue).
+     */
+    private function weightFor(array $weights, $aid): float
+    {
+        $w = (float)($weights[$aid] ?? 1.0);
+        return $w < 0 ? 0.0 : $w;
+    }
+
     public function __construct()
     {
         $this->scoring = new ScoringService();
@@ -131,8 +149,7 @@ class ConsolidationService
         $itemsDetail = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
-            if ($w < 0) $w = 0;
+            $w = $this->weightFor($weights, $aid);
             $score = (float)$data['global_score'];
             $totalWeight += $w;
             $weightedSum += $score * $w;
@@ -156,8 +173,9 @@ class ConsolidationService
         $domainAgg = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             foreach ($data['domain_scores'] as $ds) {
+                if ((int)($ds['question_count'] ?? 1) < 1) continue; // domaine non répondu : ignoré (comme ScoringService)
                 $did = (int)$ds['domain_id'];
                 if (!isset($domainAgg[$did])) {
                     $domainAgg[$did] = [
@@ -180,7 +198,7 @@ class ConsolidationService
         $itemsDetail = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             $itemsDetail[] = $this->buildItemDetail($aid, $data, $w, (float)$data['global_score']);
         }
 
@@ -216,6 +234,7 @@ class ConsolidationService
 
     /**
      * Meilleure performance : retient le score le plus élevé par domaine.
+     * Les poids d'évaluation ne sont PAS utilisés (seuls les poids de domaine comptent).
      */
     private function calcBestOf(array $analyses, array $weights): array
     {
@@ -223,10 +242,11 @@ class ConsolidationService
         $itemsDetail = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             $itemsDetail[] = $this->buildItemDetail($aid, $data, $w, (float)$data['global_score']);
 
             foreach ($data['domain_scores'] as $ds) {
+                if ((int)($ds['question_count'] ?? 1) < 1) continue; // domaine non répondu : ignoré (comme ScoringService)
                 $did = (int)$ds['domain_id'];
                 $score = (float)$ds['percent_score'];
                 if (!isset($domainBest[$did]) || $score > $domainBest[$did]['best_score']) {
@@ -288,7 +308,9 @@ class ConsolidationService
             $filteredAnalyses[$m['aid']] = $m['data'];
         }
 
-        return $this->calcWeightedAverage($filteredAnalyses, $weights);
+        $result = $this->calcWeightedAverage($filteredAnalyses, $weights);
+        $result['method'] = 'latest_only';
+        return $result;
     }
 
     /**
@@ -305,7 +327,7 @@ class ConsolidationService
         $itemsDetail = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             $score = (float)$data['global_score'];
             $scores[] = $score;
             $totalWeight += $w;
@@ -346,7 +368,7 @@ class ConsolidationService
 
     /**
      * Score de consensus : utilise la médiane des scores pour réduire
-     * l'influence des valeurs extrêmes.
+     * l'influence des valeurs extrêmes. Les poids d'évaluation ne sont PAS utilisés.
      */
     private function calcConsensus(array $analyses, array $weights): array
     {
@@ -354,7 +376,7 @@ class ConsolidationService
         $itemsDetail = [];
 
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             $scores[] = (float)$data['global_score'];
             $itemsDetail[] = $this->buildItemDetail($aid, $data, $w, (float)$data['global_score']);
         }
@@ -399,8 +421,9 @@ class ConsolidationService
     {
         $domainAgg = [];
         foreach ($analyses as $aid => $data) {
-            $w = (float)($weights[$aid] ?? 1.0);
+            $w = $this->weightFor($weights, $aid);
             foreach ($data['domain_scores'] as $ds) {
+                if ((int)($ds['question_count'] ?? 1) < 1) continue; // domaine non répondu : ignoré (comme ScoringService)
                 $did = (int)$ds['domain_id'];
                 if (!isset($domainAgg[$did])) {
                     $domainAgg[$did] = [
@@ -446,7 +469,7 @@ class ConsolidationService
             'domain_breakdown'=> $domainBreakdown,
             'items_detail'    => $itemsDetail,
             'method'          => $method,
-            'params'          => ['weights' => $weights],
+            'params'          => ['weights' => $weights, 'weights_applied' => self::usesAssessmentWeights($method)],
         ];
     }
 
@@ -459,6 +482,191 @@ class ConsolidationService
             'items_detail'    => [],
             'method'          => $method,
             'params'          => ['weights' => []],
+        ];
+    }
+
+    // ─────────────────────────────────────────────
+    //  Atelier de pondération : recalcul d'un rapport existant
+    // ─────────────────────────────────────────────
+
+    /** Statuts pour lesquels le score d'un rapport peut encore être recalculé. */
+    public const EDITABLE_STATUSES = ['draft', 'certification_requested', 'under_review', 'approved'];
+
+    /** Catalogue de secours si la table consolidation_methods n'existe pas encore. */
+    private const FALLBACK_METHODS = [
+        ['code' => 'weighted_average', 'name_fr' => 'Moyenne pondérée',        'description_fr' => 'Chaque évaluation contribue proportionnellement à son poids.', 'icon' => 'fa-scale-balanced',      'sort_order' => 1],
+        ['code' => 'domain_fusion',    'name_fr' => 'Fusion par domaine',      'description_fr' => 'Les domaines communs à plusieurs modèles sont moyennés puis regroupés (poids d\'évaluation puis poids de domaine).', 'icon' => 'fa-object-group', 'sort_order' => 2],
+        ['code' => 'best_of',          'name_fr' => 'Meilleure performance',   'description_fr' => 'Retient le score le plus élevé par domaine (les poids d\'évaluation ne sont pas utilisés).', 'icon' => 'fa-trophy', 'sort_order' => 3],
+        ['code' => 'latest_only',      'name_fr' => 'Dernière évaluation',     'description_fr' => 'Seule l\'évaluation la plus récente de chaque modèle est prise en compte.', 'icon' => 'fa-clock-rotate-left', 'sort_order' => 4],
+        ['code' => 'maturity_gap',     'name_fr' => 'Indice d\'écart de maturité', 'description_fr' => 'Moyenne pondérée moins une pénalité liée à la dispersion entre modèles.', 'icon' => 'fa-chart-line', 'sort_order' => 5],
+        ['code' => 'consensus',        'name_fr' => 'Score de consensus',      'description_fr' => 'Médiane des scores (les poids d\'évaluation ne sont pas utilisés).', 'icon' => 'fa-handshake', 'sort_order' => 6],
+    ];
+
+    /** Méthodes disponibles (base de données, ou catalogue de secours). */
+    public function getMethodsCatalog(): array
+    {
+        try {
+            $rows = $this->getAvailableMethods();
+            if (!empty($rows)) {
+                return $rows;
+            }
+        } catch (\Throwable $e) {
+            // table absente : on retombe sur le catalogue interne
+        }
+        return self::FALLBACK_METHODS;
+    }
+
+    /** Valide un code de méthode (liste blanche issue du catalogue). */
+    public function sanitizeMethod(string $method): string
+    {
+        $codes = array_column($this->getMethodsCatalog(), 'code');
+        if (!in_array($method, $codes, true)) {
+            throw new \InvalidArgumentException('Méthode de calcul inconnue.');
+        }
+        return $method;
+    }
+
+    /** Détecte la colonne qui relie consolidated_report_items au rapport. */
+    private function itemsForeignKey(): string
+    {
+        static $col = null;
+        if ($col !== null) {
+            return $col;
+        }
+        $fields = array_column(Database::fetchAll("SHOW COLUMNS FROM consolidated_report_items"), 'Field');
+        foreach (['consolidated_report_id', 'consolidated_id', 'report_id'] as $candidate) {
+            if (in_array($candidate, $fields, true)) {
+                return $col = $candidate;
+            }
+        }
+        throw new \RuntimeException('Colonne de liaison introuvable dans consolidated_report_items.');
+    }
+
+    /** Évaluations rattachées à un rapport : [assessment_id => poids enregistré]. */
+    public function getReportItemRows(int $reportId): array
+    {
+        $fk = $this->itemsForeignKey();
+        $rows = Database::fetchAll(
+            "SELECT assessment_id, weight FROM consolidated_report_items WHERE {$fk} = " . (int)$reportId
+        );
+        $out = [];
+        foreach ($rows as $r) {
+            $out[(int)$r['assessment_id']] = isset($r['weight']) ? (float)$r['weight'] : 1.0;
+        }
+        return $out;
+    }
+
+    private function fetchReportRow(int $reportId): ?array
+    {
+        $rows = Database::fetchAll(
+            "SELECT id, status, calculation_method, consolidated_score FROM consolidated_reports WHERE id = "
+            . (int)$reportId . " LIMIT 1"
+        );
+        return $rows[0] ?? null;
+    }
+
+    /**
+     * Données de l'atelier de pondération pour la page de détail.
+     */
+    public function getWorkbenchData(int $reportId): array
+    {
+        $report = $this->fetchReportRow($reportId);
+        if (!$report) {
+            throw new \InvalidArgumentException('Rapport introuvable.');
+        }
+
+        $stored = $this->getReportItemRows($reportId);
+        $analyses = $this->getAssessmentAnalyses(array_keys($stored));
+
+        $rows = [];
+        foreach ($stored as $aid => $weight) {
+            $data = $analyses[$aid] ?? null;
+            if (!$data) {
+                continue;
+            }
+            $assessment = $data['assessment'] ?? [];
+            $model = !empty($assessment['model_id']) ? EvaluationModel::find((int)$assessment['model_id']) : null;
+            $rows[] = [
+                'assessment_id' => $aid,
+                'model_name'    => $model ? (($model['name_fr'] ?? '') ?: ($model['name'] ?? 'Modèle')) : 'Modèle',
+                'score'         => (float)$data['global_score'],
+                'weight'        => $weight,
+                'completed_at'  => $assessment['completed_at'] ?? $assessment['created_at'] ?? null,
+            ];
+        }
+
+        return [
+            'method'   => (string)($report['calculation_method'] ?: 'weighted_average'),
+            'methods'  => $this->getMethodsCatalog(),
+            'rows'     => $rows,
+            'editable' => in_array((string)$report['status'], self::EDITABLE_STATUSES, true),
+        ];
+    }
+
+    /**
+     * Recalcule un rapport existant avec une méthode et des poids donnés.
+     * $save = false : simple aperçu (rien n'est écrit en base).
+     *
+     * @param array $weights [assessment_id => poids] (valeurs 0 à 100, 2 décimales)
+     */
+    public function recalculateReport(int $reportId, string $method, array $weights, bool $save): array
+    {
+        $report = $this->fetchReportRow($reportId);
+        if (!$report) {
+            throw new \InvalidArgumentException('Rapport introuvable.');
+        }
+        if (!in_array((string)$report['status'], self::EDITABLE_STATUSES, true)) {
+            throw new \InvalidArgumentException('Ce rapport ne peut plus être recalculé (statut : ' . $report['status'] . ').');
+        }
+
+        $method = $this->sanitizeMethod($method);
+        $ids = array_keys($this->getReportItemRows($reportId));
+        if (empty($ids)) {
+            throw new \InvalidArgumentException("Aucune évaluation n'est rattachée à ce rapport.");
+        }
+
+        // Seuls les ids réellement rattachés au rapport sont acceptés
+        $clean = [];
+        foreach ($ids as $aid) {
+            if (array_key_exists($aid, $weights)) {
+                if (!is_numeric($weights[$aid])) {
+                    throw new \InvalidArgumentException('Poids invalide.');
+                }
+                $clean[$aid] = max(0.0, min(100.0, round((float)$weights[$aid], 2)));
+            } else {
+                $clean[$aid] = 1.0;
+            }
+        }
+        if (self::usesAssessmentWeights($method) && array_sum($clean) <= 0) {
+            throw new \InvalidArgumentException('Au moins un poids doit être supérieur à 0.');
+        }
+
+        $result = $this->calculate($ids, $method, $clean);
+        if ($save) {
+            $this->persist($reportId, $result, $clean);
+        }
+        return $result;
+    }
+
+    /** Version allégée d'un résultat, destinée à l'aperçu JSON. */
+    public function summarizeResult(array $result): array
+    {
+        $level = $result['maturity_level'] ?? null;
+        $domains = [];
+        foreach (($result['domain_breakdown'] ?? []) as $d) {
+            $domains[] = [
+                'domain_label'  => (string)($d['domain_label'] ?? ''),
+                'fused_score'   => (float)($d['fused_score'] ?? 0),
+                'contributions' => (int)($d['contributions'] ?? 1),
+            ];
+        }
+        return [
+            'global_score'    => (float)$result['global_score'],
+            'level_label'     => $level ? (($level['name_fr'] ?? '') ?: ($level['name'] ?? null)) : null,
+            'method'          => (string)$result['method'],
+            'weights_applied' => self::usesAssessmentWeights((string)$result['method']),
+            'domain_breakdown'=> $domains,
+            'meta'            => $result['meta'] ?? null,
         ];
     }
 
