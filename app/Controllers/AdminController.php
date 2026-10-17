@@ -14,12 +14,17 @@ use App\Models\Recommendation;
 use App\Models\Report;
 use App\Services\StatisticsService;
 use App\Services\ExportService;
+use App\Services\NotificationService;
 use App\Helpers\Auth;
 
 class AdminController
 {
     private StatisticsService $statsService;
-    public function __construct() { $this->statsService = new StatisticsService(); }
+    private NotificationService $notifService;
+    public function __construct() {
+        $this->statsService = new StatisticsService();
+        $this->notifService = new NotificationService();
+    }
 
     public function login(): void
     {
@@ -735,6 +740,10 @@ class AdminController
             Report::assignReportNumber($id);
             $filename = $pdfService->generateCertificate($id);
             Report::updateStatus($id, 'certified', $adminName, $filename);
+            $this->notifService->notifyReportStatusChange($id, 'certified', [
+                'report_number' => $report['report_number'] ?? null,
+                'company'       => $report['company'] ?? null,
+            ]);
             $_SESSION['success'] = 'Rapport certifié avec succès.';
         } catch (\Exception $e) {
             $_SESSION['error'] = 'Erreur de génération PDF: ' . $e->getMessage();
@@ -758,8 +767,14 @@ class AdminController
         $report = Report::find($id);
         if (!$report) { $_SESSION['error'] = 'Rapport introuvable.'; redirect('/admin/reports'); return; }
 
-        Report::saveAdminReview($id, ['admin_comment' => $_POST['admin_comment'] ?? $report['admin_comment']]);
+        $reason = trim($_POST['admin_comment'] ?? '');
+        Report::saveAdminReview($id, ['admin_comment' => $reason !== '' ? $reason : ($report['admin_comment'] ?? null)]);
         Report::updateStatus($id, 'rejected');
+        $this->notifService->notifyReportStatusChange($id, 'rejected', [
+            'report_number' => $report['report_number'] ?? null,
+            'company'       => $report['company'] ?? null,
+            'reason'        => $reason,
+        ]);
         $_SESSION['success'] = 'Demande rejetée.';
         redirect($_SERVER['HTTP_REFERER'] ?? '/admin/reports');
     }
@@ -841,6 +856,10 @@ class AdminController
             'aqmi_level_assigned' => $_POST['aqmi_level_assigned'] ?? null,
         ]);
         Report::updateStatus($id, 'approved');
+        $this->notifService->notifyReportStatusChange($id, 'approved', [
+            'report_number' => $report['report_number'] ?? null,
+            'company'       => $report['company'] ?? null,
+        ]);
         $_SESSION['success'] = 'Dossier approuvé. Vous pouvez maintenant le certifier.';
         redirect('/admin/reports/' . $id);
     }
@@ -889,10 +908,18 @@ class AdminController
             $filename = $pdfService->generateCertificate($id, $templateId);
             Report::updateStatus($id, 'certified', $adminName, $filename);
             Report::activateCertificate($id);
+            $this->notifService->notifyReportStatusChange($id, 'certified', [
+                'report_number' => $reportNumber,
+                'company'       => $report['company'] ?? null,
+            ]);
             $_SESSION['success'] = "Rapport certifié sous le numéro {$reportNumber}.";
         } catch (\Exception $e) {
             Report::updateStatus($id, 'certified', $adminName);
             Report::activateCertificate($id);
+            $this->notifService->notifyReportStatusChange($id, 'certified', [
+                'report_number' => $reportNumber,
+                'company'       => $report['company'] ?? null,
+            ]);
             $_SESSION['error'] = "Certifié (n° {$reportNumber}) mais la génération du PDF a échoué : " . $e->getMessage();
         }
 
@@ -914,6 +941,11 @@ class AdminController
         }
         $reason = trim($_POST['revoke_reason'] ?? '');
         Report::revokeCertificate($id, $reason !== '' ? $reason : null);
+        $this->notifService->notifyReportStatusChange($id, 'revoked', [
+            'report_number' => $report['report_number'] ?? null,
+            'company'       => $report['company'] ?? null,
+            'reason'        => $reason,
+        ]);
         $_SESSION['success'] = 'Certificat révoqué. La page publique de vérification affichera désormais « Certificat Révoqué ».';
         redirect('/admin/reports/' . $id);
     }
@@ -931,6 +963,10 @@ class AdminController
         }
         $expiresAt = trim($_POST['expires_at'] ?? '');
         Report::reactivateCertificate($id, $expiresAt !== '' ? $expiresAt : null);
+        $this->notifService->notifyReportStatusChange($id, 'reactivated', [
+            'report_number' => $report['report_number'] ?? null,
+            'company'       => $report['company'] ?? null,
+        ]);
         $_SESSION['success'] = 'Certificat réactivé. La page publique de vérification affiche désormais « Certificat Valide ».';
         redirect('/admin/reports/' . $id);
     }
@@ -1024,6 +1060,8 @@ class AdminController
             'email' => $_POST['email'] ?? '',
             'phone' => $_POST['phone'] ?? '',
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
+            'notify_email' => isset($_POST['notify_email']) ? 1 : 0,
+            'notify_push' => isset($_POST['notify_push']) ? 1 : 0,
         ];
 
         if (!empty($_POST['password'])) {
@@ -1102,9 +1140,10 @@ class AdminController
         \App\Models\ConsolidatedReport::markUnderReviewIfNeeded($id);
         $report = \App\Models\ConsolidatedReport::find($id);
         $items = \App\Models\ConsolidatedReport::getItems($id);
+        $domainBreakdown = \App\Models\ConsolidatedReport::getDomainBreakdown($id);
         $user = Database::fetch("SELECT * FROM users WHERE id = ?", [$report['user_id']]);
 
-        view('admin.consolidated.detail', compact('report', 'items', 'user'));
+        view('admin.consolidated.detail', compact('report', 'items', 'domainBreakdown', 'user'));
     }
 
     public function consolidatedReview(array $params): void
@@ -1132,6 +1171,7 @@ class AdminController
         if (!$report) { redirect('/admin/consolidated'); return; }
 
         \App\Models\ConsolidatedReport::updateStatus($id, 'approved');
+        $this->notifService->notifyConsolidatedStatusChange($id, 'approved');
         $_SESSION['success'] = 'Rapport consolidé approuvé.';
         redirect('/admin/consolidated/' . $id);
     }
@@ -1145,9 +1185,10 @@ class AdminController
 
         $admin = Auth::user();
         \App\Models\ConsolidatedReport::updateStatus($id, 'certified', $admin['firstname'] . ' ' . $admin['lastname']);
-        \App\Models\ConsolidatedReport::assignReportNumber($id);
+        $reportNumber = \App\Models\ConsolidatedReport::assignReportNumber($id);
+        $this->notifService->notifyConsolidatedStatusChange($id, 'certified', ['report_number' => $reportNumber]);
 
-        $_SESSION['success'] = 'Rapport consolidé certifié. Numéro: ' . \App\Models\ConsolidatedReport::assignReportNumber($id);
+        $_SESSION['success'] = 'Rapport consolidé certifié. Numéro: ' . $reportNumber;
         redirect('/admin/consolidated/' . $id);
     }
 
@@ -1162,6 +1203,7 @@ class AdminController
             'admin_comment' => $_POST['admin_comment'] ?? 'Demande rejetée.',
         ]);
         \App\Models\ConsolidatedReport::updateStatus($id, 'rejected');
+        $this->notifService->notifyConsolidatedStatusChange($id, 'rejected', ['reason' => $_POST['admin_comment'] ?? '']);
         $_SESSION['success'] = 'Demande rejetée.';
         redirect('/admin/consolidated/' . $id);
     }

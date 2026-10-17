@@ -50,7 +50,7 @@ class Notification
 
     public static function createForAllUsers(array $data): int
     {
-        $users = Database::fetchAll("SELECT id FROM users WHERE is_active = 1 AND role_id != (SELECT id FROM roles WHERE slug IN ('super_admin','admin') LIMIT 1)");
+        $users = Database::fetchAll("SELECT id FROM users WHERE is_active = 1 AND (notify_push = 1 OR notify_push IS NULL) AND role_id != (SELECT id FROM roles WHERE slug IN ('super_admin','admin') LIMIT 1)");
         $count = 0;
         foreach ($users as $user) {
             self::create([

@@ -175,7 +175,10 @@ class UserController
 
         $consolidatedReports = \App\Models\ConsolidatedReport::findByUser($userId);
 
-        view('user.consolidated', compact('completedAssessments', 'consolidatedReports', 'user'));
+        $consolidationService = new \App\Services\ConsolidationService();
+        $methods = $consolidationService->getAvailableMethods();
+
+        view('user.consolidated', compact('completedAssessments', 'consolidatedReports', 'user', 'methods'));
     }
 
     public function consolidatedCreate(): void
@@ -186,6 +189,8 @@ class UserController
         $userId = Auth::id();
         $title = trim($_POST['title'] ?? '');
         $assessmentIds = $_POST['assessment_ids'] ?? [];
+        $method = trim($_POST['calculation_method'] ?? 'weighted_average');
+        $weightInput = $_POST['weights'] ?? [];
 
         if (empty($title) || count($assessmentIds) < 2) {
             $_SESSION['error'] = 'Veuillez saisir un titre et sélectionner au moins 2 évaluations.';
@@ -208,37 +213,48 @@ class UserController
             return;
         }
 
+        // Construire le tableau des poids
+        $weights = [];
+        foreach ($validAssessments as $a) {
+            $aid = (int)$a['id'];
+            $w = (float)($weightInput[$aid] ?? 1.0);
+            if ($w < 0) $w = 0;
+            if ($w > 10) $w = 10;
+            $weights[$aid] = $w;
+        }
+
+        // Calculer avec le moteur de consolidation
+        $consolidationService = new \App\Services\ConsolidationService();
+        $assessmentIdList = array_map(fn($a) => (int)$a['id'], $validAssessments);
+        $result = $consolidationService->calculate($assessmentIdList, $method, $weights);
+
+        // Créer le rapport consolidé
         $consolidatedId = \App\Models\ConsolidatedReport::create($userId, $title);
 
-        $totalScore = 0;
-        $count = 0;
-        $scoring = new \App\Services\ScoringService();
+        // Ajouter les items avec leurs poids
         foreach ($validAssessments as $a) {
+            $aid = (int)$a['id'];
             $model = Database::fetch("SELECT name, name_fr FROM evaluation_models WHERE id = ?", [$a['model_id'] ?? 0]);
             $modelName = $model ? ($model['name_fr'] ?: $model['name']) : 'Modèle';
 
-            // Use the real recalculated score, not the stale stored value
-            try {
-                $analysis = $scoring->analyzeAssessment((int)$a['id']);
-                $score = round($analysis['global_score'], 2);
-                $level = $analysis['maturity_level']['name'] ?? null;
-            } catch (\Throwable $e) {
-                $score = (float)($a['total_score'] ?? 0);
-                $level = $a['maturity_level'] ?? null;
+            // Trouver le détail du score dans les résultats
+            $itemDetail = null;
+            foreach ($result['items_detail'] as $detail) {
+                if ((int)$detail['assessment_id'] === $aid) { $itemDetail = $detail; break; }
             }
 
+            $score = $itemDetail ? $itemDetail['score'] : (float)($a['total_score'] ?? 0);
+            $level = $itemDetail['maturity_level'] ?? ($a['maturity_level'] ?? null);
+
             \App\Models\ConsolidatedReport::addItem(
-                $consolidatedId, $a['id'], $a['model_id'] ?? null, $modelName, $score, $level
+                $consolidatedId, $aid, $a['model_id'] ?? null, $modelName, $score, $level, $weights[$aid]
             );
-            $totalScore += $score;
-            $count++;
         }
 
-        $avgScore = $count > 0 ? round($totalScore / $count, 2) : 0;
-        $level = $avgScore >= 86 ? 'Excellence' : ($avgScore >= 71 ? 'Performant' : ($avgScore >= 51 ? 'Structuré' : ($avgScore >= 31 ? 'En Développement' : 'Débutant')));
-        \App\Models\ConsolidatedReport::updateScore($consolidatedId, $avgScore, $level);
+        // Persister les méta-données de calcul
+        $consolidationService->persist($consolidatedId, $result, $weights);
 
-        $_SESSION['success'] = 'Rapport consolidé créé avec succès.';
+        $_SESSION['success'] = 'Rapport consolidé créé avec la méthode "' . ucfirst(str_replace('_', ' ', $method)) . '".';
         redirect('/user/consolidated/' . $consolidatedId);
     }
 
@@ -254,9 +270,10 @@ class UserController
         }
 
         $items = \App\Models\ConsolidatedReport::getItems($id);
+        $domainBreakdown = \App\Models\ConsolidatedReport::getDomainBreakdown($id);
         $user = Auth::user();
 
-        view('user.consolidated_detail', compact('report', 'items', 'user'));
+        view('user.consolidated_detail', compact('report', 'items', 'domainBreakdown', 'user'));
     }
 
     public function consolidatedRequest(array $params): void

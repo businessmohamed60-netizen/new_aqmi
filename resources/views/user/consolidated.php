@@ -96,23 +96,44 @@ ob_start();
         </div>
         <div class="consolidated-card-body">
           <form action="/user/consolidated/create" method="POST">
+            <?= csrf_field() ?>
             <div class="form-group">
               <label class="form-label">Titre du rapport consolidé</label>
               <input type="text" name="title" class="form-control" placeholder="Ex: Évaluation globale 2026" required>
             </div>
 
+            <div class="form-group">
+              <label class="form-label">Méthode de consolidation <i class="fas fa-info-circle" title="Choisissez la méthode de calcul du score consolidé" style="color:var(--vx-text-muted);cursor:help;"></i></label>
+              <select name="calculation_method" id="calcMethod" class="form-control">
+                <?php foreach ($methods as $m): ?>
+                  <option value="<?= e($m['code']) ?>" <?= $m['code'] === 'weighted_average' ? 'selected' : '' ?>>
+                    <?= e($m['name_fr']) ?> — <?= e($m['description_fr'] ?? '') ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+              <div id="methodHint" style="font-size:0.72rem;color:var(--vx-text-muted);margin-top:0.4rem;padding:0.5rem 0.75rem;background:rgba(99,102,241,0.06);border-radius:var(--vx-radius-md);"></div>
+            </div>
+
             <label class="form-label">Évaluations à inclure (cochez au moins 2)</label>
+            <div id="weightHint" style="font-size:0.72rem;color:var(--vx-text-muted);margin-bottom:0.5rem;display:none;">
+              <i class="fas fa-scale-balanced"></i> Ajustez le poids de chaque évaluation (0-10). Plus le poids est élevé, plus l'évaluation influence le score consolidé.
+            </div>
             <?php foreach ($completedAssessments as $a): ?>
-              <label class="assessment-row">
-                <input type="checkbox" name="assessment_ids[]" value="<?= $a['id'] ?>">
-                <div class="assessment-info">
+              <div class="assessment-row" style="flex-wrap:wrap;">
+                <input type="checkbox" name="assessment_ids[]" value="<?= $a['id'] ?>" class="assess-check" data-id="<?= $a['id'] ?>">
+                <div class="assessment-info" style="flex:1;min-width:180px;">
                   <div class="assessment-model"><?= e($a['model_name_fr'] ?: $a['model_name'] ?: 'Modèle') ?></div>
                   <div class="assessment-meta">
                     <?= e($a['company'] ?? 'N/A') ?> &middot; <?= date('d/m/Y', strtotime($a['completed_at'])) ?>
                   </div>
                 </div>
                 <div class="assessment-score"><?= round($a['total_score'] ?? 0) ?>/100</div>
-              </label>
+                <div class="weight-control" style="display:none;align-items:center;gap:0.4rem;margin-left:0.5rem;">
+                  <label style="font-size:0.7rem;color:var(--vx-text-muted);font-weight:600;white-space:nowrap;">Poids:</label>
+                  <input type="number" name="weights[<?= $a['id'] ?>]" value="1" min="0" max="10" step="0.5"
+                    style="width:60px;padding:0.3rem 0.5rem;border:1px solid var(--vx-card-border);border-radius:0.375rem;font-size:0.78rem;text-align:center;">
+                </div>
+              </div>
             <?php endforeach; ?>
 
             <div style="margin-top:1rem;display:flex;gap:0.75rem;">
@@ -171,3 +192,55 @@ ob_start();
 $content = ob_get_clean();
 require BASE_PATH . '/resources/views/layouts/user_dashboard.php';
 ?>
+<script>
+(function() {
+  var methodSelect = document.getElementById('calcMethod');
+  var methodHint = document.getElementById('methodHint');
+  var weightHint = document.getElementById('weightHint');
+  if (!methodSelect) return;
+
+  var hints = {};
+  <?php foreach ($methods as $m): ?>
+  hints['<?= e($m['code']) ?>'] = <?= json_encode($m['description_fr'] ?? $m['description'] ?? '') ?>;
+  <?php endforeach; ?>
+
+  var weightMethods = ['weighted_average', 'domain_fusion', 'latest_only', 'maturity_gap'];
+
+  function updateHint() {
+    var code = methodSelect.value;
+    methodHint.textContent = hints[code] || '';
+    var showWeights = weightMethods.indexOf(code) !== -1;
+    weightHint.style.display = showWeights ? 'block' : 'none';
+    document.querySelectorAll('.weight-control').forEach(function(el) {
+      el.style.display = showWeights ? 'flex' : 'none';
+      var row = el.closest('.assessment-row');
+      if (row) {
+        var cb = row.querySelector('.assess-check');
+        if (cb && cb.checked) {
+          el.style.display = showWeights ? 'flex' : 'none';
+        } else {
+          el.style.display = 'none';
+        }
+      }
+    });
+  }
+
+  methodSelect.addEventListener('change', updateHint);
+
+  document.querySelectorAll('.assess-check').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var row = cb.closest('.assessment-row');
+      if (!row) return;
+      row.classList.toggle('selected', cb.checked);
+      var wc = row.querySelector('.weight-control');
+      if (wc) {
+        var code = methodSelect.value;
+        var showWeights = weightMethods.indexOf(code) !== -1;
+        wc.style.display = (cb.checked && showWeights) ? 'flex' : 'none';
+      }
+    });
+  });
+
+  updateHint();
+})();
+</script>

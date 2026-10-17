@@ -1,6 +1,6 @@
 <?php
 $users = \App\Helpers\Database::fetchAll(
-  "SELECT u.id, u.firstname, u.lastname, u.email, u.company FROM users u JOIN roles r ON u.role_id = r.id WHERE r.slug = 'client' AND u.is_active = 1 ORDER BY u.firstname ASC"
+  "SELECT u.id, u.firstname, u.lastname, u.email, u.company, u.notify_push FROM users u JOIN roles r ON u.role_id = r.id WHERE r.slug = 'client' AND u.is_active = 1 ORDER BY u.firstname ASC"
 );
 $content = null;
 ob_start();
@@ -89,9 +89,14 @@ ob_start();
       <div class="user-pick-list" id="userPickList">
         <?php foreach ($users as $u): ?>
         <label class="user-pick">
-          <input type="checkbox" name="user_ids[]" value="<?= (int)$u['id'] ?>">
+          <input type="checkbox" name="user_ids[]" value="<?= (int)$u['id'] ?>" <?= ((int)($u['notify_push'] ?? 1) === 1) ? '' : 'disabled' ?>>
           <div>
-            <div class="user-pick-name"><?= e(($u['firstname'] ?? '') . ' ' . ($u['lastname'] ?? '')) ?></div>
+            <div class="user-pick-name">
+              <?= e(($u['firstname'] ?? '') . ' ' . ($u['lastname'] ?? '')) ?>
+              <?php if ((int)($u['notify_push'] ?? 1) !== 1): ?>
+                <span style="font-size:0.65rem;color:#dc2626;font-weight:600;margin-left:0.3rem;">push désactivé</span>
+              <?php endif; ?>
+            </div>
             <div class="user-pick-email"><?= e($u['email'] ?? '') ?> · <?= e($u['company'] ?? 'N/A') ?></div>
           </div>
         </label>

@@ -107,9 +107,33 @@ ob_start();
           <h3><i class="fas fa-chart-bar me-2" style="color:var(--vx-primary);"></i>Score global</h3>
           <p style="font-size:0.85rem;color:var(--vx-text-secondary);">
             Score consolidé: <strong style="color:var(--vx-primary);font-size:1.1rem;"><?= round($report['consolidated_score'] ?? 0) ?>/100</strong><br>
-            Niveau de maturité: <strong><?= e($report['maturity_level'] ?? 'N/A') ?></strong>
+            Niveau de maturité: <strong><?= e($report['maturity_level'] ?? 'N/A') ?></strong><br>
+            Méthode de calcul: <strong><?= e(ucfirst(str_replace('_', ' ', $report['calculation_method'] ?? 'weighted_average'))) ?></strong>
           </p>
         </div>
+
+        <?php if (!empty($domainBreakdown)): ?>
+        <div class="detail-section">
+          <h3><i class="fas fa-layer-group me-2" style="color:var(--vx-primary);"></i>Découpage par domaine consolidé</h3>
+          <?php foreach ($domainBreakdown as $db): ?>
+            <div class="item-row" style="flex-direction:column;align-items:stretch;gap:0.4rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="item-model">
+                  <?php if (!empty($db['icon'])): ?><i class="fas <?= e($db['icon']) ?>" style="color:var(--vx-primary);margin-right:0.3rem;"></i><?php endif; ?>
+                  <?= e($db['domain_label']) ?>
+                  <?php if (($db['contributions'] ?? 1) > 1): ?>
+                    <span style="font-size:0.65rem;color:var(--vx-text-muted);margin-left:0.3rem;"><?= (int)$db['contributions'] ?> modèles</span>
+                  <?php endif; ?>
+                </div>
+                <div class="item-score"><?= round($db['fused_score'] ?? 0) ?>/100</div>
+              </div>
+              <div style="height:6px;border-radius:999px;background:rgba(99,102,241,0.12);overflow:hidden;">
+                <div style="height:100%;width:<?= round($db['fused_score'] ?? 0) ?>%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:999px;transition:width 0.6s ease;"></div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
 
         <div class="detail-section">
           <h3><i class="fas fa-list me-2" style="color:var(--vx-primary);"></i>Évaluations incluses (<?= count($items) ?>)</h3>
@@ -119,7 +143,10 @@ ob_start();
                 <div class="item-model"><?= e($item['model_name'] ?? 'Modèle') ?></div>
                 <div class="item-meta">
                   <?= e($item['company'] ?? $item['firstname'] ?? 'N/A') ?> &middot;
-                  <?= date('d/m/Y', strtotime($item['created_at'])) ?>
+                  <?= date('d/m/Y', strtotime($item['completed_at'] ?? $item['created_at'])) ?>
+                  <?php if (!empty($item['weight']) && (float)$item['weight'] != 1.0): ?>
+                    &middot; Poids: <strong><?= e($item['weight']) ?></strong>
+                  <?php endif; ?>
                 </div>
               </div>
               <div class="item-score"><?= round($item['score'] ?? 0) ?>/100</div>

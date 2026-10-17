@@ -324,6 +324,18 @@ class Report
         return Database::execute("DELETE FROM reports WHERE id = ?", [$id]);
     }
 
+    /**
+     * Récupère l'utilisateur propriétaire du rapport (via assessment).
+     */
+    public static function getOwnerUserId(int $id): ?int
+    {
+        $row = Database::fetch(
+            "SELECT a.user_id FROM reports r JOIN assessments a ON r.assessment_id = a.id WHERE r.id = ?",
+            [$id]
+        );
+        return $row ? (int)$row['user_id'] : null;
+    }
+
     public static function count(): int
     {
         return (int)Database::fetch("SELECT COUNT(*) as count FROM reports")['count'];

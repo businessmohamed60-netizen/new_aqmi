@@ -35,18 +35,50 @@ class ConsolidatedReport
         );
     }
 
-    public static function addItem(int $consolidatedId, int $assessmentId, ?int $modelId, ?string $modelName, ?float $score, ?string $level): int
+    public static function addItem(int $consolidatedId, int $assessmentId, ?int $modelId, ?string $modelName, ?float $score, ?string $level, float $weight = 1.0): int
     {
         return Database::insert(
-            "INSERT INTO consolidated_report_items (consolidated_report_id, assessment_id, model_id, model_name, score, maturity_level) VALUES (?, ?, ?, ?, ?, ?)",
-            [$consolidatedId, $assessmentId, $modelId, $modelName, $score, $level]
+            "INSERT INTO consolidated_report_items (consolidated_report_id, assessment_id, model_id, model_name, score, maturity_level, weight) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [$consolidatedId, $assessmentId, $modelId, $modelName, $score, $level, $weight]
         );
+    }
+
+    public static function updateItemWeight(int $consolidatedId, int $assessmentId, float $weight, ?string $domainScoresJson = null): int
+    {
+        $sets = ["weight = ?"];
+        $params = [$weight];
+        if ($domainScoresJson !== null) {
+            $sets[] = "domain_scores_json = ?";
+            $params[] = $domainScoresJson;
+        }
+        $params[] = $consolidatedId;
+        $params[] = $assessmentId;
+        return Database::execute(
+            "UPDATE consolidated_report_items SET " . implode(', ', $sets) . " WHERE consolidated_report_id = ? AND assessment_id = ?",
+            $params
+        );
+    }
+
+    public static function updateCalculationMeta(int $id, array $data): int
+    {
+        $sets = [];
+        $params = [];
+        foreach (['calculation_method', 'consolidation_params', 'domain_breakdown_json', 'trend_data_json'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $sets[] = "{$field} = ?";
+                $params[] = $data[$field];
+            }
+        }
+        if (empty($sets)) return 0;
+        $params[] = $id;
+        return Database::execute("UPDATE consolidated_reports SET " . implode(', ', $sets) . " WHERE id = ?", $params);
     }
 
     public static function getItems(int $consolidatedId): array
     {
         return Database::fetchAll(
             "SELECT cri.*, a.total_score, a.maturity_level as assessment_level,
+                    a.completed_at, a.model_id as assessment_model_id,
                     l.company, l.firstname, l.lastname
              FROM consolidated_report_items cri
              JOIN assessments a ON cri.assessment_id = a.id
@@ -55,6 +87,22 @@ class ConsolidatedReport
              ORDER BY cri.id",
             [$consolidatedId]
         );
+    }
+
+    public static function getDomainBreakdown(int $consolidatedId): array
+    {
+        $report = self::find($consolidatedId);
+        if (!$report || empty($report['domain_breakdown_json'])) return [];
+        $data = json_decode($report['domain_breakdown_json'], true);
+        return is_array($data) ? $data : [];
+    }
+
+    public static function getConsolidationParams(int $consolidatedId): array
+    {
+        $report = self::find($consolidatedId);
+        if (!$report || empty($report['consolidation_params'])) return [];
+        $data = json_decode($report['consolidation_params'], true);
+        return is_array($data) ? $data : [];
     }
 
     public static function updateScore(int $id, float $score, string $level): int

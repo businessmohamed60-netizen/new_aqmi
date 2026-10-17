@@ -81,6 +81,23 @@ ob_start();
         </div>
       </div>
 
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="form-check form-switch">
+            <input type="hidden" name="notify_email" value="0">
+            <input class="form-check-input" type="checkbox" name="notify_email" value="1" <?= !isset($user['notify_email']) || $user['notify_email'] ? 'checked' : '' ?>>
+            <label class="form-check-label">Recevoir les notifications par email</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-check form-switch">
+            <input type="hidden" name="notify_push" value="0">
+            <input class="form-check-input" type="checkbox" name="notify_push" value="1" <?= !isset($user['notify_push']) || $user['notify_push'] ? 'checked' : '' ?>>
+            <label class="form-check-label">Recevoir les notifications push (in-app)</label>
+          </div>
+        </div>
+      </div>
+
       <div class="d-flex gap-2" style="border-top:1px solid var(--auto-border);padding-top:1.25rem;">
         <button type="submit" class="auto-btn auto-btn-primary"><i class="fas fa-save me-1"></i>Enregistrer</button>
         <a href="/admin/users" class="auto-btn auto-btn-secondary"><i class="fas fa-times me-1"></i>Annuler</a>
