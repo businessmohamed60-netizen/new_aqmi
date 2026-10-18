@@ -5,15 +5,15 @@
 
 /* ─── 1. ROOT VARIABLES ───────────────────────────────────────── */
 :root {
-  --vx-primary: #173B57;
-  --vx-primary-dark: #0F2A3F;
-  --vx-primary-light: rgba(23,59,87,0.10);
-  --vx-primary-glow: rgba(23,59,87,0.20);
-  --vx-primary-gradient: linear-gradient(135deg, #173B57, #3B82B8);
-  --vx-accent: #3B82B8;
-  --vx-accent-light: rgba(59,130,184,0.12);
-  --vx-accent-glow: rgba(59,130,184,0.25);
-  --vx-accent-gradient: linear-gradient(135deg, #3B82B8, #5BA3D0);
+  --vx-primary: #3730D9;
+  --vx-primary-dark: #2A24A8;
+  --vx-primary-light: rgba(55,48,217,0.10);
+  --vx-primary-glow: rgba(55,48,217,0.20);
+  --vx-primary-gradient: linear-gradient(135deg, #2563EB, #7C3AED);
+  --vx-accent: #4F46E5;
+  --vx-accent-light: rgba(79,70,229,0.12);
+  --vx-accent-glow: rgba(79,70,229,0.25);
+  --vx-accent-gradient: linear-gradient(135deg, #2563EB, #7C3AED);
   --vx-success: #22A06B;
   --vx-success-light: rgba(34,160,107,0.12);
   --vx-success-gradient: linear-gradient(135deg, #22A06B, #34c98a);
@@ -23,15 +23,15 @@
   --vx-warning: #F2B84B;
   --vx-warning-light: rgba(242,184,75,0.12);
   --vx-warning-gradient: linear-gradient(135deg, #F2B84B, #f5cf7a);
-  --vx-info: #3B82B8;
-  --vx-info-light: rgba(59,130,184,0.12);
-  --vx-info-gradient: linear-gradient(135deg, #3B82B8, #5BA3D0);
+  --vx-info: #2563EB;
+  --vx-info-light: rgba(37,99,235,0.12);
+  --vx-info-gradient: linear-gradient(135deg, #2563EB, #60A5FA);
 
-  --vx-body-bg: #F4F6F8;
+  --vx-body-bg: #F4F6FB;
   --vx-card-bg: #ffffff;
   --vx-card-bg-solid: #ffffff;
-  --vx-card-border: #E5E9ED;
-  --vx-card-border-hover: #c7d0e0;
+  --vx-card-border: #E3E7F2;
+  --vx-card-border-hover: #C5CCEA;
   --vx-input-bg: #ffffff;
   --vx-input-border: #d8dee9;
   --vx-divider: #eef1f6;
@@ -40,20 +40,20 @@
   --vx-text-secondary: #475569;
   --vx-text-muted: #94a3b8;
 
-  --vx-sidebar-bg: #173B57;
+  --vx-sidebar-bg: linear-gradient(170deg, #2563EB 0%, #4F46E5 55%, #7C3AED 100%);
   --vx-sidebar-width: 260px;
   --vx-sidebar-collapsed: 80px;
   --vx-topbar-height: 64px;
 
   --vx-radius-sm: 0.375rem;
-  --vx-radius-md: 0.625rem;
-  --vx-radius-lg: 0.875rem;
-  --vx-radius-xl: 1.25rem;
+  --vx-radius-md: 0.75rem;
+  --vx-radius-lg: 1rem;
+  --vx-radius-xl: 1.5rem;
 
-  --vx-shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
-  --vx-shadow-md: 0 4px 24px rgba(15,23,42,0.08);
-  --vx-shadow-lg: 0 12px 48px rgba(15,23,42,0.12);
-  --vx-shadow-glow: 0 0 24px rgba(59,130,184,0.12);
+  --vx-shadow-sm: 0 1px 3px rgba(55,48,217,0.06);
+  --vx-shadow-md: 0 4px 24px rgba(55,48,217,0.08);
+  --vx-shadow-lg: 0 12px 48px rgba(55,48,217,0.12);
+  --vx-shadow-glow: 0 0 24px rgba(79,70,229,0.12);
   --vx-transition: 0.25s ease;
   --vx-transition-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   --vx-glass-blur: blur(20px);
@@ -63,8 +63,8 @@
 .nova-admin-body {
   background: var(--vx-body-bg);
   background-image:
-    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(59,130,184,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(23,59,87,0.03) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 50% at 20% 0%, rgba(79,70,229,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(55,48,217,0.03) 0%, transparent 60%);
   background-attachment: fixed;
   color: var(--vx-text-secondary);
   font-family: 'Inter', -apple-system, sans-serif;
@@ -188,7 +188,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 .nova-sidebar-brand-badge {
   font-size: 0.5rem;
   font-weight: 700;
-  color: #5BA3D0;
+  color: #818CF8;
   background: rgba(91,163,208,0.15);
   border: 1px solid rgba(91,163,208,0.25);
   padding: 0.1rem 0.35rem;
@@ -252,14 +252,14 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 }
 
 .nova-sidebar-link:hover {
-  background: rgba(59,130,184,0.15);
+  background: rgba(79,70,229,0.15);
   color: #ffffff;
   transform: translateX(2px);
 }
 
 .nova-sidebar-link.active {
-  background: rgba(59,130,184,0.12);
-  color: #3B82B8;
+  background: rgba(79,70,229,0.12);
+  color: #4F46E5;
   font-weight: 600;
 }
 
@@ -354,7 +354,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 .nova-topbar-toggle:hover {
   background: var(--vx-accent-light);
   color: var(--vx-accent);
-  border-color: rgba(59,130,184,0.2);
+  border-color: rgba(79,70,229,0.2);
 }
 
 .nova-topbar-title {
@@ -397,14 +397,14 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 
 .nova-user-btn:hover {
   background: var(--vx-accent-light);
-  border-color: rgba(59,130,184,0.2);
+  border-color: rgba(79,70,229,0.2);
 }
 
 .nova-user-avatar {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3B82B8, #5BA3D0);
+  background: var(--vx-accent-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -672,7 +672,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.75rem 1rem;
-  background: transparent;
+  background: rgba(79,70,229,0.04);
 }
 
 .nova-admin-body .table td {
@@ -682,7 +682,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 }
 
 .nova-admin-body .table tr:hover td {
-  background: rgba(59,130,184,0.04);
+  background: rgba(79,70,229,0.04);
 }
 
 .nova-admin-body .table-striped tbody tr:nth-of-type(odd) {
@@ -830,7 +830,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 .nova-admin-body .page-link:hover {
   background: var(--vx-accent-light);
   color: var(--vx-accent);
-  border-color: rgba(59,130,184,0.2);
+  border-color: rgba(79,70,229,0.2);
 }
 
 .nova-admin-body .page-item.active .page-link {
@@ -929,7 +929,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 
 /* Welcome card */
 .nova-welcome-card {
-  background: linear-gradient(135deg, rgba(59,130,184,0.06) 0%, rgba(255,255,255,0.9) 40%, #ffffff 100%);
+  background: linear-gradient(135deg, rgba(79,70,229,0.06) 0%, rgba(255,255,255,0.9) 40%, #ffffff 100%);
   backdrop-filter: var(--vx-glass-blur);
   -webkit-backdrop-filter: var(--vx-glass-blur);
   border: 1px solid var(--vx-card-border);
@@ -1004,7 +1004,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 }
 
 .nova-assessment-item:hover {
-  background: rgba(59,130,184,0.04);
+  background: rgba(79,70,229,0.04);
 }
 
 .nova-assessment-company {
@@ -1034,7 +1034,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
   height: 56px;
   border-radius: 50%;
   background: var(--vx-accent-light);
-  border: 1px solid rgba(59,130,184,0.15);
+  border: 1px solid rgba(79,70,229,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1072,4 +1072,118 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
     letter-spacing: 0.05em;
     margin-bottom: 0.25rem;
   }
+}
+
+/* ─── 11. MENU & TOPBAR VIVID ─────────────────────────────────── */
+:root { --nv-nav-from:#2563EB; --nv-nav-via:#4F46E5; --nv-nav-to:#7C3AED; --nv-nav-ink:#3730D9; --nv-nav-glow:rgba(79,70,229,.35); }
+
+
+/* ─── Sidebar ─────────────────────────────────────────────────── */
+.nova-sidebar {
+  background: var(--vx-sidebar-bg);
+  border-right: 0;
+  box-shadow: 8px 0 32px var(--nv-nav-glow);
+}
+
+/* halo lumineux discret en haut du menu */
+.nova-sidebar::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 220px;
+  background: radial-gradient(120% 100% at 0% 0%, rgba(255,255,255,0.22), transparent 70%);
+  pointer-events: none;
+}
+.nova-sidebar > * { position: relative; z-index: 1; }
+
+/* Marque */
+.nova-sidebar-brand { border-bottom-color: rgba(255,255,255,0.16); }
+.nova-sidebar-brand-icon {
+  background: #ffffff;
+  color: var(--nv-nav-ink);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+}
+.nova-sidebar-brand-badge {
+  color: #ffffff;
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Titres de section */
+.nova-sidebar-section { color: rgba(255,255,255,0.62); letter-spacing: 0.1em; }
+
+/* Liens */
+.nova-sidebar-link {
+  color: rgba(255,255,255,0.82);
+  border-radius: 0.875rem;
+  padding: 0.7rem 0.875rem;
+  font-weight: 500;
+}
+.nova-sidebar-link i {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  background: rgba(255,255,255,0.10);
+  transition: background var(--vx-transition), color var(--vx-transition);
+}
+.nova-sidebar-link:hover {
+  background: rgba(255,255,255,0.16);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+.nova-sidebar-link:hover i { background: rgba(255,255,255,0.22); }
+
+/* Lien actif : pastille blanche, très lisible */
+.nova-sidebar-link.active {
+  background: #ffffff;
+  color: var(--nv-nav-ink);
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+}
+.nova-sidebar-link.active i {
+  background: linear-gradient(135deg, var(--nv-nav-from), var(--nv-nav-to));
+  color: #ffffff;
+}
+.nova-sidebar-link.active::before { display: none; }
+
+/* Pied de menu */
+.nova-sidebar-footer { border-top-color: rgba(255,255,255,0.16); }
+
+/* Barre de défilement */
+.nova-sidebar-nav::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); }
+.nova-sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); }
+
+/* Menu replié : garder les icônes centrées */
+.nova-sidebar.collapsed .nova-sidebar-link { justify-content: center; padding-inline: 0.5rem; }
+.nova-sidebar.collapsed .nova-sidebar-link i { margin: 0; }
+
+/* ─── Topbar (claire, avec liseré dégradé) ────────────────────── */
+.nova-topbar,
+.nova-admin-body .nova-topbar {
+  background: rgba(255,255,255,0.82);
+  border-bottom: 0;
+  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.08);
+}
+.nova-topbar::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--nv-nav-from), var(--nv-nav-via), var(--nv-nav-to));
+}
+.nova-topbar-toggle:hover {
+  background: rgba(79, 70, 229, 0.10);
+  color: var(--nv-nav-ink);
+}
+
+/* ─── Accessibilité ───────────────────────────────────────────── */
+.nova-sidebar-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nova-sidebar-link:hover { transform: none; }
 }
