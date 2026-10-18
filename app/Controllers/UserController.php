@@ -529,6 +529,12 @@ class UserController
 
         \App\Models\User::update(Auth::id(), $updateData);
 
+        $newLang = trim($_POST['preferred_lang'] ?? '');
+        if (in_array($newLang, ['fr', 'en', 'ar', 'es'], true)) {
+            \App\Models\User::update(Auth::id(), ['preferred_lang' => $newLang]);
+            $_SESSION['lang'] = $newLang;
+        }
+
         $_SESSION['success'] = __('profile.success.updated');
         redirect('/user/profile');
     }

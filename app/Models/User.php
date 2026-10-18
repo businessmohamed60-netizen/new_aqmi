@@ -39,7 +39,7 @@ class User
             'machine_count', 'machine_types', 'main_materials', 'process_technologies',
             'ppm_target', 'otd_rate', 'fta_rate', 'scrap_rate', 'traceability_system',
             'logistics_system', 'rd_budget_percent', 'current_erp',
-            'notify_email', 'notify_push',
+            'notify_email', 'notify_push', 'preferred_lang',
         ];
         foreach ($keys as $key) {
             if (array_key_exists($key, $data)) { $sets[] = "{$key} = ?"; $params[] = $data[$key]; }

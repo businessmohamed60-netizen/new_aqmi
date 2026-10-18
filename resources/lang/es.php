@@ -405,4 +405,5 @@ return [
     'profile.error.wrong_password' => 'La contraseña actual es incorrecta.',
     'profile.error.password_short' => 'La nueva contraseña debe tener al menos 8 caracteres.',
     'profile.error.password_mismatch' => 'Las contraseñas no coinciden.',
+    'profile.language' => 'Idioma de la interfaz',
 ];

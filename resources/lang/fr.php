@@ -405,4 +405,5 @@ return [
     'profile.error.wrong_password' => 'Le mot de passe actuel est incorrect.',
     'profile.error.password_short' => 'Le nouveau mot de passe doit contenir au moins 8 caractères.',
     'profile.error.password_mismatch' => 'Les mots de passe ne correspondent pas.',
+    'profile.language' => 'Langue de l\'interface',
 ];

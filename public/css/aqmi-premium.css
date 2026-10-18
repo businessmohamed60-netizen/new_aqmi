@@ -2512,6 +2512,44 @@
   }
 }
 
+/* Results page — tablet & mobile tuning */
+@media (max-width: 900px) {
+  .aqmi-results { padding: 1.25rem; }
+  .aqmi-results-header { padding: 2rem 1rem; }
+  .aqmi-results-title { font-size: 1.6rem; }
+  .aqmi-results-score-ring { width: 140px; height: 140px; }
+  .aqmi-results-score-value .num { font-size: 2.3rem; }
+  .aqmi-results-card { padding: 1.25rem 1.25rem; }
+}
+
+@media (max-width: 600px) {
+  .aqmi-results { padding: 0.75rem; }
+  .aqmi-results-header { padding: 1.5rem 0.75rem; }
+  .aqmi-results-title { font-size: 1.35rem; }
+  .aqmi-results-subtitle { font-size: 0.82rem; }
+  .aqmi-results-score-ring { width: 120px; height: 120px; margin-bottom: 1rem; }
+  .aqmi-results-score-value .num { font-size: 1.9rem; }
+  .aqmi-results-score-value .lbl { font-size: 0.55rem; }
+  .aqmi-results-level { font-size: 0.65rem; padding: 0.25rem 0.7rem; }
+  .aqmi-results-card { padding: 1rem 0.9rem; margin-bottom: 0.75rem; border-radius: var(--aqmi-radius-md); }
+  .aqmi-results-section { margin-bottom: 1.25rem; }
+  .aqmi-results-section-title h3 { font-size: 0.9rem; }
+  .aqmi-results-section-title p { font-size: 0.66rem; }
+  .aqmi-domain-item { padding: 1rem 0.4rem; }
+  .aqmi-domain-score { font-size: 1.05rem; }
+  .aqmi-domain-name { font-size: 0.56rem; }
+  .aqmi-rec-text { font-size: 0.72rem; }
+}
+
+@media (max-width: 400px) {
+  .aqmi-results { padding: 0.5rem; }
+  .aqmi-results-header { padding: 1.1rem 0.5rem; }
+  .aqmi-results-title { font-size: 1.15rem; }
+  .aqmi-results-score-ring { width: 104px; height: 104px; }
+  .aqmi-results-score-value .num { font-size: 1.6rem; }
+  .aqmi-results-card { padding: 0.85rem 0.75rem; }
+}
+
 .aqmi-rec-item {
   display: flex;
   align-items: flex-start;

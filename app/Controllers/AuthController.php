@@ -196,6 +196,11 @@ class AuthController
         Session::set('user_role', $user['role_id']);
         Session::set('role_slug', $user['role_slug']);
 
+        // Sync session language from user's preferred language
+        if (!empty($user['preferred_lang']) && in_array($user['preferred_lang'], ['fr', 'en', 'ar', 'es'], true)) {
+            $_SESSION['lang'] = $user['preferred_lang'];
+        }
+
         // Enregistrer la connexion
         LoginHistory::record($user['id'], $user['email'], 'success', $ip, $ua['browser'], $ua['os']);
         Database::execute("UPDATE users SET last_login_at = NOW() WHERE id = ?", [$user['id']]);

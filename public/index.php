@@ -74,6 +74,15 @@ session_start();
 $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : $appConfig['default_language'];
 $_SESSION['lang'] = $lang;
 
+// If user is logged in, sync language from their profile preference
+if (!empty($_SESSION['user_id'])) {
+    require_once BASE_PATH . '/app/Helpers/Database.php';
+    $prefLang = \App\Helpers\Database::fetch("SELECT preferred_lang FROM users WHERE id = ?", [(int)$_SESSION['user_id']]);
+    if ($prefLang && !empty($prefLang['preferred_lang']) && in_array($prefLang['preferred_lang'], ['fr', 'en', 'ar', 'es'], true)) {
+        $_SESSION['lang'] = $prefLang['preferred_lang'];
+    }
+}
+
 require_once BASE_PATH . '/app/Helpers/Functions.php';
 
 use App\Helpers\Router;

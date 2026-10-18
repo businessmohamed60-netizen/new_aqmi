@@ -405,4 +405,5 @@ return [
     'profile.error.wrong_password' => 'كلمة المرور الحالية غير صحيحة.',
     'profile.error.password_short' => 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.',
     'profile.error.password_mismatch' => 'كلمات المرور غير متطابقة.',
+    'profile.language' => 'لغة الواجهة',
 ];

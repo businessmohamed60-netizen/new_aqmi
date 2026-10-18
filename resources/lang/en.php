@@ -405,4 +405,5 @@ return [
     'profile.error.wrong_password' => 'The current password is incorrect.',
     'profile.error.password_short' => 'The new password must be at least 8 characters long.',
     'profile.error.password_mismatch' => 'The passwords do not match.',
+    'profile.language' => 'Interface language',
 ];

@@ -241,6 +241,15 @@ $langCode = $_SESSION['lang'] ?? 'fr';
     <label class="ud-form-label" for="job_title">Fonction / Poste <span class="req">*</span></label>
     <input type="text" id="job_title" name="job_title" class="ud-form-input" placeholder="Ex: Responsable Qualité" value="<?= e($user['job_title'] ?? '') ?>" required>
   </div>
+  <div class="ud-form-group">
+    <label class="ud-form-label" for="preferred_lang"><?= __('profile.language') ?: 'Langue de l\'interface' ?></label>
+    <select id="preferred_lang" name="preferred_lang" class="ud-form-select">
+      <option value="fr" <?= ($user['preferred_lang'] ?? 'fr') === 'fr' ? 'selected' : '' ?>>Français</option>
+      <option value="en" <?= ($user['preferred_lang'] ?? 'fr') === 'en' ? 'selected' : '' ?>>English</option>
+      <option value="ar" <?= ($user['preferred_lang'] ?? 'fr') === 'ar' ? 'selected' : '' ?>>العربية</option>
+      <option value="es" <?= ($user['preferred_lang'] ?? 'fr') === 'es' ? 'selected' : '' ?>>Español</option>
+    </select>
+  </div>
 </div>
 
 <!-- Company Information -->
