@@ -1217,3 +1217,102 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 @media (prefers-reduced-motion: reduce) {
   .nova-sidebar-link:hover { transform: none; }
 }
+
+/* ─── 12. MENU REPLIÉ CORRIGÉ + ICÔNES COLORÉES ──────────────── */
+
+/* Palette des icônes (la couleur est posée par le JS via data-ic) */
+.nova-sidebar-link { --ic-a: #94A3B8; --ic-b: #64748B; }
+.nova-sidebar-link[data-ic="orange"]  { --ic-a: #FDBA74; --ic-b: #F97316; }
+.nova-sidebar-link[data-ic="pink"]    { --ic-a: #F9A8D4; --ic-b: #EC4899; }
+.nova-sidebar-link[data-ic="emerald"] { --ic-a: #6EE7B7; --ic-b: #10B981; }
+.nova-sidebar-link[data-ic="amber"]   { --ic-a: #FCD34D; --ic-b: #F59E0B; }
+.nova-sidebar-link[data-ic="cyan"]    { --ic-a: #67E8F9; --ic-b: #06B6D4; }
+.nova-sidebar-link[data-ic="teal"]    { --ic-a: #5EEAD4; --ic-b: #0D9488; }
+.nova-sidebar-link[data-ic="lime"]    { --ic-a: #BEF264; --ic-b: #65A30D; }
+.nova-sidebar-link[data-ic="rose"]    { --ic-a: #FDA4AF; --ic-b: #F43F5E; }
+.nova-sidebar-link[data-ic="fuchsia"] { --ic-a: #F0ABFC; --ic-b: #C026D3; }
+.nova-sidebar-link[data-ic="red"]     { --ic-a: #FCA5A5; --ic-b: #EF4444; }
+
+/* Pastille colorée derrière chaque icône */
+.nova-sidebar-link i {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.65rem;
+  background: linear-gradient(135deg, var(--ic-a), var(--ic-b));
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(15,23,42,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.nova-sidebar-link:hover i {
+  background: linear-gradient(135deg, var(--ic-a), var(--ic-b));
+  transform: scale(1.08) rotate(-4deg);
+}
+/* Lien actif : pastille blanche, glyphe coloré */
+.nova-sidebar-link.active i {
+  background: #ffffff;
+  color: var(--ic-b);
+  box-shadow: 0 4px 12px rgba(15,23,42,0.25);
+}
+
+/* ── Menu replié (bureau uniquement) ─────────────────────────── */
+@media (min-width: 993px) {
+  /* Marque centrée, sans texte résiduel */
+  .nova-sidebar.collapsed .nova-sidebar-brand {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-brand-text,
+  .nova-sidebar.collapsed .nova-sidebar-brand-badge {
+    display: none;
+  }
+
+  /* Plus de barre de défilement qui décale les icônes vers la gauche */
+  .nova-sidebar.collapsed .nova-sidebar-nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-nav::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  /* Icône parfaitement centrée : plus de gap ni de libellé qui prend de la place */
+  .nova-sidebar.collapsed .nova-sidebar-link {
+    justify-content: center;
+    gap: 0;
+    padding: 0.5rem 0;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-link span {
+    display: none;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-link i {
+    margin: 0;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-link:hover {
+    transform: none;
+  }
+}
+
+/* ── Mobile : ignorer un état « replié » mémorisé sur bureau ── */
+@media (max-width: 992px) {
+  .nova-sidebar.collapsed .nova-sidebar-link span {
+    opacity: 1;
+    width: auto;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-brand-text,
+  .nova-sidebar.collapsed .nova-sidebar-brand-badge {
+    opacity: 1;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-section {
+    opacity: 1;
+    height: auto;
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+  .nova-sidebar.collapsed .nova-sidebar-link {
+    justify-content: flex-start;
+    padding: 0.6rem 0.85rem;
+  }
+}
