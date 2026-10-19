@@ -92,17 +92,21 @@
     if (!nav) return;
     const active = nav.querySelector('.nova-sidebar-link.active');
     if (!active) return;
-    const navRect = nav.getBoundingClientRect();
-    const activeRect = active.getBoundingClientRect();
-    const offset = activeRect.top - navRect.top;
-    // Center the active item within the visible nav area
-    nav.scrollTo({
-      top: offset - (navRect.height - activeRect.height) / 2,
-      behavior: 'smooth'
-    });
+    // Prefer native scrollIntoView (centers the item), with manual fallback.
+    try {
+      active.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    } catch (e) {
+      const navRect = nav.getBoundingClientRect();
+      const activeRect = active.getBoundingClientRect();
+      nav.scrollTop = (activeRect.top - navRect.top) - (navRect.height - activeRect.height) / 2 + nav.scrollTop;
+    }
   }
+  // Run after DOM is ready, after load, and after a short delay to be safe.
   scrollSidebarToActive();
-  window.addEventListener('load', scrollSidebarToActive);
+  window.addEventListener('load', function() {
+    setTimeout(scrollSidebarToActive, 50);
+  });
+  setTimeout(scrollSidebarToActive, 150);
 
   // ─── Handle window resize ─────────────────────────────────────
   let resizeTimer;
