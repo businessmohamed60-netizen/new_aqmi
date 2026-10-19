@@ -1,0 +1,900 @@
+/* ============================================================
+   AQMI Final Report — Comprehensive Professional Report
+   Matches the AQMI dark premium design system
+   ============================================================ */
+
+.aqmi-final-report {
+  min-height: 100vh;
+  background: #08080e;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #f0f0f4;
+  padding: 0;
+}
+
+.aqmi-final-report * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Toolbar ── */
+.aqmi-fr-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: rgba(8, 8, 14, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aqmi-fr-toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.aqmi-fr-toolbar-brand .brand-badge {
+  background: linear-gradient(135deg, #173b57, #1f6feb);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.25);
+}
+
+.aqmi-fr-toolbar-brand .brand-sub {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.aqmi-fr-toolbar-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.aqmi-fr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+}
+
+.aqmi-fr-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.aqmi-fr-btn-primary {
+  background: linear-gradient(135deg, #1f6feb, #173b57);
+  border-color: rgba(31, 111, 235, 0.4);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(31, 111, 235, 0.2);
+}
+
+.aqmi-fr-btn-primary:hover {
+  background: linear-gradient(135deg, #2b7fff, #1a4a7a);
+  box-shadow: 0 6px 20px rgba(31, 111, 235, 0.3);
+}
+
+/* ── Report Container ── */
+.aqmi-fr-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Cover Section ── */
+.aqmi-fr-cover {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b2a4a 50%, #0d1b2a 100%);
+  border: 1px solid rgba(31, 111, 235, 0.15);
+}
+
+.aqmi-fr-cover::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(31, 111, 235, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.aqmi-fr-cover::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(46, 196, 182, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.aqmi-fr-cover-content {
+  position: relative;
+  z-index: 2;
+  padding: 2.5rem 2rem;
+}
+
+.aqmi-fr-cover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.aqmi-fr-cover-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.aqmi-fr-cover-brand .brand-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.6));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.aqmi-fr-cover-brand .brand-tagline {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.aqmi-fr-cover-ref {
+  text-align: right;
+}
+
+.aqmi-fr-cover-ref .ref-label {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.aqmi-fr-cover-ref .ref-number {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.aqmi-fr-cover-ref .ref-date {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 0.2rem;
+}
+
+.aqmi-fr-cover-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.02em;
+}
+
+.aqmi-fr-cover-subtitle {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.5rem;
+}
+
+/* Cover Score + Company grid */
+.aqmi-fr-cover-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .aqmi-fr-cover-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aqmi-fr-cover-company {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+}
+
+.aqmi-fr-cover-company .label {
+  font-size: 0.6rem;
+  color: rgba(31, 111, 235, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.aqmi-fr-cover-company .company-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.aqmi-fr-cover-company .company-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  font-size: 0.72rem;
+}
+
+.aqmi-fr-cover-company .company-meta .meta-label {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+}
+
+.aqmi-fr-cover-company .company-meta .meta-value {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-align: right;
+}
+
+@media (max-width: 500px) {
+  .aqmi-fr-cover-company .company-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aqmi-fr-cover-score {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.aqmi-fr-cover-score .label {
+  font-size: 0.6rem;
+  color: rgba(31, 111, 235, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* SVG Gauge */
+.aqmi-fr-gauge {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0.5rem 0;
+}
+
+.aqmi-fr-gauge svg {
+  width: 100%;
+  height: 100%;
+}
+
+.aqmi-fr-gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.aqmi-fr-gauge-value .num {
+  font-size: 2rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.aqmi-fr-gauge-value .lbl {
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+.aqmi-fr-level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-top: 0.5rem;
+}
+
+/* ── Section Structure ── */
+.aqmi-fr-section {
+  margin-bottom: 1.5rem;
+}
+
+.aqmi-fr-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aqmi-fr-section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.aqmi-fr-section-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.aqmi-fr-section-subtitle {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+  margin-top: 0.1rem;
+}
+
+/* ── Card ── */
+.aqmi-fr-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.aqmi-fr-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Executive Summary ── */
+.aqmi-fr-exec-summary {
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.06) 0%, rgba(46, 196, 182, 0.03) 100%);
+  border: 1px solid rgba(31, 111, 235, 0.15);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.aqmi-fr-exec-summary p {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aqmi-fr-exec-summary .highlight {
+  color: #fff;
+  font-weight: 700;
+}
+
+.aqmi-fr-exec-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .aqmi-fr-exec-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.aqmi-fr-exec-stat {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.aqmi-fr-exec-stat .stat-value {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.aqmi-fr-exec-stat .stat-label {
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+/* ── Domain Scores Grid ── */
+.aqmi-fr-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.aqmi-fr-domain-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.aqmi-fr-domain-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.aqmi-fr-domain-score {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.aqmi-fr-domain-name {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  margin-top: 0.4rem;
+  line-height: 1.3;
+}
+
+.aqmi-fr-domain-bar {
+  height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.aqmi-fr-domain-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease-out;
+}
+
+/* ── Split Grid ── */
+.aqmi-fr-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .aqmi-fr-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Strengths & Weaknesses ── */
+.aqmi-fr-strength-card {
+  border-top: 3px solid #2EC4B6;
+}
+
+.aqmi-fr-weakness-card {
+  border-top: 3px solid #E5484D;
+}
+
+.aqmi-fr-card-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.aqmi-fr-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aqmi-fr-list-item:last-child {
+  border-bottom: none;
+}
+
+.aqmi-fr-list-item .item-score {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+}
+
+/* ── Gaps Table ── */
+.aqmi-fr-gap-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.aqmi-fr-gap-item:last-child {
+  border-bottom: none;
+}
+
+.aqmi-fr-gap-domain {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aqmi-fr-gap-score {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  width: 50px;
+  text-align: right;
+}
+
+.aqmi-fr-gap-bar {
+  flex: 1;
+  max-width: 200px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.aqmi-fr-gap-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.aqmi-fr-gap-value {
+  font-size: 0.85rem;
+  font-weight: 800;
+  width: 55px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.aqmi-fr-gap-severity {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+}
+
+/* ── Priority Matrix ── */
+.aqmi-fr-priority-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.aqmi-fr-priority-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1rem;
+  border-left: 3px solid;
+}
+
+.aqmi-fr-priority-domain {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-fr-priority-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.aqmi-fr-priority-score {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.aqmi-fr-priority-tag {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+}
+
+/* ── Recommendations ── */
+.aqmi-fr-reco-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.aqmi-fr-reco-item:last-child {
+  border-bottom: none;
+}
+
+.aqmi-fr-reco-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.aqmi-fr-reco-text {
+  flex: 1;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.aqmi-fr-reco-tag {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+/* ── Action Plan ── */
+.aqmi-fr-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 800px) {
+  .aqmi-fr-action-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aqmi-fr-action-phase {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  border-top: 3px solid;
+}
+
+.aqmi-fr-action-phase-tag {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.2rem;
+}
+
+.aqmi-fr-action-phase-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+
+.aqmi-fr-action-phase-duration {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.aqmi-fr-action-list {
+  list-style: none;
+  padding: 0;
+}
+
+.aqmi-fr-action-list li {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-left: 0.85rem;
+  position: relative;
+}
+
+.aqmi-fr-action-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.7rem;
+}
+
+.aqmi-fr-action-list li:last-child {
+  border-bottom: none;
+}
+
+/* ── Action Plan Summary Table ── */
+.aqmi-fr-action-summary {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+
+.aqmi-fr-action-summary th {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aqmi-fr-action-summary td {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.aqmi-fr-action-summary td.center {
+  text-align: center;
+}
+
+.aqmi-fr-action-summary tr:last-child td {
+  border-bottom: none;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ── Score Levels Legend ── */
+.aqmi-fr-level-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.75rem 0;
+}
+
+.aqmi-fr-level-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aqmi-fr-level-chip .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+/* ── Radar Chart Container ── */
+.aqmi-fr-chart-container {
+  position: relative;
+  width: 100%;
+  height: 340px;
+}
+
+/* ── Footer ── */
+.aqmi-fr-footer {
+  text-align: center;
+  padding: 2rem 0 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aqmi-fr-footer-brand {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.04em;
+}
+
+.aqmi-fr-footer-copy {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.25);
+  margin-top: 0.3rem;
+}
+
+/* ── Print ── */
+@media print {
+  .aqmi-fr-toolbar { display: none !important; }
+  .aqmi-final-report {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .aqmi-fr-card,
+  .aqmi-fr-cover-company,
+  .aqmi-fr-cover-score {
+    border: 1px solid #ddd !important;
+    background: #fff !important;
+  }
+}
+
+/* ── Animations ── */
+@keyframes aqmi-fr-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.aqmi-fr-animate {
+  animation: aqmi-fr-fade-up 0.6s ease-out both;
+}
+
+.aqmi-fr-animate:nth-child(1) { animation-delay: 0.05s; }
+.aqmi-fr-animate:nth-child(2) { animation-delay: 0.1s; }
+.aqmi-fr-animate:nth-child(3) { animation-delay: 0.15s; }
+.aqmi-fr-animate:nth-child(4) { animation-delay: 0.2s; }
+.aqmi-fr-animate:nth-child(5) { animation-delay: 0.25s; }
+.aqmi-fr-animate:nth-child(6) { animation-delay: 0.3s; }
+.aqmi-fr-animate:nth-child(7) { animation-delay: 0.35s; }
+.aqmi-fr-animate:nth-child(8) { animation-delay: 0.4s; }

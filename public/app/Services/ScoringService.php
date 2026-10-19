@@ -1,0 +1,199 @@
+<?php
+namespace App\Services;
+
+use App\Helpers\Database;
+use App\Models\Assessment;
+use App\Models\Answer;
+use App\Models\Domain;
+use App\Models\EvaluationModel;
+use App\Models\ScoreLevel;
+
+class ScoringService
+{
+    private string $lang;
+
+    public function __construct()
+    {
+        $this->lang = $_SESSION['lang'] ?? 'fr';
+    }
+
+    private function domainName(array $domain): string
+    {
+        if ($this->lang === 'ar' && !empty($domain['name_ar'])) {
+            return $domain['name_ar'];
+        }
+        if (!empty($domain['name_fr'])) {
+            return $domain['name_fr'];
+        }
+        return $domain['name'];
+    }
+
+    private function levelName(?array $level): ?string
+    {
+        if ($level === null) {
+            return null;
+        }
+        if ($this->lang === 'ar' && !empty($level['name_ar'])) {
+            return $level['name_ar'];
+        }
+        if (!empty($level['name_fr'])) {
+            return $level['name_fr'];
+        }
+        return $level['name'];
+    }
+
+    public function calculateDomainScores(int $assessmentId): array
+    {
+        $assessment = Assessment::find($assessmentId);
+        $modelId = $assessment ? (int)$assessment['model_id'] : 0;
+
+        $scores = Answer::getScoresByDomain($assessmentId);
+
+        if ($modelId) {
+            $domains = EvaluationModel::getDomains($modelId);
+        } else {
+            $domains = Domain::allActive();
+        }
+
+        // Deduplicate by domain id in case the pivot table has duplicate rows.
+        $seen = [];
+        $uniqueDomains = [];
+        foreach ($domains as $domain) {
+            if (in_array($domain['id'], $seen)) continue;
+            $seen[] = $domain['id'];
+            $uniqueDomains[] = $domain;
+        }
+        $domains = $uniqueDomains;
+
+        $result = [];
+
+        foreach ($domains as $domain) {
+            $domainScore = null;
+            foreach ($scores as $score) {
+                if ($score['domain_id'] == $domain['id']) { $domainScore = $score; break; }
+            }
+
+            if ($domainScore && $domainScore['weighted_score'] !== null) {
+                $avgScore = (float)$domainScore['weighted_score'];
+                $maxScore = 5;
+                $percentScore = ($maxScore > 0) ? ($avgScore / $maxScore) * 100 : 0;
+                $level = ScoreLevel::findByScore($percentScore);
+                $result[] = [
+                    'domain_id' => $domain['id'],
+                    'domain_name' => $domain['name'],
+                    'domain_name_fr' => $domain['name_fr'],
+                    'domain_name_ar' => $domain['name_ar'] ?? '',
+                    'domain_label' => $this->domainName($domain),
+                    'icon' => $domain['icon'],
+                    'weight' => (float)($domain['weight'] ?? 1),
+                    'avg_score' => round($avgScore, 2),
+                    'max_score' => $maxScore,
+                    'percent_score' => round($percentScore, 1),
+                    'level' => $level,
+                    'level_label' => $this->levelName($level),
+                    'question_count' => (int)$domainScore['question_count'],
+                ];
+            } else {
+                $result[] = [
+                    'domain_id' => $domain['id'],
+                    'domain_name' => $domain['name'],
+                    'domain_name_fr' => $domain['name_fr'],
+                    'domain_name_ar' => $domain['name_ar'] ?? '',
+                    'domain_label' => $this->domainName($domain),
+                    'icon' => $domain['icon'],
+                    'weight' => (float)($domain['weight'] ?? 1),
+                    'avg_score' => 0,
+                    'max_score' => 5,
+                    'percent_score' => 0,
+                    'level' => null,
+                    'level_label' => null,
+                    'question_count' => 0,
+                ];
+            }
+        }
+        return $result;
+    }
+
+    public function calculateGlobalScore(array $domainScores): float
+    {
+        $totalWeight = 0; $weightedSum = 0;
+        foreach ($domainScores as $domain) {
+            if ($domain['question_count'] < 1) continue;
+            $w = (float)($domain['weight'] ?? 1);
+            if ($w <= 0) $w = 1;
+            $totalWeight += $w;
+            $weightedSum += $domain['percent_score'] * $w;
+        }
+        return $totalWeight > 0 ? round($weightedSum / $totalWeight, 1) : 0;
+    }
+
+    public function getMaturityLevel(float $globalScore): ?array
+    {
+        return ScoreLevel::findByScore($globalScore);
+    }
+
+    public function analyzeAssessment(int $assessmentId): array
+    {
+        $domainScores = $this->calculateDomainScores($assessmentId);
+        $globalScore = $this->calculateGlobalScore($domainScores);
+        return [
+            'domain_scores' => $domainScores,
+            'global_score' => $globalScore,
+            'maturity_level' => $this->getMaturityLevel($globalScore),
+            'benchmark' => $this->getBenchmark($domainScores),
+            'strengths' => $this->getTopStrengths($domainScores, 3),
+            'weaknesses' => $this->getTopWeaknesses($domainScores, 3),
+            'priorities' => $this->getPriorityAxes($domainScores),
+        ];
+    }
+
+    public function getBenchmark(array $domainScores): array
+    {
+        $globalAvg = Assessment::getAverageScore();
+        $domainAverages = Database::fetchAll(
+            "SELECT d.id, AVG(ds.avg_percent) as avg FROM (
+                SELECT q.domain_id, AVG(aa.score) / 5 * 100 as avg_percent
+                FROM assessment_answers aa JOIN questions q ON aa.question_id = q.id
+                JOIN assessments a ON aa.assessment_id = a.id
+                WHERE a.status = 'completed' AND aa.score IS NOT NULL
+                GROUP BY q.domain_id, aa.assessment_id
+            ) ds JOIN domains d ON ds.domain_id = d.id GROUP BY d.id"
+        );
+        $domainBenchmark = [];
+        foreach ($domainAverages as $avg) { $domainBenchmark[$avg['id']] = round((float)$avg['avg'], 1); }
+        return ['global_avg' => round($globalAvg, 1), 'domain_avgs' => $domainBenchmark];
+    }
+
+    public function getTopStrengths(array $domainScores, int $count = 3): array
+    {
+        $sorted = $domainScores;
+        usort($sorted, fn($a, $b) => $b['percent_score'] <=> $a['percent_score']);
+        return array_slice($sorted, 0, $count);
+    }
+
+    public function getTopWeaknesses(array $domainScores, int $count = 3): array
+    {
+        $sorted = $domainScores;
+        usort($sorted, fn($a, $b) => $a['percent_score'] <=> $b['percent_score']);
+        $sorted = array_filter($sorted, fn($d) => $d['percent_score'] > 0);
+        return array_slice(array_values($sorted), 0, $count);
+    }
+
+    public function getPriorityAxes(array $domainScores): array
+    {
+        $weaknesses = $this->getTopWeaknesses($domainScores, 5);
+        $priorities = [];
+        foreach ($weaknesses as $w) {
+            $priorities[] = [
+                'domain_id' => $w['domain_id'],
+                'domain_name' => $w['domain_name'],
+                'domain_name_fr' => $w['domain_name_fr'],
+                'domain_label' => $w['domain_label'],
+                'score' => $w['percent_score'],
+                'gap' => round(100 - $w['percent_score'], 1),
+                'priority' => $w['percent_score'] < 30 ? 'critical' : ($w['percent_score'] < 50 ? 'high' : 'medium'),
+            ];
+        }
+        return $priorities;
+    }
+}
