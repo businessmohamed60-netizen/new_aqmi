@@ -285,6 +285,10 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
 
 .nova-sidebar-link span {
   transition: opacity var(--vx-transition);
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nova-sidebar.collapsed .nova-sidebar-link span {
@@ -1118,6 +1122,15 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
   border-radius: 0.875rem;
   padding: 0.7rem 0.875rem;
   font-weight: 500;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+}
+.nova-sidebar-link span {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nova-sidebar-link i {
   width: 2rem;
@@ -1128,6 +1141,7 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
   border-radius: 0.625rem;
   background: rgba(255,255,255,0.10);
   transition: background var(--vx-transition), color var(--vx-transition);
+  flex-shrink: 0;
 }
 .nova-sidebar-link:hover {
   background: rgba(255,255,255,0.16);
@@ -1142,6 +1156,11 @@ body { scrollbar-width: auto; scrollbar-color: rgba(100,116,139,0.5) rgba(148,16
   color: var(--nv-nav-ink);
   font-weight: 700;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+  width: 100%;
+}
+.nova-sidebar-link.active span {
+  overflow: visible;
+  text-overflow: clip;
 }
 .nova-sidebar-link.active i {
   background: linear-gradient(135deg, var(--nv-nav-from), var(--nv-nav-to));
