@@ -134,6 +134,18 @@ ob_start();
     let code = '';
     inputs.forEach(inp => code += inp.value);
     hiddenInput.value = code;
+
+    // Auto-submit dès que les 6 chiffres sont saisis
+    if (code.length === 6 && /^\d{6}$/.test(code)) {
+      const form = document.getElementById('otpForm');
+      const btn = document.getElementById('otpSubmitBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Vérification...</span><i class="fas fa-spinner fa-spin"></i>';
+      }
+      inputs.forEach(inp => inp.disabled = true);
+      form.submit();
+    }
   }
 
   // Timer countdown — uses server-computed remaining seconds to avoid
