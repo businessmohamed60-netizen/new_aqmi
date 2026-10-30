@@ -3,316 +3,359 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demande de compte — Rejoignez l'écosystème NOVAQYS</title>
+<title>Demande de compte — Rejoignez l’écosystème NOVAQYS</title>
 <link rel="icon" type="image/svg+xml" href="/Favicon/favicon.svg?v=1">
 <link rel="icon" type="image/x-icon" href="/Favicon/favicon.ico?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-void:#04070c;
-    --bg-panel:rgba(13,17,24,.55);
-    --panel-border:#1c222c;
-    --white:#f2f4f7;
-    --steel:#8b93a3;
-    --steel-dim:#565e6b;
-    --cyan:#3b93f0;
-    --cyan-soft:rgba(59,147,240,.35);
-    --amber:#d9a441;
-    --amber-soft:rgba(217,164,65,.35);
-    --red:#e2495a;
-    --green:#2bc46a;
-    --violet:#9b7fe0;
-    --violet-soft:rgba(155,127,224,.35);
-    --font-display:'Space Grotesk',sans-serif;
-    --font-body:'Inter',sans-serif;
-    --font-mono:'IBM Plex Mono',monospace;
+    color-scheme:dark;
+    --bg:#050813; --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.22);
+    --text:#f3f5fb; --muted:#9aa3b8; --faint:#667089;
+    --blue:#3b93f0; --violet:#9b7fe0; --amber:#f0b64a; --green:#34d27b; --pink:#f06fa8;
+    --ok:#34d27b; --err:#ff6b7a;
+    --display:'Space Grotesk',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{background:#03050a;}
-  body{background:transparent;color:var(--white);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  html{background:var(--bg);}
+  body{min-height:100vh;color:var(--text);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background:
+      radial-gradient(800px 560px at 0% -5%,rgba(59,147,240,.38),transparent 70%),
+      radial-gradient(700px 520px at 100% 8%,rgba(155,127,224,.30),transparent 70%),
+      radial-gradient(700px 500px at 60% 105%,rgba(240,182,74,.18),transparent 70%),var(--bg);background-attachment:fixed;}
   a{color:inherit;text-decoration:none;}
-  ::selection{background:var(--cyan);color:#000;}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
 
-  .bg-aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
-    background:linear-gradient(165deg,#04060c 0%,#060912 42%,#04060c 78%,#03050a 100%);}
-  .bg-aurora .blob{position:absolute;border-radius:50%;filter:blur(85px);}
-  .bg-aurora .blob-1{width:520px;height:520px;left:-160px;top:-120px;background:radial-gradient(circle,rgba(59,147,240,.45),transparent 70%);}
-  .bg-aurora .blob-2{width:420px;height:420px;right:-120px;top:8%;background:radial-gradient(circle,rgba(217,164,65,.28),transparent 70%);}
-  .bg-aurora .blob-3{width:480px;height:480px;right:4%;bottom:-140px;background:radial-gradient(circle,rgba(155,127,224,.28),transparent 70%);}
-  @media(max-width:900px){
-    .bg-aurora .blob{filter:blur(60px);}
-    .bg-aurora .blob-1{width:320px;height:320px;left:-80px;top:-80px;}
-    .bg-aurora .blob-2{width:260px;height:260px;right:-70px;top:4%;}
-    .bg-aurora .blob-3{width:280px;height:280px;right:-40px;bottom:-80px;}
-  }
+  .nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(5,8,19,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  .logo{display:flex;align-items:center;gap:11px;}
+  .logo-mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 6px 20px rgba(59,147,240,.4);}
+  .logo-mark svg{width:17px;height:17px;}
+  .logo b{font-family:var(--display);font-size:20px;font-weight:700;}
+  .logo small{font-size:11px;line-height:1.3;color:var(--muted);}
+  .back{font-size:13px;color:var(--muted);padding:8px 14px;border-radius:999px;border:1px solid var(--line);transition:color .2s,border-color .2s;}
+  .back:hover{color:var(--text);border-color:var(--line-strong);}
+  @media(max-width:600px){.nav{padding:12px 16px;}.logo small{display:none;}}
 
-  .nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--panel-border);background:rgba(5,8,13,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
-  .nav-logo{display:flex;align-items:center;gap:12px;}
-  .nav-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,rgba(59,147,240,.18),rgba(217,164,65,.14));border:1px solid var(--cyan-soft);display:flex;align-items:center;justify-content:center;flex:none;}
-  .nav-mark svg{width:15px;height:15px;color:var(--cyan);}
-  .nav-logo-text{display:flex;align-items:baseline;gap:12px;}
-  .nav-logo b{font-family:var(--font-display);font-weight:700;font-size:22px;}
-  .nav-logo span{font-family:var(--font-mono);font-size:9.5px;color:var(--steel);line-height:1.3;letter-spacing:.04em;}
-  .nav-back{font-family:var(--font-mono);font-size:11.5px;color:var(--steel);border:1px solid var(--panel-border);border-radius:4px;padding:8px 16px;transition:border-color .2s,color .2s;}
-  .nav-back:hover{border-color:var(--cyan-soft);color:var(--cyan);}
-  @media(max-width:600px){
-    .nav{padding:14px 16px;}
-    .nav-logo span{display:none;}
-  }
+  .page{max-width:1120px;margin:0 auto;padding:56px 24px 88px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6.5fr);gap:48px;align-items:start;}
+  @media(max-width:920px){.page{grid-template-columns:1fr;gap:32px;padding:36px 16px 64px;}}
 
-  .page{max-width:680px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:1;}
-  .page-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;}
-  .page-title{font-family:var(--font-display);font-weight:700;font-size:clamp(24px,4vw,34px);letter-spacing:-.01em;margin-bottom:12px;}
-  .page-title b{color:var(--cyan);}
-  .page-sub{color:var(--steel);font-size:14.5px;line-height:1.6;margin-bottom:28px;}
+  .pitch{position:sticky;top:96px;}
+  @media(max-width:920px){.pitch{position:static;}}
+  .pitch h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,5.4vw,54px);line-height:1.04;letter-spacing:-.025em;margin-bottom:18px;}
+  .grad{background:linear-gradient(95deg,var(--blue),var(--violet) 55%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lead{color:var(--muted);font-size:17px;line-height:1.6;max-width:42ch;margin-bottom:30px;}
+  .platforms{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:34px;}
+  .platforms span{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;font-size:13px;font-weight:500;color:var(--text);background:color-mix(in srgb,var(--c) 16%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);}
+  .platforms span::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);}
+  .steps{list-style:none;display:grid;gap:0;}
+  .steps li{display:flex;gap:14px;position:relative;padding-bottom:22px;font-size:14.5px;line-height:1.5;color:var(--muted);}
+  .steps li:last-child{padding-bottom:0;}
+  .steps li:not(:last-child)::after{content:'';position:absolute;left:15px;top:34px;bottom:2px;width:1px;background:linear-gradient(var(--line-strong),transparent);}
+  .steps i{flex:none;width:31px;height:31px;border-radius:50%;display:grid;place-items:center;font:600 13px var(--display);font-style:normal;color:#06101f;background:var(--c);}
+  .steps b{display:block;color:var(--text);font-weight:600;margin-bottom:2px;}
 
-  .form-panel{position:relative;background:var(--bg-panel);border:1px solid var(--panel-border);border-radius:14px;padding:36px;overflow:hidden;}
-  .form-panel::before{content:'';position:absolute;top:-40%;right:-20%;width:60%;height:180%;background:radial-gradient(ellipse closest-side, rgba(59,147,240,.10), transparent 70%);pointer-events:none;}
-  .form-panel h3{font-family:var(--font-display);font-size:19px;margin-bottom:8px;position:relative;z-index:1;}
-  .form-panel>p{color:var(--steel);font-size:13.5px;margin-bottom:22px;line-height:1.6;position:relative;z-index:1;}
-  .form-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-family:var(--font-mono);font-size:10.5px;color:var(--steel);position:relative;z-index:1;}
-  .form-progress-row b{color:var(--white);transition:color .25s;}
-  .form-progress-row b.complete{color:var(--green);}
-  .form-progress-track{height:5px;border-radius:3px;background:rgba(255,255,255,.06);margin-bottom:26px;overflow:hidden;position:relative;z-index:1;}
-  .form-progress-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--amber));transition:width .4s cubic-bezier(.16,.8,.3,1);box-shadow:0 0 10px rgba(59,147,240,.5);}
+  .panel{position:relative;border-radius:26px;padding:1px;background:linear-gradient(150deg,rgba(59,147,240,.7),rgba(155,127,224,.35) 40%,rgba(240,182,74,.5));box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 80px rgba(59,147,240,.12);}
+  .panel-in{border-radius:25px;padding:36px;background:rgba(9,13,28,.92);}
+  @media(max-width:520px){.panel-in{padding:22px 18px;}}
 
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;position:relative;z-index:1;}
-  @media(max-width:520px){.form-grid{grid-template-columns:1fr;}.form-panel{padding:24px 20px;}.page{padding:32px 16px 60px;}}
-  .form-section-label{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;margin:26px 0 4px;grid-column:1/-1;}
-  .form-section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--panel-border),transparent);}
-  .form-grid>.form-section-label:first-child{margin-top:0;}
-  .field{grid-column:span 1;display:flex;flex-direction:column;gap:7px;}
+  .progress{display:flex;align-items:center;gap:14px;margin-bottom:8px;font-size:13px;color:var(--muted);}
+  .progress .track{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden;}
+  .progress .fill{height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink));transition:width .35s ease;}
+  .progress.done .fill{background:linear-gradient(90deg,var(--green),#7be8a9);}
+  .progress b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;}
+  @media(max-width:560px){.grid{grid-template-columns:1fr;}}
+  .section{grid-column:1/-1;display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:17px;font-weight:600;margin-top:14px;}
+  .section::before{content:'';width:4px;height:18px;border-radius:2px;background:var(--c,var(--blue));}
+  .section.s1{--c:var(--blue)}.section.s2{--c:var(--violet)}.section.s3{--c:var(--amber)}
+  .field{display:flex;flex-direction:column;gap:7px;min-width:0;}
   .field.full{grid-column:1/-1;}
-  .field label{display:flex;align-items:baseline;gap:5px;font-family:var(--font-mono);font-size:10px;letter-spacing:.07em;color:var(--steel);text-transform:uppercase;}
-  .field label .req{color:var(--amber);font-size:11px;}
-  .field label .opt{font-size:9px;color:var(--steel-dim);text-transform:none;letter-spacing:0;font-family:var(--font-body);font-style:italic;}
-  .field input,.field select,.field textarea{
-    background:#0d1118;border:1px solid var(--panel-border);border-radius:6px;padding:12px 14px;color:var(--white);
-    font-family:var(--font-body);font-size:13.5px;transition:border-color .25s,box-shadow .25s,background .25s;width:100%;
-  }
-  .field input::placeholder,.field textarea::placeholder{color:var(--steel-dim);}
-  .field input:hover,.field select:hover,.field textarea:hover{border-color:#2a3240;}
-  .field input:focus,.field select:focus,.field textarea:focus{
-    outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(59,147,240,.12);background:#101620;
-  }
-  .field select{appearance:none;-webkit-appearance:none;cursor:pointer;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b93a3' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
-  .field select:invalid{color:var(--steel-dim);}
-  .field select option{background:#0d1118;color:var(--white);}
-  .field textarea{resize:vertical;min-height:96px;line-height:1.55;font-family:var(--font-body);}
-  .field-error{display:none;font-family:var(--font-mono);font-size:10px;color:var(--red);letter-spacing:.02em;align-items:center;gap:5px;}
-  .field-error::before{content:'!';display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--red);color:#fff;font-size:8.5px;font-weight:700;flex:none;}
-  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--red);background:rgba(226,73,90,.06);}
-  .field.invalid .field-error{display:flex;}
-  .field.valid input,.field.valid select,.field.valid textarea{border-color:rgba(43,196,106,.45);}
+  .field>label,.field>.label{font-size:13px;font-weight:500;}
+  .req{color:var(--amber);margin-left:2px;}
+  .opt{color:var(--faint);font-weight:400;margin-left:6px;}
+  input[type=text],input[type=email],input[type=tel],select,textarea{
+    width:100%;padding:13px 15px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.045);
+    color:var(--text);font:400 15px/1.4 var(--body);transition:border-color .2s,background .2s,box-shadow .2s;}
+  input::placeholder,textarea::placeholder{color:var(--faint);}
+  input:hover,select:hover,textarea:hover{border-color:var(--line-strong);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);background:rgba(59,147,240,.09);box-shadow:0 0 0 4px rgba(59,147,240,.2);}
+  select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:40px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%239aa3b8' stroke-width='1.6' stroke-linecap='round' d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 15px center;}
+  select:invalid{color:var(--faint);}
+  select option{background:#0d1320;color:var(--text);}
+  textarea{resize:vertical;min-height:110px;line-height:1.55;}
+  .err{display:none;font-size:12.5px;color:var(--err);}
+  .field.invalid .err{display:block;}
+  .field.invalid input,.field.invalid select{border-color:var(--err);background:rgba(255,107,122,.07);}
+  .field.valid input,.field.valid select{border-color:rgba(52,210,123,.55);}
 
-  .chip-row{display:flex;flex-wrap:wrap;gap:9px;}
-  .chip{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
-    font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;color:var(--steel);
-    border:1px solid var(--panel-border);border-radius:20px;padding:8px 14px;transition:all .2s;}
-  .chip:hover{border-color:var(--cyan-soft);color:var(--white);transform:translateY(-1px);}
-  .chip::before{content:'+';display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.06);color:var(--steel-dim);font-size:10px;transition:all .2s;flex:none;}
-  .chip.active{background:rgba(59,147,240,.14);border-color:var(--cyan);color:var(--white);}
-  .chip.active::before{content:'\2713';background:var(--cyan);color:#04101f;}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{position:relative;cursor:pointer;}
+  .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;}
+  .chip span{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;border:1px solid var(--line);font-size:13.5px;color:var(--muted);transition:all .2s;}
+  .chip span::before{content:'';width:9px;height:9px;border-radius:50%;border:1.5px solid var(--c);transition:all .2s;}
+  .chip:hover span{border-color:var(--c);color:var(--text);}
+  .chip input:checked+span{background:color-mix(in srgb,var(--c) 22%,transparent);border-color:var(--c);color:var(--text);box-shadow:0 0 18px color-mix(in srgb,var(--c) 30%,transparent);}
+  .chip input:checked+span::before{background:var(--c);}
+  .chip input:focus-visible+span{outline:2px solid var(--c);outline-offset:2px;}
 
-  .submit-row{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:6px;}
-  .submit-btn{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.05em;padding:14px 28px;border-radius:6px;border:none;cursor:pointer;
-    background:var(--cyan);color:#04070c;font-weight:600;min-width:200px;text-align:center;transition:filter .3s,transform .15s,opacity .3s;}
-  .submit-btn:hover:not(.sending):not(.sent){filter:brightness(1.1);transform:translateY(-1px);}
-  .submit-btn:active{transform:scale(.97);}
-  .submit-btn.sending{opacity:.75;pointer-events:none;}
-  .submit-btn.sent{background:var(--green);}
-  .submit-note{font-family:var(--font-mono);font-size:11px;color:var(--green);opacity:0;transition:opacity .3s;}
-  .submit-note.show{opacity:1;}
-  .form-privacy-note{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin-top:2px;font-family:var(--font-mono);font-size:10px;color:var(--steel-dim);line-height:1.5;}
-  .form-privacy-note svg{width:13px;height:13px;color:var(--steel-dim);flex:none;margin-top:1px;}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+  .banner{grid-column:1/-1;padding:13px 16px;border-radius:12px;font-size:14px;line-height:1.5;background:rgba(255,107,122,.10);border:1px solid rgba(255,107,122,.4);color:#ffc9cf;}
+  .actions{grid-column:1/-1;margin-top:6px;}
+  .btn{width:100%;font:600 16px var(--body);padding:16px 28px;border-radius:14px;border:0;cursor:pointer;color:#fff;
+    background:linear-gradient(95deg,var(--blue),var(--violet));box-shadow:0 10px 30px rgba(91,120,236,.4);transition:filter .2s,transform .15s,box-shadow .2s;}
+  .btn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-2px);box-shadow:0 14px 36px rgba(91,120,236,.55);}
+  .btn:active:not(:disabled){transform:scale(.98);}
+  .btn:disabled{opacity:.7;cursor:progress;}
+  .btn.ghost{width:auto;background:transparent;color:var(--text);border:1px solid var(--line-strong);box-shadow:none;}
+  .privacy{grid-column:1/-1;font-size:12.5px;line-height:1.5;color:var(--faint);text-align:center;}
+
+  .success{text-align:center;padding:24px 0 8px;}
+  .success .tick{width:68px;height:68px;border-radius:50%;margin:0 auto 20px;display:grid;place-items:center;background:rgba(52,210,123,.14);border:1px solid rgba(52,210,123,.55);color:var(--ok);box-shadow:0 0 40px rgba(52,210,123,.25);}
+  .success .tick svg{width:30px;height:30px;}
+  .success h2{font-family:var(--display);font-size:28px;margin-bottom:10px;}
+  .success p{color:var(--muted);line-height:1.6;max-width:46ch;margin:0 auto 8px;}
+  .success p b{color:var(--text);font-weight:500;}
+  .success .btn{margin-top:22px;}
+  [hidden]{display:none!important;}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
 </head>
 <body>
 
-<div class="bg-aurora">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-
 <nav class="nav">
-  <a href="/" class="nav-logo">
-    <div class="nav-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
-    <div class="nav-logo-text"><b>NOVAQYS</b><span>AUTOMOTIVE<br>MANUFACTURING INTELLIGENCE</span></div>
+  <a href="/" class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+    <div style="display:flex;align-items:baseline;gap:12px"><b>NOVAQYS</b><small>Automotive<br>manufacturing intelligence</small></div>
   </a>
-  <a href="/" class="nav-back">← Retour à l'accueil</a>
+  <a href="/" class="back">← Retour à l’accueil</a>
 </nav>
 
-<div class="page">
-  <div class="page-eyebrow">Demande de compte</div>
-  <h1 class="page-title">Rejoignez l'écosystème <b>NOVAQYS</b></h1>
-  <p class="page-sub">Notre équipe vous recontactera sous 48h pour activer votre compte et vous accompagner.</p>
+<main class="page">
+  <section class="pitch">
+    <h1>Rejoignez l’<span class="grad">écosystème NOVAQYS</span></h1>
+    <p class="lead">Une seule demande pour accéder à nos plateformes. Dites-nous qui vous êtes, nous activons votre compte.</p>
+    <div class="platforms" aria-label="Plateformes de l’écosystème">
+      <span style="--c:#3b93f0">AQMI Starter</span><span style="--c:#9b7fe0">AQMI Professional</span><span style="--c:#f0b64a">NARA</span>
+      <span style="--c:#34d27b">NOVAQYS LMS</span><span style="--c:#f06fa8">NOVAQYS QMS</span><span style="--c:#4fd1e0">ASIN</span>
+    </div>
+    <ol class="steps">
+      <li><i style="--c:#3b93f0">1</i><div><b>Vous remplissez le formulaire</b>Moins de deux minutes.</div></li>
+      <li><i style="--c:#9b7fe0">2</i><div><b>Notre équipe vous contacte</b>Sous 48 h, pour comprendre votre besoin.</div></li>
+      <li><i style="--c:#34d27b">3</i><div><b>Votre compte est activé</b>Nous vous accompagnons dès le départ.</div></li>
+    </ol>
+  </section>
 
-  <div class="form-panel">
-    <h3>Demande de compte — Rejoignez l'écosystème NOVAQYS</h3>
-    <p>Remplissez le formulaire ci-dessous. Les champs marqués d'un astérisque (*) sont obligatoires.</p>
-    <div class="form-progress-row"><span>Progression</span><b id="formProgressLabel">0/8 champs complétés</b></div>
-    <div class="form-progress-track"><div class="form-progress-fill" id="formProgressFill"></div></div>
-    <form class="form-grid" id="accountForm" novalidate>
-      <div class="form-section-label">Votre entreprise</div>
+  <div class="panel"><div class="panel-in">
+    <form class="grid" id="accountForm" novalidate>
+      <div class="progress" id="progress" style="grid-column:1/-1">
+        <div class="track"><div class="fill" id="fill"></div></div>
+        <b id="progressLabel">0 sur 8 champs obligatoires</b>
+      </div>
+
+      <h2 class="section s1">Votre entreprise</h2>
       <div class="field">
-        <label for="f-company">Entreprise <span class="req">*</span></label>
-        <input id="f-company" name="company" type="text" placeholder="Nom de votre entreprise" required>
-        <span class="field-error">Merci d'indiquer le nom de votre entreprise.</span>
+        <label for="f-company">Entreprise<span class="req">*</span></label>
+        <input id="f-company" name="company" type="text" placeholder="Nom de votre entreprise" required autocomplete="organization">
+        <span class="err">Indiquez le nom de votre entreprise.</span>
       </div>
       <div class="field">
-        <label for="f-sector">Secteur d'activité <span class="req">*</span></label>
+        <label for="f-sector">Secteur d’activité<span class="req">*</span></label>
         <input id="f-sector" name="sector" type="text" placeholder="Ex. équipementier automobile" required>
-        <span class="field-error">Ce champ est requis.</span>
+        <span class="err">Indiquez votre secteur d’activité.</span>
       </div>
       <div class="field">
-        <label for="f-country">Pays <span class="req">*</span></label>
-        <input id="f-country" name="country" type="text" placeholder="Ex. Algérie" required>
-        <span class="field-error">Ce champ est requis.</span>
+        <label for="f-country">Pays<span class="req">*</span></label>
+        <input id="f-country" name="country" type="text" placeholder="Ex. Algérie" required autocomplete="country-name">
+        <span class="err">Indiquez votre pays.</span>
       </div>
       <div class="field">
-        <label for="f-size">Taille entreprise <span class="req">*</span></label>
+        <label for="f-size">Taille de l’entreprise<span class="req">*</span></label>
         <select id="f-size" name="size" required>
-          <option value="">Sélectionner...</option>
+          <option value="">Sélectionner…</option>
           <option>1-10 employés</option>
           <option>11-50 employés</option>
           <option>51-200 employés</option>
           <option>201-500 employés</option>
           <option>500+ employés</option>
         </select>
-        <span class="field-error">Merci de sélectionner une taille d'entreprise.</span>
+        <span class="err">Sélectionnez une taille d’entreprise.</span>
       </div>
 
-      <div class="form-section-label">Vos coordonnées</div>
+      <h2 class="section s2">Vos coordonnées</h2>
       <div class="field">
-        <label for="f-name">Nom complet <span class="req">*</span></label>
+        <label for="f-name">Nom complet<span class="req">*</span></label>
         <input id="f-name" name="fullname" type="text" placeholder="Prénom et nom" required autocomplete="name">
-        <span class="field-error">Merci d'indiquer votre nom.</span>
+        <span class="err">Indiquez votre nom.</span>
       </div>
       <div class="field">
-        <label for="f-role">Fonction <span class="req">*</span></label>
-        <input id="f-role" name="role" type="text" placeholder="Ex. Responsable Qualité" required autocomplete="organization-title">
-        <span class="field-error">Ce champ est requis.</span>
+        <label for="f-role">Fonction<span class="req">*</span></label>
+        <input id="f-role" name="role" type="text" placeholder="Ex. Responsable qualité" required autocomplete="organization-title">
+        <span class="err">Indiquez votre fonction.</span>
       </div>
       <div class="field">
-        <label for="f-email">Email professionnel <span class="req">*</span></label>
-        <input id="f-email" name="email" type="email" placeholder="vous@entreprise.com" required autocomplete="email">
-        <span class="field-error">Merci d'indiquer une adresse email valide.</span>
+        <label for="f-email">Email professionnel<span class="req">*</span></label>
+        <input id="f-email" name="email" type="email" placeholder="vous@entreprise.com" required autocomplete="email" inputmode="email">
+        <span class="err">Saisissez une adresse email valide (ex. vous@entreprise.com).</span>
       </div>
       <div class="field">
-        <label for="f-phone">Téléphone <span class="req">*</span></label>
+        <label for="f-phone">Téléphone<span class="req">*</span></label>
         <input id="f-phone" name="phone" type="tel" placeholder="+213 5XX XX XX XX" required autocomplete="tel">
-        <span class="field-error">Merci d'indiquer un numéro de téléphone.</span>
+        <span class="err">Saisissez un numéro valide (8 chiffres minimum).</span>
       </div>
 
-      <div class="form-section-label">Votre projet</div>
+      <h2 class="section s3">Votre projet</h2>
       <div class="field full">
-        <label for="chip-0">Plateformes qui vous intéressent <span class="opt">(optionnel, sélection multiple)</span></label>
-        <div class="chip-row" role="group" aria-label="Plateformes qui vous intéressent">
-          <span class="chip" id="chip-0" role="checkbox" aria-checked="false" tabindex="0">AQMI Starter</span>
-          <span class="chip" role="checkbox" aria-checked="false" tabindex="0">AQMI Professional</span>
-          <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NARA</span>
-          <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS LMS</span>
-          <span class="chip" role="checkbox" aria-checked="false" tabindex="0">NOVAQYS QMS</span>
-          <span class="chip" role="checkbox" aria-checked="false" tabindex="0">ASIN</span>
+        <span class="label" id="platformsLabel">Plateformes qui vous intéressent<span class="opt">facultatif</span></span>
+        <div class="chips" role="group" aria-labelledby="platformsLabel">
+          <label class="chip" style="--c:#3b93f0"><input type="checkbox" name="platforms" value="AQMI Starter"><span>AQMI Starter</span></label>
+          <label class="chip" style="--c:#9b7fe0"><input type="checkbox" name="platforms" value="AQMI Professional"><span>AQMI Professional</span></label>
+          <label class="chip" style="--c:#f0b64a"><input type="checkbox" name="platforms" value="NARA"><span>NARA</span></label>
+          <label class="chip" style="--c:#34d27b"><input type="checkbox" name="platforms" value="NOVAQYS LMS"><span>NOVAQYS LMS</span></label>
+          <label class="chip" style="--c:#f06fa8"><input type="checkbox" name="platforms" value="NOVAQYS QMS"><span>NOVAQYS QMS</span></label>
+          <label class="chip" style="--c:#4fd1e0"><input type="checkbox" name="platforms" value="ASIN"><span>ASIN</span></label>
         </div>
       </div>
       <div class="field full">
-        <label for="f-message">Message <span class="opt">(optionnel)</span></label>
-        <textarea id="f-message" name="message" placeholder="Décrivez brièvement votre projet ou votre besoin..."></textarea>
+        <label for="f-message">Message<span class="opt">facultatif</span></label>
+        <textarea id="f-message" name="message" maxlength="2000" placeholder="Décrivez brièvement votre projet ou votre besoin…"></textarea>
       </div>
 
-      <div class="submit-row">
-        <button class="submit-btn" type="submit" id="submitBtn">Envoyer ma demande</button>
-        <span class="submit-note" id="submitNote">✓ Demande envoyée — nous revenons vers vous sous 48h</span>
-      </div>
-      <div class="form-privacy-note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-        Vos données restent confidentielles et sont utilisées uniquement pour traiter votre demande.
-      </div>
+      <div class="hp" aria-hidden="true"><label>Ne pas remplir <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <div class="banner" id="formError" role="alert" hidden></div>
+      <div class="actions"><button class="btn" type="submit" id="submitBtn">Envoyer ma demande</button></div>
+      <p class="privacy">Vos données restent confidentielles et ne servent qu’à traiter votre demande.</p>
     </form>
-  </div>
-</div>
+
+    <div class="success" id="success" role="status" hidden>
+      <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2>Bienvenue, demande envoyée</h2>
+      <p>Nous écrirons à <b id="successEmail"></b> sous 48 h pour activer votre compte.</p>
+      <p id="successRef" hidden>Référence de la demande : <b></b></p>
+      <button class="btn ghost" type="button" id="againBtn">Envoyer une autre demande</button>
+    </div>
+  </div></div>
+</main>
 
 <script>
-const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-document.querySelectorAll('.chip').forEach(chip=>{
-  function toggle(){
-    chip.classList.toggle('active');
-    chip.setAttribute('aria-checked', chip.classList.contains('active') ? 'true' : 'false');
-  }
-  chip.addEventListener('click', toggle);
-  chip.addEventListener('keydown', (e)=>{
-    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle(); }
-  });
-});
+/* ---- Configuration : adaptez l'URL à l'API de votre dashboard admin ---- */
+const CONFIG = {
+  endpoint: '/api/account-requests',   // POST JSON → reçu par le dashboard admin
+  timeoutMs: 15000
+};
 
 (function(){
-  const form = document.getElementById('accountForm');
-  if(!form) return;
-  const requiredFields = Array.from(form.querySelectorAll('[required]'));
-  const fill = document.getElementById('formProgressFill');
-  const label = document.getElementById('formProgressLabel');
+  const $ = (id)=>document.getElementById(id);
+  const form = $('accountForm'), btn = $('submitBtn'), banner = $('formError');
+  const required = Array.from(form.querySelectorAll('[required]'));
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let sending = false;
 
-  function updateProgress(){
-    const filled = requiredFields.filter(f=>f.value && f.value.trim() !== '').length;
-    const pct = Math.round((filled/requiredFields.length)*100);
-    fill.style.width = pct+'%';
-    label.textContent = filled+'/'+requiredFields.length+' champs complétés';
-    label.classList.toggle('complete', filled === requiredFields.length);
+  /* ---------- Validation ---------- */
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function isValid(f){
+    const v = f.value.trim();
+    if(!v) return false;
+    if(f.type === 'email') return EMAIL_RE.test(v);
+    if(f.type === 'tel')   return /^\+?[\d\s().-]+$/.test(v) && v.replace(/\D/g,'').length >= 8;
+    return true;
   }
-
-  function validateField(f, showError){
-    const wrap = f.closest('.field');
-    if(!wrap) return true;
-    const ok = f.checkValidity();
-    if(ok){
-      wrap.classList.remove('invalid');
-      if(f.value.trim() !== '') wrap.classList.add('valid'); else wrap.classList.remove('valid');
-    } else if(showError){
-      wrap.classList.add('invalid');
-      wrap.classList.remove('valid');
-    }
+  function mark(f, showError){
+    const wrap = f.closest('.field'), ok = isValid(f);
+    f.setAttribute('aria-invalid', String(!ok && showError));
+    wrap.classList.toggle('valid', ok);
+    if(ok) wrap.classList.remove('invalid'); else if(showError) wrap.classList.add('invalid');
     return ok;
   }
-
-  requiredFields.forEach(f=>{
-    f.addEventListener('input', ()=>{ updateProgress(); validateField(f, false); });
-    f.addEventListener('change', ()=>{ updateProgress(); validateField(f, false); });
-    f.addEventListener('blur', ()=> validateField(f, true));
+  function updateProgress(){
+    const n = required.filter(isValid).length;
+    $('fill').style.width = Math.round(n / required.length * 100) + '%';
+    $('progressLabel').textContent = n + ' sur ' + required.length + ' champs obligatoires';
+    $('progress').classList.toggle('done', n === required.length);
+  }
+  required.forEach(f=>{
+    f.addEventListener('input', ()=>{ updateProgress(); mark(f, f.closest('.field').classList.contains('invalid')); });
+    f.addEventListener('change', ()=>{ updateProgress(); mark(f, true); });
+    f.addEventListener('blur', ()=>{ if(f.value.trim() !== '') mark(f, true); });
   });
   updateProgress();
 
-  const submitBtn = document.getElementById('submitBtn');
-  const submitNote = document.getElementById('submitNote');
-  form.addEventListener('submit', (e)=>{
+  /* ---------- Données envoyées au dashboard ---------- */
+  function buildPayload(){
+    const d = new FormData(form), val = (k)=>String(d.get(k) || '').trim();
+    return {
+      company: val('company'), sector: val('sector'), country: val('country'), size: val('size'),
+      fullname: val('fullname'), role: val('role'), email: val('email').toLowerCase(), phone: val('phone'),
+      platforms: d.getAll('platforms'),
+      message: val('message'),
+      source: 'demande-compte', page: location.href, lang: document.documentElement.lang,
+      submittedAt: new Date().toISOString()
+    };
+  }
+
+  function showError(msg){ banner.textContent = msg; banner.hidden = false; banner.scrollIntoView({behavior: REDUCE ? 'auto' : 'smooth', block:'center'}); }
+  function setSending(on){ sending = on; btn.disabled = on; btn.textContent = on ? 'Envoi en cours…' : 'Envoyer ma demande'; }
+
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
-    if(submitBtn.classList.contains('sending') || submitBtn.classList.contains('sent')) return;
+    if(sending) return;
+    banner.hidden = true;
 
-    let firstInvalid = null;
-    requiredFields.forEach(f=>{
-      const ok = validateField(f, true);
-      if(!ok && !firstInvalid) firstInvalid = f;
-    });
-    if(firstInvalid){
-      firstInvalid.focus();
-      firstInvalid.closest('.field')?.scrollIntoView({behavior: REDUCE_MOTION ? 'auto' : 'smooth', block:'center'});
-      return;
+    let first = null;
+    required.forEach(f=>{ if(!mark(f, true) && !first) first = f; });
+    if(first){ first.focus(); first.closest('.field').scrollIntoView({behavior: REDUCE ? 'auto' : 'smooth', block:'center'}); return; }
+
+    const payload = buildPayload();
+
+    /* Honeypot : un robot a rempli le champ caché → on simule un succès sans rien envoyer */
+    if(form.elements.website.value){ return showSuccess(payload, null); }
+
+    setSending(true);
+    const ctrl = new AbortController(), timer = setTimeout(()=>ctrl.abort(), CONFIG.timeoutMs);
+    try{
+      const res = await fetch(CONFIG.endpoint, {
+        method:'POST', credentials:'same-origin', signal: ctrl.signal,
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      let data = {};
+      try{ data = await res.json(); }catch(_){}
+      if(!res.ok){
+        /* Le serveur peut renvoyer { errors: { email: "…" } } (422) */
+        if(data && data.errors){
+          Object.keys(data.errors).forEach(k=>{
+            const f = form.elements[k]; if(!f || !f.closest) return;
+            const w = f.closest('.field'); w.classList.add('invalid');
+            const s = w.querySelector('.err'); if(s) s.textContent = data.errors[k];
+          });
+          return showError('Certaines informations ne sont pas acceptées. Corrigez les champs signalés.');
+        }
+        throw new Error('HTTP ' + res.status);
+      }
+      showSuccess(payload, data.reference || data.id || null);
+    }catch(err){
+      showError(err.name === 'AbortError'
+        ? 'Le serveur met trop de temps à répondre. Vos informations sont conservées, réessayez dans un instant.'
+        : 'Votre demande n’a pas pu être envoyée. Vos informations sont conservées, vérifiez votre connexion puis réessayez.');
+    }finally{
+      clearTimeout(timer); setSending(false);
     }
+  });
 
-    submitBtn.classList.add('sending');
-    submitBtn.textContent = 'Envoi en cours…';
-    setTimeout(()=>{
-      submitBtn.classList.remove('sending');
-      submitBtn.classList.add('sent');
-      submitBtn.textContent = '✓ Envoyée';
-      submitNote.classList.add('show');
-    }, REDUCE_MOTION ? 0 : 1100);
+  function showSuccess(payload, ref){
+    $('successEmail').textContent = payload.email;
+    const r = $('successRef'); r.hidden = !ref; if(ref) r.querySelector('b').textContent = ref;
+    form.hidden = true; $('success').hidden = false;
+    $('success').scrollIntoView({behavior: REDUCE ? 'auto' : 'smooth', block:'center'});
+  }
+  $('againBtn').addEventListener('click', ()=>{
+    form.reset(); form.querySelectorAll('.field').forEach(w=>w.classList.remove('valid','invalid'));
+    updateProgress(); $('success').hidden = true; form.hidden = false; $('f-company').focus();
   });
 })();
 </script>
