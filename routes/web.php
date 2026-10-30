@@ -7,6 +7,7 @@ use App\Helpers\Router;
 $router->get('/', 'HomeController@index');
 $router->post('/contact', 'HomeController@contact');
 $router->post('/account-request', 'HomeController@accountRequest');
+$router->post('/api/account-requests', 'HomeController@accountRequest');
 $router->get('/lang/{lang}', 'HomeController@switchLang');
 $router->get('/cgu', 'HomeController@cgu');
 $router->get('/privacy', 'HomeController@privacy');

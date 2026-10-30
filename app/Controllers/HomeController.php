@@ -23,17 +23,24 @@ class HomeController
 
     public function accountRequest(): void
     {
+        // Accepte JSON (fetch) ou formulaire classique ($_POST)
+        $raw = file_get_contents('php://input');
+        $input = json_decode($raw, true) ?? $_POST;
+
         $data = [
-            'company' => trim($_POST['company'] ?? ''),
-            'fullname' => trim($_POST['fullname'] ?? ''),
-            'job_title' => trim($_POST['job_title'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'country' => trim($_POST['country'] ?? ''),
-            'company_size' => trim($_POST['company_size'] ?? ''),
-            'activity' => trim($_POST['activity'] ?? ''),
-            'platforms' => $_POST['platforms'] ?? [],
-            'message' => trim($_POST['message'] ?? ''),
+            'company' => trim($input['company'] ?? ''),
+            'fullname' => trim($input['fullname'] ?? ''),
+            // Le formulaire HTML utilise "role", le reste de l'app utilise "job_title"
+            'job_title' => trim($input['job_title'] ?? $input['role'] ?? ''),
+            'email' => trim($input['email'] ?? ''),
+            'phone' => trim($input['phone'] ?? ''),
+            'country' => trim($input['country'] ?? ''),
+            // Le formulaire HTML utilise "size", le reste de l'app utilise "company_size"
+            'company_size' => trim($input['company_size'] ?? $input['size'] ?? ''),
+            // Le formulaire HTML utilise "sector", le reste de l'app utilise "activity"
+            'activity' => trim($input['activity'] ?? $input['sector'] ?? ''),
+            'platforms' => $input['platforms'] ?? [],
+            'message' => trim($input['message'] ?? ''),
         ];
 
         $validator = new \App\Helpers\Validator();
@@ -49,7 +56,29 @@ class HomeController
             'message' => 'max:1000',
         ]);
 
+        $isJson = $raw !== '' && json_decode($raw, true) !== null;
+
         if (!$valid) {
+            if ($isJson) {
+                // Remappe les clés internes vers les noms de champs du formulaire HTML
+                $fieldMap = [
+                    'job_title' => 'role',
+                    'company_size' => 'size',
+                    'activity' => 'sector',
+                ];
+                $errors = [];
+                foreach ($validator->errors() as $field => $messages) {
+                    $formField = $fieldMap[$field] ?? $field;
+                    $errors[$formField] = $messages[0] ?? '';
+                }
+                http_response_code(422);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'message' => $validator->firstError(),
+                    'errors' => $errors,
+                ]);
+                return;
+            }
             \App\Helpers\Session::setFlash('account_request_error', $validator->firstError());
             \App\Helpers\Session::setFlash('old_input.account', $data);
             back();
@@ -62,6 +91,16 @@ class HomeController
             'Nouvelle demande de compte — ' . $data['company'],
             $body
         );
+
+        if ($isJson) {
+            http_response_code($sent ? 200 : 500);
+            header('Content-Type: application/json');
+            echo json_encode($sent
+                ? ['status' => 'ok', 'reference' => 'NOVA-' . date('ymd') . '-' . substr(uniqid(), -5)]
+                : ['status' => 'error', 'message' => 'Erreur lors de l\'envoi. Veuillez réessayer.']
+            );
+            return;
+        }
 
         if ($sent) {
             \App\Helpers\Session::setFlash('account_request_success', true);
