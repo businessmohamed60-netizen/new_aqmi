@@ -189,6 +189,8 @@
   .lang-toggle b{color:var(--white);}
   .nav-cta{font-size:12.5px;font-weight:600;background:var(--cyan);color:#04101f;padding:10px 18px;border-radius:4px;transition:filter .2s,transform .2s;}
   .nav-cta:hover{filter:brightness(1.12);transform:translateY(-1px);}
+  .nav-cta-secondary{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--steel);border:1px solid var(--panel-border);border-radius:4px;padding:8px 14px;transition:border-color .2s,color .2s,transform .2s;}
+  .nav-cta-secondary:hover{border-color:var(--amber-soft);color:var(--amber);transform:translateY(-1px);}
 
   /* ---------------- HERO TITLES ---------------- */
   .hero-title{left:0;top:80px;width:1536px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:38px;letter-spacing:-.01em;}
@@ -417,6 +419,16 @@
   @media(max-width:760px){.wrap{padding:0 20px;}}
   .sec{padding:110px 0;position:relative;content-visibility:auto;contain-intrinsic-size:auto 900px;}
   .sec.tight{padding:80px 0;}
+  @media(max-width:760px){
+    .sec{padding:48px 0;}
+    .sec.tight{padding:36px 0;}
+    .platform-block{margin-top:48px !important;}
+  }
+  @media(max-width:480px){
+    .stage.mobile-flow{gap:14px;padding:16px 16px 28px;}
+    .sec{padding:36px 0;}
+    .sec.tight{padding:28px 0;}
+  }
   .sec-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);text-align:center;margin-bottom:14px;}
   .sec-eyebrow.gold{color:var(--amber);}
   .sec-title{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.4vw,42px);text-align:center;letter-spacing:-.01em;max-width:760px;margin:0 auto;}
@@ -907,8 +919,8 @@
     <div class="nav-right">
       <div class="nav-status"><span class="dot"></span>AQMI EVALUATION — LIVE</div>
       <div class="lang-toggle"><b>EN</b><span>|</span><span>FR</span><span>|</span><a href="Landing_ES.html" style="color:inherit;text-decoration:none;">ES</a></div>
-      <a class="lang-toggle" href="https://novaqys.com/login" style="text-decoration:none;">ADMIN</a>
-      <a class="nav-cta" href="https://novaqys.com/user/login">GET YOUR AQMI SCORE</a>
+      <a class="nav-cta-secondary" href="demande-compte.html">Demande de compte</a>
+      <a class="nav-cta" href="/user/login">Obtenez votre score AQMI</a>
     </div>
   </div>
 
@@ -1635,7 +1647,7 @@
         </ul>
         <div class="btn-row" style="justify-content:flex-start;margin-top:28px;">
           <a class="btn ghost" href="/assets/pdf/rapport-aqmi-exemple.png" download>Télécharger l'exemple</a>
-          <a class="btn primary" href="https://novaqys.com/user/login">Faire mon évaluation</a>
+          <a class="btn primary" href="/user/login">Faire mon évaluation</a>
         </div>
       </div>
     </div>
@@ -1658,7 +1670,7 @@
           <div><b>6/6</b><span>DOMAINES MAÎTRISÉS</span></div>
           <div><b>Top 5%</b><span>BENCHMARK SECTORIEL</span></div>
         </div>
-        <a class="btn primary" style="margin-top:24px;display:inline-block;" href="https://novaqys.com/user/login">Obtenez votre score AQMI</a>
+        <a class="btn primary" style="margin-top:24px;display:inline-block;" href="/user/login">Obtenez votre score AQMI</a>
       </div>
     </div>
   </div>
@@ -1671,8 +1683,7 @@
     <p class="sec-sub reveal">Rejoignez l'écosystème NOVAQYS et intégrez le nouveau réseau de sous-traitance automobile mondial.</p>
     <div class="btn-row reveal">
       <a class="btn ghost" href="#ecosystem">Découvrir NOVAQYS</a>
-      <a class="btn ghost" href="https://novaqys.com/user/login">Connexion Utilisateur</a>
-      <a class="btn ghost" href="https://novaqys.com/login">Connexion Admin</a>
+      <a class="btn ghost" href="/user/login">Connexion</a>
       <a class="btn primary" href="#account-request">Demander une démonstration</a>
     </div>
   </div>
@@ -1801,7 +1812,7 @@
       <div>
         <h5>Écosystème</h5>
         <a href="https://novaqys.com/">NOVAQYS</a>
-        <a href="https://novaqys.com/user/login">AQMI</a>
+        <a href="/user/login">AQMI</a>
         <a href="#nara">NARA</a>
         <a href="https://novaqys.com/lms.html">Automotive Learning</a>
         <a href="#asin">ASIN</a>
