@@ -159,7 +159,41 @@ $chartLocale = $langCode === 'ar' ? 'ar' : ($langCode === 'en' ? 'en-US' : 'fr-F
   .ud-assessment-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .ud-gauge-wrap { width: 170px; height: 170px; }
   .ud-gauge-score { font-size: 2rem; }
+  .ud-motivation { flex-direction: row; padding: 0.85rem 1rem; gap: 0.75rem; }
+  .ud-mot-icon { width: 2.25rem; height: 2.25rem; font-size: 1rem; }
+  .ud-mot-text h3 { font-size: 0.8rem; }
+  .ud-mot-text p { font-size: 0.7rem; }
+  .ud-stat-card { padding: 0.85rem; gap: 0.65rem; min-height: 64px; }
+  .ud-stat-icon { width: 2.25rem; height: 2.25rem; font-size: 0.95rem; }
+  .ud-stat-value { font-size: 1.2rem; }
+  .ud-stat-label { font-size: 0.62rem; }
+  .ud-models-preview { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .ud-model-mini { padding: 0.75rem 0.85rem; gap: 0.5rem; }
+  .ud-model-mini-icon { width: 2rem; height: 2rem; font-size: 0.85rem; }
+  .ud-model-mini-name { font-size: 0.72rem; -webkit-line-clamp: 2; }
+  .ud-card-header { padding: 0.75rem 1rem; font-size: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+  .ud-chart-card { padding: 1rem; }
+  .ud-chart-container { height: 180px; }
+  .ud-gauge-card { padding: 1rem; }
+  .ud-maturity-card { padding: 1rem; }
+  .ud-assessment-item { padding: 0.75rem 1rem; }
+  .ud-assessment-company { font-size: 0.78rem; }
+  .ud-assessment-meta { gap: 0.4rem; font-size: 0.65rem; }
+  .nova-btn { padding: 0.4rem 0.8rem; font-size: 0.72rem; }
 }
+@media (max-width: 480px) {
+  .ud-welcome { padding: 1rem; }
+  .ud-welcome h2 { font-size: 1.05rem; }
+  .ud-stats-grid { gap: 0.6rem; }
+  .ud-stat-card { padding: 0.7rem; gap: 0.5rem; }
+  .ud-models-preview { grid-template-columns: 1fr; }
+  .ud-assessment-item > div:last-child { width: 100%; }
+  .ud-assessment-item > div:last-child > div,
+  .ud-assessment-item > div:last-child > form { display: flex; flex: 1; }
+  .ud-assessment-item > div:last-child > div > a,
+  .ud-assessment-item > div:last-child > form > button { flex: 1; justify-content: center; }
+}
+
 </style>
 
 <!-- Welcome -->

@@ -35,13 +35,18 @@ $navItems = [
     'profile'     => ['icon' => 'fa-user-gear',        'label' => __('dashboard.nav.profile')     ?: 'Mon profil',        'href' => '/user/profile', 'ic' => 'amber'],
 ];
 ?>
-<!-- ud-layout : menu superposé v4 (classes nvm-*, !important) -->
+<!DOCTYPE html>
+<html lang="<?= e($langCode) ?>"<?= $langCode === 'ar' ? ' dir="rtl"' : '' ?>>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, viewport-fit=cover">
 <?php require BASE_PATH . '/resources/views/partials/favicon.blade.php'; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <meta name="csrf-token" content="<?= csrf_token() ?>">
+<title><?= e($title ?? __('dashboard.brand') ?? 'AQMI') ?></title>
 <style>
 :root {
   --vx-primary: #6366f1;
@@ -528,6 +533,8 @@ html[dir="rtl"] .nvm-link:hover { transform: translateX(-3px); }
 }
 </style>
 <?= $extraStyles ?? '' ?>
+</head>
+<body class="ud-body">
 
 <div class="ud-shell">
   <!-- Sidebar -->
@@ -760,3 +767,5 @@ html[dir="rtl"] .nvm-link:hover { transform: translateX(-3px); }
   setInterval(pollNotifs, 30000);
 })();
 </script>
+</body>
+</html>
